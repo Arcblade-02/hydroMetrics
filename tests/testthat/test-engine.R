@@ -1,4 +1,4 @@
-﻿test_that("cannot register duplicate metric id", {
+test_that("cannot register duplicate metric id", {
   expect_error(
     register_metric(
       id = "mse",

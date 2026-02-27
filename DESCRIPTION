@@ -1,10 +1,17 @@
-Package: hydroMetrics
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+﻿Package: hydroMetrics
+Title: Clean-Room Hydrological Evaluation Metrics
+Version: 0.1.0
+Authors@R:
+    person("hydroMetrics Authors", "Team", email = "maintainers@example.com", role = c("aut", "cre"))
+Description: Clean-room MIT package for hydrological evaluation metrics,
+    with reproducible definitions and implementation-ready scaffolding.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+Suggests:
+    testthat (>= 3.0.0),
+    covr,
+    knitr,
+    rmarkdown
+Config/testthat/edition: 3

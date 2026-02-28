@@ -5,18 +5,18 @@
 - Status: Accepted
 - Notes: No code may be copied from GPL-family projects. Derivations must come from literature and independent design.
 
-## D-002: Output Object Model
-- Decision: Public API returns S3 objects.
+## D-002: Internal Architecture and Output Model
+- Decision: Internal architecture uses R6 for registry and engine; public outputs use S3.
 - Status: Accepted
-- Notes: `evaluate_metrics()` now returns `hydrometrics_result` as an S3 class over `data.frame`.
+- Notes: `MetricRegistry` and `HydroEngine` are R6 classes; evaluation results return S3 `hm_result` over `data.frame`.
 
 ## D-003: Internal Engine Style
-- Decision: Functions-first internal engine (not R6) for Phase 0/1.
+- Decision: Functions-first public API over R6 internals.
 - Status: Accepted
-- Notes: Keep internals simple and testable; reconsider R6 only if stateful workflows become necessary.
+- Notes: Public entry points stay stable (`evaluate_metrics`, `register_metric`, `list_metrics`) and delegate to singleton R6 objects.
 
 ## D-004: Output Data Formats
-- Decision: `evaluate_metrics()` returns base `data.frame` (Phase-1), wrapped as `hydrometrics_result`.
+- Decision: `evaluate_metrics()` returns base `data.frame` with class `c("hm_result", "data.frame")`.
 - Status: Accepted
 - Notes: Tibble support may be added later behind an optional dependency.
 
@@ -26,6 +26,6 @@
 - Notes: Naming and documentation must keep this distinction explicit.
 
 ## D-006: Metric Registry Storage
-- Decision: Registry is stored in a package-internal environment.
+- Decision: Registry storage is environment-backed within `MetricRegistry`.
 - Status: Accepted
-- Notes: Environment storage gives O(1)-style id lookup and straightforward uniqueness checks.
+- Notes: Environment storage provides straightforward uniqueness checks and lookup by id.

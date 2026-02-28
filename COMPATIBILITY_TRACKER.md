@@ -8,8 +8,8 @@ Generated on: 2026-02-28
 - [ ] cp
 - [x] d
 - [x] dr
-- [ ] ggof
-- [ ] gof
+- [x] ggof
+- [x] gof
 - [ ] HFB
 - [x] KGE
 - [x] KGEkm
@@ -37,9 +37,9 @@ Generated on: 2026-02-28
 - [x] rmse
 - [x] rNSE
 - [ ] rNSeff
-- [ ] rPearson
-- [ ] rSD
-- [ ] rSpearman
+- [x] rPearson
+- [x] rSD
+- [x] rSpearman
 - [x] rsr
 - [x] sKGE
 - [x] ssq
@@ -77,6 +77,9 @@ Generated on: 2026-02-28
 | rd | Relative Index of Agreement | agreement | 0.1.0 | Willmott agreement-index family with relative normalization by observations. |
 | rmse | Root Mean Squared Error | error | 0.1.0 | Standard RMSE definition in statistical error analysis texts. |
 | rnse | Relative NSE | efficiency | 0.1.0 | NSE relative variants in hydrology literature; exact citation to be refined. |
+| rpearson | Pearson Correlation | correlation | 0.1.0 | Pearson correlation coefficient (standard statistical definition). |
+| rsd | Standard Deviation Ratio | scale | 0.1.0 | Project definition for hydrology compatibility: ratio of simulated to observed standard deviation. |
+| rspearman | Spearman Correlation | correlation | 0.1.0 | Spearman rank correlation (standard statistical definition). |
 | rsr | RSR | error | 0.1.0 | Moriasi, D.N., et al. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations. |
 | skge | Seasonal KGE | efficiency | 0.1.0 | Seasonal KGE variant definition implemented per project decision pending definitive citation. |
 | ssq | Sum of Squared Errors | error | 0.1.0 | Standard least-squares objective definition. |
@@ -88,8 +91,6 @@ Generated on: 2026-02-28
 ## Missing items summary (auto)
 - APFB
 - cp
-- ggof
-- gof
 - HFB
 - mNSeff
 - NSeff
@@ -100,8 +101,5 @@ Generated on: 2026-02-28
 - preproc
 - rfactor
 - rNSeff
-- rPearson
-- rSD
-- rSpearman
 - valindex
 - wsNSeff

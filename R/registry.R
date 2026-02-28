@@ -8,7 +8,12 @@ register_core_metrics <- function(registry) {
   specs <- list(
     core_metric_spec_nse(),
     core_metric_spec_rmse(),
-    core_metric_spec_pbias()
+    core_metric_spec_pbias(),
+    core_metric_spec_mae(),
+    core_metric_spec_mse(),
+    core_metric_spec_nrmse(),
+    core_metric_spec_r(),
+    core_metric_spec_r2()
   )
 
   for (spec in specs) {

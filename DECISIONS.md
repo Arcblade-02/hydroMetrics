@@ -36,6 +36,16 @@
 - Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
 
 ## D-008: Core Metric Bootstrap Strategy
-- Decision: Core metrics (`nse`, `rmse`, `pbias`) are lazily auto-registered on first registry/engine access.
+- Decision: Core metrics (`nse`, `rmse`, `pbias`, `mae`, `mse`, `nrmse`, `r`, `r2`) are lazily auto-registered on first registry/engine access.
 - Status: Accepted
 - Notes: Public API remains stable and users can evaluate core metrics without manual registration.
+
+## D-009: NRMSE Normalization
+- Decision: `NRMSE` is defined as `sqrt(mean((sim - obs)^2)) / mean(obs)`.
+- Status: Accepted
+- Notes: When `mean(obs) == 0`, evaluation fails with an explicit divide-by-zero style error.
+
+## D-010: R2 Definition Confirmation
+- Decision: `R2` is defined as `cor(sim, obs)^2` using Pearson correlation.
+- Status: Accepted
+- Notes: This reaffirms `R2` as squared Pearson correlation, not NSE.

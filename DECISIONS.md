@@ -36,7 +36,7 @@
 - Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
 
 ## D-008: Core Metric Bootstrap Strategy
-- Decision: Core metrics (`nse`, `rmse`, `pbias`, `mae`, `mse`, `nrmse`, `r`, `r2`) are lazily auto-registered on first registry/engine access.
+- Decision: Core metrics (`nse`, `rmse`, `pbias`, `mae`, `mse`, `nrmse`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`) are lazily auto-registered on first registry/engine access.
 - Status: Accepted
 - Notes: Public API remains stable and users can evaluate core metrics without manual registration.
 
@@ -49,3 +49,18 @@
 - Decision: `R2` is defined as `cor(sim, obs)^2` using Pearson correlation.
 - Status: Accepted
 - Notes: This reaffirms `R2` as squared Pearson correlation, not NSE.
+
+## D-011: KGE Formula Variant
+- Decision: Use KGE (2009) as `1 - sqrt((r-1)^2 + (alpha-1)^2 + (beta-1)^2)` where `r=cor(sim,obs)`, `alpha=sd(sim)/sd(obs)`, and `beta=mean(sim)/mean(obs)`.
+- Status: Accepted
+- Notes: Evaluation errors explicitly when `sd(obs) == 0` or `mean(obs) == 0`.
+
+## D-012: NRMSE Variants
+- Decision: Keep two NRMSE variants: `nrmse = RMSE/mean(obs)` and `nrmse_sd = RMSE/sd(obs)`.
+- Status: Accepted
+- Notes: `nrmse` and `nrmse_sd` are distinct metrics and both are retained for compatibility.
+
+## D-013: Zero-Observation Percentage Metrics Policy
+- Decision: `mape` and `mpe` fail when observed values contain zero.
+- Status: Accepted
+- Notes: Zero-observation divisions are treated as invalid input; no silent `Inf`/`NaN` handling is applied.

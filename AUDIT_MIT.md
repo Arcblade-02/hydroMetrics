@@ -10,3 +10,9 @@
 | NRMSE | Mathematical definition with explicit project normalization | Common NRMSE normalization by mean(obs) in model-evaluation practice. | Implemented from mathematical definition (clean-room). |
 | R | Mathematical definition | Pearson correlation coefficient (standard definition). | Implemented from mathematical definition (clean-room). |
 | R2 | Mathematical definition | R-squared defined as squared Pearson correlation. | Implemented from mathematical definition (clean-room). |
+| KGE | Mathematical definition from published metric | Kling, H., Fuchs, M., & Paulin, M. (2009). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. | Implemented from mathematical definition (clean-room). |
+| RSR | Mathematical definition from model-evaluation guidance | Moriasi, D.N., et al. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations. | Implemented from mathematical definition (clean-room). |
+| MAPE | Mathematical definition | Standard mean absolute percentage error definition in forecasting and error-analysis literature. | Implemented from mathematical definition (clean-room). |
+| MPE | Mathematical definition | Standard mean percentage error definition in forecasting and error-analysis literature. | Implemented from mathematical definition (clean-room). |
+| VE | Mathematical definition from hydrology literature | Criss, R.E. & Winston, W.E. (2008). Do Nash values have value? Discussion of hydrologic model performance metrics including volumetric concepts. | Implemented from mathematical definition (clean-room). |
+| NRMSE_SD | Project-defined mathematical variant | Project-defined NRMSE variant normalized by sd(obs). | Implemented from mathematical definition (clean-room). |

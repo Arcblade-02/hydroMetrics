@@ -104,3 +104,8 @@
 - Decision: `gof()` resolves method names case-insensitively and returns named numeric vector (single series) or numeric matrix with metrics as rows (multi-series); `ggof()` builds a simple bar plot from `gof()` output.
 - Status: Accepted
 - Notes: `ggof()` requires `ggplot2` in Suggests and errors gracefully if unavailable.
+
+## D-022: Batch 8A Compatibility Definitions
+- Decision: `cp` is defined as `1 - sum((obs_t - sim_t)^2)/sum((obs_t - obs_{t-1})^2)` on aligned `t = 2..n`; `preproc(keep = "pairwise")` currently uses the same complete-case row filter as `keep = "complete"`; `valindex` is a project-defined weighted aggregate of normalized `gof()` metrics.
+- Status: Accepted
+- Notes: `cp` errors when persistence denominator is zero or length < 2. `valindex` v1 supports `NSE`, `KGE`, `rmse`, `pbias`, and `rPearson` with fixed normalization transforms and returns scalar (single series) or `1 x n` matrix (multi-series).

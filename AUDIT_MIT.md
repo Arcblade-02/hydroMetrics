@@ -36,3 +36,6 @@
 | rPearson | Statistical correlation definition | Pearson correlation coefficient (standard statistical definition). | Implemented from statistical definition only, no source code copied. |
 | rSpearman | Statistical rank-correlation definition | Spearman rank correlation (standard statistical definition). | Implemented from statistical definition only, no source code copied. |
 | rSD | Scale-ratio definition | Project-defined ratio `sd(sim)/sd(obs)` for compatibility. | Implemented from explicit formula definition, no source code copied. |
+| cp | Persistence skill-score formula | Persistence-skill definition from hydrology model-evaluation literature (citation to refine). | Implemented from explicit mathematical definition, no upstream code copied. |
+| preproc | Deterministic preprocessing policy | Project-defined preprocessing helper behavior for aligned NA filtering and coercion. | Implemented from project specification, no upstream code copied. |
+| valindex | Project-defined aggregation formula | Project-defined normalized weighted aggregate over selected metrics (`NSE`, `KGE`, `rmse`, `pbias`, `rPearson`). | Implemented from transparent mathematical transforms, no upstream code copied. |

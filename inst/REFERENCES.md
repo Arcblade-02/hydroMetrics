@@ -31,6 +31,9 @@
 - Pearson, K. (classical statistics references) - rPearson - Pearson product-moment correlation coefficient. DOI/URL (TODO)
 - Spearman, C. (classical statistics references) - rSpearman - Spearman rank correlation coefficient. DOI/URL (TODO)
 - Project decision record - rSD - Ratio `sd(sim)/sd(obs)` for scale compatibility metric. DOI/URL (TODO)
+- Persistence-skill hydrology references (to refine) - cp - Coefficient of persistence against one-step observed persistence baseline. DOI/URL (TODO)
+- Project helper definition - preproc - Deterministic preprocessing helper for NA filtering and aligned input coercion prior to metric evaluation. DOI/URL (TODO)
+- Project definition record - valindex - Weighted normalized aggregate over selected gof metrics (v1 project-defined normalization). DOI/URL (TODO)
 
 ## Placeholder Entries
 - Author (Year) - Metric(s) - DOI/URL (TODO)

@@ -4,6 +4,7 @@
     "kge" = "kge",
     "rmse" = "rmse",
     "pbias" = "pbias",
+    "cp" = "cp",
     "mae" = "mae",
     "mse" = "mse",
     "r2" = "r2",

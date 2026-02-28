@@ -16,5 +16,6 @@ Suggests:
     covr,
     ggplot2,
     knitr,
-    rmarkdown
+    rmarkdown,
+    zoo
 Config/testthat/edition: 3

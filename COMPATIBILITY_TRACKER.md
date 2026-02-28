@@ -4,10 +4,10 @@ Generated on: 2026-02-28
 
 ## Target hydroGOF exports (checklist)
 - [ ] APFB
-- [ ] br2
+- [x] br2
 - [ ] cp
-- [ ] d
-- [ ] dr
+- [x] d
+- [x] dr
 - [ ] ggof
 - [ ] gof
 - [ ] HFB
@@ -16,8 +16,8 @@ Generated on: 2026-02-28
 - [ ] KGElf
 - [ ] KGEnp
 - [x] mae
-- [ ] md
-- [ ] me
+- [x] md
+- [x] me
 - [ ] mNSE
 - [ ] mNSeff
 - [x] mse
@@ -32,7 +32,7 @@ Generated on: 2026-02-28
 - [ ] plotbandsonly
 - [ ] preproc
 - [x] R2
-- [ ] rd
+- [x] rd
 - [ ] rfactor
 - [x] rmse
 - [ ] rNSE
@@ -53,9 +53,14 @@ Generated on: 2026-02-28
 ## Implemented metrics table (auto)
 | id | name | category | version_added | references |
 | --- | --- | --- | --- | --- |
+| br2 | Bias-Corrected R-squared | correlation | 0.1.0 | Project-defined bias-corrected R2 variant pending dedicated paper citation. |
+| d | Willmott Index of Agreement | agreement | 0.1.0 | Willmott, C.J. (1981). On the validation of models. |
+| dr | Relative Absolute Index of Agreement | agreement | 0.1.0 | Willmott agreement-index family with relative absolute-error normalization. |
 | kge | Kling-Gupta Efficiency | efficiency | 0.1.0 | Kling, H., Fuchs, M., & Paulin, M. (2009). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. |
 | mae | Mean Absolute Error | error | 0.1.0 | Standard MAE definition in statistical error analysis literature. |
 | mape | Mean Absolute Percentage Error | error | 0.1.0 | Standard mean absolute percentage error definition in forecasting and error-analysis literature. |
+| md | Modified Index of Agreement | agreement | 0.1.0 | Willmott, C.J., Robeson, S.M., & Matsuura, K. (2012). A refined index of model performance. |
+| me | Mean Error | bias | 0.1.0 | Standard mean error definition in forecast error analysis. |
 | mpe | Mean Percentage Error | bias | 0.1.0 | Standard mean percentage error definition in forecasting and error-analysis literature. |
 | mse | Mean Squared Error | error | 0.1.0 | Standard MSE definition in statistical error analysis literature. |
 | nrmse | Normalized Root Mean Squared Error | error | 0.1.0 | Common NRMSE normalization by mean(obs) in model-evaluation practice. |
@@ -64,24 +69,20 @@ Generated on: 2026-02-28
 | pbias | Percent Bias | bias | 0.1.0 | Moriasi, D.N., et al. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations. |
 | r | Pearson Correlation | correlation | 0.1.0 | Pearson correlation coefficient (standard definition). |
 | r2 | Squared Pearson Correlation | correlation | 0.1.0 | R-squared defined as squared Pearson correlation. |
+| rd | Relative Index of Agreement | agreement | 0.1.0 | Willmott agreement-index family with relative normalization by observations. |
 | rmse | Root Mean Squared Error | error | 0.1.0 | Standard RMSE definition in statistical error analysis texts. |
 | rsr | RSR | error | 0.1.0 | Moriasi, D.N., et al. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations. |
 | ve | Volumetric Efficiency | efficiency | 0.1.0 | Criss, R.E. & Winston, W.E. (2008). Do Nash values have value? Discussion of hydrologic model performance metrics including volumetric concepts. |
 
 ## Missing items summary (auto)
 - APFB
-- br2
 - cp
-- d
-- dr
 - ggof
 - gof
 - HFB
 - KGEkm
 - KGElf
 - KGEnp
-- md
-- me
 - mNSE
 - mNSeff
 - NSeff
@@ -91,7 +92,6 @@ Generated on: 2026-02-28
 - plotbands
 - plotbandsonly
 - preproc
-- rd
 - rfactor
 - rNSE
 - rNSeff

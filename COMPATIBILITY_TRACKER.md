@@ -18,7 +18,7 @@ Generated on: 2026-02-28
 - [x] mae
 - [x] md
 - [x] me
-- [ ] mNSE
+- [x] mNSE
 - [ ] mNSeff
 - [x] mse
 - [x] nrmse
@@ -35,19 +35,19 @@ Generated on: 2026-02-28
 - [x] rd
 - [ ] rfactor
 - [x] rmse
-- [ ] rNSE
+- [x] rNSE
 - [ ] rNSeff
 - [ ] rPearson
 - [ ] rSD
 - [ ] rSpearman
 - [x] rsr
 - [ ] sKGE
-- [ ] ssq
-- [ ] ubRMSE
+- [x] ssq
+- [x] ubRMSE
 - [ ] valindex
 - [x] VE
-- [ ] wNSE
-- [ ] wsNSE
+- [x] wNSE
+- [x] wsNSE
 - [ ] wsNSeff
 
 ## Implemented metrics table (auto)
@@ -61,6 +61,7 @@ Generated on: 2026-02-28
 | mape | Mean Absolute Percentage Error | error | 0.1.0 | Standard mean absolute percentage error definition in forecasting and error-analysis literature. |
 | md | Modified Index of Agreement | agreement | 0.1.0 | Willmott, C.J., Robeson, S.M., & Matsuura, K. (2012). A refined index of model performance. |
 | me | Mean Error | bias | 0.1.0 | Standard mean error definition in forecast error analysis. |
+| mnse | Modified NSE | efficiency | 0.1.0 | NSE modified variants in hydrology literature; exact citation to be refined. |
 | mpe | Mean Percentage Error | bias | 0.1.0 | Standard mean percentage error definition in forecasting and error-analysis literature. |
 | mse | Mean Squared Error | error | 0.1.0 | Standard MSE definition in statistical error analysis literature. |
 | nrmse | Normalized Root Mean Squared Error | error | 0.1.0 | Common NRMSE normalization by mean(obs) in model-evaluation practice. |
@@ -71,8 +72,13 @@ Generated on: 2026-02-28
 | r2 | Squared Pearson Correlation | correlation | 0.1.0 | R-squared defined as squared Pearson correlation. |
 | rd | Relative Index of Agreement | agreement | 0.1.0 | Willmott agreement-index family with relative normalization by observations. |
 | rmse | Root Mean Squared Error | error | 0.1.0 | Standard RMSE definition in statistical error analysis texts. |
+| rnse | Relative NSE | efficiency | 0.1.0 | NSE relative variants in hydrology literature; exact citation to be refined. |
 | rsr | RSR | error | 0.1.0 | Moriasi, D.N., et al. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations. |
+| ssq | Sum of Squared Errors | error | 0.1.0 | Standard least-squares objective definition. |
+| ubrmse | Unbiased RMSE | error | 0.1.0 | Standard unbiased RMSE definition in model-evaluation literature. |
 | ve | Volumetric Efficiency | efficiency | 0.1.0 | Criss, R.E. & Winston, W.E. (2008). Do Nash values have value? Discussion of hydrologic model performance metrics including volumetric concepts. |
+| wnse | Weighted NSE | efficiency | 0.1.0 | NSE weighted variants in hydrology literature; exact citation to be refined. |
+| wsnse | Weighted Squared NSE | efficiency | 0.1.0 | NSE weighted variants in hydrology literature; exact citation to be refined. |
 
 ## Missing items summary (auto)
 - APFB
@@ -83,7 +89,6 @@ Generated on: 2026-02-28
 - KGEkm
 - KGElf
 - KGEnp
-- mNSE
 - mNSeff
 - NSeff
 - pbiasfdc
@@ -93,15 +98,10 @@ Generated on: 2026-02-28
 - plotbandsonly
 - preproc
 - rfactor
-- rNSE
 - rNSeff
 - rPearson
 - rSD
 - rSpearman
 - sKGE
-- ssq
-- ubRMSE
 - valindex
-- wNSE
-- wsNSE
 - wsNSeff

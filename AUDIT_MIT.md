@@ -22,3 +22,9 @@
 | rd | Relative agreement formula variant | Willmott agreement-index family with relative normalization by observations. | Implemented from explicit formula definition selected for compatibility tracking. |
 | dr | Relative absolute-agreement formula variant | Willmott agreement-index family with relative absolute-error normalization. | Implemented from explicit formula definition selected for compatibility tracking. |
 | br2 | Bias-penalized correlation formulation | Project-defined bias-corrected R2 variant pending dedicated paper citation. | Implemented from mathematical formula definition, no code copied. |
+| rNSE | Relative NSE variant | NSE family variant per hydrology literature (relative scaling by observations). | Implemented from explicit formula definition, no code copied. |
+| mNSE | Modified NSE variant | NSE family variant using absolute-error formulation in hydrology literature. | Implemented from explicit formula definition, no code copied. |
+| wNSE | Weighted NSE variant | NSE family weighted variant using observation-derived weights. | Implemented from explicit formula definition, no code copied. |
+| wsNSE | Weighted-squared NSE variant | NSE family weighted variant using squared observation weights. | Implemented from explicit formula definition, no code copied. |
+| ubRMSE | Unbiased RMSE | Standard anomaly-based RMSE definition in model evaluation. | Implemented from mathematical definition (clean-room). |
+| ssq | Sum of squared errors | Standard least-squares objective definition. | Implemented from mathematical definition (clean-room). |

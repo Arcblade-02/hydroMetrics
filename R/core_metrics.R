@@ -476,3 +476,149 @@ core_metric_spec_br2 <- function() {
     tags = character()
   )
 }
+
+metric_ssq <- function(sim, obs) {
+  sum((sim - obs)^2)
+}
+
+core_metric_spec_ssq <- function() {
+  list(
+    id = "ssq",
+    fun = metric_ssq,
+    name = "Sum of Squared Errors",
+    description = "SSQ computed as sum((sim - obs)^2).",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Standard least-squares objective definition.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}
+
+metric_ubrmse <- function(sim, obs) {
+  sqrt(mean(((sim - mean(sim)) - (obs - mean(obs)))^2))
+}
+
+core_metric_spec_ubrmse <- function() {
+  list(
+    id = "ubrmse",
+    fun = metric_ubrmse,
+    name = "Unbiased RMSE",
+    description = "ubRMSE computed from anomalies relative to each series mean.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Standard unbiased RMSE definition in model-evaluation literature.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}
+
+metric_wnse <- function(sim, obs) {
+  if (any(obs < 0)) {
+    stop("wNSE undefined because obs contains negative values (weights must be nonnegative).", call. = FALSE)
+  }
+  obs_mean <- mean(obs)
+  num <- sum(obs * (sim - obs)^2)
+  den <- sum(obs * (obs - obs_mean)^2)
+  if (den == 0) {
+    stop("wNSE undefined (denominator is 0).", call. = FALSE)
+  }
+  1 - num / den
+}
+
+core_metric_spec_wnse <- function() {
+  list(
+    id = "wnse",
+    fun = metric_wnse,
+    name = "Weighted NSE",
+    description = "Weighted NSE using observation weights w = obs.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "NSE weighted variants in hydrology literature; exact citation to be refined.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}
+
+metric_wsnse <- function(sim, obs) {
+  if (any(obs < 0)) {
+    stop("wsNSE undefined because obs contains negative values (weights must be nonnegative).", call. = FALSE)
+  }
+  obs_mean <- mean(obs)
+  w <- obs^2
+  num <- sum(w * (sim - obs)^2)
+  den <- sum(w * (obs - obs_mean)^2)
+  if (den == 0) {
+    stop("wsNSE undefined (denominator is 0).", call. = FALSE)
+  }
+  1 - num / den
+}
+
+core_metric_spec_wsnse <- function() {
+  list(
+    id = "wsnse",
+    fun = metric_wsnse,
+    name = "Weighted Squared NSE",
+    description = "Weighted NSE variant using squared observation weights w = obs^2.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "NSE weighted variants in hydrology literature; exact citation to be refined.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}
+
+metric_rnse <- function(sim, obs) {
+  if (any(obs == 0)) {
+    stop("rNSE undefined because obs contains zero.", call. = FALSE)
+  }
+  rel <- (sim - obs) / obs
+  den <- sum(((obs - mean(obs)) / obs)^2)
+  if (den == 0) {
+    stop("rNSE undefined (denominator is 0).", call. = FALSE)
+  }
+  1 - sum(rel^2) / den
+}
+
+core_metric_spec_rnse <- function() {
+  list(
+    id = "rnse",
+    fun = metric_rnse,
+    name = "Relative NSE",
+    description = "Relative NSE using observation-scaled errors.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "NSE relative variants in hydrology literature; exact citation to be refined.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}
+
+metric_mnse <- function(sim, obs) {
+  num <- sum(abs(sim - obs))
+  den <- sum(abs(obs - mean(obs)))
+  if (den == 0) {
+    stop("mNSE undefined (denominator is 0).", call. = FALSE)
+  }
+  1 - num / den
+}
+
+core_metric_spec_mnse <- function() {
+  list(
+    id = "mnse",
+    fun = metric_mnse,
+    name = "Modified NSE",
+    description = "Modified NSE using absolute-error numerator and denominator.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "NSE modified variants in hydrology literature; exact citation to be refined.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}

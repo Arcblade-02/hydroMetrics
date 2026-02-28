@@ -21,6 +21,9 @@
 - Agreement-index relative formulations (project-selected variants) - rd - Relative squared-error agreement using observation normalization. DOI/URL (TODO)
 - Agreement-index relative formulations (project-selected variants) - dr - Relative absolute-error agreement using observation normalization. DOI/URL (TODO)
 - Project decision record - br2 - Bias-corrected R2 defined as bias-penalized Pearson correlation squared. DOI/URL (TODO)
+- Nash, J. E., and Sutcliffe, J. V. (1970) - rNSE/mNSE/wNSE/wsNSE lineage - Base NSE definition; weighted/modified/relative variants per hydrology literature (exact citations to refine). DOI/URL (TODO)
+- Standard model-evaluation references - ubRMSE - Unbiased RMSE from mean-removed anomaly differences. DOI/URL (TODO)
+- Standard least-squares references - ssq - Sum of squared errors objective `sum((sim - obs)^2)`. DOI/URL (TODO)
 
 ## Placeholder Entries
 - Author (Year) - Metric(s) - DOI/URL (TODO)

@@ -36,7 +36,7 @@
 - Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
 
 ## D-008: Core Metric Bootstrap Strategy
-- Decision: Core metrics (`nse`, `rmse`, `pbias`, `mae`, `mse`, `nrmse`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`) are lazily auto-registered on first registry/engine access.
+- Decision: Core metrics (`nse`, `rmse`, `pbias`, `mae`, `mse`, `nrmse`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`) are lazily auto-registered on first registry/engine access.
 - Status: Accepted
 - Notes: Public API remains stable and users can evaluate core metrics without manual registration.
 
@@ -74,3 +74,13 @@
 - Decision: `br2` is defined as `r^2 * (min(sd(sim), sd(obs))/max(sd(sim), sd(obs)))^2 * (min(mean(sim), mean(obs))/max(mean(sim), mean(obs)))^2`.
 - Status: Accepted
 - Notes: This is a conservative project definition pending dedicated literature confirmation; failures are explicit for zero sd/mean and NA correlation.
+
+## D-016: NSE Family Variants
+- Decision: `rnse`, `mnse`, `wnse`, and `wsnse` follow explicit clean-room formulas documented in code and tests.
+- Status: Accepted
+- Notes: `rnse` fails on `obs == 0` or zero denominator; `wnse`/`wsnse` fail on negative observations and zero denominator; `mnse` fails on zero denominator.
+
+## D-017: ubRMSE and SSQ Definitions
+- Decision: `ubrmse` is anomaly-based RMSE and `ssq` is the sum of squared errors.
+- Status: Accepted
+- Notes: Both are standard error definitions used for compatibility coverage.

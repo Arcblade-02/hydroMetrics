@@ -26,14 +26,14 @@ Generated on: 2026-02-28
 - [ ] NSeff
 - [x] pbias
 - [x] pbiasfdc
-- [ ] pfactor
+- [x] pfactor
 - [ ] plot2
 - [ ] plotbands
 - [ ] plotbandsonly
 - [x] preproc
 - [x] R2
 - [x] rd
-- [ ] rfactor
+- [x] rfactor
 - [x] rmse
 - [x] rNSE
 - [ ] rNSeff
@@ -73,9 +73,11 @@ Generated on: 2026-02-28
 | nse | Nash-Sutcliffe Efficiency | efficiency | 0.1.0 | Nash, J.E. & Sutcliffe, J.V. (1970). River flow forecasting through conceptual models part I - A discussion of principles. |
 | pbias | Percent Bias | bias | 0.1.0 | Moriasi, D.N., et al. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations. |
 | pbiasfdc | Percent Bias of Flow Duration Curve | bias | 0.1.0 | Flow duration curve bias formulation implemented per project decision pending definitive citation. |
+| pfactor | P-factor | efficiency | 0.1.0 | Project-defined compatibility pfactor using tolerance-band hit proportion. |
 | r | Pearson Correlation | correlation | 0.1.0 | Pearson correlation coefficient (standard definition). |
 | r2 | Squared Pearson Correlation | correlation | 0.1.0 | R-squared defined as squared Pearson correlation. |
 | rd | Relative Index of Agreement | agreement | 0.1.0 | Willmott agreement-index family with relative normalization by observations. |
+| rfactor | R-factor | error | 0.1.0 | Project-defined compatibility rfactor: mean(abs(sim - obs)) / mean(abs(obs)). |
 | rmse | Root Mean Squared Error | error | 0.1.0 | Standard RMSE definition in statistical error analysis texts. |
 | rnse | Relative NSE | efficiency | 0.1.0 | NSE relative variants in hydrology literature; exact citation to be refined. |
 | rpearson | Pearson Correlation | correlation | 0.1.0 | Pearson correlation coefficient (standard statistical definition). |
@@ -94,10 +96,8 @@ Generated on: 2026-02-28
 - HFB
 - mNSeff
 - NSeff
-- pfactor
 - plot2
 - plotbands
 - plotbandsonly
-- rfactor
 - rNSeff
 - wsNSeff

@@ -12,9 +12,9 @@ Generated on: 2026-02-28
 - [ ] gof
 - [ ] HFB
 - [x] KGE
-- [ ] KGEkm
-- [ ] KGElf
-- [ ] KGEnp
+- [x] KGEkm
+- [x] KGElf
+- [x] KGEnp
 - [x] mae
 - [x] md
 - [x] me
@@ -25,7 +25,7 @@ Generated on: 2026-02-28
 - [x] NSE
 - [ ] NSeff
 - [x] pbias
-- [ ] pbiasfdc
+- [x] pbiasfdc
 - [ ] pfactor
 - [ ] plot2
 - [ ] plotbands
@@ -41,7 +41,7 @@ Generated on: 2026-02-28
 - [ ] rSD
 - [ ] rSpearman
 - [x] rsr
-- [ ] sKGE
+- [x] sKGE
 - [x] ssq
 - [x] ubRMSE
 - [ ] valindex
@@ -57,6 +57,9 @@ Generated on: 2026-02-28
 | d | Willmott Index of Agreement | agreement | 0.1.0 | Willmott, C.J. (1981). On the validation of models. |
 | dr | Relative Absolute Index of Agreement | agreement | 0.1.0 | Willmott agreement-index family with relative absolute-error normalization. |
 | kge | Kling-Gupta Efficiency | efficiency | 0.1.0 | Kling, H., Fuchs, M., & Paulin, M. (2009). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. |
+| kgekm | KGE Modified Variability | efficiency | 0.1.0 | KGE variant definitions in hydrology practice using coefficient-of-variation ratio; citation to be refined. |
+| kgelf | KGE Low-Flow | efficiency | 0.1.0 | KGE low-flow emphasis variants in hydrology practice; exact citation to be refined. |
+| kgenp | KGE Nonparametric | efficiency | 0.1.0 | Nonparametric KGE formulations in hydrology practice; exact citation to be refined. |
 | mae | Mean Absolute Error | error | 0.1.0 | Standard MAE definition in statistical error analysis literature. |
 | mape | Mean Absolute Percentage Error | error | 0.1.0 | Standard mean absolute percentage error definition in forecasting and error-analysis literature. |
 | md | Modified Index of Agreement | agreement | 0.1.0 | Willmott, C.J., Robeson, S.M., & Matsuura, K. (2012). A refined index of model performance. |
@@ -68,12 +71,14 @@ Generated on: 2026-02-28
 | nrmse_sd | NRMSE by SD | error | 0.1.0 | Project-defined NRMSE variant normalized by sd(obs). |
 | nse | Nash-Sutcliffe Efficiency | efficiency | 0.1.0 | Nash, J.E. & Sutcliffe, J.V. (1970). River flow forecasting through conceptual models part I - A discussion of principles. |
 | pbias | Percent Bias | bias | 0.1.0 | Moriasi, D.N., et al. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations. |
+| pbiasfdc | Percent Bias of Flow Duration Curve | bias | 0.1.0 | Flow duration curve bias formulation implemented per project decision pending definitive citation. |
 | r | Pearson Correlation | correlation | 0.1.0 | Pearson correlation coefficient (standard definition). |
 | r2 | Squared Pearson Correlation | correlation | 0.1.0 | R-squared defined as squared Pearson correlation. |
 | rd | Relative Index of Agreement | agreement | 0.1.0 | Willmott agreement-index family with relative normalization by observations. |
 | rmse | Root Mean Squared Error | error | 0.1.0 | Standard RMSE definition in statistical error analysis texts. |
 | rnse | Relative NSE | efficiency | 0.1.0 | NSE relative variants in hydrology literature; exact citation to be refined. |
 | rsr | RSR | error | 0.1.0 | Moriasi, D.N., et al. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations. |
+| skge | Seasonal KGE | efficiency | 0.1.0 | Seasonal KGE variant definition implemented per project decision pending definitive citation. |
 | ssq | Sum of Squared Errors | error | 0.1.0 | Standard least-squares objective definition. |
 | ubrmse | Unbiased RMSE | error | 0.1.0 | Standard unbiased RMSE definition in model-evaluation literature. |
 | ve | Volumetric Efficiency | efficiency | 0.1.0 | Criss, R.E. & Winston, W.E. (2008). Do Nash values have value? Discussion of hydrologic model performance metrics including volumetric concepts. |
@@ -86,12 +91,8 @@ Generated on: 2026-02-28
 - ggof
 - gof
 - HFB
-- KGEkm
-- KGElf
-- KGEnp
 - mNSeff
 - NSeff
-- pbiasfdc
 - pfactor
 - plot2
 - plotbands
@@ -102,6 +103,5 @@ Generated on: 2026-02-28
 - rPearson
 - rSD
 - rSpearman
-- sKGE
 - valindex
 - wsNSeff

@@ -16,3 +16,9 @@
 | MPE | Mathematical definition | Standard mean percentage error definition in forecasting and error-analysis literature. | Implemented from mathematical definition (clean-room). |
 | VE | Mathematical definition from hydrology literature | Criss, R.E. & Winston, W.E. (2008). Do Nash values have value? Discussion of hydrologic model performance metrics including volumetric concepts. | Implemented from mathematical definition (clean-room). |
 | NRMSE_SD | Project-defined mathematical variant | Project-defined NRMSE variant normalized by sd(obs). | Implemented from mathematical definition (clean-room). |
+| ME | Mathematical definition | Standard mean error definition in forecast error analysis. | Implemented from mathematical definition (clean-room). |
+| d | Mathematical definition from agreement-index literature | Willmott, C.J. (1981). On the validation of models. | Implemented from published formula definition, no code copied. |
+| md | Mathematical definition from modified agreement-index literature | Willmott, C.J., Robeson, S.M., & Matsuura, K. (2012). A refined index of model performance. | Implemented from published formula definition, no code copied. |
+| rd | Relative agreement formula variant | Willmott agreement-index family with relative normalization by observations. | Implemented from explicit formula definition selected for compatibility tracking. |
+| dr | Relative absolute-agreement formula variant | Willmott agreement-index family with relative absolute-error normalization. | Implemented from explicit formula definition selected for compatibility tracking. |
+| br2 | Bias-penalized correlation formulation | Project-defined bias-corrected R2 variant pending dedicated paper citation. | Implemented from mathematical formula definition, no code copied. |

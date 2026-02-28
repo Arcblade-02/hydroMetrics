@@ -36,7 +36,7 @@
 - Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
 
 ## D-008: Core Metric Bootstrap Strategy
-- Decision: Core metrics (`nse`, `rmse`, `pbias`, `mae`, `mse`, `nrmse`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`) are lazily auto-registered on first registry/engine access.
+- Decision: Core metrics (`nse`, `rmse`, `pbias`, `mae`, `mse`, `nrmse`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`) are lazily auto-registered on first registry/engine access.
 - Status: Accepted
 - Notes: Public API remains stable and users can evaluate core metrics without manual registration.
 
@@ -64,3 +64,13 @@
 - Decision: `mape` and `mpe` fail when observed values contain zero.
 - Status: Accepted
 - Notes: Zero-observation divisions are treated as invalid input; no silent `Inf`/`NaN` handling is applied.
+
+## D-014: Relative Agreement Variants
+- Decision: `rd` and `dr` use observation-normalized relative formulations selected for compatibility tracking.
+- Status: Accepted
+- Notes: Both metrics fail when `obs` contains zero, and both fail when their denominator evaluates to zero.
+
+## D-015: Bias-Corrected R2 Formula
+- Decision: `br2` is defined as `r^2 * (min(sd(sim), sd(obs))/max(sd(sim), sd(obs)))^2 * (min(mean(sim), mean(obs))/max(mean(sim), mean(obs)))^2`.
+- Status: Accepted
+- Notes: This is a conservative project definition pending dedicated literature confirmation; failures are explicit for zero sd/mean and NA correlation.

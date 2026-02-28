@@ -19,7 +19,13 @@ register_core_metrics <- function(registry) {
     core_metric_spec_mape(),
     core_metric_spec_mpe(),
     core_metric_spec_ve(),
-    core_metric_spec_nrmse_sd()
+    core_metric_spec_nrmse_sd(),
+    core_metric_spec_me(),
+    core_metric_spec_d(),
+    core_metric_spec_md(),
+    core_metric_spec_rd(),
+    core_metric_spec_dr(),
+    core_metric_spec_br2()
   )
 
   for (spec in specs) {

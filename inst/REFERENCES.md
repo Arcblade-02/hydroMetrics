@@ -15,6 +15,12 @@
 - Standard forecasting/error-analysis references - MAPE - Mean absolute percentage error with explicit zero-observation safeguards. DOI/URL (TODO)
 - Standard forecasting/error-analysis references - MPE - Mean percentage error with explicit zero-observation safeguards. DOI/URL (TODO)
 - Project decision record - NRMSE_SD - NRMSE variant defined as RMSE divided by `sd(obs)`. DOI/URL (TODO)
+- Standard forecast-error references - ME - Mean error defined as `mean(sim - obs)`. DOI/URL (TODO)
+- Willmott, C. J. (1981) - d - Index of agreement in model validation context. DOI/URL (TODO)
+- Willmott, C. J., Robeson, S. M., and Matsuura, K. (2012) - md - Modified/refined agreement index family. DOI/URL (TODO)
+- Agreement-index relative formulations (project-selected variants) - rd - Relative squared-error agreement using observation normalization. DOI/URL (TODO)
+- Agreement-index relative formulations (project-selected variants) - dr - Relative absolute-error agreement using observation normalization. DOI/URL (TODO)
+- Project decision record - br2 - Bias-corrected R2 defined as bias-penalized Pearson correlation squared. DOI/URL (TODO)
 
 ## Placeholder Entries
 - Author (Year) - Metric(s) - DOI/URL (TODO)

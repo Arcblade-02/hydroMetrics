@@ -13,7 +13,7 @@ MetricRegistry <- R6::R6Class(
         "id", "fun", "name", "description", "category",
         "perfect", "range", "references", "version_added"
       )
-      allowed_categories <- c("error", "efficiency", "bias", "correlation", "other")
+      allowed_categories <- c("error", "efficiency", "bias", "correlation", "agreement", "other")
 
       if (!is.list(spec)) {
         stop("`spec` must be a list.", call. = FALSE)

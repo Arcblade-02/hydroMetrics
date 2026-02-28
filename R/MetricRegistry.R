@@ -1,4 +1,4 @@
-﻿MetricRegistry <- R6::R6Class(
+MetricRegistry <- R6::R6Class(
   "MetricRegistry",
   private = list(
     store = NULL

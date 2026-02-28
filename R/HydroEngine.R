@@ -1,4 +1,4 @@
-﻿HydroEngine <- R6::R6Class(
+HydroEngine <- R6::R6Class(
   "HydroEngine",
   public = list(
     registry = NULL,

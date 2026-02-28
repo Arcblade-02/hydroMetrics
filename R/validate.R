@@ -1,4 +1,4 @@
-﻿validate_numeric_vector <- function(x, name, allow_na = FALSE) {
+validate_numeric_vector <- function(x, name, allow_na = FALSE) {
   if (!is.character(name) || length(name) != 1L || !nzchar(name)) {
     stop("`name` must be a non-empty character scalar.", call. = FALSE)
   }

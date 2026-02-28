@@ -1,4 +1,4 @@
-﻿hm_result <- function(x) {
+hm_result <- function(x) {
   if (!is.data.frame(x)) {
     stop("`x` must be a data.frame.", call. = FALSE)
   }

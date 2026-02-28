@@ -1,0 +1,6 @@
+options(repos=c(CRAN="https://cloud.r-project.org"))
+if(!requireNamespace("desc", quietly=TRUE)) install.packages("desc")
+d <- desc::desc(file="DESCRIPTION")
+cat("Package=", d$get("Package"), "\n", sep="")
+cat("Version=", d$get("Version"), "\n", sep="")
+cat("Has Authors@R=", !is.null(d$get("Authors@R")), "\n", sep="")

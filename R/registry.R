@@ -1,4 +1,4 @@
-﻿.hm_state <- new.env(parent = emptyenv())
+.hm_state <- new.env(parent = emptyenv())
 
 .register_default_metrics <- function(registry) {
   if (!registry$exists("mse")) {

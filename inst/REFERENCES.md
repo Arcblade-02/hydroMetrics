@@ -24,6 +24,10 @@
 - Nash, J. E., and Sutcliffe, J. V. (1970) - rNSE/mNSE/wNSE/wsNSE lineage - Base NSE definition; weighted/modified/relative variants per hydrology literature (exact citations to refine). DOI/URL (TODO)
 - Standard model-evaluation references - ubRMSE - Unbiased RMSE from mean-removed anomaly differences. DOI/URL (TODO)
 - Standard least-squares references - ssq - Sum of squared errors objective `sum((sim - obs)^2)`. DOI/URL (TODO)
+- Gupta, H. V., Kling, H., Yilmaz, K. K., and Martinez, G. F. (2009) - KGE family baseline - Decomposition of NSE and KGE-style performance measures. DOI/URL (TODO)
+- KGE variant references (to refine) - KGEkm/KGElf/KGEnp - Common hydrology-practice variants for variability ratio, low-flow transform, and nonparametric components. DOI/URL (TODO)
+- Seasonal performance metric practice (to refine) - sKGE - Seasonal grouping implementation using monthly KGE averaging. DOI/URL (TODO)
+- Flow duration curve references (to refine) - pbiasfdc - Percent bias over FDC quantile grid (project-defined deterministic grid). DOI/URL (TODO)
 
 ## Placeholder Entries
 - Author (Year) - Metric(s) - DOI/URL (TODO)

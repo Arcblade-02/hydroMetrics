@@ -36,7 +36,7 @@
 - Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
 
 ## D-008: Core Metric Bootstrap Strategy
-- Decision: Core metrics (`nse`, `rmse`, `pbias`, `mae`, `mse`, `nrmse`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`) are lazily auto-registered on first registry/engine access.
+- Decision: Core metrics (`nse`, `rmse`, `pbias`, `mae`, `mse`, `nrmse`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `pbiasfdc`) are lazily auto-registered on first registry/engine access.
 - Status: Accepted
 - Notes: Public API remains stable and users can evaluate core metrics without manual registration.
 
@@ -84,3 +84,13 @@
 - Decision: `ubrmse` is anomaly-based RMSE and `ssq` is the sum of squared errors.
 - Status: Accepted
 - Notes: Both are standard error definitions used for compatibility coverage.
+
+## D-018: KGE Variant Definitions
+- Decision: `kgekm` uses `gamma = CV(sim)/CV(obs)` with standard KGE distance, `kgelf` applies KGE to `log1p`-transformed nonnegative flows, and `kgenp` uses Spearman/IQR/median components.
+- Status: Accepted
+- Notes: These are conservative clean-room variant definitions from common hydrology practice; citations remain marked for refinement.
+
+## D-019: Seasonal KGE and FDC Bias Choices
+- Decision: `skge` is defined as mean monthly KGE over `ts` inputs with frequency 12, and `pbiasfdc` uses exceedance quantile grid `p = 0.01..0.99`.
+- Status: Accepted
+- Notes: `skge` currently requires a monthly time index and errors for plain numeric vectors; `pbiasfdc` quantile-grid choice favors deterministic comparability and may be revisited after benchmark review.

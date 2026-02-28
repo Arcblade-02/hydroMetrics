@@ -28,3 +28,8 @@
 | wsNSE | Weighted-squared NSE variant | NSE family weighted variant using squared observation weights. | Implemented from explicit formula definition, no code copied. |
 | ubRMSE | Unbiased RMSE | Standard anomaly-based RMSE definition in model evaluation. | Implemented from mathematical definition (clean-room). |
 | ssq | Sum of squared errors | Standard least-squares objective definition. | Implemented from mathematical definition (clean-room). |
+| KGEkm | KGE variant with CV ratio | KGE-variant practice using gamma = CV(sim)/CV(obs); citation to refine. | Implemented from formula derivation only, no source code copied. |
+| KGElf | Low-flow transformed KGE | KGE low-flow variant using log-transformed nonnegative flows; citation to refine. | Implemented from formula derivation only, no source code copied. |
+| KGEnp | Nonparametric KGE | Nonparametric KGE variant using Spearman/IQR/median components; citation to refine. | Implemented from formula derivation only, no source code copied. |
+| sKGE | Seasonal KGE | Seasonal KGE averaging over monthly groups (project-defined implementation). | Implemented from formula derivation only, no source code copied. |
+| pbiasfdc | FDC percent bias | Flow duration curve bias over fixed quantile grid (project-defined deterministic formulation). | Implemented from formula derivation only, no source code copied. |

@@ -31,7 +31,12 @@ register_core_metrics <- function(registry) {
     core_metric_spec_wnse(),
     core_metric_spec_wsnse(),
     core_metric_spec_ubrmse(),
-    core_metric_spec_ssq()
+    core_metric_spec_ssq(),
+    core_metric_spec_kgekm(),
+    core_metric_spec_kgelf(),
+    core_metric_spec_kgenp(),
+    core_metric_spec_skge(),
+    core_metric_spec_pbiasfdc()
   )
 
   for (spec in specs) {

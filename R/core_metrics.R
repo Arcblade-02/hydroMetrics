@@ -622,3 +622,185 @@ core_metric_spec_mnse <- function() {
     tags = character()
   )
 }
+
+metric_kgekm <- function(sim, obs) {
+  mean_sim <- mean(sim)
+  mean_obs <- mean(obs)
+  sd_obs <- stats::sd(obs)
+
+  if (mean_sim == 0 || mean_obs == 0) {
+    stop("KGEkm undefined because mean(sim) == 0 or mean(obs) == 0.", call. = FALSE)
+  }
+  if (sd_obs == 0) {
+    stop("KGEkm undefined because sd(obs) == 0.", call. = FALSE)
+  }
+
+  r <- stats::cor(sim, obs)
+  if (is.na(r)) {
+    stop("KGEkm undefined because cor(sim, obs) is NA.", call. = FALSE)
+  }
+
+  cv_sim <- stats::sd(sim) / mean_sim
+  cv_obs <- sd_obs / mean_obs
+  gamma <- cv_sim / cv_obs
+  beta <- mean_sim / mean_obs
+
+  1 - sqrt((r - 1)^2 + (gamma - 1)^2 + (beta - 1)^2)
+}
+
+core_metric_spec_kgekm <- function() {
+  list(
+    id = "kgekm",
+    fun = metric_kgekm,
+    name = "KGE Modified Variability",
+    description = "KGE variant using gamma = CV(sim)/CV(obs) and beta = mean(sim)/mean(obs).",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "KGE variant definitions in hydrology practice using coefficient-of-variation ratio; citation to be refined.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}
+
+metric_kgelf <- function(sim, obs) {
+  if (any(sim < 0) || any(obs < 0)) {
+    stop("KGElf undefined because sim/obs contain negative values for low-flow log transform.", call. = FALSE)
+  }
+
+  sim_lf <- log1p(sim)
+  obs_lf <- log1p(obs)
+  if (stats::sd(obs_lf) == 0) {
+    stop("KGElf undefined because sd(log1p(obs)) == 0.", call. = FALSE)
+  }
+
+  metric_kge(sim_lf, obs_lf)
+}
+
+core_metric_spec_kgelf <- function() {
+  list(
+    id = "kgelf",
+    fun = metric_kgelf,
+    name = "KGE Low-Flow",
+    description = "Low-flow KGE using log1p-transformed series prior to KGE computation.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "KGE low-flow emphasis variants in hydrology practice; exact citation to be refined.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}
+
+metric_kgenp <- function(sim, obs) {
+  iqr_obs <- stats::IQR(obs)
+  median_obs <- stats::median(obs)
+
+  if (iqr_obs == 0) {
+    stop("KGEnp undefined because IQR(obs) == 0.", call. = FALSE)
+  }
+  if (median_obs == 0) {
+    stop("KGEnp undefined because median(obs) == 0.", call. = FALSE)
+  }
+
+  r <- stats::cor(sim, obs, method = "spearman")
+  if (is.na(r)) {
+    stop("KGEnp undefined because Spearman correlation is NA.", call. = FALSE)
+  }
+
+  alpha <- stats::IQR(sim) / iqr_obs
+  beta <- stats::median(sim) / median_obs
+
+  1 - sqrt((r - 1)^2 + (alpha - 1)^2 + (beta - 1)^2)
+}
+
+core_metric_spec_kgenp <- function() {
+  list(
+    id = "kgenp",
+    fun = metric_kgenp,
+    name = "KGE Nonparametric",
+    description = "Nonparametric KGE using Spearman correlation, IQR ratio, and median ratio.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "Nonparametric KGE formulations in hydrology practice; exact citation to be refined.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}
+
+metric_skge <- function(sim, obs) {
+  if (!inherits(sim, "ts") || !inherits(obs, "ts")) {
+    stop("sKGE requires ts inputs with monthly frequency for seasonal grouping.", call. = FALSE)
+  }
+  if (stats::frequency(sim) != 12 || stats::frequency(obs) != 12) {
+    stop("sKGE requires monthly ts inputs (frequency = 12).", call. = FALSE)
+  }
+
+  sim_month <- stats::cycle(sim)
+  obs_month <- stats::cycle(obs)
+  group_scores <- rep(NA_real_, 12)
+
+  for (m in 1:12) {
+    idx <- which(sim_month == m & obs_month == m)
+    if (length(idx) < 2) {
+      next
+    }
+    group_scores[m] <- tryCatch(
+      metric_kge(as.numeric(sim[idx]), as.numeric(obs[idx])),
+      error = function(e) NA_real_
+    )
+  }
+
+  if (all(is.na(group_scores))) {
+    stop("sKGE has no valid seasonal groups for KGE computation.", call. = FALSE)
+  }
+
+  mean(group_scores, na.rm = TRUE)
+}
+
+core_metric_spec_skge <- function() {
+  list(
+    id = "skge",
+    fun = metric_skge,
+    name = "Seasonal KGE",
+    description = "Seasonal KGE as mean monthly KGE over ts groups with frequency 12.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "Seasonal KGE variant definition implemented per project decision pending definitive citation.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}
+
+metric_pbiasfdc <- function(sim, obs) {
+  if (any(sim < 0) || any(obs < 0)) {
+    stop("pbiasfdc undefined because sim/obs contain negative values.", call. = FALSE)
+  }
+
+  p <- seq(0.01, 0.99, by = 0.01)
+  qobs <- stats::quantile(obs, probs = 1 - p, type = 7, names = FALSE)
+  qsim <- stats::quantile(sim, probs = 1 - p, type = 7, names = FALSE)
+
+  if (sum(qobs) == 0) {
+    stop("pbiasfdc undefined because sum(Qobs) == 0.", call. = FALSE)
+  }
+
+  100 * sum(qsim - qobs) / sum(qobs)
+}
+
+core_metric_spec_pbiasfdc <- function() {
+  list(
+    id = "pbiasfdc",
+    fun = metric_pbiasfdc,
+    name = "Percent Bias of Flow Duration Curve",
+    description = "PBIASFDC using exceedance-quantile grid p = 0.01..0.99.",
+    category = "bias",
+    perfect = 0,
+    range = NULL,
+    references = "Flow duration curve bias formulation implemented per project decision pending definitive citation.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}

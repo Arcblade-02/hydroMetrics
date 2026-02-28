@@ -13,6 +13,7 @@ MetricRegistry <- R6::R6Class(
         "id", "fun", "name", "description", "category",
         "perfect", "range", "references", "version_added"
       )
+      allowed_categories <- c("error", "efficiency", "bias", "correlation", "other")
 
       if (!is.list(spec)) {
         stop("`spec` must be a list.", call. = FALSE)
@@ -24,6 +25,10 @@ MetricRegistry <- R6::R6Class(
           sprintf("Missing required field(s): %s", paste(missing_fields, collapse = ", ")),
           call. = FALSE
         )
+      }
+
+      if (is.null(spec$tags)) {
+        spec$tags <- character()
       }
 
       if (!is.character(spec$id) || length(spec$id) != 1L || !nzchar(spec$id)) {
@@ -41,26 +46,40 @@ MetricRegistry <- R6::R6Class(
       if (!is.character(spec$category) || length(spec$category) != 1L || !nzchar(spec$category)) {
         stop("`spec$category` must be a non-empty character scalar.", call. = FALSE)
       }
+      if (!spec$category %in% allowed_categories) {
+        stop(
+          sprintf(
+            "`spec$category` must be one of: %s.",
+            paste(allowed_categories, collapse = ", ")
+          ),
+          call. = FALSE
+        )
+      }
       if (!is.numeric(spec$perfect) || length(spec$perfect) != 1L || is.na(spec$perfect)) {
         stop("`spec$perfect` must be a non-missing numeric scalar.", call. = FALSE)
       }
-      if (!is.null(spec$range)) {
-        if (!is.numeric(spec$range) || length(spec$range) != 2L || any(is.na(spec$range))) {
-          stop("`spec$range` must be NULL or a numeric vector of length 2.", call. = FALSE)
-        }
+      if (!is.null(spec$range) &&
+          (!is.numeric(spec$range) || length(spec$range) != 2L || anyNA(spec$range))) {
+        stop("`spec$range` must be NULL or a numeric vector of length 2.", call. = FALSE)
       }
-      if (!is.character(spec$references)) {
-        stop("`spec$references` must be a character vector.", call. = FALSE)
+      if (!is.character(spec$references) || length(spec$references) != 1L || !nzchar(spec$references)) {
+        stop("`spec$references` must be a non-empty character citation string.", call. = FALSE)
       }
       if (!is.character(spec$version_added) || length(spec$version_added) != 1L || !nzchar(spec$version_added)) {
         stop("`spec$version_added` must be a non-empty character scalar.", call. = FALSE)
       }
+      if (!grepl("^\\d+\\.\\d+\\.\\d+([.-][0-9A-Za-z]+)*$", spec$version_added)) {
+        stop("`spec$version_added` must follow a SemVer-like format (e.g., '0.1.0').", call. = FALSE)
+      }
+      if (!is.character(spec$tags)) {
+        stop("`spec$tags` must be a character vector.", call. = FALSE)
+      }
 
-      invisible(TRUE)
+      spec
     },
 
     register = function(spec) {
-      self$validate_spec(spec)
+      spec <- self$validate_spec(spec)
       if (self$exists(spec$id)) {
         stop(sprintf("Metric id '%s' is already registered.", spec$id), call. = FALSE)
       }
@@ -90,6 +109,7 @@ MetricRegistry <- R6::R6Class(
           range = character(0),
           references = character(0),
           version_added = character(0),
+          tags = character(0),
           stringsAsFactors = FALSE
         ))
       }
@@ -105,8 +125,9 @@ MetricRegistry <- R6::R6Class(
         range = vapply(specs, function(x) {
           if (is.null(x$range)) "" else paste(x$range, collapse = ",")
         }, character(1)),
-        references = vapply(specs, function(x) paste(x$references, collapse = "; "), character(1)),
+        references = vapply(specs, `[[`, character(1), "references"),
         version_added = vapply(specs, `[[`, character(1), "version_added"),
+        tags = vapply(specs, function(x) paste(x$tags, collapse = "; "), character(1)),
         stringsAsFactors = FALSE
       )
     },

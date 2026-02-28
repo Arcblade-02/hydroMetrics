@@ -29,3 +29,13 @@
 - Decision: Registry storage is environment-backed within `MetricRegistry`.
 - Status: Accepted
 - Notes: Environment storage provides straightforward uniqueness checks and lookup by id.
+
+## D-007: Registry Schema v1
+- Decision: All registered metrics must satisfy schema v1 metadata requirements.
+- Status: Accepted
+- Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
+
+## D-008: Core Metric Bootstrap Strategy
+- Decision: Core metrics (`nse`, `rmse`, `pbias`) are lazily auto-registered on first registry/engine access.
+- Status: Accepted
+- Notes: Public API remains stable and users can evaluate core metrics without manual registration.

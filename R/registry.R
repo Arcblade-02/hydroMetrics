@@ -1,29 +1,34 @@
 .hm_state <- new.env(parent = emptyenv())
 
-.register_default_metrics <- function(registry) {
-  if (!registry$exists("mse")) {
-    registry$register(list(
-      id = "mse",
-      fun = function(sim, obs) mean((sim - obs)^2),
-      name = "Mean Squared Error",
-      description = "Textbook mean squared error placeholder metric for architecture testing.",
-      category = "error",
-      perfect = 0,
-      range = c(0, Inf),
-      references = "TODO: add canonical MSE reference",
-      version_added = "0.1.0"
-    ))
+register_core_metrics <- function(registry) {
+  if (!inherits(registry, "MetricRegistry")) {
+    stop("`registry` must be a MetricRegistry instance.", call. = FALSE)
   }
+
+  specs <- list(
+    core_metric_spec_nse(),
+    core_metric_spec_rmse(),
+    core_metric_spec_pbias()
+  )
+
+  for (spec in specs) {
+    if (!registry$exists(spec$id)) {
+      registry$register(spec)
+    }
+  }
+
   invisible(TRUE)
 }
 
 .get_registry <- function() {
   if (!exists("registry", envir = .hm_state, inherits = FALSE)) {
     registry <- MetricRegistry$new()
-    .register_default_metrics(registry)
     assign("registry", registry, envir = .hm_state)
   }
-  get("registry", envir = .hm_state, inherits = FALSE)
+
+  registry <- get("registry", envir = .hm_state, inherits = FALSE)
+  register_core_metrics(registry)
+  registry
 }
 
 .get_engine <- function() {
@@ -36,7 +41,10 @@
 
 register_metric <- function(id, fun, name, description, references = NULL, tags = NULL) {
   if (is.null(references)) {
-    references <- "TODO: add reference"
+    references <- "User-defined metric (reference not provided)."
+  }
+  if (is.null(tags)) {
+    tags <- character()
   }
 
   spec <- list(
@@ -44,11 +52,12 @@ register_metric <- function(id, fun, name, description, references = NULL, tags 
     fun = fun,
     name = name,
     description = description,
-    category = if (is.null(tags) || length(tags) == 0L) "general" else as.character(tags[[1]]),
+    category = "other",
     perfect = 0,
     range = NULL,
-    references = as.character(references),
-    version_added = "0.1.0"
+    references = paste(as.character(references), collapse = "; "),
+    version_added = "0.1.0",
+    tags = as.character(tags)
   )
 
   .get_registry()$register(spec)

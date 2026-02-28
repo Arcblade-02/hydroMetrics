@@ -5,7 +5,7 @@ Generated on: 2026-02-28
 ## Target hydroGOF exports (checklist)
 - [ ] APFB
 - [x] br2
-- [ ] cp
+- [x] cp
 - [x] d
 - [x] dr
 - [x] ggof
@@ -30,7 +30,7 @@ Generated on: 2026-02-28
 - [ ] plot2
 - [ ] plotbands
 - [ ] plotbandsonly
-- [ ] preproc
+- [x] preproc
 - [x] R2
 - [x] rd
 - [ ] rfactor
@@ -44,7 +44,7 @@ Generated on: 2026-02-28
 - [x] sKGE
 - [x] ssq
 - [x] ubRMSE
-- [ ] valindex
+- [x] valindex
 - [x] VE
 - [x] wNSE
 - [x] wsNSE
@@ -54,6 +54,7 @@ Generated on: 2026-02-28
 | id | name | category | version_added | references |
 | --- | --- | --- | --- | --- |
 | br2 | Bias-Corrected R-squared | correlation | 0.1.0 | Project-defined bias-corrected R2 variant pending dedicated paper citation. |
+| cp | Coefficient of Persistence | efficiency | 0.1.0 | Persistence skill-score definition from hydrology model-evaluation literature. |
 | d | Willmott Index of Agreement | agreement | 0.1.0 | Willmott, C.J. (1981). On the validation of models. |
 | dr | Relative Absolute Index of Agreement | agreement | 0.1.0 | Willmott agreement-index family with relative absolute-error normalization. |
 | kge | Kling-Gupta Efficiency | efficiency | 0.1.0 | Kling, H., Fuchs, M., & Paulin, M. (2009). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. |
@@ -90,7 +91,6 @@ Generated on: 2026-02-28
 
 ## Missing items summary (auto)
 - APFB
-- cp
 - HFB
 - mNSeff
 - NSeff
@@ -98,8 +98,6 @@ Generated on: 2026-02-28
 - plot2
 - plotbands
 - plotbandsonly
-- preproc
 - rfactor
 - rNSeff
-- valindex
 - wsNSeff

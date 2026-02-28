@@ -28,6 +28,9 @@
 - KGE variant references (to refine) - KGEkm/KGElf/KGEnp - Common hydrology-practice variants for variability ratio, low-flow transform, and nonparametric components. DOI/URL (TODO)
 - Seasonal performance metric practice (to refine) - sKGE - Seasonal grouping implementation using monthly KGE averaging. DOI/URL (TODO)
 - Flow duration curve references (to refine) - pbiasfdc - Percent bias over FDC quantile grid (project-defined deterministic grid). DOI/URL (TODO)
+- Pearson, K. (classical statistics references) - rPearson - Pearson product-moment correlation coefficient. DOI/URL (TODO)
+- Spearman, C. (classical statistics references) - rSpearman - Spearman rank correlation coefficient. DOI/URL (TODO)
+- Project decision record - rSD - Ratio `sd(sim)/sd(obs)` for scale compatibility metric. DOI/URL (TODO)
 
 ## Placeholder Entries
 - Author (Year) - Metric(s) - DOI/URL (TODO)

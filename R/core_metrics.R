@@ -804,3 +804,72 @@ core_metric_spec_pbiasfdc <- function() {
     tags = character()
   )
 }
+
+metric_rpearson <- function(sim, obs) {
+  r <- suppressWarnings(stats::cor(sim, obs, method = "pearson"))
+  if (is.na(r)) {
+    stop("rPearson correlation undefined (constant series).", call. = FALSE)
+  }
+  r
+}
+
+core_metric_spec_rpearson <- function() {
+  list(
+    id = "rpearson",
+    fun = metric_rpearson,
+    name = "Pearson Correlation",
+    description = "Pearson product-moment correlation coefficient.",
+    category = "correlation",
+    perfect = 1,
+    range = c(-1, 1),
+    references = "Pearson correlation coefficient (standard statistical definition).",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}
+
+metric_rspearman <- function(sim, obs) {
+  r <- suppressWarnings(stats::cor(sim, obs, method = "spearman"))
+  if (is.na(r)) {
+    stop("rSpearman correlation undefined (constant series).", call. = FALSE)
+  }
+  r
+}
+
+core_metric_spec_rspearman <- function() {
+  list(
+    id = "rspearman",
+    fun = metric_rspearman,
+    name = "Spearman Correlation",
+    description = "Spearman rank correlation coefficient.",
+    category = "correlation",
+    perfect = 1,
+    range = c(-1, 1),
+    references = "Spearman rank correlation (standard statistical definition).",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}
+
+metric_rsd <- function(sim, obs) {
+  sd_obs <- stats::sd(obs)
+  if (sd_obs == 0) {
+    stop("rSD undefined because sd(obs) == 0.", call. = FALSE)
+  }
+  stats::sd(sim) / sd_obs
+}
+
+core_metric_spec_rsd <- function() {
+  list(
+    id = "rsd",
+    fun = metric_rsd,
+    name = "Standard Deviation Ratio",
+    description = "rSD computed as sd(sim) / sd(obs).",
+    category = "scale",
+    perfect = 1,
+    range = c(0, Inf),
+    references = "Project definition for hydrology compatibility: ratio of simulated to observed standard deviation.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}

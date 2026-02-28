@@ -3,6 +3,8 @@
 S3method(as.data.frame,hm_result)
 S3method(print,hm_result)
 export(evaluate_metrics)
+export(ggof)
+export(gof)
 export(get_metric)
 export(list_metrics)
 export(register_metric)

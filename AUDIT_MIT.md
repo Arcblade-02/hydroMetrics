@@ -33,3 +33,6 @@
 | KGEnp | Nonparametric KGE | Nonparametric KGE variant using Spearman/IQR/median components; citation to refine. | Implemented from formula derivation only, no source code copied. |
 | sKGE | Seasonal KGE | Seasonal KGE averaging over monthly groups (project-defined implementation). | Implemented from formula derivation only, no source code copied. |
 | pbiasfdc | FDC percent bias | Flow duration curve bias over fixed quantile grid (project-defined deterministic formulation). | Implemented from formula derivation only, no source code copied. |
+| rPearson | Statistical correlation definition | Pearson correlation coefficient (standard statistical definition). | Implemented from statistical definition only, no source code copied. |
+| rSpearman | Statistical rank-correlation definition | Spearman rank correlation (standard statistical definition). | Implemented from statistical definition only, no source code copied. |
+| rSD | Scale-ratio definition | Project-defined ratio `sd(sim)/sd(obs)` for compatibility. | Implemented from explicit formula definition, no source code copied. |

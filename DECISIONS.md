@@ -36,7 +36,7 @@
 - Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
 
 ## D-008: Core Metric Bootstrap Strategy
-- Decision: Core metrics (`nse`, `rmse`, `pbias`, `mae`, `mse`, `nrmse`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `pbiasfdc`, `rpearson`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
+- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `pbiasfdc`, `rpearson`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
 - Status: Accepted
 - Notes: Public API remains stable and users can evaluate core metrics without manual registration.
 
@@ -109,3 +109,8 @@
 - Decision: `cp` is defined as `1 - sum((obs_t - sim_t)^2)/sum((obs_t - obs_{t-1})^2)` on aligned `t = 2..n`; `preproc(keep = "pairwise")` currently uses the same complete-case row filter as `keep = "complete"`; `valindex` is a project-defined weighted aggregate of normalized `gof()` metrics.
 - Status: Accepted
 - Notes: `cp` errors when persistence denominator is zero or length < 2. `valindex` v1 supports `NSE`, `KGE`, `rmse`, `pbias`, and `rPearson` with fixed normalization transforms and returns scalar (single series) or `1 x n` matrix (multi-series).
+
+## D-023: Batch 8B pfactor/rfactor Definitions
+- Decision: `rfactor` is defined as `mean(abs(sim - obs)) / mean(abs(obs))` and `pfactor` is defined as the proportion where `abs(sim - obs) <= tol * abs(obs)`, with `obs == 0` handled by absolute threshold `tol`.
+- Status: Accepted
+- Notes: `rfactor` requires at least one non-missing paired value and errors when `mean(abs(obs)) == 0`. `pfactor` requires `tol >= 0` and at least one non-missing paired value; default `tol` is `0.10`.

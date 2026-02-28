@@ -34,6 +34,8 @@
 - Persistence-skill hydrology references (to refine) - cp - Coefficient of persistence against one-step observed persistence baseline. DOI/URL (TODO)
 - Project helper definition - preproc - Deterministic preprocessing helper for NA filtering and aligned input coercion prior to metric evaluation. DOI/URL (TODO)
 - Project definition record - valindex - Weighted normalized aggregate over selected gof metrics (v1 project-defined normalization). DOI/URL (TODO)
+- SWAT uncertainty-analysis literature context - pfactor/rfactor - P-factor and R-factor terminology are widely used for calibration/uncertainty diagnostics; this package uses explicit clean-room compatibility definitions recorded in DECISIONS.md. DOI/URL (TODO)
+- Project definition record - pfactor/rfactor - `pfactor` tolerance-band hit proportion and `rfactor` MAE normalized by `mean(abs(obs))` for deterministic single-series compatibility. DOI/URL (TODO)
 
 ## Placeholder Entries
 - Author (Year) - Metric(s) - DOI/URL (TODO)

@@ -39,3 +39,5 @@
 | cp | Persistence skill-score formula | Persistence-skill definition from hydrology model-evaluation literature (citation to refine). | Implemented from explicit mathematical definition, no upstream code copied. |
 | preproc | Deterministic preprocessing policy | Project-defined preprocessing helper behavior for aligned NA filtering and coercion. | Implemented from project specification, no upstream code copied. |
 | valindex | Project-defined aggregation formula | Project-defined normalized weighted aggregate over selected metrics (`NSE`, `KGE`, `rmse`, `pbias`, `rPearson`). | Implemented from transparent mathematical transforms, no upstream code copied. |
+| pfactor | Tolerance-band hit proportion | Project-defined compatibility pfactor with clean-room tolerance policy (`tol * abs(obs)`; absolute `tol` when `obs == 0`). | Implemented from explicit mathematical definition, no upstream code copied. |
+| rfactor | Normalized absolute error ratio | Project-defined compatibility rfactor as `mean(abs(sim - obs)) / mean(abs(obs))`. | Implemented from explicit mathematical definition, no upstream code copied. |

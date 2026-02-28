@@ -10,6 +10,8 @@ register_core_metrics <- function(registry) {
     core_metric_spec_rmse(),
     core_metric_spec_pbias(),
     core_metric_spec_cp(),
+    core_metric_spec_pfactor(),
+    core_metric_spec_rfactor(),
     core_metric_spec_mae(),
     core_metric_spec_mse(),
     core_metric_spec_nrmse(),

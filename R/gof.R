@@ -5,6 +5,8 @@
     "rmse" = "rmse",
     "pbias" = "pbias",
     "cp" = "cp",
+    "pfactor" = "pfactor",
+    "rfactor" = "rfactor",
     "mae" = "mae",
     "mse" = "mse",
     "r2" = "r2",

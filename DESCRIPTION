@@ -1,4 +1,4 @@
-﻿Package: hydroMetrics
+Package: hydroMetrics
 Title: Clean-Room Hydrological Evaluation Metrics
 Version: 0.1.0
 Authors@R:
@@ -7,11 +7,15 @@ Description: Clean-room MIT package for hydrological evaluation metrics,
     with reproducible definitions and implementation-ready scaffolding.
 License: MIT + file LICENSE
 Encoding: UTF-8
+Imports:
+    R6 (>= 2.5.1)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Suggests:
     testthat (>= 3.0.0),
     covr,
+    ggplot2,
     knitr,
-    rmarkdown
+    rmarkdown,
+    zoo
 Config/testthat/edition: 3

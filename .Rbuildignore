@@ -1,3 +1,10 @@
 ^hydroMetrics\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^\.github$
+^notes$
+^tmp_desc_check\.R$
+^AUDIT_MIT\.md$
+^CLEAN_ROOM_POLICY\.md$
+^COMPATIBILITY_TRACKER\.md$
+^DECISIONS\.md$

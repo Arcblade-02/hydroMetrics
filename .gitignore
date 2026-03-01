@@ -4,3 +4,11 @@
 .httr-oauth
 .DS_Store
 .quarto
+# Do not commit run outputs / logs
+notes/*.txt
+notes/phase*_test.txt
+
+# R build artifacts
+*.tar.gz
+*.Rcheck/
+

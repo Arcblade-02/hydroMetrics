@@ -3,3 +3,4 @@
 S3method(as.data.frame,hm_result)
 S3method(print,hm_result)
 export(hm_result)
+importFrom(R6,R6Class)

@@ -37,7 +37,7 @@
 .gof_resolve_methods <- function(requested) {
   available <- .get_registry()$list()
   available_ids <- as.character(available$id)
-  available_map <- setNames(available_ids, tolower(available_ids))
+  available_map <- stats::setNames(available_ids, tolower(available_ids))
 
   alias <- available_map
   extra_alias <- .gof_alias_map()

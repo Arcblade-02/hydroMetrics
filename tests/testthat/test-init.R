@@ -1,3 +1,3 @@
-﻿test_that("initial scaffold passes", {
+test_that("initial scaffold passes", {
   expect_true(TRUE)
 })

@@ -89,6 +89,21 @@
   list(type = "multi", sim = x_mat, obs = y_mat, series_names = series_names)
 }
 
+#' Compute Hydrological Goodness-of-Fit Metrics
+#'
+#' Computes one or more registered metrics for simulated (`sim`) and observed (`obs`) values.
+#'
+#' @param sim Numeric simulated values; a vector for a single series or a matrix/data.frame/ts/zoo for multiple series.
+#' @param obs Numeric observed values with the same shape as `sim`.
+#' @param fun Optional metric name(s), kept for hydroGOF compatibility.
+#' @param methods Metric name(s) to evaluate. If both `methods` and `fun` are `NULL`, default methods are used.
+#' @param ... Additional arguments reserved for compatibility.
+#'
+#' @details Argument order is `sim, obs` (simulation first, observation second).
+#'
+#' @return For single-series input, a named numeric vector. For multi-series input, a numeric matrix
+#'   with metrics in rows and series in columns.
+#' @export
 gof <- function(sim, obs, fun = NULL, methods = NULL, ...) {
   available_ids <- as.character(.get_registry()$list()$id)
   available_alias <- .gof_alias_map()

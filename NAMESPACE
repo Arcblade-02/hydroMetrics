@@ -2,5 +2,7 @@
 
 S3method(as.data.frame,hm_result)
 S3method(print,hm_result)
+export(ggof)
+export(gof)
 export(hm_result)
 importFrom(R6,R6Class)

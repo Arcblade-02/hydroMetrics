@@ -15,6 +15,7 @@ Suggests:
     testthat (>= 3.0.0),
     covr,
     ggplot2,
+    hydroGOF,
     knitr,
     rmarkdown,
     zoo

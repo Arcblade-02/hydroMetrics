@@ -129,3 +129,8 @@
 - Decision: Add `NSeff`, `mNSeff`, `rNSeff`, and `wsNSeff` as thin compatibility wrappers that route to existing metric ids (`nse`, `mnse`, `rnse`, `wsnse`) through `gof()`.
 - Status: Accepted
 - Notes: No new NSE-family formulas were introduced, and no NA handling was added to metric bodies. Wrapper behavior fully inherits existing implementation guards, including the `rNSeff` zero-observation policy from `rnse` (`obs == 0` is invalid and errors deterministically).
+
+## D-027: Phase 2B Batch 4A APFB/HFB Modern Scalar Exports
+- Decision: Add `APFB` and `HFB` as clean-room compatibility exports that must call `preproc()` and return numerically coercible S3 scalars with class `c("hydro_metric_scalar", "numeric")`.
+- Status: Accepted
+- Notes: `APFB` requires indexed zoo/xts input, aggregates annual maxima by calendar year, requires at least two years, and errors when any annual `obs_peak == 0`; invalid denominator states return `NA` with warning. `HFB` uses deterministic high-flow threshold `quantile(obs, probs = threshold_prob, type = 7)` (default `0.9`), requires at least three selected points, and returns `NA` with warning when `sum(obs_high) == 0`. Both metrics keep NA/alignment handling centralized via `preproc()` and attach metadata (`n_obs`, metric-specific `meta`, and call).

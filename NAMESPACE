@@ -2,6 +2,8 @@
 
 S3method(as.data.frame,hm_result)
 S3method(print,hm_result)
+export(APFB)
+export(HFB)
 export(NSeff)
 export(alpha)
 export(beta)

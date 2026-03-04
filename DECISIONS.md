@@ -124,3 +124,8 @@
 - Decision: Add clean-room parity metrics `beta`, `alpha`, and `r` as explicit KGE components, with wrappers routed through the Phase 2A preprocessing pipeline.
 - Status: Accepted
 - Notes: `beta = mean(sim)/mean(obs)` requires at least one value and `mean(obs) != 0` (`"mean(obs) is zero; beta undefined"`). `alpha = sd(sim)/sd(obs)` requires at least two values and `sd(obs) > 0` (`"sd(obs) is zero; alpha undefined"`). `r = cor(sim, obs, method = "pearson")` requires at least two values and fails on zero-variance inputs (`"zero variance; correlation undefined"`). No NA/transform logic is implemented in metric bodies.
+
+## D-026: Phase 2B Batch 3 Legacy NSE Alias Exports
+- Decision: Add `NSeff`, `mNSeff`, `rNSeff`, and `wsNSeff` as thin compatibility wrappers that route to existing metric ids (`nse`, `mnse`, `rnse`, `wsnse`) through `gof()`.
+- Status: Accepted
+- Notes: No new NSE-family formulas were introduced, and no NA handling was added to metric bodies. Wrapper behavior fully inherits existing implementation guards, including the `rNSeff` zero-observation policy from `rnse` (`obs == 0` is invalid and errors deterministically).

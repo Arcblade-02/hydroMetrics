@@ -44,3 +44,7 @@
 | valindex | Project-defined aggregation formula | Project-defined normalized weighted aggregate over selected metrics (`NSE`, `KGE`, `rmse`, `pbias`, `rPearson`). | Implemented from transparent mathematical transforms, no upstream code copied. |
 | pfactor | Tolerance-band hit proportion | Project-defined compatibility pfactor with clean-room tolerance policy (`tol * abs(obs)`; absolute `tol` when `obs == 0`). | Implemented from explicit mathematical definition, no upstream code copied. |
 | rfactor | Normalized absolute error ratio | Project-defined compatibility rfactor as `mean(abs(sim - obs)) / mean(abs(obs))`. | Implemented from explicit mathematical definition, no upstream code copied. |
+| NSeff | Legacy compatibility alias | Alias-only mapping to existing `nse` implementation. | Wrapper-only export via existing clean-room preprocessing/engine path; no new formula or copied code. |
+| mNSeff | Legacy compatibility alias | Alias-only mapping to existing `mnse` implementation. | Wrapper-only export via existing clean-room preprocessing/engine path; no new formula or copied code. |
+| rNSeff | Legacy compatibility alias | Alias-only mapping to existing `rnse` implementation. | Wrapper-only export via existing clean-room preprocessing/engine path; zero-observation policy inherited from `rnse` (`obs == 0` invalid). |
+| wsNSeff | Legacy compatibility alias | Alias-only mapping to existing `wsnse` implementation. | Wrapper-only export via existing clean-room preprocessing/engine path; no custom weighted formula introduced. |

@@ -3,6 +3,8 @@ Title: Clean-Room Hydrological Evaluation Metrics
 Version: 0.1.0
 Authors@R:
     person("hydroMetrics Authors", "Team", email = "maintainers@example.com", role = c("aut", "cre"))
+Author: hydroMetrics Authors Team [aut]
+Maintainer: hydroMetrics Authors Team <maintainers@example.com>
 Description: Clean-room MIT package for hydrological evaluation metrics,
     with reproducible definitions and implementation-ready scaffolding.
 License: MIT + file LICENSE

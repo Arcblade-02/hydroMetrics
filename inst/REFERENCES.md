@@ -22,6 +22,7 @@
 - Agreement-index relative formulations (project-selected variants) - dr - Relative absolute-error agreement using observation normalization. DOI/URL (TODO)
 - Project decision record - br2 - Bias-corrected R2 defined as bias-penalized Pearson correlation squared. DOI/URL (TODO)
 - Nash, J. E., and Sutcliffe, J. V. (1970) - rNSE/mNSE/wNSE/wsNSE lineage - Base NSE definition; weighted/modified/relative variants per hydrology literature (exact citations to refine). DOI/URL (TODO)
+- hydroGOF compatibility surface (documentation-only reference) - NSeff/mNSeff/rNSeff/wsNSeff - Legacy export names mapped to existing clean-room NSE-family implementations in this package. DOI/URL (TODO)
 - Standard model-evaluation references - ubRMSE - Unbiased RMSE from mean-removed anomaly differences. DOI/URL (TODO)
 - Standard least-squares references - ssq - Sum of squared errors objective `sum((sim - obs)^2)`. DOI/URL (TODO)
 - Gupta, H. V., Kling, H., Yilmaz, K. K., and Martinez, G. F. (2009) - KGE family baseline - Decomposition of NSE and KGE-style performance measures. DOI/URL (TODO)

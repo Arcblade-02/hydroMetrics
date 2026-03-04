@@ -53,6 +53,8 @@ Generated on: 2026-03-04
 ## Implemented metrics table (auto)
 | id | name | category | version_added | references |
 | --- | --- | --- | --- | --- |
+| alpha | Variability Ratio | scale | 0.1.0 | KGE component definition in hydrology literature using variability ratio sd(sim)/sd(obs). |
+| beta | Bias Ratio | bias | 0.1.0 | KGE component definition in hydrology literature using bias ratio mean(sim)/mean(obs). |
 | br2 | Bias-Corrected R-squared | correlation | 0.1.0 | Project-defined bias-corrected R2 variant pending dedicated paper citation. |
 | cp | Coefficient of Persistence | efficiency | 0.1.0 | Persistence skill-score definition from hydrology model-evaluation literature. |
 | d | Willmott Index of Agreement | agreement | 0.1.0 | Willmott, C.J. (1981). On the validation of models. |

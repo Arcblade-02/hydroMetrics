@@ -1,0 +1,15 @@
+SECTION 3 - MATRIX SCALING TEST (n=50000, m=20)
+Generated: 2026-03-05 00:21:28 +0530
+
+m=10 timing:
+user: 0.040000
+system: 0.000000
+elapsed: 0.050000
+
+m=20 timing:
+user: 0.100000
+system: 0.000000
+elapsed: 0.110000
+
+elapsed_ratio_m20_to_m10: 2.200000
+linear_scaling_confirmed: TRUE

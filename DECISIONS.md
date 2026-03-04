@@ -36,7 +36,7 @@
 - Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
 
 ## D-008: Core Metric Bootstrap Strategy
-- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `pbiasfdc`, `rpearson`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
+- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `beta`, `alpha`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `pbiasfdc`, `rpearson`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
 - Status: Accepted
 - Notes: Public API remains stable and users can evaluate core metrics without manual registration.
 
@@ -119,3 +119,8 @@
 - Decision: `rsr`, `pbias`, and `mae` use explicit clean-room formulas with deterministic edge policies and wrappers routed through the Phase 2A preprocessing pipeline.
 - Status: Accepted
 - Notes: `rsr = RMSE/sd(obs)` requires at least two paired values and `sd(obs) > 0` (`"sd(obs) is zero; RSR undefined"`). `pbias = 100 * sum(sim - obs)/sum(obs)` requires `sum(obs) != 0` (`"sum(obs) is zero; PBIAS undefined"`). `mae = mean(abs(sim - obs))` requires at least one paired value. Metrics remain NA-free/transform-free and rely on preprocessing for alignment, NA strategy, and transformations.
+
+## D-025: Phase 2B Batch 2 KGE Component Metrics (beta/alpha/r)
+- Decision: Add clean-room parity metrics `beta`, `alpha`, and `r` as explicit KGE components, with wrappers routed through the Phase 2A preprocessing pipeline.
+- Status: Accepted
+- Notes: `beta = mean(sim)/mean(obs)` requires at least one value and `mean(obs) != 0` (`"mean(obs) is zero; beta undefined"`). `alpha = sd(sim)/sd(obs)` requires at least two values and `sd(obs) > 0` (`"sd(obs) is zero; alpha undefined"`). `r = cor(sim, obs, method = "pearson")` requires at least two values and fails on zero-variance inputs (`"zero variance; correlation undefined"`). No NA/transform logic is implemented in metric bodies.

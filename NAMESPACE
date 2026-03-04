@@ -2,8 +2,11 @@
 
 S3method(as.data.frame,hm_result)
 S3method(print,hm_result)
+export(alpha)
+export(beta)
 export(hm_result)
 export(mae)
 export(pbias)
+export(r)
 export(rsr)
 importFrom(R6,R6Class)

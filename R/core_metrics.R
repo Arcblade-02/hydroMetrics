@@ -247,6 +247,62 @@ core_metric_spec_nrmse <- function() {
   )
 }
 
+metric_beta <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("beta requires at least 1 value.", call. = FALSE)
+  }
+
+  obs_mean <- mean(obs)
+  if (obs_mean == 0) {
+    stop("mean(obs) is zero; beta undefined", call. = FALSE)
+  }
+
+  mean(sim) / obs_mean
+}
+
+core_metric_spec_beta <- function() {
+  list(
+    id = "beta",
+    fun = metric_beta,
+    name = "Bias Ratio",
+    description = "Beta component computed as mean(sim) / mean(obs).",
+    category = "bias",
+    perfect = 1,
+    range = c(-Inf, Inf),
+    references = "KGE component definition in hydrology literature using bias ratio mean(sim)/mean(obs).",
+    version_added = "0.1.0",
+    tags = c("kge-component")
+  )
+}
+
+metric_alpha <- function(sim, obs) {
+  if (length(obs) < 2L) {
+    stop("alpha requires at least 2 values.", call. = FALSE)
+  }
+
+  obs_sd <- stats::sd(obs)
+  if (obs_sd == 0) {
+    stop("sd(obs) is zero; alpha undefined", call. = FALSE)
+  }
+
+  stats::sd(sim) / obs_sd
+}
+
+core_metric_spec_alpha <- function() {
+  list(
+    id = "alpha",
+    fun = metric_alpha,
+    name = "Variability Ratio",
+    description = "Alpha component computed as sd(sim) / sd(obs).",
+    category = "scale",
+    perfect = 1,
+    range = c(0, Inf),
+    references = "KGE component definition in hydrology literature using variability ratio sd(sim)/sd(obs).",
+    version_added = "0.1.0",
+    tags = c("kge-component")
+  )
+}
+
 validate_non_constant_series <- function(sim, obs, metric_id) {
   sd_sim <- stats::sd(sim)
   sd_obs <- stats::sd(obs)
@@ -257,8 +313,15 @@ validate_non_constant_series <- function(sim, obs, metric_id) {
 }
 
 metric_r <- function(sim, obs) {
-  validate_non_constant_series(sim, obs, "R")
-  stats::cor(sim, obs)
+  if (length(obs) < 2L) {
+    stop("r requires at least 2 values.", call. = FALSE)
+  }
+
+  if (stats::sd(sim) == 0 || stats::sd(obs) == 0) {
+    stop("zero variance; correlation undefined", call. = FALSE)
+  }
+
+  stats::cor(sim, obs, method = "pearson")
 }
 
 core_metric_spec_r <- function() {

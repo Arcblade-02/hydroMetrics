@@ -1,15 +1,13 @@
-validate_non_constant_series <- function(sim, obs, metric_id) {
-  sd_sim <- stats::sd(sim)
-  sd_obs <- stats::sd(obs)
-
-  if (is.na(sd_sim) || is.na(sd_obs) || sd_sim == 0 || sd_obs == 0) {
-    stop(sprintf("%s is undefined for constant series.", metric_id), call. = FALSE)
-  }
-}
-
 metric_r <- function(sim, obs) {
-  validate_non_constant_series(sim, obs, "R")
-  stats::cor(sim, obs)
+  if (length(obs) < 2L) {
+    stop("r requires at least 2 values.", call. = FALSE)
+  }
+
+  if (stats::sd(sim) == 0 || stats::sd(obs) == 0) {
+    stop("zero variance; correlation undefined", call. = FALSE)
+  }
+
+  stats::cor(sim, obs, method = "pearson")
 }
 
 core_metric_spec_r <- function() {

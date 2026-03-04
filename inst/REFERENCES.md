@@ -41,6 +41,7 @@
 - Batch 1 parity policy record - rsr/pbias/mae - Explicit clean-room edge policies: `rsr = RMSE/sd(obs)` (requires `n >= 2`, `sd(obs) > 0`), `pbias = 100 * sum(sim - obs)/sum(obs)` (requires `sum(obs) != 0`), and `mae = mean(abs(sim - obs))` (requires `n >= 1`). DOI/URL (TODO)
 - High-flow diagnostic literature context (to refine) - APFB/HFB - Annual-peak and high-flow bias diagnostics implemented as clean-room compatibility exports with deterministic year/quantile policies. DOI/URL (TODO)
 - Orchestration compatibility record (project decision) - preproc/gof/ggof/valindex - Modern clean-room orchestration wrappers over preprocessing and registered metrics with structured S3 return contracts. DOI/URL (TODO)
+- Phase 2C architecture record - metric engine consolidation - Canonical single-tree metric implementation and registry-only dispatch policy with duplicate-tree removal. DOI/URL (TODO)
 
 ## Placeholder Entries
 - Author (Year) - Metric(s) - DOI/URL (TODO)

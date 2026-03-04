@@ -1,36 +1,27 @@
 pfactor <- function(sim, obs, tol = 0.10, na.rm = TRUE, ...) {
-  if (.hm_is_numeric_vector(sim) && .hm_is_numeric_vector(obs)) {
-    processed <- preproc(
-      sim = sim,
-      obs = obs,
-      na_strategy = if (isTRUE(na.rm)) "remove" else "fail",
-      ...
-    )
-    return(compute_pfactor(processed$sim, processed$obs, tol = tol, na.rm = FALSE))
+  dots <- list(...)
+  metric_params <- dots$metric_params
+  if (is.null(metric_params)) {
+    metric_params <- list()
   }
-
-  sim_mat <- as.matrix(sim)
-  obs_mat <- as.matrix(obs)
-  if (!is.numeric(sim_mat) || !is.numeric(obs_mat) || !all(dim(sim_mat) == dim(obs_mat))) {
-    stop("`sim` and `obs` must be numeric and have matching dimensions.", call. = FALSE)
+  pfactor_params <- metric_params$pfactor
+  if (is.null(pfactor_params)) {
+    pfactor_params <- list()
   }
+  pfactor_params$tol <- tol
+  metric_params$pfactor <- pfactor_params
+  dots$metric_params <- metric_params
 
-  values <- vapply(seq_len(ncol(sim_mat)), function(j) {
-    processed <- preproc(
-      sim = sim_mat[, j],
-      obs = obs_mat[, j],
-      na_strategy = if (isTRUE(na.rm)) "remove" else "fail",
-      ...
+  out <- do.call(
+    gof,
+    c(
+      list(sim = sim, obs = obs, methods = "pfactor", na.rm = na.rm),
+      dots
     )
-    compute_pfactor(processed$sim, processed$obs, tol = tol, na.rm = FALSE)
-  }, numeric(1))
-
+  )
+  values <- out$pfactor
   if (length(values) == 1L) {
-    return(as.numeric(values[[1]]))
-  }
-
-  if (!is.null(colnames(sim_mat))) {
-    names(values) <- colnames(sim_mat)
+    return(as.numeric(values))
   }
   values
 }

@@ -1,10 +1,3 @@
-.hm_scalar_preproc_args <- function(dots) {
-  dots[["as"]] <- NULL
-  dots[["drop"]] <- NULL
-  dots[["keep"]] <- NULL
-  dots
-}
-
 .hm_scalar_na_method <- function(dots) {
   if (!is.null(dots$na_strategy)) {
     return(as.character(dots$na_strategy[[1]]))
@@ -20,6 +13,27 @@
   if (isTRUE(na_rm)) "remove" else "keep"
 }
 
+.hm_scalar_sanitize_dots <- function(dots) {
+  dots[["as"]] <- NULL
+  dots[["drop"]] <- NULL
+  dots[["keep"]] <- NULL
+  dots
+}
+
+.hm_merge_metric_params <- function(dots, metric_id, params) {
+  metric_params <- dots$metric_params
+  if (is.null(metric_params)) {
+    metric_params <- list()
+  }
+  existing <- metric_params[[metric_id]]
+  if (is.null(existing)) {
+    existing <- list()
+  }
+  metric_params[[metric_id]] <- utils::modifyList(existing, params)
+  dots$metric_params <- metric_params
+  dots
+}
+
 .new_hydro_metric_scalar <- function(value, metric, n_obs, meta, call) {
   structure(
     as.numeric(value),
@@ -33,7 +47,7 @@
 
 .extract_calendar_year <- function(index) {
   years <- suppressWarnings(as.integer(format(as.POSIXlt(index, tz = "UTC"), "%Y")))
-  if (anyNA(years)) {
+  if (any(!is.finite(years))) {
     stop("APFB could not derive calendar year from the time index.", call. = FALSE)
   }
   years
@@ -57,54 +71,25 @@ APFB <- function(sim, obs, ...) {
     stop("APFB requires univariate zoo/xts inputs.", call. = FALSE)
   }
 
-  sim_index <- zoo::index(sim)
-  obs_index <- zoo::index(obs)
-  aligned <- identical(sim_index, obs_index)
-
-  dots <- list(...)
+  aligned <- identical(zoo::index(sim), zoo::index(obs))
+  dots <- .hm_scalar_sanitize_dots(list(...))
   na_method <- .hm_scalar_na_method(dots)
-  dots <- .hm_scalar_preproc_args(dots)
 
-  prepared <- do.call(
-    preproc,
+  out <- do.call(
+    gof,
     c(
-      list(
-        sim = sim,
-        obs = obs
-      ),
+      list(sim = sim, obs = obs, methods = "apfb"),
       dots
     )
   )
 
-  n_obs <- as.integer(length(prepared$sim))
-  sim_used <- as.numeric(prepared$sim)
-  obs_used <- as.numeric(prepared$obs)
-  years_used <- .extract_calendar_year(prepared$index)
-  n_years <- length(unique(years_used))
-  if (n_years < 2L) {
-    stop("APFB requires at least 2 years after preprocessing.", call. = FALSE)
-  }
-
-  sim_peak <- tapply(sim_used, years_used, max)
-  obs_peak <- tapply(obs_used, years_used, max)
-  if (any(obs_peak == 0)) {
-    stop("APFB is undefined because annual observed peak includes zero.", call. = FALSE)
-  }
-
-  ratios <- (sim_peak - obs_peak) / obs_peak
-  value <- if (length(ratios) == 0L || any(!is.finite(ratios))) {
-    warning("APFB denominator invalid; returning NA.", call. = FALSE)
-    NA_real_
-  } else {
-    mean(ratios) * 100
-  }
-
+  years <- length(unique(.extract_calendar_year(out$meta$index)))
   .new_hydro_metric_scalar(
-    value = value,
+    value = out$apfb,
     metric = "APFB",
-    n_obs = n_obs,
+    n_obs = out$n_obs,
     meta = list(
-      years = as.integer(n_years),
+      years = as.integer(years),
       aligned = isTRUE(aligned),
       na_method = na_method
     ),

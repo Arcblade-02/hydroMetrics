@@ -26,7 +26,9 @@
     "kgelf" = "kgelf",
     "kgenp" = "kgenp",
     "skge" = "skge",
-    "pbiasfdc" = "pbiasfdc"
+    "pbiasfdc" = "pbiasfdc",
+    "apfb" = "apfb",
+    "hfb" = "hfb"
   )
 }
 
@@ -217,6 +219,17 @@
   )
 }
 
+.gof_runtime_metric_calls <- function(metric_calls, payload) {
+  lapply(metric_calls, function(call) {
+    params <- call$params
+    if (identical(call$id, "apfb") && is.null(params$index)) {
+      params$index <- payload$index
+    }
+    call$params <- params
+    call
+  })
+}
+
 gof <- function(sim,
                 obs,
                 methods = NULL,
@@ -286,7 +299,8 @@ gof <- function(sim,
       epsilon = epsilon,
       epsilon_factor = epsilon_factor
     )
-    out <- engine$evaluate(payload$sim, payload$obs, metric_calls)
+    runtime_calls <- .gof_runtime_metric_calls(metric_calls, payload)
+    out <- engine$evaluate(payload$sim, payload$obs, runtime_calls)
     vals <- as.numeric(out$value)
     names(vals) <- resolved$labels
 
@@ -298,7 +312,14 @@ gof <- function(sim,
           transform = transform,
           na_strategy = na_strategy,
           epsilon_mode = epsilon_mode,
-          components = isTRUE(components)
+          components = isTRUE(components),
+          n_original = as.integer(payload$n_original),
+          n_aligned = as.integer(payload$n_aligned),
+          n_removed_na = as.integer(payload$n_removed_na),
+          aligned = isTRUE(payload$n_original == payload$n_aligned),
+          index = payload$index,
+          sim_used = payload$sim,
+          obs_used = payload$obs
         ),
         call = match.call()
       )
@@ -324,7 +345,8 @@ gof <- function(sim,
       epsilon = epsilon,
       epsilon_factor = epsilon_factor
     )
-    out <- engine$evaluate(payload$sim, payload$obs, metric_calls)
+    runtime_calls <- .gof_runtime_metric_calls(metric_calls, payload)
+    out <- engine$evaluate(payload$sim, payload$obs, runtime_calls)
     metrics_mat[, j] <- as.numeric(out$value)
     n_obs[[j]] <- as.integer(length(payload$sim))
   }

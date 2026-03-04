@@ -94,21 +94,9 @@ core_metric_spec_cp <- function() {
   )
 }
 
-compute_rfactor <- function(sim, obs, na.rm = TRUE) {
-  if (!is.logical(na.rm) || length(na.rm) != 1L || is.na(na.rm)) {
-    stop("`na.rm` must be TRUE or FALSE.", call. = FALSE)
-  }
-
-  if (na.rm) {
-    keep <- stats::complete.cases(sim, obs)
-    sim <- sim[keep]
-    obs <- obs[keep]
-  } else if (anyNA(sim) || anyNA(obs)) {
-    stop("rfactor input contains NA values; set `na.rm = TRUE` to remove missing pairs.", call. = FALSE)
-  }
-
+compute_rfactor <- function(sim, obs) {
   if (length(sim) == 0L) {
-    stop("rfactor requires at least 1 non-NA paired value.", call. = FALSE)
+    stop("rfactor requires at least 1 paired value.", call. = FALSE)
   }
 
   denom <- mean(abs(obs))
@@ -120,7 +108,7 @@ compute_rfactor <- function(sim, obs, na.rm = TRUE) {
 }
 
 metric_rfactor <- function(sim, obs) {
-  compute_rfactor(sim, obs, na.rm = FALSE)
+  compute_rfactor(sim, obs)
 }
 
 core_metric_spec_rfactor <- function() {
@@ -138,24 +126,13 @@ core_metric_spec_rfactor <- function() {
   )
 }
 
-compute_pfactor <- function(sim, obs, tol = 0.10, na.rm = TRUE) {
-  if (!is.numeric(tol) || length(tol) != 1L || is.na(tol) || tol < 0) {
+compute_pfactor <- function(sim, obs, tol = 0.10) {
+  if (!is.numeric(tol) || length(tol) != 1L || !is.finite(tol) || tol < 0) {
     stop("`tol` must be a non-negative numeric scalar.", call. = FALSE)
-  }
-  if (!is.logical(na.rm) || length(na.rm) != 1L || is.na(na.rm)) {
-    stop("`na.rm` must be TRUE or FALSE.", call. = FALSE)
-  }
-
-  if (na.rm) {
-    keep <- stats::complete.cases(sim, obs)
-    sim <- sim[keep]
-    obs <- obs[keep]
-  } else if (anyNA(sim) || anyNA(obs)) {
-    stop("pfactor input contains NA values; set `na.rm = TRUE` to remove missing pairs.", call. = FALSE)
   }
 
   if (length(sim) == 0L) {
-    stop("pfactor requires at least 1 non-NA paired value.", call. = FALSE)
+    stop("pfactor requires at least 1 paired value.", call. = FALSE)
   }
 
   threshold <- tol * abs(obs)
@@ -163,8 +140,8 @@ compute_pfactor <- function(sim, obs, tol = 0.10, na.rm = TRUE) {
   mean(abs(sim - obs) <= threshold)
 }
 
-metric_pfactor <- function(sim, obs) {
-  compute_pfactor(sim, obs, tol = 0.10, na.rm = FALSE)
+metric_pfactor <- function(sim, obs, tol = 0.10) {
+  compute_pfactor(sim, obs, tol = tol)
 }
 
 core_metric_spec_pfactor <- function() {
@@ -307,7 +284,7 @@ validate_non_constant_series <- function(sim, obs, metric_id) {
   sd_sim <- stats::sd(sim)
   sd_obs <- stats::sd(obs)
 
-  if (is.na(sd_sim) || is.na(sd_obs) || sd_sim == 0 || sd_obs == 0) {
+  if (!is.finite(sd_sim) || !is.finite(sd_obs) || sd_sim == 0 || sd_obs == 0) {
     stop(sprintf("%s is undefined for constant series.", metric_id), call. = FALSE)
   }
 }
@@ -650,7 +627,7 @@ metric_br2 <- function(sim, obs) {
   }
 
   r <- stats::cor(sim, obs)
-  if (is.na(r)) {
+  if (!is.finite(r)) {
     stop("br2 undefined because cor(sim, obs) is NA.", call. = FALSE)
   }
 
@@ -834,7 +811,7 @@ metric_kgekm <- function(sim, obs) {
   }
 
   r <- stats::cor(sim, obs)
-  if (is.na(r)) {
+  if (!is.finite(r)) {
     stop("KGEkm undefined because cor(sim, obs) is NA.", call. = FALSE)
   }
 
@@ -902,7 +879,7 @@ metric_kgenp <- function(sim, obs) {
   }
 
   r <- stats::cor(sim, obs, method = "spearman")
-  if (is.na(r)) {
+  if (!is.finite(r)) {
     stop("KGEnp undefined because Spearman correlation is NA.", call. = FALSE)
   }
 
@@ -937,24 +914,27 @@ metric_skge <- function(sim, obs) {
 
   sim_month <- stats::cycle(sim)
   obs_month <- stats::cycle(obs)
-  group_scores <- rep(NA_real_, 12)
+  group_scores <- numeric()
 
   for (m in 1:12) {
     idx <- which(sim_month == m & obs_month == m)
     if (length(idx) < 2) {
       next
     }
-    group_scores[m] <- tryCatch(
+    score <- tryCatch(
       metric_kge(as.numeric(sim[idx]), as.numeric(obs[idx])),
-      error = function(e) NA_real_
+      error = function(e) NULL
     )
+    if (!is.null(score) && is.finite(score)) {
+      group_scores <- c(group_scores, score)
+    }
   }
 
-  if (all(is.na(group_scores))) {
+  if (length(group_scores) == 0L) {
     stop("sKGE has no valid seasonal groups for KGE computation.", call. = FALSE)
   }
 
-  mean(group_scores, na.rm = TRUE)
+  mean(group_scores)
 }
 
 core_metric_spec_skge <- function() {
@@ -1003,9 +983,104 @@ core_metric_spec_pbiasfdc <- function() {
   )
 }
 
+.metric_year_from_index <- function(index) {
+  years <- suppressWarnings(as.integer(format(as.POSIXlt(index, tz = "UTC"), "%Y")))
+  if (any(!is.finite(years))) {
+    stop("APFB could not derive calendar year from index.", call. = FALSE)
+  }
+  years
+}
+
+metric_apfb <- function(sim, obs, index) {
+  if (missing(index) || is.null(index)) {
+    stop("APFB requires an aligned time index.", call. = FALSE)
+  }
+  if (length(index) != length(obs)) {
+    stop("APFB index length must match input length.", call. = FALSE)
+  }
+
+  years <- .metric_year_from_index(index)
+  n_years <- length(unique(years))
+  if (n_years < 2L) {
+    stop("APFB requires at least 2 years after preprocessing.", call. = FALSE)
+  }
+
+  sim_peak <- tapply(sim, years, max)
+  obs_peak <- tapply(obs, years, max)
+  if (any(obs_peak == 0)) {
+    stop("APFB is undefined because annual observed peak includes zero.", call. = FALSE)
+  }
+
+  ratios <- (sim_peak - obs_peak) / obs_peak
+  if (length(ratios) == 0L || any(!is.finite(ratios))) {
+    stop("APFB denominator invalid.", call. = FALSE)
+  }
+
+  mean(ratios) * 100
+}
+
+core_metric_spec_apfb <- function() {
+  list(
+    id = "apfb",
+    fun = metric_apfb,
+    name = "Annual Peak Flow Bias",
+    description = "APFB as mean percent bias between annual simulated and observed peak flows.",
+    category = "bias",
+    perfect = 0,
+    range = NULL,
+    references = "Clean-room APFB compatibility implementation over yearly maxima.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}
+
+metric_hfb <- function(sim, obs, threshold_prob = 0.9) {
+  if (!is.numeric(threshold_prob) ||
+      length(threshold_prob) != 1L ||
+      !is.finite(threshold_prob) ||
+      threshold_prob <= 0 ||
+      threshold_prob >= 1) {
+    stop("`threshold_prob` must be a numeric scalar in (0, 1).", call. = FALSE)
+  }
+
+  q_high <- as.numeric(stats::quantile(obs, probs = threshold_prob, type = 7, names = FALSE))
+  high_idx <- which(obs >= q_high)
+  if (length(high_idx) < 3L) {
+    stop("HFB requires at least 3 points at or above the high-flow threshold.", call. = FALSE)
+  }
+
+  sim_high <- sim[high_idx]
+  obs_high <- obs[high_idx]
+  den <- sum(obs_high)
+  if (!is.finite(den) || den == 0) {
+    stop("HFB denominator is zero.", call. = FALSE)
+  }
+
+  out <- (sum(sim_high - obs_high) / den) * 100
+  if (!is.finite(out)) {
+    stop("HFB denominator invalid.", call. = FALSE)
+  }
+  out
+}
+
+core_metric_spec_hfb <- function() {
+  list(
+    id = "hfb",
+    fun = metric_hfb,
+    name = "High Flow Bias",
+    description = "HFB as percent bias over observations at or above a high-flow quantile threshold.",
+    category = "bias",
+    perfect = 0,
+    range = NULL,
+    references = "Clean-room HFB compatibility implementation using deterministic quantile thresholding.",
+    version_added = "0.1.0",
+    tags = character()
+  )
+}
+
 metric_rpearson <- function(sim, obs) {
   r <- suppressWarnings(stats::cor(sim, obs, method = "pearson"))
-  if (is.na(r)) {
+  if (!is.finite(r)) {
     stop("rPearson correlation undefined (constant series).", call. = FALSE)
   }
   r
@@ -1028,7 +1103,7 @@ core_metric_spec_rpearson <- function() {
 
 metric_rspearman <- function(sim, obs) {
   r <- suppressWarnings(stats::cor(sim, obs, method = "spearman"))
-  if (is.na(r)) {
+  if (!is.finite(r)) {
     stop("rSpearman correlation undefined (constant series).", call. = FALSE)
   }
   r

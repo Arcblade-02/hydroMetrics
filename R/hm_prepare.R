@@ -123,6 +123,7 @@
 
   n_original <- NA_integer_
   n_aligned <- NA_integer_
+  index_out <- NULL
 
   if (inherits(sim, "zoo") || inherits(sim, "xts") || inherits(obs, "zoo") || inherits(obs, "xts")) {
     if (!inherits(sim, "zoo") && !inherits(sim, "xts")) {
@@ -150,6 +151,7 @@
     obs <- obs[common_index]
     sim <- sim[order(zoo::index(sim))]
     obs <- obs[order(zoo::index(obs))]
+    index_out <- zoo::index(sim)
 
     sim_aligned_core <- zoo::coredata(sim)
     obs_aligned_core <- zoo::coredata(obs)
@@ -175,6 +177,7 @@
     obs_vec <- .hm_as_numeric_vector(obs, "obs")
     n_original <- as.integer(length(sim_vec))
     n_aligned <- as.integer(length(sim_vec))
+    index_out <- stats::time(sim)
   } else {
     sim_vec <- .hm_as_numeric_vector(sim, "sim")
     obs_vec <- .hm_as_numeric_vector(obs, "obs")
@@ -183,6 +186,7 @@
     }
     n_original <- as.integer(length(sim_vec))
     n_aligned <- as.integer(length(sim_vec))
+    index_out <- seq_along(sim_vec)
   }
 
   if (length(sim_vec) == 0L || length(obs_vec) == 0L) {
@@ -202,6 +206,7 @@
     n_removed_na <- as.integer(sum(!keep))
     sim_vec <- sim_vec[keep]
     obs_vec <- obs_vec[keep]
+    index_out <- index_out[keep]
   }
 
   if (length(sim_vec) == 0L) {
@@ -229,6 +234,7 @@
   list(
     sim = sim_out,
     obs = obs_out,
+    index = index_out,
     meta = list(
       n_original = as.integer(n_original),
       n_aligned = as.integer(n_aligned),

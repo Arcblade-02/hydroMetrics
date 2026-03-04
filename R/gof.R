@@ -99,7 +99,7 @@
   }
 
   if (x_single && y_single) {
-    return(list(type = "vector", sim = x, obs = y, series_names = NULL))
+    return(list(type = "single", sim = x, obs = y, series_names = "model1"))
   }
 
   x_mat <- as.matrix(x)
@@ -113,7 +113,7 @@
 
   series_names <- colnames(x_mat)
   if (is.null(series_names)) {
-    series_names <- paste0("series", seq_len(ncol(x_mat)))
+    series_names <- paste0("model", seq_len(ncol(x_mat)))
   }
 
   list(type = "multi", sim = x_mat, obs = y_mat, series_names = series_names)
@@ -171,40 +171,91 @@
   })
 }
 
+.gof_hydrometric_slots <- function(metrics) {
+  if (is.matrix(metrics)) {
+    methods <- rownames(metrics)
+    out <- lapply(methods, function(m) {
+      vals <- metrics[m, , drop = TRUE]
+      if (length(vals) == 1L) {
+        as.numeric(vals[[1]])
+      } else {
+        as.numeric(vals)
+      }
+    })
+    names(out) <- methods
+    return(out)
+  }
+
+  vals <- as.numeric(metrics)
+  names(vals) <- names(metrics)
+  as.list(vals)
+}
+
+.new_hydro_metrics <- function(metrics, n_obs, meta, call) {
+  out <- c(
+    list(
+      metrics = metrics,
+      n_obs = n_obs,
+      meta = meta,
+      call = call
+    ),
+    .gof_hydrometric_slots(metrics)
+  )
+  class(out) <- "hydro_metrics"
+  out
+}
+
+.gof_preproc_call <- function(sim, obs, na_strategy, transform, epsilon_mode, epsilon, epsilon_factor) {
+  preproc(
+    sim = sim,
+    obs = obs,
+    na_strategy = na_strategy,
+    transform = transform,
+    epsilon_mode = epsilon_mode,
+    epsilon = epsilon,
+    epsilon_factor = epsilon_factor
+  )
+}
+
 gof <- function(sim,
                 obs,
-                fun = NULL,
                 methods = NULL,
-                na.rm = FALSE,
-                keep = c("complete", "pairwise"),
                 na_strategy = c("fail", "remove", "pairwise"),
                 transform = c("none", "log", "sqrt", "reciprocal"),
                 epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
                 epsilon = NULL,
                 epsilon_factor = 1,
+                components = FALSE,
                 ...) {
-  keep <- match.arg(keep)
+  na_strategy_missing <- missing(na_strategy)
   na_strategy <- match.arg(na_strategy)
   transform <- match.arg(transform)
   epsilon_mode <- match.arg(epsilon_mode)
 
-  if (!missing(na.rm)) {
-    if (!is.logical(na.rm) || length(na.rm) != 1L || is.na(na.rm)) {
-      stop("`na.rm` must be TRUE or FALSE.", call. = FALSE)
-    }
-    na_strategy <- if (isTRUE(na.rm)) "remove" else "fail"
-  } else if (missing(na_strategy) && identical(keep, "pairwise")) {
-    na_strategy <- "pairwise"
-  }
-
   dots <- list(...)
   metric_params <- dots$metric_params
+
+  fun <- dots$fun
+  if (is.null(methods) && !is.null(fun)) {
+    methods <- fun
+  }
+
+  if (!is.null(dots$na.rm)) {
+    na_rm <- dots$na.rm
+    if (!is.logical(na_rm) || length(na_rm) != 1L || is.na(na_rm)) {
+      stop("`na.rm` must be TRUE or FALSE.", call. = FALSE)
+    }
+    na_strategy <- if (isTRUE(na_rm)) "remove" else "fail"
+  } else if (!is.null(dots$keep) && isTRUE(na_strategy_missing)) {
+    keep <- match.arg(dots$keep, choices = c("complete", "pairwise"))
+    na_strategy <- if (identical(keep, "pairwise")) "pairwise" else "remove"
+  }
 
   available_ids <- as.character(.get_registry()$list()$id)
   available_alias <- .gof_alias_map()
   available_alias <- available_alias[available_alias %in% available_ids]
 
-  requested <- unique(c(as.character(methods), as.character(fun)))
+  requested <- as.character(methods)
   if (length(requested) == 0L || all(!nzchar(requested))) {
     defaults <- .gof_default_methods()
     resolved_defaults <- defaults[tolower(defaults) %in% names(available_alias)]
@@ -221,10 +272,12 @@ gof <- function(sim,
     labels = resolved$labels,
     metric_params = metric_params
   )
-  prepared <- .gof_prepare_inputs(sim, obs)
 
-  if (prepared$type == "vector") {
-    payload <- .hm_prepare_inputs(
+  prepared <- .gof_prepare_inputs(sim, obs)
+  engine <- .get_engine()
+
+  if (identical(prepared$type, "single")) {
+    payload <- .gof_preproc_call(
       sim = prepared$sim,
       obs = prepared$obs,
       na_strategy = na_strategy,
@@ -233,21 +286,36 @@ gof <- function(sim,
       epsilon = epsilon,
       epsilon_factor = epsilon_factor
     )
-    out <- .get_engine()$evaluate(payload$sim, payload$obs, metric_calls)
+    out <- engine$evaluate(payload$sim, payload$obs, metric_calls)
     vals <- as.numeric(out$value)
     names(vals) <- resolved$labels
-    return(vals)
+
+    return(
+      .new_hydro_metrics(
+        metrics = vals,
+        n_obs = as.integer(length(payload$sim)),
+        meta = list(
+          transform = transform,
+          na_strategy = na_strategy,
+          epsilon_mode = epsilon_mode,
+          components = isTRUE(components)
+        ),
+        call = match.call()
+      )
+    )
   }
 
-  res <- matrix(
+  metrics_mat <- matrix(
     NA_real_,
-    nrow = length(resolved$ids),
+    nrow = length(resolved$labels),
     ncol = ncol(prepared$sim),
     dimnames = list(resolved$labels, prepared$series_names)
   )
+  n_obs <- rep(NA_integer_, ncol(prepared$sim))
+  names(n_obs) <- prepared$series_names
 
   for (j in seq_len(ncol(prepared$sim))) {
-    payload <- .hm_prepare_inputs(
+    payload <- .gof_preproc_call(
       sim = prepared$sim[, j],
       obs = prepared$obs[, j],
       na_strategy = na_strategy,
@@ -256,9 +324,33 @@ gof <- function(sim,
       epsilon = epsilon,
       epsilon_factor = epsilon_factor
     )
-    out <- .get_engine()$evaluate(payload$sim, payload$obs, metric_calls)
-    res[, j] <- as.numeric(out$value)
+    out <- engine$evaluate(payload$sim, payload$obs, metric_calls)
+    metrics_mat[, j] <- as.numeric(out$value)
+    n_obs[[j]] <- as.integer(length(payload$sim))
   }
 
-  res
+  .new_hydro_metrics(
+    metrics = metrics_mat,
+    n_obs = n_obs,
+    meta = list(
+      transform = transform,
+      na_strategy = na_strategy,
+      epsilon_mode = epsilon_mode,
+      components = isTRUE(components)
+    ),
+    call = match.call()
+  )
+}
+
+as.numeric.hydro_metrics <- function(x, ...) {
+  as.numeric(x$metrics)
+}
+
+as.double.hydro_metrics <- function(x, ...) {
+  as.numeric(x$metrics)
+}
+
+print.hydro_metrics <- function(x, ...) {
+  print(x$metrics, ...)
+  invisible(x)
 }

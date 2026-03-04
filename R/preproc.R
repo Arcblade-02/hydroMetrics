@@ -1,115 +1,113 @@
-.preproc_is_vector <- function(x) {
-  is.atomic(x) && is.numeric(x) && is.null(dim(x))
-}
-
-.preproc_to_matrix <- function(x, name) {
-  if (.preproc_is_vector(x)) {
-    return(matrix(as.numeric(x), ncol = 1))
-  }
-
-  if (inherits(x, "zoo")) {
-    if (!requireNamespace("zoo", quietly = TRUE)) {
-      stop("zoo input requires the 'zoo' package to be installed.", call. = FALSE)
+.preproc_apply_na_compat <- function(na_strategy, dots, na_strategy_missing) {
+  if (!is.null(dots$na.rm)) {
+    na_rm <- dots$na.rm
+    if (!is.logical(na_rm) || length(na_rm) != 1L || is.na(na_rm)) {
+      stop("`na.rm` must be TRUE or FALSE.", call. = FALSE)
     }
-    mat <- as.matrix(zoo::coredata(x))
-  } else if (is.data.frame(x)) {
-    mat <- as.matrix(x)
-  } else if (is.matrix(x)) {
-    mat <- x
-  } else {
-    stop(
-      sprintf("`%s` must be a numeric vector, matrix, data.frame, or zoo object.", name),
-      call. = FALSE
-    )
+    return(if (isTRUE(na_rm)) "remove" else "fail")
   }
 
-  if (!is.numeric(mat)) {
-    stop(sprintf("`%s` must be numeric after coercion.", name), call. = FALSE)
+  if (!is.null(dots$keep) && isTRUE(na_strategy_missing)) {
+    keep <- match.arg(dots$keep, choices = c("complete", "pairwise"))
+    return(if (identical(keep, "pairwise")) "pairwise" else "remove")
   }
 
-  mat
+  na_strategy
 }
 
-.preproc_format_output <- function(x, as, drop) {
-  if (as == "matrix") {
-    return(x)
+.epsilon_details <- function(transform, epsilon_mode, epsilon, epsilon_factor, sim, obs) {
+  needs_epsilon <- switch(
+    transform,
+    none = FALSE,
+    log = any(sim <= 0 | obs <= 0),
+    sqrt = any(sim < 0 | obs < 0),
+    reciprocal = any(sim == 0 | obs == 0)
+  )
+
+  epsilon_used <- if (needs_epsilon) {
+    .hm_compute_epsilon(sim, obs, epsilon_mode, epsilon, epsilon_factor)
+  } else {
+    0
   }
 
-  if (as == "data.frame") {
-    return(as.data.frame(x, stringsAsFactors = FALSE))
-  }
+  list(
+    mode = epsilon_mode,
+    epsilon = epsilon,
+    epsilon_factor = epsilon_factor,
+    epsilon_used = as.numeric(epsilon_used),
+    applied = isTRUE(needs_epsilon)
+  )
+}
 
-  if (ncol(x) == 1L && isTRUE(drop)) {
-    return(as.numeric(x[, 1]))
-  }
-
-  x
+.new_hydro_preproc <- function(payload, transform, epsilon_mode, epsilon, epsilon_factor) {
+  structure(
+    list(
+      sim = payload$sim,
+      obs = payload$obs,
+      n_original = as.integer(payload$meta$n_original),
+      n_aligned = as.integer(payload$meta$n_aligned),
+      n_removed_na = as.integer(payload$meta$n_removed_na),
+      transform_applied = transform,
+      epsilon_details = .epsilon_details(
+        transform = transform,
+        epsilon_mode = epsilon_mode,
+        epsilon = epsilon,
+        epsilon_factor = epsilon_factor,
+        sim = payload$sim,
+        obs = payload$obs
+      ),
+      index = payload$index,
+      n = as.integer(length(payload$sim)),
+      removed = as.integer(payload$meta$n_removed_na)
+    ),
+    class = "hydro_preproc"
+  )
 }
 
 preproc <- function(sim,
                     obs,
-                    na.rm = TRUE,
-                    keep = c("complete", "pairwise"),
-                    as = "numeric",
-                    drop = TRUE,
+                    na_strategy = c("fail", "remove", "pairwise"),
+                    transform = c("none", "log", "sqrt", "reciprocal"),
+                    epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
+                    epsilon = NULL,
+                    epsilon_factor = 1,
                     ...) {
-  keep <- match.arg(keep)
-  as <- match.arg(as, choices = c("numeric", "matrix", "data.frame"))
+  na_strategy_missing <- missing(na_strategy)
+  na_strategy <- match.arg(na_strategy)
+  transform <- match.arg(transform)
+  epsilon_mode <- match.arg(epsilon_mode)
 
-  sim_is_vector <- .preproc_is_vector(sim)
-  obs_is_vector <- .preproc_is_vector(obs)
-  vector_mode <- sim_is_vector && obs_is_vector
+  dots <- list(...)
+  na_strategy <- .preproc_apply_na_compat(na_strategy, dots, na_strategy_missing = na_strategy_missing)
 
-  if (xor(sim_is_vector, obs_is_vector)) {
-    stop("`sim` and `obs` must both be vectors or both be matrix-like inputs.", call. = FALSE)
-  }
-
-  sim_mat <- .preproc_to_matrix(sim, "sim")
-  obs_mat <- .preproc_to_matrix(obs, "obs")
-
-  if (vector_mode) {
-    if (nrow(sim_mat) != nrow(obs_mat)) {
-      stop("`sim` and `obs` must have the same length.", call. = FALSE)
-    }
-  } else if (!identical(dim(sim_mat), dim(obs_mat))) {
-    stop("`sim` and `obs` must have identical dimensions.", call. = FALSE)
-  }
-
-  if (nrow(sim_mat) == 0L) {
-    stop("No rows available for preprocessing.", call. = FALSE)
-  }
-
-  removed <- 0L
-  if (isTRUE(na.rm)) {
-    if (keep == "pairwise") {
-      # Current pairwise mode is an explicit complete-case fallback.
-      keep <- "complete"
-    }
-    keep_rows <- stats::complete.cases(sim_mat, obs_mat)
-    removed <- sum(!keep_rows)
-    sim_mat <- sim_mat[keep_rows, , drop = FALSE]
-    obs_mat <- obs_mat[keep_rows, , drop = FALSE]
-  }
-
-  if (nrow(sim_mat) == 0L) {
-    stop("No valid rows remain after preprocessing.", call. = FALSE)
-  }
-
-  n_used <- if (vector_mode) {
-    as.integer(nrow(sim_mat))
-  } else {
-    out <- rep(as.integer(nrow(sim_mat)), ncol(sim_mat))
-    nm <- colnames(sim_mat)
-    if (!is.null(nm)) {
-      names(out) <- nm
-    }
-    out
-  }
-
-  list(
-    sim = .preproc_format_output(sim_mat, as = as, drop = drop),
-    obs = .preproc_format_output(obs_mat, as = as, drop = drop),
-    n = n_used,
-    removed = as.integer(removed)
+  payload <- .hm_prepare_inputs(
+    sim = sim,
+    obs = obs,
+    na_strategy = na_strategy,
+    transform = transform,
+    epsilon_mode = epsilon_mode,
+    epsilon = epsilon,
+    epsilon_factor = epsilon_factor
   )
+
+  .new_hydro_preproc(
+    payload = payload,
+    transform = transform,
+    epsilon_mode = epsilon_mode,
+    epsilon = epsilon,
+    epsilon_factor = epsilon_factor
+  )
+}
+
+print.hydro_preproc <- function(x, ...) {
+  cat(
+    sprintf(
+      "<hydro_preproc: n_original=%d, n_aligned=%d, n_removed_na=%d, n_used=%d>\n",
+      as.integer(x$n_original),
+      as.integer(x$n_aligned),
+      as.integer(x$n_removed_na),
+      as.integer(length(x$sim))
+    )
+  )
+  invisible(x)
 }

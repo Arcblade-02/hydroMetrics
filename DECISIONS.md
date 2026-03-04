@@ -134,3 +134,8 @@
 - Decision: Add `APFB` and `HFB` as clean-room compatibility exports that must call `preproc()` and return numerically coercible S3 scalars with class `c("hydro_metric_scalar", "numeric")`.
 - Status: Accepted
 - Notes: `APFB` requires indexed zoo/xts input, aggregates annual maxima by calendar year, requires at least two years, and errors when any annual `obs_peak == 0`; invalid denominator states return `NA` with warning. `HFB` uses deterministic high-flow threshold `quantile(obs, probs = threshold_prob, type = 7)` (default `0.9`), requires at least three selected points, and returns `NA` with warning when `sum(obs_high) == 0`. Both metrics keep NA/alignment handling centralized via `preproc()` and attach metadata (`n_obs`, metric-specific `meta`, and call).
+
+## D-028: Phase 2B Batch 4B Modern Orchestration Compatibility Layer
+- Decision: Export `preproc`, `gof`, `ggof`, and `valindex` as clean-room compatibility wrappers over the existing preprocessing engine and registered metric dispatch, with structured S3 returns.
+- Status: Accepted
+- Notes: `preproc` is a public wrapper around `.hm_prepare_inputs` returning class `hydro_preproc`; `gof` returns class `hydro_metrics` containing `metrics`, `n_obs`, `meta`, and `call`, while preserving direct `$<metric>` access and `as.numeric()` coercion; `ggof` is tabular-only (class `hydro_metrics_batch`) and does not produce plots; `valindex` is a thin wrapper delegating to `gof(methods = fun, ...)`. No metric formulas are duplicated in orchestration code.

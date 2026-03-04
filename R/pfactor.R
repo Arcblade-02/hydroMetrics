@@ -1,17 +1,28 @@
 pfactor <- function(sim, obs, tol = 0.10, na.rm = TRUE, ...) {
-  processed <- preproc(
-    sim = sim,
-    obs = obs,
-    na.rm = na.rm,
-    keep = "complete",
-    as = "matrix",
-    drop = FALSE
-  )
+  if (.hm_is_numeric_vector(sim) && .hm_is_numeric_vector(obs)) {
+    processed <- preproc(
+      sim = sim,
+      obs = obs,
+      na_strategy = if (isTRUE(na.rm)) "remove" else "fail",
+      ...
+    )
+    return(compute_pfactor(processed$sim, processed$obs, tol = tol, na.rm = FALSE))
+  }
 
-  sim_mat <- processed$sim
-  obs_mat <- processed$obs
+  sim_mat <- as.matrix(sim)
+  obs_mat <- as.matrix(obs)
+  if (!is.numeric(sim_mat) || !is.numeric(obs_mat) || !all(dim(sim_mat) == dim(obs_mat))) {
+    stop("`sim` and `obs` must be numeric and have matching dimensions.", call. = FALSE)
+  }
+
   values <- vapply(seq_len(ncol(sim_mat)), function(j) {
-    compute_pfactor(sim_mat[, j], obs_mat[, j], tol = tol, na.rm = FALSE)
+    processed <- preproc(
+      sim = sim_mat[, j],
+      obs = obs_mat[, j],
+      na_strategy = if (isTRUE(na.rm)) "remove" else "fail",
+      ...
+    )
+    compute_pfactor(processed$sim, processed$obs, tol = tol, na.rm = FALSE)
   }, numeric(1))
 
   if (length(values) == 1L) {

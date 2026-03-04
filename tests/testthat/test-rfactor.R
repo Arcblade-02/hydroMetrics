@@ -19,7 +19,7 @@ test_that("rfactor errors when denominator is zero", {
 test_that("rfactor errors when no valid data remain after NA removal", {
   expect_error(
     rfactor(sim = c(NA_real_, NA_real_), obs = c(NA_real_, NA_real_)),
-    "No valid rows remain"
+    "At least 1 valid paired value"
   )
 })
 

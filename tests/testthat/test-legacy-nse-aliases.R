@@ -2,10 +2,10 @@ test_that("legacy NSE aliases match underlying metric ids on simple vectors", {
   sim <- c(1, 2, 4)
   obs <- c(1, 2, 3)
 
-  expect_equal(NSeff(sim, obs), gof(sim, obs, methods = "nse")[[1]])
-  expect_equal(mNSeff(sim, obs), gof(sim, obs, methods = "mnse")[[1]])
-  expect_equal(rNSeff(sim, obs), gof(sim, obs, methods = "rnse")[[1]])
-  expect_equal(wsNSeff(sim, obs), gof(sim, obs, methods = "wsnse")[[1]])
+  expect_equal(NSeff(sim, obs), as.numeric(gof(sim, obs, methods = "nse")[[1]]))
+  expect_equal(mNSeff(sim, obs), as.numeric(gof(sim, obs, methods = "mnse")[[1]]))
+  expect_equal(rNSeff(sim, obs), as.numeric(gof(sim, obs, methods = "rnse")[[1]]))
+  expect_equal(wsNSeff(sim, obs), as.numeric(gof(sim, obs, methods = "wsnse")[[1]]))
 })
 
 test_that("legacy NSE aliases return deterministic values for a fixed example", {

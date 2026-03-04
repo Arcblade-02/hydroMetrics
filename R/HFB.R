@@ -16,9 +16,7 @@ HFB <- function(sim, obs, threshold_prob = 0.9, ...) {
     c(
       list(
         sim = sim,
-        obs = obs,
-        as = "numeric",
-        drop = TRUE
+        obs = obs
       ),
       dots
     )
@@ -30,7 +28,7 @@ HFB <- function(sim, obs, threshold_prob = 0.9, ...) {
     stop("HFB requires single-series inputs.", call. = FALSE)
   }
 
-  n_obs <- if (length(prepared$n) > 1L) as.integer(unname(prepared$n[[1]])) else as.integer(prepared$n)
+  n_obs <- as.integer(length(sim_used))
   q_high <- as.numeric(stats::quantile(obs_used, probs = threshold_prob, type = 7, names = FALSE))
   high_idx <- which(obs_used >= q_high)
   n_high <- length(high_idx)

@@ -1,10 +1,15 @@
 .hm_scalar_preproc_args <- function(dots) {
   dots[["as"]] <- NULL
   dots[["drop"]] <- NULL
+  dots[["keep"]] <- NULL
   dots
 }
 
 .hm_scalar_na_method <- function(dots) {
+  if (!is.null(dots$na_strategy)) {
+    return(as.character(dots$na_strategy[[1]]))
+  }
+
   na_rm <- dots[["na.rm"]]
   if (is.null(na_rm)) {
     return("remove")
@@ -55,13 +60,6 @@ APFB <- function(sim, obs, ...) {
   sim_index <- zoo::index(sim)
   obs_index <- zoo::index(obs)
   aligned <- identical(sim_index, obs_index)
-  if (!aligned) {
-    stop("APFB requires sim and obs to share identical time index values.", call. = FALSE)
-  }
-
-  sim_vec <- if (is.null(dim(sim_core))) as.numeric(sim_core) else as.numeric(sim_core[, 1])
-  obs_vec <- if (is.null(dim(obs_core))) as.numeric(obs_core) else as.numeric(obs_core[, 1])
-  years <- .extract_calendar_year(sim_index)
 
   dots <- list(...)
   na_method <- .hm_scalar_na_method(dots)
@@ -71,20 +69,17 @@ APFB <- function(sim, obs, ...) {
     preproc,
     c(
       list(
-        sim = cbind(value = sim_vec, year = years),
-        obs = cbind(value = obs_vec, year = years),
-        as = "matrix",
-        drop = FALSE
+        sim = sim,
+        obs = obs
       ),
       dots
     )
   )
 
-  n_obs <- if (length(prepared$n) > 1L) as.integer(unname(prepared$n[[1]])) else as.integer(prepared$n)
-
-  sim_used <- as.numeric(prepared$sim[, 1])
-  obs_used <- as.numeric(prepared$obs[, 1])
-  years_used <- as.integer(prepared$sim[, 2])
+  n_obs <- as.integer(length(prepared$sim))
+  sim_used <- as.numeric(prepared$sim)
+  obs_used <- as.numeric(prepared$obs)
+  years_used <- .extract_calendar_year(prepared$index)
   n_years <- length(unique(years_used))
   if (n_years < 2L) {
     stop("APFB requires at least 2 years after preprocessing.", call. = FALSE)

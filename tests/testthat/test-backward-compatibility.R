@@ -6,7 +6,8 @@ test_that("gof default usage matches v0.1.0 behavior", {
   ref <- evaluate_metrics(sim = sim, obs = obs, metrics = c("nse", "rmse", "pbias"))
   expected <- setNames(as.numeric(ref$value), c("NSE", "rmse", "pbias"))
 
-  expect_equal(out, expected)
+  expect_equal(out$metrics, expected)
+  expect_equal(out$NSE, expected[["NSE"]])
 })
 
 test_that("gof default NA behavior still fails when na.rm is not enabled", {
@@ -27,5 +28,5 @@ test_that("gof preserves na.rm compatibility mapping to na_strategy", {
   out_old <- gof(sim = sim, obs = obs, methods = "rmse", na.rm = TRUE)
   out_new <- gof(sim = sim, obs = obs, methods = "rmse", na_strategy = "remove")
 
-  expect_equal(out_old, out_new)
+  expect_equal(out_old$metrics, out_new$metrics)
 })

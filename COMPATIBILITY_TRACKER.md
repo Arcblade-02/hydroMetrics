@@ -8,8 +8,8 @@ Generated on: 2026-03-04
 - [x] cp
 - [x] d
 - [x] dr
-- [ ] ggof
-- [ ] gof
+- [x] ggof
+- [x] gof
 - [x] HFB
 - [x] KGE
 - [x] KGEkm
@@ -30,7 +30,7 @@ Generated on: 2026-03-04
 - [ ] plot2
 - [ ] plotbands
 - [ ] plotbandsonly
-- [ ] preproc
+- [x] preproc
 - [x] R2
 - [x] rd
 - [x] rfactor
@@ -44,7 +44,7 @@ Generated on: 2026-03-04
 - [x] sKGE
 - [x] ssq
 - [x] ubRMSE
-- [ ] valindex
+- [x] valindex
 - [x] VE
 - [x] wNSE
 - [x] wsNSE
@@ -94,10 +94,6 @@ Generated on: 2026-03-04
 | wsnse | Weighted Squared NSE | efficiency | 0.1.0 | NSE weighted variants in hydrology literature; exact citation to be refined. |
 
 ## Missing items summary (auto)
-- ggof
-- gof
 - plot2
 - plotbands
 - plotbandsonly
-- preproc
-- valindex

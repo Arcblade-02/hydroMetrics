@@ -3,14 +3,14 @@
 Generated on: 2026-03-04
 
 ## Target hydroGOF exports (checklist)
-- [ ] APFB
+- [x] APFB
 - [x] br2
 - [x] cp
 - [x] d
 - [x] dr
 - [ ] ggof
 - [ ] gof
-- [ ] HFB
+- [x] HFB
 - [x] KGE
 - [x] KGEkm
 - [x] KGElf
@@ -94,10 +94,8 @@ Generated on: 2026-03-04
 | wsnse | Weighted Squared NSE | efficiency | 0.1.0 | NSE weighted variants in hydrology literature; exact citation to be refined. |
 
 ## Missing items summary (auto)
-- APFB
 - ggof
 - gof
-- HFB
 - plot2
 - plotbands
 - plotbandsonly

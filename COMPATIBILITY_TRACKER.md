@@ -1,6 +1,6 @@
 # hydroGOF Compatibility Tracker
 
-Generated on: 2026-02-28
+Generated on: 2026-03-04
 
 ## Target hydroGOF exports (checklist)
 - [ ] APFB
@@ -8,8 +8,8 @@ Generated on: 2026-02-28
 - [x] cp
 - [x] d
 - [x] dr
-- [x] ggof
-- [x] gof
+- [ ] ggof
+- [ ] gof
 - [ ] HFB
 - [x] KGE
 - [x] KGEkm
@@ -30,7 +30,7 @@ Generated on: 2026-02-28
 - [ ] plot2
 - [ ] plotbands
 - [ ] plotbandsonly
-- [x] preproc
+- [ ] preproc
 - [x] R2
 - [x] rd
 - [x] rfactor
@@ -44,7 +44,7 @@ Generated on: 2026-02-28
 - [x] sKGE
 - [x] ssq
 - [x] ubRMSE
-- [x] valindex
+- [ ] valindex
 - [x] VE
 - [x] wNSE
 - [x] wsNSE
@@ -93,11 +93,15 @@ Generated on: 2026-02-28
 
 ## Missing items summary (auto)
 - APFB
+- ggof
+- gof
 - HFB
 - mNSeff
 - NSeff
 - plot2
 - plotbands
 - plotbandsonly
+- preproc
 - rNSeff
+- valindex
 - wsNSeff

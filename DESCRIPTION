@@ -18,6 +18,7 @@ Suggests:
     covr,
     ggplot2,
     knitr,
+    microbenchmark,
     rmarkdown,
     xts,
     zoo

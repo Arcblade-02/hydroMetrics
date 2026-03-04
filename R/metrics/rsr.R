@@ -1,8 +1,13 @@
 metric_rsr <- function(sim, obs) {
+  if (length(obs) < 2L) {
+    stop("RSR requires at least 2 values.", call. = FALSE)
+  }
+
   obs_sd <- stats::sd(obs)
   if (obs_sd == 0) {
-    stop("RSR undefined because sd(obs) == 0.", call. = FALSE)
+    stop("sd(obs) is zero; RSR undefined", call. = FALSE)
   }
+
   sqrt(mean((sim - obs)^2)) / obs_sd
 }
 

@@ -1,4 +1,8 @@
 metric_mae <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("MAE requires at least 1 value.", call. = FALSE)
+  }
+
   mean(abs(sim - obs))
 }
 

@@ -36,6 +36,7 @@
 - Project definition record - valindex - Weighted normalized aggregate over selected gof metrics (v1 project-defined normalization). DOI/URL (TODO)
 - SWAT uncertainty-analysis literature context - pfactor/rfactor - P-factor and R-factor terminology are widely used for calibration/uncertainty diagnostics; this package uses explicit clean-room compatibility definitions recorded in DECISIONS.md. DOI/URL (TODO)
 - Project definition record - pfactor/rfactor - `pfactor` tolerance-band hit proportion and `rfactor` MAE normalized by `mean(abs(obs))` for deterministic single-series compatibility. DOI/URL (TODO)
+- Batch 1 parity policy record - rsr/pbias/mae - Explicit clean-room edge policies: `rsr = RMSE/sd(obs)` (requires `n >= 2`, `sd(obs) > 0`), `pbias = 100 * sum(sim - obs)/sum(obs)` (requires `sum(obs) != 0`), and `mae = mean(abs(sim - obs))` (requires `n >= 1`). DOI/URL (TODO)
 
 ## Placeholder Entries
 - Author (Year) - Metric(s) - DOI/URL (TODO)

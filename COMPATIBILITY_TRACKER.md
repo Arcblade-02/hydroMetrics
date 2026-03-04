@@ -19,11 +19,11 @@ Generated on: 2026-03-04
 - [x] md
 - [x] me
 - [x] mNSE
-- [ ] mNSeff
+- [x] mNSeff
 - [x] mse
 - [x] nrmse
 - [x] NSE
-- [ ] NSeff
+- [x] NSeff
 - [x] pbias
 - [x] pbiasfdc
 - [x] pfactor
@@ -36,7 +36,7 @@ Generated on: 2026-03-04
 - [x] rfactor
 - [x] rmse
 - [x] rNSE
-- [ ] rNSeff
+- [x] rNSeff
 - [x] rPearson
 - [x] rSD
 - [x] rSpearman
@@ -48,7 +48,7 @@ Generated on: 2026-03-04
 - [x] VE
 - [x] wNSE
 - [x] wsNSE
-- [ ] wsNSeff
+- [x] wsNSeff
 
 ## Implemented metrics table (auto)
 | id | name | category | version_added | references |
@@ -98,12 +98,8 @@ Generated on: 2026-03-04
 - ggof
 - gof
 - HFB
-- mNSeff
-- NSeff
 - plot2
 - plotbands
 - plotbandsonly
 - preproc
-- rNSeff
 - valindex
-- wsNSeff

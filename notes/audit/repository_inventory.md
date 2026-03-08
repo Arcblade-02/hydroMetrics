@@ -21,15 +21,15 @@ Evidence legend:
 | --- | --- | --- | --- | --- |
 | .github/workflows | TRUE | directory | Continuous integration workflows | verified fact |
 | DESCRIPTION | TRUE | file | Package metadata | verified fact |
+| inst | TRUE | directory | Installed auxiliary package files | verified fact |
 | LICENSE | TRUE | file | License support files | verified fact |
 | LICENSE.md | TRUE | file | License support files | verified fact |
+| man | TRUE | directory | Generated Rd documentation | verified fact |
 | NAMESPACE | TRUE | file | Public namespace declarations | verified fact |
 | NEWS* | FALSE | file pattern | Release/change history | verified fact |
+| notes | TRUE | directory | Project notes and audit records | verified fact |
 | R | TRUE | directory | Package source files | verified fact |
 | README* | FALSE | file pattern | Top-level package overview | verified fact |
-| inst | TRUE | directory | Installed auxiliary package files | verified fact |
-| man | TRUE | directory | Generated Rd documentation | verified fact |
-| notes | TRUE | directory | Project notes and audit records | verified fact |
 | tests/testthat | TRUE | directory | Unit and structural tests | verified fact |
 | tools | TRUE | directory | Project automation and support scripts | verified fact |
 | vignettes | FALSE | directory | Long-form package guides | unverified |
@@ -65,16 +65,16 @@ Metadata findings:
 ### Exported Objects
 | Name | Source file | Object type | Documented | Likely role | Verified status |
 | --- | --- | --- | --- | --- | --- |
-| APFB | R/APFB.R | function | TRUE | metric wrapper | verified fact |
-| HFB | R/HFB.R | function | TRUE | metric wrapper | verified fact |
-| NSeff | R/NSeff.R | function | TRUE | metric wrapper | verified fact |
 | alpha | R/alpha.R | function | TRUE | metric wrapper | verified fact |
+| APFB | R/APFB.R | function | TRUE | metric wrapper | verified fact |
 | beta | R/beta.R | function | TRUE | metric wrapper | verified fact |
 | hm_result | R/classes.R | function | TRUE | support/helper | likely inference |
 | ggof | R/ggof.R | function | TRUE | public orchestration wrapper | verified fact |
 | gof | R/gof.R | function | TRUE | public orchestration wrapper | verified fact |
-| mNSeff | R/mNSeff.R | function | TRUE | metric wrapper | verified fact |
+| HFB | R/HFB.R | function | TRUE | metric wrapper | verified fact |
 | mae | R/mae.R | function | TRUE | metric wrapper | verified fact |
+| mNSeff | R/mNSeff.R | function | TRUE | metric wrapper | verified fact |
+| NSeff | R/NSeff.R | function | TRUE | metric wrapper | verified fact |
 | pbias | R/pbias.R | function | TRUE | metric wrapper | verified fact |
 | preproc | R/preproc.R | function | TRUE | public orchestration wrapper | verified fact |
 | r | R/r.R | function | TRUE | metric wrapper | verified fact |
@@ -86,17 +86,13 @@ Metadata findings:
 ### Function and Registry Object Inventory
 | Name | Source file | Object type | Exported | Documented | Likely role | Verified status |
 | --- | --- | --- | --- | --- | --- | --- |
+| alpha | R/alpha.R | function | TRUE | TRUE | metric wrapper | verified fact |
 | .extract_calendar_year | R/APFB.R | function | FALSE | FALSE | internal helper | verified fact |
 | .hm_merge_metric_params | R/APFB.R | function | FALSE | FALSE | internal helper | verified fact |
 | .hm_scalar_na_method | R/APFB.R | function | FALSE | FALSE | internal helper | verified fact |
 | .hm_scalar_sanitize_dots | R/APFB.R | function | FALSE | FALSE | internal helper | verified fact |
 | .new_hydro_metric_scalar | R/APFB.R | function | FALSE | FALSE | internal helper | verified fact |
 | APFB | R/APFB.R | function | TRUE | TRUE | metric wrapper | verified fact |
-| HFB | R/HFB.R | function | TRUE | TRUE | metric wrapper | verified fact |
-| HydroEngine | R/HydroEngine.R | R6 class | FALSE | FALSE | internal registry/engine class | verified fact |
-| MetricRegistry | R/MetricRegistry.R | R6 class | FALSE | FALSE | internal registry/engine class | verified fact |
-| NSeff | R/NSeff.R | function | TRUE | TRUE | metric wrapper | verified fact |
-| alpha | R/alpha.R | function | TRUE | TRUE | metric wrapper | verified fact |
 | beta | R/beta.R | function | TRUE | TRUE | metric wrapper | verified fact |
 | as.data.frame.hm_result | R/classes.R | function | FALSE | TRUE | support/helper | likely inference |
 | hm_result | R/classes.R | function | TRUE | TRUE | support/helper | likely inference |
@@ -206,13 +202,17 @@ Metadata findings:
 | as.numeric.hydro_metrics | R/gof.R | function | FALSE | TRUE | support/helper | likely inference |
 | gof | R/gof.R | function | TRUE | TRUE | public orchestration wrapper | verified fact |
 | print.hydro_metrics | R/gof.R | function | FALSE | TRUE | support/helper | likely inference |
+| HFB | R/HFB.R | function | TRUE | TRUE | metric wrapper | verified fact |
 | .hm_apply_transform | R/hm_prepare.R | function | FALSE | FALSE | internal helper | verified fact |
 | .hm_as_numeric_vector | R/hm_prepare.R | function | FALSE | FALSE | internal helper | verified fact |
 | .hm_compute_epsilon | R/hm_prepare.R | function | FALSE | FALSE | internal helper | verified fact |
 | .hm_is_numeric_vector | R/hm_prepare.R | function | FALSE | FALSE | internal helper | verified fact |
 | .hm_prepare_inputs | R/hm_prepare.R | function | FALSE | FALSE | internal helper | verified fact |
-| mNSeff | R/mNSeff.R | function | TRUE | TRUE | metric wrapper | verified fact |
+| HydroEngine | R/HydroEngine.R | R6 class | FALSE | FALSE | internal registry/engine class | verified fact |
 | mae | R/mae.R | function | TRUE | TRUE | metric wrapper | verified fact |
+| MetricRegistry | R/MetricRegistry.R | R6 class | FALSE | FALSE | internal registry/engine class | verified fact |
+| mNSeff | R/mNSeff.R | function | TRUE | TRUE | metric wrapper | verified fact |
+| NSeff | R/NSeff.R | function | TRUE | TRUE | metric wrapper | verified fact |
 | pbias | R/pbias.R | function | TRUE | TRUE | metric wrapper | verified fact |
 | pfactor | R/pfactor.R | function | FALSE | FALSE | metric wrapper | verified fact |
 | .epsilon_details | R/preproc.R | function | FALSE | FALSE | internal helper | verified fact |
@@ -221,7 +221,6 @@ Metadata findings:
 | preproc | R/preproc.R | function | TRUE | TRUE | public orchestration wrapper | verified fact |
 | print.hydro_preproc | R/preproc.R | function | FALSE | TRUE | support/helper | likely inference |
 | r | R/r.R | function | TRUE | TRUE | metric wrapper | verified fact |
-| rNSeff | R/rNSeff.R | function | TRUE | TRUE | metric wrapper | verified fact |
 | .get_engine | R/registry.R | function | FALSE | FALSE | registry-related helper | verified fact |
 | .get_registry | R/registry.R | function | FALSE | FALSE | registry-related helper | verified fact |
 | get_metric | R/registry.R | function | FALSE | FALSE | registry-related helper | verified fact |
@@ -229,6 +228,7 @@ Metadata findings:
 | register_core_metrics | R/registry.R | function | FALSE | FALSE | registry-related helper | verified fact |
 | register_metric | R/registry.R | function | FALSE | FALSE | registry-related helper | verified fact |
 | rfactor | R/rfactor.R | function | FALSE | FALSE | metric wrapper | verified fact |
+| rNSeff | R/rNSeff.R | function | TRUE | TRUE | metric wrapper | verified fact |
 | rsr | R/rsr.R | function | TRUE | TRUE | metric wrapper | verified fact |
 | validate_equal_length | R/validate.R | function | FALSE | FALSE | support/helper | likely inference |
 | validate_finite | R/validate.R | function | FALSE | FALSE | support/helper | likely inference |
@@ -240,27 +240,25 @@ Metadata findings:
 ### Wrapper and Alias Surface
 | Name | Source file | Wrapper target | Exported | Documented | Verified status |
 | --- | --- | --- | --- | --- | --- |
-| APFB | R/APFB.R | apfb | TRUE | TRUE | verified fact |
-| HFB | R/HFB.R | hfb | TRUE | TRUE | verified fact |
-| NSeff | R/NSeff.R | nse | TRUE | TRUE | verified fact |
 | alpha | R/alpha.R | alpha | TRUE | TRUE | verified fact |
+| APFB | R/APFB.R | apfb | TRUE | TRUE | verified fact |
 | beta | R/beta.R | beta | TRUE | TRUE | verified fact |
 | cp | R/cp.R | cp | FALSE | FALSE | verified fact |
-| mNSeff | R/mNSeff.R | mnse | TRUE | TRUE | verified fact |
+| HFB | R/HFB.R | hfb | TRUE | TRUE | verified fact |
 | mae | R/mae.R | mae | TRUE | TRUE | verified fact |
+| mNSeff | R/mNSeff.R | mnse | TRUE | TRUE | verified fact |
+| NSeff | R/NSeff.R | nse | TRUE | TRUE | verified fact |
 | pbias | R/pbias.R | pbias | TRUE | TRUE | verified fact |
 | pfactor | R/pfactor.R | pfactor | FALSE | FALSE | verified fact |
 | r | R/r.R | r | TRUE | TRUE | verified fact |
-| rNSeff | R/rNSeff.R | rnse | TRUE | TRUE | verified fact |
 | rfactor | R/rfactor.R | rfactor | FALSE | FALSE | verified fact |
+| rNSeff | R/rNSeff.R | rnse | TRUE | TRUE | verified fact |
 | rsr | R/rsr.R | rsr | TRUE | TRUE | verified fact |
 | wsNSeff | R/wsNSeff.R | wsnse | TRUE | TRUE | verified fact |
 
 ### Registry-related Objects
 | Name | Source file | Object type | Exported | Documented | Likely role | Verified status |
 | --- | --- | --- | --- | --- | --- | --- |
-| HydroEngine | R/HydroEngine.R | R6 class | FALSE | FALSE | internal registry/engine class | verified fact |
-| MetricRegistry | R/MetricRegistry.R | R6 class | FALSE | FALSE | internal registry/engine class | verified fact |
 | core_metric_spec_alpha | R/core_metrics.R | function | FALSE | FALSE | registry spec builder | verified fact |
 | core_metric_spec_apfb | R/core_metrics.R | function | FALSE | FALSE | registry spec builder | verified fact |
 | core_metric_spec_beta | R/core_metrics.R | function | FALSE | FALSE | registry spec builder | verified fact |
@@ -304,6 +302,8 @@ Metadata findings:
 | core_metric_spec_wsnse | R/core_metrics.R | function | FALSE | FALSE | registry spec builder | verified fact |
 | evaluate_metrics | R/engine.R | function | FALSE | FALSE | registry-related helper | verified fact |
 | .gof_resolve_methods | R/gof.R | function | FALSE | FALSE | registry-related helper | verified fact |
+| HydroEngine | R/HydroEngine.R | R6 class | FALSE | FALSE | internal registry/engine class | verified fact |
+| MetricRegistry | R/MetricRegistry.R | R6 class | FALSE | FALSE | internal registry/engine class | verified fact |
 | .get_engine | R/registry.R | function | FALSE | FALSE | registry-related helper | verified fact |
 | .get_registry | R/registry.R | function | FALSE | FALSE | registry-related helper | verified fact |
 | get_metric | R/registry.R | function | FALSE | FALSE | registry-related helper | verified fact |
@@ -320,8 +320,8 @@ Metadata findings:
 | internal registry/engine class |  2 |
 | metric wrapper | 16 |
 | public orchestration wrapper |  4 |
-| registry spec builder | 41 |
 | registry-related helper |  9 |
+| registry spec builder | 41 |
 | support/helper | 14 |
 
 ## Section 4 - Testing and QA Inventory
@@ -370,12 +370,12 @@ QA findings:
 | --- | --- | --- | --- | --- | --- |
 | CI | OS and R-version matrix breadth | .github/workflows/R-CMD-check.yml | partial | verified fact | OS: ubuntu-latest, windows-latest. R versions: 4.3, 4.4, devel. |
 | CI | R-CMD-check workflow | .github/workflows/R-CMD-check.yml | partial | verified fact | Detected 1 workflow file(s); coverage/lint/pkgdown/release workflows are absent. |
-| CRAN-oriented readiness signals | Release-like metadata and checks | DESCRIPTION; .github/workflows/R-CMD-check.yml | partial | verified fact | Placeholder maintainer identity, missing URL/BugReports, and CI shortcuts reduce release-readiness signals. |
 | compatibility documentation | hydroGOF-compatibility auditability | COMPATIBILITY_TRACKER.md; DECISIONS.md; NAMESPACE | divergent | verified fact | Compatibility notes exist, but tracker entries are not consistently aligned with exported functions. |
-| docs | NEWS presence | NEWS* | missing | verified fact | No root NEWS detected. |
-| docs | README completeness | README* | missing | verified fact | No root README detected. |
-| docs | Rd example sections | man/*.Rd | missing | verified fact | 0 of 20 Rd files contain an examples section. |
+| CRAN-oriented readiness signals | Release-like metadata and checks | DESCRIPTION; .github/workflows/R-CMD-check.yml | partial | verified fact | Placeholder maintainer identity, missing URL/BugReports, and CI shortcuts reduce release-readiness signals. |
 | docs | man page coverage relative to exports | man/*.Rd; NAMESPACE | complete | verified fact | 17 of 17 exported objects have an Rd alias match. |
+| docs | NEWS presence | NEWS* | missing | verified fact | No root NEWS detected. |
+| docs | Rd example sections | man/*.Rd | missing | verified fact | 0 of 20 Rd files contain an examples section. |
+| docs | README completeness | README* | missing | verified fact | No root README detected. |
 | dynamic verification | Runtime verification commands recorded | notes/audit/dynamic_verification_plan.md | complete | recommendation | Commands are defined, but command outcomes remain environment-specific until executed. |
 | dynamic verification | Runtime verification outcomes | Execution evidence not stored by this script | unverified | recommendation | This audit records next-step commands only; runtime success/failure must be captured separately. |
 | exports | NAMESPACE export declarations | NAMESPACE | complete | verified fact | 17 exported objects detected. |
@@ -400,7 +400,7 @@ QA findings:
 | DEF-004 | documentation | Repository has no top-level README | medium | verified fact | No README* file was found at the package root. | New users and reviewers lack a primary package overview and install/use guidance. | Add a root README that describes purpose, installation, and core usage patterns. | README* |
 | DEF-005 | documentation | Repository has no top-level NEWS file | low | verified fact | No NEWS* file was found at the package root. | Change tracking is less auditable during stabilization and release preparation. | Add a NEWS or NEWS.md file for release-facing change history. | NEWS* |
 | DEF-006 | documentation | No vignettes are present | medium | verified fact | The vignettes/ directory is absent or contains no vignette sources. | Long-form usage guidance is missing for a metrics package with multiple wrappers and compatibility behaviors. | Add at least one vignette or explicitly document why vignette coverage is intentionally absent. | vignettes; DESCRIPTION |
-| DEF-007 | compatibility | Compatibility tracker overstates the current public export surface | high | verified fact | COMPATIBILITY_TRACKER.md marks hydroGOF-style items as implemented, but 33 tracked names are not exported via NAMESPACE: KGE, KGEkm, KGElf, KGEnp, NSE, R2, VE, br2 | API compatibility claims are difficult to audit because documentation and namespace evidence disagree. | Reconcile compatibility docs with actual exports, or document which items are method names rather than exported functions. | COMPATIBILITY_TRACKER.md; NAMESPACE; tools/hydrogof_exports.txt |
+| DEF-007 | compatibility | Compatibility tracker overstates the current public export surface | high | verified fact | COMPATIBILITY_TRACKER.md marks hydroGOF-style items as implemented, but 33 tracked names are not exported via NAMESPACE: br2, cp, d, dr, KGE, KGEkm, KGElf, KGEnp | API compatibility claims are difficult to audit because documentation and namespace evidence disagree. | Reconcile compatibility docs with actual exports, or document which items are method names rather than exported functions. | COMPATIBILITY_TRACKER.md; NAMESPACE; tools/hydrogof_exports.txt |
 | DEF-008 | testing gap | No coverage automation or config was detected | medium | verified fact | No coverage workflow, codecov config, or covr-specific repository file was found. | Coverage blind spots are harder to locate before stabilization work begins. | Add a coverage command or workflow and record expected thresholds separately from this audit. | .github/workflows; DESCRIPTION |
 | DEF-009 | CI | No lint automation or config was detected | low | verified fact | No lint workflow and no .lintr config were found. | Style and static-analysis regressions may accumulate unnoticed. | Add lintr configuration and a CI entry point if linting is part of the stabilization bar. | .github/workflows; .lintr |
 | DEF-010 | documentation | Rd example sections are absent | low | verified fact | No \examples{} section was detected across man/*.Rd files. | Example execution cannot contribute runtime evidence during check-like validation. | Add minimal runnable examples for the core public API surface. | man |

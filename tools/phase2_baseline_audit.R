@@ -107,8 +107,12 @@ all_repo_files <- sort(list.files(
   include.dirs = FALSE,
   no.. = TRUE
 ))
-all_repo_files <- all_repo_files[!grepl("(^|/)(\\.git)(/|$)", rel_path(all_repo_files))]
-all_repo_files <- all_repo_files[!startsWith(vapply(all_repo_files, rel_path, character(1)), "notes/audit/")]
+repo_file_paths <- unname(rel_path(all_repo_files))
+keep_repo_files <- !grepl("(^|/)(\\.git)(/|$)", repo_file_paths) &
+  !startsWith(repo_file_paths, "notes/audit/") &
+  !grepl("(^|/)[^/]+\\.Rcheck(/|$)", repo_file_paths) &
+  !grepl("\\.tar\\.gz$", repo_file_paths)
+all_repo_files <- all_repo_files[keep_repo_files]
 
 top_inventory <- data.frame(
   Path = character(),

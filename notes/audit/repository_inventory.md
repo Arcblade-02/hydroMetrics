@@ -8,7 +8,7 @@ Evidence legend:
 - `unverified`: no local evidence was found.
 
 ## Repository Summary
-- Files inventoried (excluding `.git/` and `notes/audit/` outputs): 328
+- Files inventoried (excluding `.git/` and `notes/audit/` outputs): 132
 - Exported objects counted: 17
 - Metric-like functions counted: 57
 - Wrapper-like functions counted: 20

@@ -1,0 +1,36 @@
+Phase 2 Dynamic Verification - Registry Initialization
+Command: library(hydroMetrics); hydroMetrics:::list_metrics()
+Exit status: 0
+Elapsed seconds: 0.340
+
+Evidence class: verified fact
+method used = library(hydroMetrics) + hydroMetrics:::list_metrics()
+registry class = MetricRegistry, R6
+first registry count = 41
+second registry count = 41
+unique id count = 41
+duplicate ids = <none>
+missing required ids = <none>
+
+Raw output:
+
+Attaching package: 'hydroMetrics'
+
+The following object is masked from 'package:base':
+
+    beta
+
+REGISTRY_METHOD: library(hydroMetrics) + hydroMetrics:::list_metrics()
+REGISTRY_CLASS: MetricRegistry, R6
+FIRST_REGISTRY_COUNT: 41
+SECOND_REGISTRY_COUNT: 41
+UNIQUE_ID_COUNT: 41
+DUPLICATE_IDS: <none>
+MISSING_REQUIRED_IDS: <none>
+
+Evidence class: likely inference
+Stable repeated list_metrics() counts provide local evidence against duplicate registration on repeated access.
+Repeated detach/load cycle behavior remains unverified because this script does not alter registry semantics.
+
+Evidence class: recommendation
+Use this file for verified registry-access facts only; do not extend conclusions beyond the recorded repeated-access evidence.

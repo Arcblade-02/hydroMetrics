@@ -1,0 +1,754 @@
+Phase 2 Dynamic Verification - Lint
+Command: lintr::lint_package()
+Exit status: 0
+Elapsed seconds: 4.560
+
+Evidence class: verified fact
+lint status = success
+lint count = 244
+lint types = style=232, warning=12
+lint files = core_metrics.R=70, performance_suite.R=34, hm_prepare.R=25, MetricRegistry.R=22, gof.R=10, HFB.R=8, HydroEngine.R=7, preproc.R=7, test-phase2-dynamic-verification-exists.R=7, test-legacy-nse-aliases.R=6, test-performance-suite-exists.R=6, test-structural-integrity.R=6, registry.R=5, test-metrics-batch5.R=5, APFB.R=4, test-ggof.R=2, test-hfb.R=2, test-metrics-batch3.R=2, test-metrics-batch4.R=2, valindex.R=2, ggof.R=1, mNSeff.R=1, NSeff.R=1, pfactor.R=1, rfactor.R=1, rNSeff.R=1, test-backward-compatibility.R=1, test-gof.R=1, test-metric-params.R=1, test-metrics-batch2.R=1, testthat.R=1, wsNSeff.R=1
+
+Raw output:
+LINT_STATUS: success
+LINT_COUNT: 244
+LINT_TYPES: style=232, warning=12
+LINT_FILES: core_metrics.R=70, performance_suite.R=34, hm_prepare.R=25, MetricRegistry.R=22, gof.R=10, HFB.R=8, HydroEngine.R=7, preproc.R=7, test-phase2-dynamic-verification-exists.R=7, test-legacy-nse-aliases.R=6, test-performance-suite-exists.R=6, test-structural-integrity.R=6, registry.R=5, test-metrics-batch5.R=5, APFB.R=4, test-ggof.R=2, test-hfb.R=2, test-metrics-batch3.R=2, test-metrics-batch4.R=2, valindex.R=2, ggof.R=1, mNSeff.R=1, NSeff.R=1, pfactor.R=1, rfactor.R=1, rNSeff.R=1, test-backward-compatibility.R=1, test-gof.R=1, test-metric-params.R=1, test-metrics-batch2.R=1, testthat.R=1, wsNSeff.R=1
+inst/benchmarks/performance_suite.R:15:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+  if (.Platform$OS.type == "windows" && exists("memory.size", mode = "function")) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+inst/benchmarks/performance_suite.R:38:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+  time_col <- if ("self.time" %in% colnames(by_self)) "self.time" else colnames(by_self)[[1]]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:52:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 117 characters.
+run_performance_suite <- function(project_root = ".", output_dir = file.path(project_root, "notes", "performance")) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:58:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 92 characters.
+    stop("The 'microbenchmark' package is required for performance_suite.R.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:67:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+  metric_nse <- get("metric_nse", envir = asNamespace("hydroMetrics"), inherits = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+inst/benchmarks/performance_suite.R:79:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 101 characters.
+  sim_micro_matrix <- cbind(model1 = sim_micro, model2 = sim_micro * 1.02, model3 = sim_micro * 0.98)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:80:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 101 characters.
+  obs_micro_matrix <- cbind(model1 = obs_micro, model2 = obs_micro * 1.01, model3 = obs_micro * 0.99)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:85:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+    gof_multi = gof_fn(sim_micro, obs_micro, methods = c("NSE", "KGE", "rmse", "pbias")),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+inst/benchmarks/performance_suite.R:86:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+    gof_batch = gof_fn(sim_micro_matrix, obs_micro_matrix, methods = c("NSE", "KGE")),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+inst/benchmarks/performance_suite.R:101:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 104 characters.
+  summary_values$direct_nse_median_ns <- unname(mb_summary$median[mb_summary$expr == "direct_nse"][[1]])
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:102:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 104 characters.
+  summary_values$gof_single_median_ns <- unname(mb_summary$median[mb_summary$expr == "gof_single"][[1]])
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:103:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+  summary_values$gof_multi_median_ns <- unname(mb_summary$median[mb_summary$expr == "gof_multi"][[1]])
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:104:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+  summary_values$gof_batch_median_ns <- unname(mb_summary$median[mb_summary$expr == "gof_batch"][[1]])
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:124:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+  sim_scale_base <- matrix(stats::rnorm(n_scale * 20L, mean = 20, sd = 6), nrow = n_scale, ncol = 20L)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:125:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 108 characters.
+  obs_scale_base <- sim_scale_base + matrix(stats::rnorm(n_scale * 20L, sd = 2), nrow = n_scale, ncol = 20L)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:127:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 123 characters.
+  tm_scale_10 <- system.time(invisible(gof_fn(sim_scale_base[, 1:10, drop = FALSE], obs_scale_base[, 1:10, drop = FALSE])))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:129:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+  ratio_20_vs_10 <- as.numeric(tm_scale_20[["elapsed"]] / tm_scale_10[["elapsed"]])
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+inst/benchmarks/performance_suite.R:130:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 95 characters.
+  linear_scaling <- is.finite(ratio_20_vs_10) && ratio_20_vs_10 >= 1.5 && ratio_20_vs_10 <= 2.5
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:146:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+      sprintf("linear_scaling_confirmed: %s", if (linear_scaling) "TRUE" else "FALSE")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+inst/benchmarks/performance_suite.R:149:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+  summary_values$matrix_scaling_elapsed_sec <- as.numeric(tm_scale_20[["elapsed"]])
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+inst/benchmarks/performance_suite.R:181:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+    invisible(gof_fn(sim_profile, obs_profile, methods = c("NSE", "KGE", "rmse", "pbias")))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+inst/benchmarks/performance_suite.R:190:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+  dispatch_pct <- .perf_extract_pct(by_self, "registry|dispatch|//.gof_|evaluate|resolve_methods")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:193:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 109 characters.
+    metric_pct <- as.numeric(summary_values$direct_nse_median_ns / summary_values$gof_single_median_ns) * 100
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:195:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 101 characters.
+    profile_note <- "No Rprof samples captured; used direct NSE vs gof single median ratio fallback."
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:215:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+  run_case <- function(case_name, sim, obs, transform = "none", epsilon = NULL) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+inst/benchmarks/performance_suite.R:240:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+      deterministic <- identical(conditionMessage(first), conditionMessage(second))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+inst/benchmarks/performance_suite.R:242:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 136 characters.
+      deterministic <- isTRUE(all.equal(as.numeric(first$metrics), as.numeric(second$metrics), tolerance = 0, check.attributes = FALSE))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:261:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+    run_case("zero_variance_obs", stats::rnorm(1000L, mean = 5, sd = 0.1), rep(5, 1000L)),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+inst/benchmarks/performance_suite.R:262:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 105 characters.
+    run_case("very_small_numbers", rep(1e-12, 1000L) + stats::runif(1000L, 0, 1e-14), rep(1e-12, 1000L)),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:263:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 101 characters.
+    run_case("very_large_numbers", rep(1e12, 1000L) + stats::runif(1000L, 0, 1e9), rep(1e12, 1000L)),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:264:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 126 characters.
+    run_case("log_transform_near_zero", c(0, rep(1e-12, 999L)), c(1e-14, rep(1e-12, 999L)), transform = "log", epsilon = 1e-6)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inst/benchmarks/performance_suite.R:279:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+    run_errors <- c(run_errors, "Overflow warning detected in edge case section.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+inst/benchmarks/performance_suite.R:287:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+      "tm <- system.time(suppressPackageStartupMessages(library(hydroMetrics)))",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+inst/benchmarks/performance_suite.R:307:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+    run_errors <- c(run_errors, paste("Load time command failed:", conditionMessage(load_output)))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+R/APFB.R:49:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+  years <- suppressWarnings(as.integer(format(as.POSIXlt(index, tz = "UTC"), "%Y")))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+R/APFB.R:51:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+    stop("APFB could not derive calendar year from the time index.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+R/APFB.R:56:1: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+APFB <- function(sim, obs, ...) {
+^~~~
+R/APFB.R:58:6: style: [indentation_linter] Indentation should be 8 spaces but is 6 spaces.
+      !(inherits(obs, "zoo") || inherits(obs, "xts"))) {
+     ^~~
+R/core_metrics.R:10:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+    description = "NSE computed as 1 - SSE/SST using observed values as baseline.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+R/core_metrics.R:14:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 142 characters.
+    references = "Nash, J.E. & Sutcliffe, J.V. (1970). River flow forecasting through conceptual models part I - A discussion of principles.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:33:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+    references = "Standard RMSE definition in statistical error analysis texts.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+R/core_metrics.R:57:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 145 characters.
+    references = "Moriasi, D.N., et al. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:76:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+    stop("cp is undefined because persistence baseline variance is zero.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+R/core_metrics.R:87:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 92 characters.
+    description = "Persistence skill score against one-step observed persistence baseline.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+R/core_metrics.R:91:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+    references = "Persistence skill-score definition from hydrology model-evaluation literature.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+R/core_metrics.R:119:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+    description = "Mean absolute error normalized by mean absolute observations.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+R/core_metrics.R:123:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+    references = "Project-defined compatibility rfactor: mean(abs(sim - obs)) / mean(abs(obs)).",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+R/core_metrics.R:152:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+    description = "Proportion of paired values within a relative tolerance band around observations.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:156:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 94 characters.
+    references = "Project-defined compatibility pfactor using tolerance-band hit proportion.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+R/core_metrics.R:175:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+    description = "MAE computed as mean absolute deviation between sim and obs.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+R/core_metrics.R:179:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+    references = "Standard MAE definition in statistical error analysis literature.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+R/core_metrics.R:198:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+    references = "Standard MSE definition in statistical error analysis literature.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+R/core_metrics.R:207:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+    stop("NRMSE is undefined when mean(obs) is 0 (divide by zero).", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+R/core_metrics.R:221:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+    references = "Common NRMSE normalization by mean(obs) in model-evaluation practice.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+R/core_metrics.R:249:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 106 characters.
+    references = "KGE component definition in hydrology literature using bias ratio mean(sim)/mean(obs).",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:277:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 109 characters.
+    references = "KGE component definition in hydrology literature using variability ratio sd(sim)/sd(obs).",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:288:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+    stop(sprintf("%s is undefined for constant series.", metric_id), call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+R/core_metrics.R:309:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+    description = "Pearson product-moment correlation coefficient between sim and obs.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+R/core_metrics.R:366:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+    description = "KGE (2009) using r, alpha=sd(sim)/sd(obs), and beta=mean(sim)/mean(obs).",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+R/core_metrics.R:370:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 153 characters.
+    references = "Kling, H., Fuchs, M., & Paulin, M. (2009). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:397:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 145 characters.
+    references = "Moriasi, D.N., et al. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:419:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 116 characters.
+    references = "Standard mean absolute percentage error definition in forecasting and error-analysis literature.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:441:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 107 characters.
+    references = "Standard mean percentage error definition in forecasting and error-analysis literature.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:464:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 164 characters.
+    references = "Criss, R.E. & Winston, W.E. (2008). Do Nash values have value? Discussion of hydrologic model performance metrics including volumetric concepts.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:526:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+    description = "Willmott d (1981) using squared-error agreement formulation.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+R/core_metrics.R:550:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+    description = "Modified Willmott agreement index using absolute deviations.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+R/core_metrics.R:554:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 111 characters.
+    references = "Willmott, C.J., Robeson, S.M., & Matsuura, K. (2012). A refined index of model performance.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:578:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 87 characters.
+    description = "Relative squared-error agreement index using obs-normalized terms.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+R/core_metrics.R:582:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+    references = "Willmott agreement-index family with relative normalization by observations.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+R/core_metrics.R:606:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+    description = "Relative absolute-error agreement index using obs-normalized terms.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+R/core_metrics.R:610:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 95 characters.
+    references = "Willmott agreement-index family with relative absolute-error normalization.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+R/core_metrics.R:645:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+    description = "Bias-penalized Pearson r^2 using variability and mean-ratio penalties.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+R/core_metrics.R:649:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 95 characters.
+    references = "Project-defined bias-corrected R2 variant pending dedicated paper citation.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+R/core_metrics.R:683:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+    description = "ubRMSE computed from anomalies relative to each series mean.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+R/core_metrics.R:687:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+    references = "Standard unbiased RMSE definition in model-evaluation literature.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+R/core_metrics.R:695:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 109 characters.
+    stop("wNSE undefined because obs contains negative values (weights must be nonnegative).", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:715:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+    references = "NSE weighted variants in hydrology literature; exact citation to be refined.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+R/core_metrics.R:723:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 110 characters.
+    stop("wsNSE undefined because obs contains negative values (weights must be nonnegative).", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:740:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+    description = "Weighted NSE variant using squared observation weights w = obs^2.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+R/core_metrics.R:744:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+    references = "NSE weighted variants in hydrology literature; exact citation to be refined.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+R/core_metrics.R:771:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+    references = "NSE relative variants in hydrology literature; exact citation to be refined.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+R/core_metrics.R:791:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+    description = "Modified NSE using absolute-error numerator and denominator.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+R/core_metrics.R:795:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+    references = "NSE modified variants in hydrology literature; exact citation to be refined.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+R/core_metrics.R:807:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+    stop("KGEkm undefined because mean(sim) == 0 or mean(obs) == 0.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+R/core_metrics.R:831:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 94 characters.
+    description = "KGE variant using gamma = CV(sim)/CV(obs) and beta = mean(sim)/mean(obs).",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+R/core_metrics.R:835:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 127 characters.
+    references = "KGE variant definitions in hydrology practice using coefficient-of-variation ratio; citation to be refined.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:843:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 110 characters.
+    stop("KGElf undefined because sim/obs contain negative values for low-flow log transform.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:860:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+    description = "Low-flow KGE using log1p-transformed series prior to KGE computation.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+R/core_metrics.R:864:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 103 characters.
+    references = "KGE low-flow emphasis variants in hydrology practice; exact citation to be refined.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:897:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 95 characters.
+    description = "Nonparametric KGE using Spearman correlation, IQR ratio, and median ratio.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+R/core_metrics.R:901:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 103 characters.
+    references = "Nonparametric KGE formulations in hydrology practice; exact citation to be refined.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:909:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+    stop("sKGE requires ts inputs with monthly frequency for seasonal grouping.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+R/core_metrics.R:934:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+    stop("sKGE has no valid seasonal groups for KGE computation.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+R/core_metrics.R:945:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 87 characters.
+    description = "Seasonal KGE as mean monthly KGE over ts groups with frequency 12.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+R/core_metrics.R:949:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 113 characters.
+    references = "Seasonal KGE variant definition implemented per project decision pending definitive citation.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:957:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+    stop("pbiasfdc undefined because sim/obs contain negative values.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+R/core_metrics.R:980:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 118 characters.
+    references = "Flow duration curve bias formulation implemented per project decision pending definitive citation.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:987:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+  years <- suppressWarnings(as.integer(format(as.POSIXlt(index, tz = "UTC"), "%Y")))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+R/core_metrics.R:1011:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+    stop("APFB is undefined because annual observed peak includes zero.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+R/core_metrics.R:1027:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+    description = "APFB as mean percent bias between annual simulated and observed peak flows.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+R/core_metrics.R:1031:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+    references = "Clean-room APFB compatibility implementation over yearly maxima.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+R/core_metrics.R:1039:6: style: [indentation_linter] Indentation should be 8 spaces but is 6 spaces.
+      length(threshold_prob) != 1L ||
+     ^~~
+R/core_metrics.R:1046:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+  q_high <- as.numeric(stats::quantile(obs, probs = threshold_prob, type = 7, names = FALSE))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+R/core_metrics.R:1049:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 94 characters.
+    stop("HFB requires at least 3 points at or above the high-flow threshold.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+R/core_metrics.R:1071:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+    description = "HFB as percent bias over observations at or above a high-flow quantile threshold.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:1075:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 106 characters.
+    references = "Clean-room HFB compatibility implementation using deterministic quantile thresholding.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+R/core_metrics.R:1098:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+    references = "Pearson correlation coefficient (standard statistical definition).",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+R/core_metrics.R:1144:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 118 characters.
+    references = "Project definition for hydrology compatibility: ratio of simulated to observed standard deviation.",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/ggof.R:6:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+                 epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+R/gof.R:73:7: warning: [object_usage_linter] no visible global function definition for '.hm_is_numeric_vector'
+  if (.hm_is_numeric_vector(x)) {
+      ^~~~~~~~~~~~~~~~~~~~~
+R/gof.R:83:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+      stop("zoo/xts input requires the 'zoo' package to be installed.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+R/gof.R:100:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 100 characters.
+    stop("`sim` and `obs` must both be single-series or both be matrix-like inputs.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+R/gof.R:110:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 95 characters.
+    stop("`sim` and `obs` must be numeric vectors/matrices/data.frames/ts/zoo.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+R/gof.R:113:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+    stop("`sim` and `obs` must have the same dimensions for multi-series gof().", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+R/gof.R:157:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+  if (!is.null(metric_params) && length(ids) == 1L && is.null(names(metric_params))) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+R/gof.R:165:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+    params <- .gof_lookup_metric_params(metric_params, metric_id = ids[[i]], label = labels[[i]])
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+R/gof.R:170:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+      stop(sprintf("`metric_params` for '%s' must be a list.", labels[[i]]), call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+R/gof.R:210:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 104 characters.
+.gof_preproc_call <- function(sim, obs, na_strategy, transform, epsilon_mode, epsilon, epsilon_factor) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+R/gof.R:238:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+                epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+R/HFB.R:1:1: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+HFB <- function(sim, obs, threshold_prob = 0.9, ...) {
+^~~
+R/HFB.R:3:6: style: [indentation_linter] Indentation should be 8 spaces but is 6 spaces.
+      length(threshold_prob) != 1L ||
+     ^~~
+R/HFB.R:10:11: warning: [object_usage_linter] no visible global function definition for '.hm_scalar_sanitize_dots'
+  dots <- .hm_scalar_sanitize_dots(list(...))
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+R/HFB.R:11:16: warning: [object_usage_linter] no visible global function definition for '.hm_scalar_na_method'
+  na_method <- .hm_scalar_na_method(dots)
+               ^~~~~~~~~~~~~~~~~~~~
+R/HFB.R:12:11: warning: [object_usage_linter] no visible global function definition for '.hm_merge_metric_params'
+  dots <- .hm_merge_metric_params(
+          ^~~~~~~~~~~~~~~~~~~~~~~
+R/HFB.R:38:7: warning: [object_usage_linter] no visible global function definition for '.new_hydro_metric_scalar'
+      .new_hydro_metric_scalar(
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+R/HFB.R:54:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+  q_high <- as.numeric(stats::quantile(obs_used, probs = threshold_prob, type = 7, names = FALSE))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+R/HFB.R:57:3: warning: [object_usage_linter] no visible global function definition for '.new_hydro_metric_scalar'
+  .new_hydro_metric_scalar(
+  ^~~~~~~~~~~~~~~~~~~~~~~~
+R/hm_prepare.R:19:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+      stop("zoo/xts input requires the 'zoo' package to be installed.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+R/hm_prepare.R:27:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+      stop(sprintf("`%s` must be a univariate zoo/xts series.", name), call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+R/hm_prepare.R:43:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+.hm_compute_epsilon <- function(sim, obs, epsilon_mode, epsilon, epsilon_factor) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+R/hm_prepare.R:44:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+  if (!is.numeric(epsilon_factor) || length(epsilon_factor) != 1L || is.na(epsilon_factor)) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+R/hm_prepare.R:45:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+    stop("`epsilon_factor` must be a non-missing numeric scalar.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+R/hm_prepare.R:50:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+      stop("`epsilon` must be provided when `epsilon_mode = 'constant'`.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+R/hm_prepare.R:61:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 99 characters.
+      stop("No positive values available for `epsilon_mode = 'auto_min_positive'`.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+R/hm_prepare.R:66:5: style: [commented_code_linter] Remove commented code.
+  # epsilon_mode == "obs_mean_factor"
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/hm_prepare.R:70:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+.hm_apply_transform <- function(sim, obs, transform, epsilon_mode, epsilon, epsilon_factor) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+R/hm_prepare.R:95:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+      stop("log transform requires strictly positive values after epsilon adjustment.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+R/hm_prepare.R:102:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+      stop("sqrt transform requires non-negative values after epsilon adjustment.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+R/hm_prepare.R:108:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+    stop("reciprocal transform requires non-zero values after epsilon adjustment.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+R/hm_prepare.R:116:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+                               transform = c("none", "log", "sqrt", "reciprocal"),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+R/hm_prepare.R:117:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 100 characters.
+                               epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+R/hm_prepare.R:128:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 101 characters.
+  if (inherits(sim, "zoo") || inherits(sim, "xts") || inherits(obs, "zoo") || inherits(obs, "xts")) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+R/hm_prepare.R:130:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+      stop("`sim` and `obs` must both be zoo/xts objects when either is zoo/xts.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+R/hm_prepare.R:133:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+      stop("`sim` and `obs` must both be zoo/xts objects when either is zoo/xts.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+R/hm_prepare.R:136:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+      stop("zoo/xts input requires the 'zoo' package to be installed.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+R/hm_prepare.R:171:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 87 characters.
+      stop("`sim` and `obs` must both be ts objects when either is ts.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+R/hm_prepare.R:173:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 87 characters.
+    if (stats::frequency(sim) != stats::frequency(obs) || length(sim) != length(obs)) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+R/hm_prepare.R:174:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+      stop("`sim` and `obs` ts inputs must have identical frequency and length.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+R/hm_prepare.R:202:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+      stop("Missing values found; use `na_strategy = 'remove'` to drop NA pairs.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+R/hm_prepare.R:213:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 87 characters.
+    stop("At least 1 valid paired value is required after NA handling.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+R/hm_prepare.R:228:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+    stop("At least 1 paired value is required after transformation.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+R/hm_prepare.R:230:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+  if (anyNA(sim_out) || anyNA(obs_out) || any(!is.finite(sim_out)) || any(!is.finite(obs_out))) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+R/HydroEngine.R:1:1: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+HydroEngine <- R6::R6Class(
+^~~~~~~~~~~
+R/HydroEngine.R:23:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 94 characters.
+          stop("`metrics` must be a non-empty character vector of metric ids.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+R/HydroEngine.R:31:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+        stop("`metrics` must be a non-empty character vector or metric-call list.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+R/HydroEngine.R:40:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+        if (!is.character(metric_id) || length(metric_id) != 1L || !nzchar(metric_id)) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+R/HydroEngine.R:41:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+          stop("Each metric call must include a non-empty character `id`.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+R/HydroEngine.R:49:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+          stop(sprintf("Metric params for '%s' must be a list.", metric_id), call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+R/HydroEngine.R:65:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 106 characters.
+          stop(sprintf("Metric '%s' must return a non-missing numeric scalar.", metric$id), call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+R/MetricRegistry.R:1:1: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+MetricRegistry <- R6::R6Class(
+^~~~~~~~~~~~~~
+R/MetricRegistry.R:16:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 106 characters.
+      allowed_categories <- c("error", "efficiency", "bias", "correlation", "agreement", "scale", "other")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+R/MetricRegistry.R:25:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+          sprintf("Missing required field(s): %s", paste(missing_fields, collapse = ", ")),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+R/MetricRegistry.R:40:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+      if (!is.character(spec$name) || length(spec$name) != 1L || !nzchar(spec$name)) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+R/MetricRegistry.R:43:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 107 characters.
+      if (!is.character(spec$description) || length(spec$description) != 1L || !nzchar(spec$description)) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/MetricRegistry.R:44:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 87 characters.
+        stop("`spec$description` must be a non-empty character scalar.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+R/MetricRegistry.R:46:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+      if (!is.character(spec$category) || length(spec$category) != 1L || !nzchar(spec$category)) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+R/MetricRegistry.R:47:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+        stop("`spec$category` must be a non-empty character scalar.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+R/MetricRegistry.R:58:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+      if (!is.numeric(spec$perfect) || length(spec$perfect) != 1L || is.na(spec$perfect)) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+R/MetricRegistry.R:59:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+        stop("`spec$perfect` must be a non-missing numeric scalar.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+R/MetricRegistry.R:62:10: style: [indentation_linter] Indentation should be 12 spaces but is 10 spaces.
+          (!is.numeric(spec$range) || length(spec$range) != 2L || anyNA(spec$range))) {
+         ^~~
+R/MetricRegistry.R:62:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 87 characters.
+          (!is.numeric(spec$range) || length(spec$range) != 2L || anyNA(spec$range))) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+R/MetricRegistry.R:63:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+        stop("`spec$range` must be NULL or a numeric vector of length 2.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+R/MetricRegistry.R:65:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 104 characters.
+      if (!is.character(spec$references) || length(spec$references) != 1L || !nzchar(spec$references)) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+R/MetricRegistry.R:66:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 95 characters.
+        stop("`spec$references` must be a non-empty character citation string.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+R/MetricRegistry.R:68:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 113 characters.
+      if (!is.character(spec$version_added) || length(spec$version_added) != 1L || !nzchar(spec$version_added)) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+R/MetricRegistry.R:69:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+        stop("`spec$version_added` must be a non-empty character scalar.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+R/MetricRegistry.R:71:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+      if (!grepl("^//d+//.//d+//.//d+([.-][0-9A-Za-z]+)*$", spec$version_added)) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+R/MetricRegistry.R:72:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 101 characters.
+        stop("`spec$version_added` must follow a SemVer-like format (e.g., '0.1.0').", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+R/MetricRegistry.R:84:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+        stop(sprintf("Metric id '%s' is already registered.", spec$id), call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+R/MetricRegistry.R:117:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+      specs <- lapply(ids, function(id) get(id, envir = private$store, inherits = FALSE))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+R/MetricRegistry.R:130:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 87 characters.
+        tags = vapply(specs, function(x) paste(x$tags, collapse = "; "), character(1)),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+R/mNSeff.R:1:1: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+mNSeff <- function(sim, obs, ...) {
+^~~~~~
+R/NSeff.R:1:1: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+NSeff <- function(sim, obs, ...) {
+^~~~~
+R/pfactor.R:1:43: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+pfactor <- function(sim, obs, tol = 0.10, na.rm = TRUE, ...) {
+                                          ^~~~~
+R/preproc.R:18:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+.epsilon_details <- function(transform, epsilon_mode, epsilon, epsilon_factor, sim, obs) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+R/preproc.R:28:5: warning: [object_usage_linter] no visible global function definition for '.hm_compute_epsilon'
+    .hm_compute_epsilon(sim, obs, epsilon_mode, epsilon, epsilon_factor)
+    ^~~~~~~~~~~~~~~~~~~
+R/preproc.R:42:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+.new_hydro_preproc <- function(payload, transform, epsilon_mode, epsilon, epsilon_factor) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+R/preproc.R:71:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+                    epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+R/preproc.R:81:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 103 characters.
+  na_strategy <- .preproc_apply_na_compat(na_strategy, dots, na_strategy_missing = na_strategy_missing)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+R/preproc.R:83:14: warning: [object_usage_linter] no visible global function definition for '.hm_prepare_inputs'
+  payload <- .hm_prepare_inputs(
+             ^~~~~~~~~~~~~~~~~~
+R/preproc.R:105:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+      "<hydro_preproc: n_original=%d, n_aligned=%d, n_removed_na=%d, n_used=%d>/n",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+R/registry.R:18:5: warning: [object_usage_linter] no visible global function definition for 'core_metric_spec_beta'
+    core_metric_spec_beta(),
+    ^~~~~~~~~~~~~~~~~~~~~
+R/registry.R:19:5: warning: [object_usage_linter] no visible global function definition for 'core_metric_spec_alpha'
+    core_metric_spec_alpha(),
+    ^~~~~~~~~~~~~~~~~~~~~~
+R/registry.R:45:5: warning: [object_usage_linter] no visible global function definition for 'core_metric_spec_apfb'
+    core_metric_spec_apfb(),
+    ^~~~~~~~~~~~~~~~~~~~~
+R/registry.R:46:5: warning: [object_usage_linter] no visible global function definition for 'core_metric_spec_hfb'
+    core_metric_spec_hfb(),
+    ^~~~~~~~~~~~~~~~~~~~
+R/registry.R:80:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+register_metric <- function(id, fun, name, description, references = NULL, tags = NULL) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+R/rfactor.R:1:31: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+rfactor <- function(sim, obs, na.rm = TRUE, ...) {
+                              ^~~~~
+R/rNSeff.R:1:1: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+rNSeff <- function(sim, obs, ...) {
+^~~~~~
+R/valindex.R:2:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+  if (is.null(fun) || !is.character(fun) || length(fun) == 0L || any(!nzchar(fun))) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+R/valindex.R:3:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+    stop("`fun` must be provided as a non-empty character vector.", call. = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+R/wsNSeff.R:1:1: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+wsNSeff <- function(sim, obs, ...) {
+^~~~~~~
+tests/testthat.R:4:27: style: [trailing_blank_lines_linter] Add a terminal newline.
+test_check("hydroMetrics")
+                          ^
+tests/testthat/test-backward-compatibility.R:6:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+  ref <- evaluate_metrics(sim = sim, obs = obs, metrics = c("nse", "rmse", "pbias"))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+tests/testthat/test-ggof.R:26:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+  expect_false(any(c("transform", "na_strategy", "epsilon_mode") %in% colnames(out_no_meta)))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+tests/testthat/test-ggof.R:27:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+  expect_true(all(c("transform", "na_strategy", "epsilon_mode") %in% colnames(out_meta)))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+tests/testthat/test-gof.R:21:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+  out <- gof(sim = sim, obs = obs, methods = c("NSE", "rmse"), na_strategy = "fail")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+tests/testthat/test-hfb.R:29:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+test_that("HFB errors when fewer than three points meet the high-flow threshold", {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+tests/testthat/test-hfb.R:50:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+test_that("HFB returns a numerically coercible scalar with required attributes", {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+tests/testthat/test-legacy-nse-aliases.R:6:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+  expect_equal(mNSeff(sim, obs), as.numeric(gof(sim, obs, methods = "mnse")[[1]]))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+tests/testthat/test-legacy-nse-aliases.R:7:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+  expect_equal(rNSeff(sim, obs), as.numeric(gof(sim, obs, methods = "rnse")[[1]]))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+tests/testthat/test-legacy-nse-aliases.R:8:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+  expect_equal(wsNSeff(sim, obs), as.numeric(gof(sim, obs, methods = "wsnse")[[1]]))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+tests/testthat/test-legacy-nse-aliases.R:11:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+test_that("legacy NSE aliases return deterministic values for a fixed example", {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+tests/testthat/test-legacy-nse-aliases.R:21:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+test_that("legacy NSE aliases follow underlying denominator and length guard behavior", {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+tests/testthat/test-legacy-nse-aliases.R:36:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 92 characters.
+test_that("wsNSeff remains a strict alias and does not support external weight injection", {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+tests/testthat/test-metric-params.R:52:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+test_that("metrics without params are unaffected by metric call normalization", {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+tests/testthat/test-metrics-batch2.R:33:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 94 characters.
+  out <- evaluate_metrics(sim = sim, obs = obs, metrics = c("mae", "mse", "nrmse", "r", "r2"))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+tests/testthat/test-metrics-batch3.R:38:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+  out <- evaluate_metrics(sim, obs, c("kge", "rsr", "mape", "mpe", "ve", "nrmse_sd"))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+tests/testthat/test-metrics-batch3.R:41:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+  expect_equal(values[["kge"]], 1 - sqrt((r - 1)^2 + (alpha - 1)^2 + (beta - 1)^2))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+tests/testthat/test-metrics-batch4.R:37:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+  dr_denom <- sum(abs(sim - obs_mean) / abs(obs) + abs(obs - obs_mean) / abs(obs))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+tests/testthat/test-metrics-batch4.R:43:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+  sd_penalty <- min(stats::sd(sim), stats::sd(obs)) / max(stats::sd(sim), stats::sd(obs))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+tests/testthat/test-metrics-batch5.R:11:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+  expect_identical(out$metric, c("rnse", "mnse", "wnse", "wsnse", "ubrmse", "ssq"))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+tests/testthat/test-metrics-batch5.R:17:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+  out <- evaluate_metrics(sim, obs, c("rnse", "mnse", "wnse", "wsnse", "ubrmse", "ssq"))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+tests/testthat/test-metrics-batch5.R:33:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+  rnse_expected <- 1 - sum(((sim - obs) / obs)^2) / sum(((obs - obs_mean) / obs)^2)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+tests/testthat/test-metrics-batch5.R:36:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+  wsnse_expected <- 1 - sum((obs^2) * (sim - obs)^2) / sum((obs^2) * (obs - obs_mean)^2)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+tests/testthat/test-metrics-batch5.R:40:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+  out <- evaluate_metrics(sim, obs, c("rnse", "mnse", "wnse", "wsnse", "ubrmse", "ssq"))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+tests/testthat/test-performance-suite-exists.R:2:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+  pkg_root <- normalizePath(file.path(testthat::test_path(), "..", ".."), mustWork = TRUE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+tests/testthat/test-performance-suite-exists.R:3:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+  if (!file.exists(file.path(pkg_root, "DESCRIPTION")) || !dir.exists(file.path(pkg_root, "tools"))) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-performance-suite-exists.R:6:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 92 characters.
+  expect_true(file.exists(file.path(pkg_root, "inst", "benchmarks", "performance_suite.R")))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+tests/testthat/test-performance-suite-exists.R:7:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+  expect_true(file.exists(file.path(pkg_root, "tools", "run_performance_suite.R")))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+tests/testthat/test-performance-suite-exists.R:11:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+  pkg_root <- normalizePath(file.path(testthat::test_path(), "..", ".."), mustWork = TRUE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+tests/testthat/test-performance-suite-exists.R:12:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+  if (!file.exists(file.path(pkg_root, "DESCRIPTION")) || !dir.exists(file.path(pkg_root, "notes"))) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-phase2-dynamic-verification-exists.R:11:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+    "Phase 2 dynamic verification source artifacts are unavailable in this test context."
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+tests/testthat/test-phase2-dynamic-verification-exists.R:16:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 94 characters.
+  expect_true(file.exists(repo_path("notes", "dynamic-verification", "load_all_results.txt")))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+tests/testthat/test-phase2-dynamic-verification-exists.R:17:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 94 characters.
+  expect_true(file.exists(repo_path("notes", "dynamic-verification", "testthat_results.txt")))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+tests/testthat/test-phase2-dynamic-verification-exists.R:18:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+  expect_true(file.exists(repo_path("notes", "dynamic-verification", "check_results.txt")))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+tests/testthat/test-phase2-dynamic-verification-exists.R:19:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+  expect_true(file.exists(repo_path("notes", "dynamic-verification", "install_results.txt")))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+tests/testthat/test-phase2-dynamic-verification-exists.R:20:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+  expect_true(file.exists(repo_path("notes", "dynamic-verification", "namespace_export_results.txt")))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-phase2-dynamic-verification-exists.R:21:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 92 characters.
+  expect_true(file.exists(repo_path("notes", "dynamic-verification", "runtime_summary.md")))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+tests/testthat/test-structural-integrity.R:13:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 95 characters.
+  hits <- grep("na//.rm|complete//.cases|is//.na//(", metric_bodies, value = TRUE, perl = TRUE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+tests/testthat/test-structural-integrity.R:49:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+    expect_true(is.function(spec$fun), info = sprintf("metric '%s' is not callable", id))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+tests/testthat/test-structural-integrity.R:52:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+    value <- do.call(spec$fun, c(list(fixture$sim, fixture$obs), fixture$params))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+tests/testthat/test-structural-integrity.R:54:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+    expect_true(is.numeric(value), info = sprintf("metric '%s' returned non-numeric", id))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+tests/testthat/test-structural-integrity.R:55:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 94 characters.
+    expect_identical(length(value), 1L, info = sprintf("metric '%s' returned non-scalar", id))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+tests/testthat/test-structural-integrity.R:56:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 100 characters.
+    expect_true(is.finite(as.numeric(value)), info = sprintf("metric '%s' returned non-finite", id))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+
+Evidence class: likely inference
+Non-style lint categories appear in the local lint output and may be release-relevant.
+
+Evidence class: recommendation
+Use the raw lint listing below for any file-level triage; this script does not impose lint thresholds.

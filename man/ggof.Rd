@@ -2,27 +2,78 @@
 % Please edit documentation in R/ggof.R
 \name{ggof}
 \alias{ggof}
-\title{Plot Hydrological Goodness-of-Fit Metrics}
+\title{Return a tabular compatibility summary}
 \usage{
-ggof(sim, obs, methods = NULL, fun = NULL, ...)
+ggof(
+  sim,
+  obs,
+  methods = NULL,
+  na_strategy = c("fail", "remove", "pairwise"),
+  transform = c("none", "log", "sqrt", "reciprocal"),
+  epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
+  epsilon = NULL,
+  epsilon_factor = 1,
+  include_meta = FALSE,
+  fun = NULL,
+  na.rm = NULL,
+  keep = NULL,
+  epsilon.type = NULL,
+  epsilon.value = NULL,
+  ...
+)
 }
 \arguments{
-\item{sim}{Numeric simulated values; a vector for a single series or a matrix/data.frame/ts/zoo for multiple series.}
+\item{sim}{Simulated values supplied as a numeric vector, \code{ts}, matrix-like
+object, or aligned \code{zoo}/\code{xts} series.}
 
-\item{obs}{Numeric observed values with the same shape as \code{sim}.}
+\item{obs}{Observed values with the same shape contract as \code{sim}.}
 
-\item{methods}{Metric name(s) to evaluate.}
+\item{methods}{Metric names to evaluate. When omitted, the package default
+metric set is used.}
 
-\item{fun}{Optional metric name(s), kept for hydroGOF compatibility.}
+\item{na_strategy}{Missing-value strategy forwarded to \code{\link[=preproc]{preproc()}}.}
 
-\item{...}{Additional arguments passed through to \code{\link[=gof]{gof()}}.}
+\item{transform}{Transform mode forwarded to \code{\link[=preproc]{preproc()}}.}
+
+\item{epsilon_mode}{Epsilon policy forwarded to \code{\link[=preproc]{preproc()}}.}
+
+\item{epsilon}{Optional constant epsilon value used when
+\code{epsilon_mode = "constant"}.}
+
+\item{epsilon_factor}{Scaling factor for automatic epsilon modes.}
+
+\item{include_meta}{Whether to append orchestration metadata columns.}
+
+\item{fun}{Optional compatibility alias for \code{methods}.}
+
+\item{na.rm}{Optional compatibility alias for NA handling. \code{TRUE} maps to
+\code{na_strategy = "remove"} and \code{FALSE} maps to \code{"fail"}.}
+
+\item{keep}{Optional compatibility alias for NA handling. \code{"complete"} maps
+to \code{na_strategy = "remove"} and \code{"pairwise"} maps to \code{"pairwise"}.}
+
+\item{epsilon.type}{Optional compatibility alias for \code{epsilon_mode}. Supported
+local spellings are \code{"constant"}, \code{"auto_min_positive"},
+\code{"obs_mean_factor"}, \code{"otherValue"}, and \code{"otherFactor"}.}
+
+\item{epsilon.value}{Optional compatibility alias for the epsilon numeric
+value. It maps to \code{epsilon} when \code{epsilon_mode = "constant"} and to
+\code{epsilon_factor} otherwise.}
+
+\item{...}{Additional compatibility arguments, including \code{metric_params}.}
 }
 \value{
-A \code{ggplot2::ggplot} object visualizing selected metric values.
+A \code{data.frame} with class \code{c("hydro_metrics_batch", "data.frame")}
+containing \code{model}, \code{metric}, \code{value}, and \code{n_obs} columns.
 }
 \description{
-Computes goodness-of-fit metrics and returns a \code{ggplot2} visualization.
+\code{ggof()} is a non-plotting compatibility helper. It returns a tidy
+\code{data.frame} with class \code{"hydro_metrics_batch"} and does not open or mutate
+graphics devices.
 }
-\details{
-Argument order is \verb{sim, obs} (simulation first, observation second).
+\examples{
+sim <- c(1, 2, 3, 4)
+obs <- c(1, 2, 2, 4)
+
+ggof(sim, obs, methods = c("NSE", "rmse"))
 }

@@ -71,7 +71,7 @@ test_that("kge errors on invalid observed moments", {
 test_that("rsr and nrmse_sd error when sd(obs) is zero", {
   expect_error(
     evaluate_metrics(c(1, 2, 3), c(2, 2, 2), "rsr"),
-    "sd\\(obs\\) == 0"
+    "sd\\(obs\\) is zero|sd\\(obs\\) == 0"
   )
   expect_error(
     evaluate_metrics(c(1, 2, 3), c(2, 2, 2), "nrmse_sd"),

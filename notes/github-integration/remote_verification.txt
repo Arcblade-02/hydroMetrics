@@ -1,0 +1,31 @@
+Phase 2 GitHub integration - remote verification
+Remote branches detected:
+- origin/archive/phase2-validation-artifacts
+- origin/dev
+- origin/main
+
+git ls-remote --heads origin:
+219f081addce6cb8d7b23f1fa3fd0c494b637feb	refs/heads/archive/phase2-validation-artifacts
+4935b616b0e989171e21bb2b6d48eb4b9dbac94e	refs/heads/dev
+a45aec62923e6bfccadaff5f6fbd47b60eb03cec	refs/heads/main
+
+git remote show origin:
+* remote origin
+  Fetch URL: https://github.com/Arcblade-02/hydroMetrics.git
+  Push  URL: https://github.com/Arcblade-02/hydroMetrics.git
+  HEAD branch: main
+  Remote branches:
+    archive/phase2-validation-artifacts tracked
+    dev                                 tracked
+    main                                tracked
+  Local branch configured for 'git pull':
+    main merges with remote main
+  Local refs configured for 'git push':
+    archive/phase2-validation-artifacts pushes to archive/phase2-validation-artifacts (up to date)
+    dev                                 pushes to dev                                 (up to date)
+    main                                pushes to main                                (up to date)
+
+dev visible on remote: TRUE
+archive branch visible on remote: TRUE
+Any upstream mismatch: FALSE
+Final publication status: published

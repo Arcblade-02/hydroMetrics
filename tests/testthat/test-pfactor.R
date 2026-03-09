@@ -29,7 +29,7 @@ test_that("pfactor errors for negative tolerance", {
 test_that("pfactor errors when no valid data remain after NA removal", {
   expect_error(
     pfactor(sim = c(NA_real_, NA_real_), obs = c(NA_real_, NA_real_)),
-    "No valid rows remain"
+    "At least 1 valid paired value"
   )
 })
 

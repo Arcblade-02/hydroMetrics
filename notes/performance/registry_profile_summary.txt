@@ -1,0 +1,9 @@
+SECTION 5 - REGISTRY PROFILING
+Generated: 2026-03-05 00:21:31 +0530
+No Rprof samples captured; used direct NSE vs gof single median ratio fallback.
+metric_time_pct: 2.310985
+registry_dispatch_time_pct: 97.689015
+
+Top self-time functions:
+[1] self.time  self.pct   total.time total.pct 
+<0 rows> (or 0-length row.names)

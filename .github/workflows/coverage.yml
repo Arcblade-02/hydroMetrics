@@ -1,0 +1,46 @@
+name: Coverage
+
+on:
+  push:
+    branches: [main, master, dev]
+  pull_request:
+    branches: [main, master, dev]
+  workflow_dispatch:
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: release
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::covr
+          needs: coverage
+
+      - name: Compute coverage summary
+        shell: Rscript {0}
+        run: |
+          cov <- covr::package_coverage(type = "tests")
+          pct <- covr::percent_coverage(cov)
+          lines <- c(
+            sprintf("Coverage percent: %.2f%%", pct),
+            "",
+            capture.output(print(cov))
+          )
+          writeLines(lines, "coverage-summary.txt")
+          cat(paste(lines, collapse = "\n"))
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-summary
+          path: coverage-summary.txt

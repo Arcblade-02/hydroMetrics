@@ -1,0 +1,126 @@
+Function,Position,Argument,Default,Matches planned order
+APFB, 1,sim,,TRUE
+APFB, 2,obs,,TRUE
+APFB, 3,na.rm,NULL,TRUE
+APFB, 4,...,,TRUE
+HFB, 1,sim,,TRUE
+HFB, 2,obs,,TRUE
+HFB, 3,threshold_prob,0.9,TRUE
+HFB, 4,na.rm,NULL,TRUE
+HFB, 5,...,,TRUE
+NSE, 1,sim,,TRUE
+NSE, 2,obs,,TRUE
+NSE, 3,na.rm,NULL,TRUE
+NSE, 4,...,,TRUE
+KGE, 1,sim,,TRUE
+KGE, 2,obs,,TRUE
+KGE, 3,na.rm,NULL,TRUE
+KGE, 4,...,,TRUE
+MAE, 1,sim,,TRUE
+MAE, 2,obs,,TRUE
+MAE, 3,na.rm,NULL,TRUE
+MAE, 4,...,,TRUE
+RMSE, 1,sim,,TRUE
+RMSE, 2,obs,,TRUE
+RMSE, 3,na.rm,NULL,TRUE
+RMSE, 4,...,,TRUE
+PBIAS, 1,sim,,TRUE
+PBIAS, 2,obs,,TRUE
+PBIAS, 3,na.rm,NULL,TRUE
+PBIAS, 4,...,,TRUE
+R2, 1,sim,,TRUE
+R2, 2,obs,,TRUE
+R2, 3,na.rm,NULL,TRUE
+R2, 4,...,,TRUE
+NRMSE, 1,sim,,TRUE
+NRMSE, 2,obs,,TRUE
+NRMSE, 3,norm,"c(""mean"")",TRUE
+NRMSE, 4,na.rm,NULL,TRUE
+NRMSE, 5,...,,TRUE
+NSeff, 1,sim,,TRUE
+NSeff, 2,obs,,TRUE
+NSeff, 3,na.rm,NULL,TRUE
+NSeff, 4,...,,TRUE
+mNSeff, 1,sim,,TRUE
+mNSeff, 2,obs,,TRUE
+mNSeff, 3,na.rm,NULL,TRUE
+mNSeff, 4,...,,TRUE
+rNSeff, 1,sim,,TRUE
+rNSeff, 2,obs,,TRUE
+rNSeff, 3,na.rm,NULL,TRUE
+rNSeff, 4,...,,TRUE
+wsNSeff, 1,sim,,TRUE
+wsNSeff, 2,obs,,TRUE
+wsNSeff, 3,na.rm,NULL,TRUE
+wsNSeff, 4,...,,TRUE
+mae, 1,sim,,TRUE
+mae, 2,obs,,TRUE
+mae, 3,na.rm,NULL,TRUE
+mae, 4,...,,TRUE
+pbias, 1,sim,,TRUE
+pbias, 2,obs,,TRUE
+pbias, 3,na.rm,NULL,TRUE
+pbias, 4,...,,TRUE
+alpha, 1,sim,,TRUE
+alpha, 2,obs,,TRUE
+alpha, 3,na.rm,NULL,TRUE
+alpha, 4,...,,TRUE
+beta, 1,sim,,TRUE
+beta, 2,obs,,TRUE
+beta, 3,na.rm,NULL,TRUE
+beta, 4,...,,TRUE
+r, 1,sim,,TRUE
+r, 2,obs,,TRUE
+r, 3,na.rm,NULL,TRUE
+r, 4,...,,TRUE
+rsr, 1,sim,,TRUE
+rsr, 2,obs,,TRUE
+rsr, 3,na.rm,NULL,TRUE
+rsr, 4,...,,TRUE
+preproc, 1,sim,,TRUE
+preproc, 2,obs,,TRUE
+preproc, 3,na_strategy,"c(""fail"", ""remove"", ""pairwise"")",TRUE
+preproc, 4,transform,"c(""none"", ""log"", ""sqrt"", ""reciprocal"")",TRUE
+preproc, 5,epsilon_mode,"c(""constant"", ""auto_min_positive"", ""obs_mean_factor"")",TRUE
+preproc, 6,epsilon,NULL,TRUE
+preproc, 7,epsilon_factor,1,TRUE
+preproc, 8,na.rm,NULL,TRUE
+preproc, 9,keep,NULL,TRUE
+preproc,10,epsilon.type,NULL,TRUE
+preproc,11,epsilon.value,NULL,TRUE
+preproc,12,...,,TRUE
+gof, 1,sim,,TRUE
+gof, 2,obs,,TRUE
+gof, 3,methods,NULL,TRUE
+gof, 4,na_strategy,"c(""fail"", ""remove"", ""pairwise"")",TRUE
+gof, 5,transform,"c(""none"", ""log"", ""sqrt"", ""reciprocal"")",TRUE
+gof, 6,epsilon_mode,"c(""constant"", ""auto_min_positive"", ""obs_mean_factor"")",TRUE
+gof, 7,epsilon,NULL,TRUE
+gof, 8,epsilon_factor,1,TRUE
+gof, 9,components,FALSE,TRUE
+gof,10,fun,NULL,TRUE
+gof,11,na.rm,NULL,TRUE
+gof,12,keep,NULL,TRUE
+gof,13,epsilon.type,NULL,TRUE
+gof,14,epsilon.value,NULL,TRUE
+gof,15,...,,TRUE
+ggof, 1,sim,,TRUE
+ggof, 2,obs,,TRUE
+ggof, 3,methods,NULL,TRUE
+ggof, 4,na_strategy,"c(""fail"", ""remove"", ""pairwise"")",TRUE
+ggof, 5,transform,"c(""none"", ""log"", ""sqrt"", ""reciprocal"")",TRUE
+ggof, 6,epsilon_mode,"c(""constant"", ""auto_min_positive"", ""obs_mean_factor"")",TRUE
+ggof, 7,epsilon,NULL,TRUE
+ggof, 8,epsilon_factor,1,TRUE
+ggof, 9,include_meta,FALSE,TRUE
+ggof,10,fun,NULL,TRUE
+ggof,11,na.rm,NULL,TRUE
+ggof,12,keep,NULL,TRUE
+ggof,13,epsilon.type,NULL,TRUE
+ggof,14,epsilon.value,NULL,TRUE
+ggof,15,...,,TRUE
+valindex, 1,sim,,TRUE
+valindex, 2,obs,,TRUE
+valindex, 3,fun,NULL,TRUE
+valindex, 4,na.rm,NULL,TRUE
+valindex, 5,...,,TRUE

@@ -1,0 +1,9 @@
+Phase 2 CI repair push and PR status
+Commit hash: 36094df5bc72ed9d59d4262d0b2275305ea3ec2d
+Target branch: dev
+Push result: success
+origin/dev head: 36094df5bc72ed9d59d4262d0b2275305ea3ec2d
+Expected PR effect: dev branch updated; GitHub Actions should rerun on the dev -> main PR.
+Addressed blocker: missing vignette dependency markdown.
+Addressed blocker: unsupported workflow input check_args replaced with args.
+Observed PR result from git only: remote branch updated; GitHub Actions result not observable via git alone.

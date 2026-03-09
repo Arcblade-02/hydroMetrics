@@ -1,0 +1,17 @@
+SECTION 6 - EDGE CASE ROBUSTNESS
+Generated: 2026-03-05 00:21:31 +0530
+
+                    case        status deterministic warning_count
+            all_na_input handled_error          TRUE             0
+         constant_series handled_error          TRUE             0
+       zero_variance_obs            ok          TRUE             0
+      very_small_numbers            ok          TRUE             0
+      very_large_numbers            ok          TRUE             0
+ log_transform_near_zero            ok          TRUE             0
+ overflow_warning
+            FALSE
+            FALSE
+            FALSE
+            FALSE
+            FALSE
+            FALSE

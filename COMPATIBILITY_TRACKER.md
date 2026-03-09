@@ -1,62 +1,70 @@
 # hydroGOF Compatibility Tracker
 
-Generated on: 2026-02-28
+Generated on: 2026-03-04
 
-## Target hydroGOF exports (checklist)
-- [ ] APFB
+## Exported wrappers and core entry points
+- [x] APFB
+- [x] ggof
+- [x] gof
+- [x] HFB
+- [x] mae
+- [x] mNSeff
+- [x] NSeff
+- [x] pbias
+- [x] preproc
+- [x] rNSeff
+- [x] rsr
+- [x] valindex
+- [x] wsNSeff
+
+## Implemented metric ids via `gof()` / registry (not standalone exports)
 - [x] br2
 - [x] cp
 - [x] d
 - [x] dr
-- [x] ggof
-- [x] gof
-- [ ] HFB
 - [x] KGE
 - [x] KGEkm
 - [x] KGElf
 - [x] KGEnp
-- [x] mae
 - [x] md
 - [x] me
 - [x] mNSE
-- [ ] mNSeff
 - [x] mse
 - [x] nrmse
 - [x] NSE
-- [ ] NSeff
-- [x] pbias
 - [x] pbiasfdc
 - [x] pfactor
-- [ ] plot2
-- [ ] plotbands
-- [ ] plotbandsonly
-- [x] preproc
 - [x] R2
 - [x] rd
 - [x] rfactor
 - [x] rmse
 - [x] rNSE
-- [ ] rNSeff
 - [x] rPearson
 - [x] rSD
 - [x] rSpearman
-- [x] rsr
 - [x] sKGE
 - [x] ssq
 - [x] ubRMSE
-- [x] valindex
 - [x] VE
 - [x] wNSE
 - [x] wsNSE
-- [ ] wsNSeff
+
+## Not implemented
+- [ ] plot2
+- [ ] plotbands
+- [ ] plotbandsonly
 
 ## Implemented metrics table (auto)
 | id | name | category | version_added | references |
 | --- | --- | --- | --- | --- |
+| alpha | Variability Ratio | scale | 0.1.0 | KGE component definition in hydrology literature using variability ratio sd(sim)/sd(obs). |
+| apfb | Annual Peak Flow Bias | bias | 0.1.0 | Clean-room APFB compatibility implementation over yearly maxima. |
+| beta | Bias Ratio | bias | 0.1.0 | KGE component definition in hydrology literature using bias ratio mean(sim)/mean(obs). |
 | br2 | Bias-Corrected R-squared | correlation | 0.1.0 | Project-defined bias-corrected R2 variant pending dedicated paper citation. |
 | cp | Coefficient of Persistence | efficiency | 0.1.0 | Persistence skill-score definition from hydrology model-evaluation literature. |
 | d | Willmott Index of Agreement | agreement | 0.1.0 | Willmott, C.J. (1981). On the validation of models. |
 | dr | Relative Absolute Index of Agreement | agreement | 0.1.0 | Willmott agreement-index family with relative absolute-error normalization. |
+| hfb | High Flow Bias | bias | 0.1.0 | Clean-room HFB compatibility implementation using deterministic quantile thresholding. |
 | kge | Kling-Gupta Efficiency | efficiency | 0.1.0 | Kling, H., Fuchs, M., & Paulin, M. (2009). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. |
 | kgekm | KGE Modified Variability | efficiency | 0.1.0 | KGE variant definitions in hydrology practice using coefficient-of-variation ratio; citation to be refined. |
 | kgelf | KGE Low-Flow | efficiency | 0.1.0 | KGE low-flow emphasis variants in hydrology practice; exact citation to be refined. |
@@ -92,12 +100,6 @@ Generated on: 2026-02-28
 | wsnse | Weighted Squared NSE | efficiency | 0.1.0 | NSE weighted variants in hydrology literature; exact citation to be refined. |
 
 ## Missing items summary (auto)
-- APFB
-- HFB
-- mNSeff
-- NSeff
 - plot2
 - plotbands
 - plotbandsonly
-- rNSeff
-- wsNSeff

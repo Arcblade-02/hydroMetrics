@@ -22,10 +22,12 @@
 - Agreement-index relative formulations (project-selected variants) - dr - Relative absolute-error agreement using observation normalization. DOI/URL (TODO)
 - Project decision record - br2 - Bias-corrected R2 defined as bias-penalized Pearson correlation squared. DOI/URL (TODO)
 - Nash, J. E., and Sutcliffe, J. V. (1970) - rNSE/mNSE/wNSE/wsNSE lineage - Base NSE definition; weighted/modified/relative variants per hydrology literature (exact citations to refine). DOI/URL (TODO)
+- hydroGOF compatibility surface (documentation-only reference) - NSeff/mNSeff/rNSeff/wsNSeff - Legacy export names mapped to existing clean-room NSE-family implementations in this package. DOI/URL (TODO)
 - Standard model-evaluation references - ubRMSE - Unbiased RMSE from mean-removed anomaly differences. DOI/URL (TODO)
 - Standard least-squares references - ssq - Sum of squared errors objective `sum((sim - obs)^2)`. DOI/URL (TODO)
 - Gupta, H. V., Kling, H., Yilmaz, K. K., and Martinez, G. F. (2009) - KGE family baseline - Decomposition of NSE and KGE-style performance measures. DOI/URL (TODO)
 - KGE variant references (to refine) - KGEkm/KGElf/KGEnp - Common hydrology-practice variants for variability ratio, low-flow transform, and nonparametric components. DOI/URL (TODO)
+- KGE component definitions (clean-room parity) - beta/alpha/r - `beta = mean(sim)/mean(obs)`, `alpha = sd(sim)/sd(obs)`, and `r = cor(sim, obs, method='pearson')` with explicit undefined-domain guards. DOI/URL (TODO)
 - Seasonal performance metric practice (to refine) - sKGE - Seasonal grouping implementation using monthly KGE averaging. DOI/URL (TODO)
 - Flow duration curve references (to refine) - pbiasfdc - Percent bias over FDC quantile grid (project-defined deterministic grid). DOI/URL (TODO)
 - Pearson, K. (classical statistics references) - rPearson - Pearson product-moment correlation coefficient. DOI/URL (TODO)
@@ -36,6 +38,10 @@
 - Project definition record - valindex - Weighted normalized aggregate over selected gof metrics (v1 project-defined normalization). DOI/URL (TODO)
 - SWAT uncertainty-analysis literature context - pfactor/rfactor - P-factor and R-factor terminology are widely used for calibration/uncertainty diagnostics; this package uses explicit clean-room compatibility definitions recorded in DECISIONS.md. DOI/URL (TODO)
 - Project definition record - pfactor/rfactor - `pfactor` tolerance-band hit proportion and `rfactor` MAE normalized by `mean(abs(obs))` for deterministic single-series compatibility. DOI/URL (TODO)
+- Batch 1 parity policy record - rsr/pbias/mae - Explicit clean-room edge policies: `rsr = RMSE/sd(obs)` (requires `n >= 2`, `sd(obs) > 0`), `pbias = 100 * sum(sim - obs)/sum(obs)` (requires `sum(obs) != 0`), and `mae = mean(abs(sim - obs))` (requires `n >= 1`). DOI/URL (TODO)
+- High-flow diagnostic literature context (to refine) - APFB/HFB - Annual-peak and high-flow bias diagnostics implemented as clean-room compatibility exports with deterministic year/quantile policies. DOI/URL (TODO)
+- Orchestration compatibility record (project decision) - preproc/gof/ggof/valindex - Modern clean-room orchestration wrappers over preprocessing and registered metrics with structured S3 return contracts. DOI/URL (TODO)
+- Phase 2C architecture record - metric engine consolidation - Canonical single-tree metric implementation and registry-only dispatch policy with duplicate-tree removal. DOI/URL (TODO)
 
 ## Placeholder Entries
 - Author (Year) - Metric(s) - DOI/URL (TODO)

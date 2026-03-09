@@ -1,0 +1,3 @@
+Workflow,Platform,R Version,Failure,Root Cause,Files Affected,Evidence Class,Notes
+R-CMD-check,GitHub Actions matrix,release / oldrel-1 / devel,missing package: markdown,"Vignette build path required markdown, but DESCRIPTION Suggests did not declare it for CI dependency installation.",DESCRIPTION,package metadata,Repaired by adding markdown to Suggests while keeping knitr/rmarkdown/VignetteBuilder aligned.
+R-CMD-check,GitHub Actions matrix,release / oldrel-1 / devel,invalid workflow input: check_args,The workflow passed unsupported input check_args to r-lib/actions/check-r-package@v2; the supported input is args.,.github/workflows/R-CMD-check.yml,workflow schema,Repaired by replacing check_args with args and preserving the existing matrix.

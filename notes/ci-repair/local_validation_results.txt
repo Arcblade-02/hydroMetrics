@@ -1,0 +1,12 @@
+Phase 2 CI repair local validation results
+devtools::test status: pass
+PASS count: 600
+FAIL count: 0
+WARN count: 0
+SKIP count: 0
+R CMD build status: pass
+R CMD check --no-manual status: pass
+DESCRIPTION metadata status: pass
+vignettes/getting-started.Rmd exists: TRUE
+R-CMD-check matrix retained: TRUE
+Workflow input status: pass

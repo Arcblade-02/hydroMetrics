@@ -1,0 +1,15 @@
+Phase 2 Math Validation - Perfect Fit Behavior
+Evidence class: verified fact
+metrics tested = 41
+perfect-target matches = 41
+perfect-target mismatches = 0
+deterministic perfect-fit runs = 41
+
+Mismatches or errors:
+- <none>
+
+Evidence class: likely inference
+Registry perfect targets align with the direct metric outputs for the representative perfect-fit cases unless listed above.
+
+Evidence class: recommendation
+Treat any perfect-fit mismatch as a high-priority mathematical review item before formula changes are attempted.

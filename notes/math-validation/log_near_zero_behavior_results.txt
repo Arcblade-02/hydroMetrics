@@ -1,0 +1,15 @@
+Phase 2 Math Validation - Log/Near-Zero Behavior
+Evidence class: verified fact
+metrics tested = 41
+finite successful outputs = 41
+deterministic runs = 41
+errors = 0
+
+Metrics with non-finite success or errors:
+- <none>
+
+Evidence class: likely inference
+Near-zero positive inputs do not trigger overflow in the direct metric computations unless listed above.
+
+Evidence class: recommendation
+Review any non-finite near-zero success result before treating ratio-based metrics as numerically stable.

@@ -8,5 +8,5 @@
 - Test results: PASS=593, FAIL=0, WARN=0, SKIP=0.
 - R CMD build result: pass.
 - R CMD check --no-manual result: pass.
-- Push result: pending.
-- Readiness for PR merge: BLOCKED.
+- Push result: success.
+- Readiness for PR merge: READY.

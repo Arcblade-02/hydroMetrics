@@ -27,9 +27,9 @@ index so yearly maxima can be derived deterministically.
 }
 \examples{
 if (requireNamespace("zoo", quietly = TRUE)) {
-  dates <- as.Date("2020-01-01") + 0:729
-  sim <- zoo::zoo(seq_along(dates), order.by = dates)
-  obs <- zoo::zoo(seq_along(dates) + 1, order.by = dates)
+  dates <- as.Date(c("2020-01-01", "2020-06-01", "2021-01-01", "2021-06-01"))
+  sim <- zoo::zoo(c(12, 18, 33, 35), order.by = dates)
+  obs <- zoo::zoo(c(10, 20, 30, 40), order.by = dates)
   APFB(sim, obs)
 }
 }

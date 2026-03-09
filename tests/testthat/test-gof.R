@@ -23,6 +23,35 @@ test_that("gof supports zoo alignment and method subsets", {
   expect_identical(out$n_obs, 2L)
 })
 
+test_that("gof accepts valid aligned zoo inputs without NA failure on common index", {
+  skip_if_not_installed("zoo")
+
+  sim <- zoo::zoo(
+    c(5, 7, 9, 11),
+    order.by = as.POSIXct(c(
+      "2021-05-01 00:00:00",
+      "2021-05-02 00:00:00",
+      "2021-05-03 00:00:00",
+      "2021-05-04 00:00:00"
+    ), tz = "UTC")
+  )
+  obs <- zoo::zoo(
+    c(4, 8, 10, 12),
+    order.by = as.POSIXct(c(
+      "2021-05-02 00:00:00",
+      "2021-05-03 00:00:00",
+      "2021-05-04 00:00:00",
+      "2021-05-05 00:00:00"
+    ), tz = "UTC")
+  )
+
+  expect_no_error(
+    out <- gof(sim = sim, obs = obs, methods = c("rmse", "pbias"), na_strategy = "fail")
+  )
+  expect_identical(out$n_obs, 3L)
+  expect_identical(names(out$metrics), c("rmse", "pbias"))
+})
+
 test_that("gof returns method x model metrics matrix for multi-series input", {
   sim <- cbind(a = c(1, 2, 3), b = c(2, 3, 4))
   obs <- cbind(a = c(1, 2, 1), b = c(2, 2, 3))

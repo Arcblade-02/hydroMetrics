@@ -110,6 +110,59 @@
   list(sim = 1 / sim_adj, obs = 1 / obs_adj)
 }
 
+.hm_index_key <- function(index) {
+  if (inherits(index, "POSIXt")) {
+    return(format(as.POSIXct(index, tz = "UTC"), "%Y-%m-%d %H:%M:%OS6", tz = "UTC"))
+  }
+
+  if (inherits(index, "Date")) {
+    return(format(index, "%Y-%m-%d"))
+  }
+
+  as.character(index)
+}
+
+.hm_align_indexed_series <- function(sim, obs) {
+  sim_index <- zoo::index(sim)
+  obs_index <- zoo::index(obs)
+  sim_key <- .hm_index_key(sim_index)
+  obs_key <- .hm_index_key(obs_index)
+
+  if (anyDuplicated(sim_key)) {
+    stop("`sim` must have a unique time index for zoo/xts alignment.", call. = FALSE)
+  }
+  if (anyDuplicated(obs_key)) {
+    stop("`obs` must have a unique time index for zoo/xts alignment.", call. = FALSE)
+  }
+
+  sim_order <- order(sim_index)
+  obs_order <- order(obs_index)
+
+  sim <- sim[sim_order]
+  obs <- obs[obs_order]
+  sim_index <- zoo::index(sim)
+  obs_index <- zoo::index(obs)
+  sim_key <- sim_key[sim_order]
+  obs_key <- obs_key[obs_order]
+
+  common_keys <- intersect(sim_key, obs_key)
+  if (!length(common_keys)) {
+    return(list(sim = sim[0], obs = obs[0], index = sim_index[0]))
+  }
+
+  sim_pos <- match(common_keys, sim_key)
+  obs_pos <- match(common_keys, obs_key)
+  if (anyNA(sim_pos) || anyNA(obs_pos)) {
+    stop("Failed to align zoo/xts inputs on a common time index.", call. = FALSE)
+  }
+
+  list(
+    sim = sim[sim_pos],
+    obs = obs[obs_pos],
+    index = sim_index[sim_pos]
+  )
+}
+
 .hm_prepare_inputs <- function(sim,
                                obs,
                                na_strategy = c("fail", "remove", "pairwise"),
@@ -146,12 +199,10 @@
     }
 
     n_original <- as.integer(min(NROW(sim_core), NROW(obs_core)))
-    common_index <- sort(intersect(zoo::index(sim), zoo::index(obs)))
-    sim <- sim[common_index]
-    obs <- obs[common_index]
-    sim <- sim[order(zoo::index(sim))]
-    obs <- obs[order(zoo::index(obs))]
-    index_out <- zoo::index(sim)
+    aligned <- .hm_align_indexed_series(sim, obs)
+    sim <- aligned$sim
+    obs <- aligned$obs
+    index_out <- aligned$index
 
     sim_aligned_core <- zoo::coredata(sim)
     obs_aligned_core <- zoo::coredata(obs)

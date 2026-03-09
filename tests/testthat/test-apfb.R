@@ -60,3 +60,38 @@ test_that("APFB returns a numerically coercible scalar", {
   expect_type(as.numeric(out), "double")
   expect_length(as.numeric(out), 1L)
 })
+
+test_that("APFB supports partially overlapping zoo inputs after deterministic alignment", {
+  skip_if_not_installed("zoo")
+
+  sim <- zoo::zoo(
+    c(8, 12, 18, 25, 20, 27),
+    order.by = as.Date(c(
+      "2020-01-01",
+      "2020-06-01",
+      "2021-01-01",
+      "2021-06-01",
+      "2022-01-01",
+      "2022-06-01"
+    ))
+  )
+  obs <- zoo::zoo(
+    c(11, 19, 24, 18, 30, 29),
+    order.by = as.Date(c(
+      "2020-06-01",
+      "2021-01-01",
+      "2021-06-01",
+      "2022-01-01",
+      "2022-06-01",
+      "2022-12-01"
+    ))
+  )
+
+  expect_no_error(
+    out <- APFB(sim, obs)
+  )
+  expect_s3_class(out, "hydro_metric_scalar")
+  expect_true(is.finite(as.numeric(out)))
+  expect_identical(attr(out, "meta")$years, 3L)
+  expect_identical(attr(out, "meta")$aligned, FALSE)
+})

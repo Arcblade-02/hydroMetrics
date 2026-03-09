@@ -38,6 +38,86 @@ test_that("hm_prepare aligns xts indices", {
   expect_identical(out$meta$n_aligned, 2L)
 })
 
+test_that("hm_prepare aligns zoo inputs without introducing NA pairs", {
+  skip_if_not_installed("zoo")
+
+  sim <- zoo::zoo(
+    c(5, 6, 7, 8),
+    order.by = as.POSIXct(c(
+      "2021-01-01 00:00:00",
+      "2021-01-01 12:00:00",
+      "2021-01-02 00:00:00",
+      "2021-01-03 00:00:00"
+    ), tz = "UTC")
+  )
+  obs <- zoo::zoo(
+    c(50, 60, 70, 80),
+    order.by = as.POSIXct(c(
+      "2020-12-31 12:00:00",
+      "2021-01-01 12:00:00",
+      "2021-01-02 00:00:00",
+      "2021-01-04 00:00:00"
+    ), tz = "UTC")
+  )
+
+  out <- .hm_prepare_inputs(sim, obs, na_strategy = "fail")
+
+  expect_identical(out$sim, c(6, 7))
+  expect_identical(out$obs, c(60, 70))
+  expect_false(anyNA(out$sim))
+  expect_false(anyNA(out$obs))
+  expect_identical(
+    out$index,
+    as.POSIXct(c("2021-01-01 12:00:00", "2021-01-02 00:00:00"), tz = "UTC")
+  )
+})
+
+test_that("hm_prepare aligns xts inputs on common index without subscript errors", {
+  skip_if_not_installed("xts")
+
+  sim <- xts::xts(
+    c(2, 4, 6, 8),
+    order.by = as.POSIXct(c(
+      "2021-02-01 00:00:00",
+      "2021-02-02 00:00:00",
+      "2021-02-03 00:00:00",
+      "2021-02-04 00:00:00"
+    ), tz = "UTC")
+  )
+  obs <- xts::xts(
+    c(1, 3, 5, 7),
+    order.by = as.POSIXct(c(
+      "2021-02-02 00:00:00",
+      "2021-02-03 00:00:00",
+      "2021-02-05 00:00:00",
+      "2021-02-06 00:00:00"
+    ), tz = "UTC")
+  )
+
+  expect_no_error(
+    out <- .hm_prepare_inputs(sim, obs, na_strategy = "fail")
+  )
+  expect_identical(out$sim, c(4, 6))
+  expect_identical(out$obs, c(1, 3))
+  expect_false(anyNA(out$sim))
+  expect_false(anyNA(out$obs))
+})
+
+test_that("hm_prepare rejects non-unique indexed inputs deterministically", {
+  skip_if_not_installed("zoo")
+
+  idx_dup <- as.Date(c("2021-01-01", "2021-01-01", "2021-01-02"))
+  idx_obs <- as.Date(c("2021-01-01", "2021-01-02", "2021-01-03"))
+  sim <- zoo::zoo(c(1, 2, 3), order.by = as.Date("2021-01-01") + 0:2)
+  attr(sim, "index") <- idx_dup
+  obs <- zoo::zoo(c(10, 20, 30), order.by = idx_obs)
+
+  expect_error(
+    .hm_prepare_inputs(sim, obs, na_strategy = "fail"),
+    "unique time index"
+  )
+})
+
 test_that("hm_prepare NA strategies behave as specified", {
   sim <- c(1, NA, 3, 4)
   obs <- c(1, 2, NA, 4)

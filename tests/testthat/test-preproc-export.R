@@ -39,6 +39,63 @@ test_that("preproc aligns xts inputs", {
   expect_identical(out$n_aligned, 2L)
 })
 
+test_that("preproc preserves valid aligned zoo pairs on indexed oldrel-sensitive inputs", {
+  skip_if_not_installed("zoo")
+
+  sim <- zoo::zoo(
+    c(2, 4, 6, 8),
+    order.by = as.POSIXct(c(
+      "2021-03-01 00:00:00",
+      "2021-03-02 00:00:00",
+      "2021-03-03 00:00:00",
+      "2021-03-04 00:00:00"
+    ), tz = "UTC")
+  )
+  obs <- zoo::zoo(
+    c(20, 40, 60, 80),
+    order.by = as.POSIXct(c(
+      "2021-03-02 00:00:00",
+      "2021-03-03 00:00:00",
+      "2021-03-05 00:00:00",
+      "2021-03-06 00:00:00"
+    ), tz = "UTC")
+  )
+
+  out <- preproc(sim, obs, na_strategy = "fail")
+
+  expect_identical(out$sim, c(4, 6))
+  expect_identical(out$obs, c(20, 40))
+  expect_false(anyNA(out$sim))
+  expect_false(anyNA(out$obs))
+})
+
+test_that("preproc aligns xts inputs without subscript out of bounds on common index", {
+  skip_if_not_installed("xts")
+
+  sim <- xts::xts(
+    c(3, 6, 9),
+    order.by = as.POSIXct(c(
+      "2021-04-01 00:00:00",
+      "2021-04-02 00:00:00",
+      "2021-04-03 00:00:00"
+    ), tz = "UTC")
+  )
+  obs <- xts::xts(
+    c(30, 60, 90),
+    order.by = as.POSIXct(c(
+      "2021-04-02 00:00:00",
+      "2021-04-03 00:00:00",
+      "2021-04-05 00:00:00"
+    ), tz = "UTC")
+  )
+
+  expect_no_error(
+    out <- preproc(sim, obs, na_strategy = "fail")
+  )
+  expect_identical(out$sim, c(6, 9))
+  expect_identical(out$obs, c(30, 60))
+})
+
 test_that("preproc supports NA strategies", {
   sim <- c(1, NA, 3)
   obs <- c(1, 2, 3)

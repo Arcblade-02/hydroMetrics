@@ -1,25 +1,25 @@
 # Phase 2 Exit Memo
 
-## Result
+- Generated: 2026-03-10 01:27:57 IST
+- Source package version reviewed: `0.2.0`
+- Final recommendation: `NO-GO`
 
-Phase 2 contract-closing work is complete and the formal exit checklist is green for the Phase 2 package-validation state.
+## Executive assessment
 
-- Wrapper inventory: 23 exported compatibility/public wrappers were inventoried and 23/23 signatures matched the frozen Phase 2 expectations.
-- Benchmark requirement: completed under `inst/benchmarks/`; the direct metric, `NSE()` wrapper, and `gof()` path were benchmarked from `n = 1e3` through `n = 1e6`.
-- Coverage: 95.17%.
-- CI matrix status: six required nodes were verified green in GitHub Actions for commit `2aa338caadd3306e48f76f1b2f81fe3b8b3615ac`.
-- Examples status: pass under `R CMD check --no-manual`.
-- Vignette status: pass under `R CMD build .` and `R CMD check --no-manual`.
-- Accepted deviations: 4, recorded in `docs/DEVIATION_REGISTER.md`.
+The required Phase 2 stability statement is not supportable on the current source snapshot. Phase 3 should not begin until the recorded compatibility, documentation, and validation gaps are resolved.
 
-## Checklist interpretation
+## Evidence summary
 
-- Package behavior, documentation, examples, vignettes, benchmark evidence, wrapper-surface verification, and indexed-input verification are in place.
-- `devtools::check(cran = TRUE)` was run and failed at the Windows `processx` / `callr` wrapper boundary before CRAN-style counts were produced; fallback package-level validation remained clean.
-- Coverage now meets the Phase 2 target and all six CI nodes have recorded green evidence.
+- `clean install/load`: `WARN` - Fresh-session install/load succeeded via `R CMD INSTALL` after an environment-specific `devtools::install()` failure.
+- `public API wrapper verification`: `FAIL` - Required public surface is incomplete on the current snapshot; missing or non-exported: NSE, KGE, RMSE, MAE, PBIAS, R2, NRMSE, preproc, valindex.
+- `behavioral correctness matrix`: `FAIL` - Edge-case matrix captured current runtime behavior, but the following representative functions are not exported: NSE, KGE, RMSE, PBIAS, R2, NRMSE, preproc.
+- `mathematical contract verification`: `PASS` - Runtime probes support the current mathematical contract for R2, NRMSE, NSE, KGE, and PBIAS.
+- `tests and coverage`: `FAIL` - Test commands status: FAIL / PASS; coverage overall: 95.17%.
+- `vignette build and documentation regeneration`: `FAIL` - Vignette command status: FAIL; documentation command status: PASS; README present: TRUE; NEWS present: TRUE.
+- `checks and CI cross-check`: `FAIL` - Build/check/devtools::check statuses: PASS/PASS/FAIL; devtools::check(cran=TRUE): FAIL (environment-specific); CI remote status: unverified.
 
-## Recommendation
+## Allowed Phase 3 scope guardrails
 
-Final Phase 2 recommendation: `GO`
-
-Phase 3 may begin.
+- Phase 3 may extend functionality only after the current release-readiness deviations are either resolved or explicitly accepted.
+- Metric formulas should remain frozen unless a defect is proven by runtime evidence.
+- Wrapper signatures must not change silently; the public API inventory in `notes/release-readiness/public_api_inventory.csv` is the baseline for comparison.

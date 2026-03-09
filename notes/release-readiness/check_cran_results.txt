@@ -1,10 +1,10 @@
-# CRAN-style check results generated 2026-03-10 00:15:04 IST
+# CRAN-style check results generated 2026-03-10 01:27:57 IST
 
 - Classification: `environment-specific`
 
 ## `devtools::check(cran = TRUE)`
 
-$ C:/PROGRA~1/R/R-45~1.2/bin/x64/Rscript.exe --vanilla C:\Users\prita\AppData\Local\Temp\RtmpYpWrUr\release-readiness-d40c69d91e32.R
+$ C:/PROGRA~1/R/R-45~1.2/bin/x64/Rscript.exe --vanilla C:\Users\prita\AppData\Local\Temp\RtmpGU4si6\release-readiness-137d44b2339cd.R
 ══ Documenting ═════════════════════════════════════════════════════════════════
 
 ══ Building ════════════════════════════════════════════════════════════════════

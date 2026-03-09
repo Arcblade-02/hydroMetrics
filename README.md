@@ -1,5 +1,7 @@
 # hydroMetrics
 
+![R-CMD-check](https://github.com/Arcblade-02/hydroMetrics/actions/workflows/R-CMD-check.yml/badge.svg)
+
 `hydroMetrics` is a clean-room MIT-licensed R package for hydrological model
 evaluation metrics. The current release-hardening line is aligned for the
 `0.2.0` package version.

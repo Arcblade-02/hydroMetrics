@@ -1,0 +1,136 @@
+Phase 2 readiness rebase - test baseline confirmation
+Fix-program baseline PASS target: 493
+PASS count: 561
+FAIL count: 0
+WARN count: 0
+SKIP count: 0
+Non-regression status: pass
+status=pass
+
+ℹ Testing hydroMetrics
+✔ | F W  S  OK | Context
+
+⠏ |          0 | alpha                                                          
+⠙ |          2 | alpha                                                          
+⠹ |          3 | alpha                                                          
+✔ |          5 | alpha
+
+⠏ |          0 | apfb                                                           
+⠏ |         10 | apfb                                                           
+✔ |         15 | apfb
+
+⠏ |          0 | backward-compatibility                                         
+⠧ |         18 | backward-compatibility                                         
+✔ |         22 | backward-compatibility
+
+⠏ |          0 | beta                                                           
+✔ |          5 | beta
+
+⠏ |          0 | cp                                                             
+✔ |          4 | cp
+
+⠏ |          0 | engine                                                         
+⠋ |         11 | engine                                                         
+✔ |         14 | engine
+
+⠏ |          0 | ggof                                                           
+✔ |         13 | ggof
+
+⠏ |          0 | gof                                                            
+✔ |         17 | gof
+
+⠏ |          0 | hfb                                                            
+⠏ |         10 | hfb                                                            
+✔ |         16 | hfb
+
+⠏ |          0 | legacy-nse-aliases                                             
+⠸ |         14 | legacy-nse-aliases                                             
+✔ |         17 | legacy-nse-aliases
+
+⠏ |          0 | mae                                                            
+✔ |          5 | mae
+
+⠏ |          0 | metric-params                                                  
+✔ |          4 | metric-params
+
+⠏ |          0 | metrics-batch2                                                 
+✔ |         17 | metrics-batch2
+
+⠏ |          0 | metrics-batch3                                                 
+⠋ |         21 | metrics-batch3                                                 
+✔ |         23 | metrics-batch3
+
+⠏ |          0 | metrics-batch4                                                 
+⠴ |         16 | metrics-batch4                                                 
+✔ |         21 | metrics-batch4
+
+⠏ |          0 | metrics-batch5                                                 
+⠏ |         20 | metrics-batch5                                                 
+✔ |         23 | metrics-batch5
+
+⠏ |          0 | metrics-batch6                                                 
+⠹ |         13 | metrics-batch6                                                 
+✔ |         22 | metrics-batch6
+
+⠏ |          0 | metrics-batch7                                                 
+✔ |          7 | metrics-batch7
+
+⠏ |          0 | pbias                                                          
+✔ |          5 | pbias
+
+⠏ |          0 | performance-suite-exists                                       
+✔ |          3 | performance-suite-exists
+
+⠏ |          0 | pfactor                                                        
+✔ |          6 | pfactor
+
+⠏ |          0 | phase2-audit-exists                                            
+✔ |          6 | phase2-audit-exists
+
+⠏ |          0 | phase2-compatibility-audit-exists                              
+✔ |          9 | phase2-compatibility-audit-exists
+
+⠏ |          0 | phase2-dynamic-verification-exists                             
+✔ |          8 | phase2-dynamic-verification-exists
+
+⠏ |          0 | phase2-fix-program-exists                                      
+✔ |         15 | phase2-fix-program-exists
+
+⠏ |          0 | phase2-math-validation-exists                                  
+✔ |          9 | phase2-math-validation-exists
+
+⠏ |          0 | phase2-readiness-rebase-exists                                 
+✔ |          5 | phase2-readiness-rebase-exists
+
+⠏ |          0 | preproc-export                                                 
+⠼ |         25 | preproc-export                                                 
+✔ |         28 | preproc-export
+
+⠏ |          0 | preprocessing                                                  
+⠙ |         22 | preprocessing                                                  
+✔ |         23 | preprocessing
+
+⠏ |          0 | r                                                              
+✔ |          7 | r
+
+⠏ |          0 | rfactor                                                        
+✔ |          5 | rfactor
+
+⠏ |          0 | rsr                                                            
+✔ |          5 | rsr
+
+⠏ |          0 | structural-integrity                                           
+⠙ |         22 | structural-integrity                                           
+⠇ |         59 | structural-integrity                                           
+⠴ |         96 | structural-integrity                                           
+⠙ |        132 | structural-integrity                                           
+⠴ |        166 | structural-integrity                                           
+✔ |        170 | structural-integrity
+
+⠏ |          0 | valindex                                                       
+✔ |          7 | valindex
+
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 3.4 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 561 ]

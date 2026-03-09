@@ -67,3 +67,36 @@ test_that("preproc supports transform and epsilon modes", {
   expect_identical(out$transform_applied, "log")
   expect_true(isTRUE(out$epsilon_details$applied))
 })
+
+test_that("preproc supports formal compatibility aliases", {
+  out_alias <- preproc(
+    sim = c(0, NA, 1),
+    obs = c(1, 2, 2),
+    na.rm = TRUE,
+    transform = "log",
+    epsilon.type = "constant",
+    epsilon.value = 0.5
+  )
+  out_native <- preproc(
+    sim = c(0, NA, 1),
+    obs = c(1, 2, 2),
+    na_strategy = "remove",
+    transform = "log",
+    epsilon_mode = "constant",
+    epsilon = 0.5
+  )
+
+  expect_equal(out_alias$sim, out_native$sim)
+  expect_equal(out_alias$obs, out_native$obs)
+  expect_identical(out_alias$epsilon_details$mode, "constant")
+})
+
+test_that("preproc rejects matrix-like public inputs with a stable error", {
+  sim <- cbind(a = c(1, 2), b = c(3, 4))
+  obs <- cbind(a = c(1, 2), b = c(3, 5))
+
+  expect_error(
+    preproc(sim, obs),
+    "must be numeric, ts, zoo, or xts"
+  )
+})

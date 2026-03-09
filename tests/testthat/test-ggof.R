@@ -37,3 +37,14 @@ test_that("ggof returns model rows for matrix input", {
   expect_identical(sort(unique(out$metric)), c("pbias", "rmse"))
   expect_equal(nrow(out), 4L)
 })
+
+test_that("ggof supports formal compatibility aliases and remains non-plotting", {
+  sim <- c(1, NA, 3, 4)
+  obs <- c(1, 2, 3, 5)
+  before_devices <- dev.list()
+
+  out <- ggof(sim = sim, obs = obs, fun = "rmse", na.rm = TRUE)
+
+  expect_identical(out$metric, "rmse")
+  expect_identical(dev.list(), before_devices)
+})

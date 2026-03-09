@@ -1,0 +1,4 @@
+# Vignette build results generated 2026-03-10 00:14:43 IST
+
+$ C:/PROGRA~1/R/R-45~1.2/bin/x64/Rscript.exe --vanilla C:\Users\prita\AppData\Local\Temp\RtmpYpWrUr\release-readiness-d40c55006fa8.R
+NULL

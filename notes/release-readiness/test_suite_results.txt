@@ -1,0 +1,174 @@
+# Test suite results generated 2026-03-10 00:14:35 IST
+
+## `testthat::test_dir("tests/testthat")`
+
+$ C:/PROGRA~1/R/R-45~1.2/bin/x64/Rscript.exe --vanilla C:\Users\prita\AppData\Local\Temp\RtmpYpWrUr\release-readiness-d40c23072410.R
+✔ | F W  S  OK | Context
+
+⠏ |          0 | compat-hydrogof                                                
+⠋ |          1 | compat-hydrogof                                                
+✔ |          1 | compat-hydrogof
+
+⠏ |          0 | cp                                                             
+✖ | 3        0 | cp
+────────────────────────────────────────────────────────────────────────────────
+Error ('test-cp.R:10:3'): cp matches hand-calculated persistence skill score
+Error in `evaluate_metrics(sim, obs, "cp")`: could not find function "evaluate_metrics"
+
+Error ('test-cp.R:18:3'): cp errors when input length is less than 2
+Error in `evaluate_metrics(sim = c(1), obs = c(1), metrics = "cp")`: could not find function "evaluate_metrics"
+Backtrace:
+    ▆
+ 1. └─testthat::expect_error(...) at test-cp.R:18:3
+ 2.   └─testthat:::expect_condition_matching_(...)
+ 3.     └─testthat:::quasi_capture(...)
+ 4.       ├─testthat (local) .capture(...)
+ 5.       │ └─base::withCallingHandlers(...)
+ 6.       └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+
+Error ('test-cp.R:25:3'): cp errors when persistence denominator is zero
+Error in `evaluate_metrics(sim = c(2, 2, 2), obs = c(2, 2, 2), metrics = "cp")`: could not find function "evaluate_metrics"
+Backtrace:
+    ▆
+ 1. └─testthat::expect_error(...) at test-cp.R:25:3
+ 2.   └─testthat:::expect_condition_matching_(...)
+ 3.     └─testthat:::quasi_capture(...)
+ 4.       ├─testthat (local) .capture(...)
+ 5.       │ └─base::withCallingHandlers(...)
+ 6.       └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+────────────────────────────────────────────────────────────────────────────────
+
+⠏ |          0 | engine                                                         
+✖ | 5        2 | engine
+────────────────────────────────────────────────────────────────────────────────
+Error ('test-engine.R:34:3'): cannot register duplicate metric id
+Error in `register_metric(id = "nse", fun = function(sim, obs) 0, name = "Duplicate NSE", description = "Duplicate registration test")`: could not find function "register_metric"
+Backtrace:
+    ▆
+ 1. └─testthat::expect_error(...) at test-engine.R:34:3
+ 2.   └─testthat:::expect_condition_matching_(...)
+ 3.     └─testthat:::quasi_capture(...)
+ 4.       ├─testthat (local) .capture(...)
+ 5.       │ └─base::withCallingHandlers(...)
+ 6.       └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+
+Error ('test-engine.R:46:3'): engine errors on unequal vector lengths
+Error in `evaluate_metrics(sim = c(1, 2, 3), obs = c(1, 2), metrics = "nse")`: could not find function "evaluate_metrics"
+Backtrace:
+    ▆
+ 1. └─testthat::expect_error(...) at test-engine.R:46:3
+ 2.   └─testthat:::expect_condition_matching_(...)
+ 3.     └─testthat:::quasi_capture(...)
+ 4.       ├─testthat (local) .capture(...)
+ 5.       │ └─base::withCallingHandlers(...)
+ 6.       └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+
+Error ('test-engine.R:53:3'): engine returns expected hm_result structure
+Error in `evaluate_metrics(sim = c(1, 2, 3), obs = c(1, 2, 1), metrics = c("nse", "rmse", "pbias"))`: could not find function "evaluate_metrics"
+
+Error ('test-engine.R:66:3'): perfect-case values are correct for core metrics
+Error in `evaluate_metrics(sim = c(2, 4, 6), obs = c(2, 4, 6), metrics = c("nse", "rmse", "pbias"))`: could not find function "evaluate_metrics"
+
+Error ('test-engine.R:79:3'): core metrics return expected values on simple vectors
+Error in `evaluate_metrics(sim = c(1, 2, 3), obs = c(1, 2, 1), metrics = c("nse", "rmse", "pbias"))`: could not find function "evaluate_metrics"
+────────────────────────────────────────────────────────────────────────────────
+
+⠏ |          0 | gof-ggof                                                       
+⠸ | 3    1   0 | gof-ggof                                                       
+✖ | 4    1   0 | gof-ggof
+────────────────────────────────────────────────────────────────────────────────
+Error ('test-gof-ggof.R:2:3'): gof returns named numeric vector for single series
+Error in `gof(sim = c(1, 2, 3), obs = c(1, 2, 1), methods = c("NSE", "rmse", "rPearson"))`: could not find function "gof"
+
+Error ('test-gof-ggof.R:16:3'): gof returns numeric matrix for multi-series input
+Error in `gof(sim = sim, obs = obs, methods = c("rmse", "pbias"))`: could not find function "gof"
+
+Error ('test-gof-ggof.R:25:3'): gof errors for unknown method names with available list hint
+Error in `gof(sim = c(1, 2, 3), obs = c(1, 2, 1), methods = "not_a_metric")`: could not find function "gof"
+Backtrace:
+    ▆
+ 1. └─testthat::expect_error(...) at test-gof-ggof.R:25:3
+ 2.   └─testthat:::expect_condition_matching_(...)
+ 3.     └─testthat:::quasi_capture(...)
+ 4.       ├─testthat (local) .capture(...)
+ 5.       │ └─base::withCallingHandlers(...)
+ 6.       └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+
+Error ('test-gof-ggof.R:45:3'): ggof returns ggplot object when ggplot2 is installed
+Error in `ggof(sim = c(1, 2, 3), obs = c(1, 2, 1), methods = c("NSE", "rmse"))`: could not find function "ggof"
+────────────────────────────────────────────────────────────────────────────────
+
+Maximum number of failures exceeded; quitting.
+ℹ Increase this number with (e.g.) `testthat::set_max_fails(Inf)` 
+[stderr]
+Error:
+! Test failures.
+Execution halted
+
+## `devtools::test()`
+
+$ C:/PROGRA~1/R/R-45~1.2/bin/x64/Rscript.exe --vanilla C:\Users\prita\AppData\Local\Temp\RtmpYpWrUr\release-readiness-d40c194d32cc.R
+✔ | F W  S  OK | Context
+
+⠏ |          0 | compat-hydrogof                                                
+✔ |          1 | compat-hydrogof
+
+⠏ |          0 | cp                                                             
+✔ |          4 | cp
+
+⠏ |          0 | engine                                                         
+✔ |         14 | engine
+
+⠏ |          0 | gof-ggof                                                       
+⠧ |      1   7 | gof-ggof                                                       
+✔ |      1   8 | gof-ggof
+
+⠏ |          0 | init                                                           
+✔ |          1 | init
+
+⠏ |          0 | metrics-batch2                                                 
+✔ |         17 | metrics-batch2
+
+⠏ |          0 | metrics-batch3                                                 
+✔ |         23 | metrics-batch3
+
+⠏ |          0 | metrics-batch4                                                 
+⠋ |         21 | metrics-batch4                                                 
+✔ |         21 | metrics-batch4
+
+⠏ |          0 | metrics-batch5                                                 
+⠋ |         21 | metrics-batch5                                                 
+✔ |         23 | metrics-batch5
+
+⠏ |          0 | metrics-batch6                                                 
+⠴ |         16 | metrics-batch6                                                 
+✔ |         22 | metrics-batch6
+
+⠏ |          0 | metrics-batch7                                                 
+✔ |          7 | metrics-batch7
+
+⠏ |          0 | pfactor                                                        
+✔ |          6 | pfactor
+
+⠏ |          0 | preproc                                                        
+✔ |         21 | preproc
+
+⠏ |          0 | release-readiness-pipeline-exists                              
+✔ |         15 | release-readiness-pipeline-exists
+
+⠏ |          0 | rfactor                                                        
+✔ |          5 | rfactor
+
+⠏ |          0 | valindex                                                       
+✔ |         14 | valindex
+
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 1.6 s
+
+── Skipped tests (1) ───────────────────────────────────────────────────────────
+• ggplot2 is installed; skipping missing-package behavior check. (1):
+  'test-gof-ggof.R:33:5'
+
+[ FAIL 0 | WARN 0 | SKIP 1 | PASS 202 ]
+[stderr]
+ℹ Testing hydroMetrics

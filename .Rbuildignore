@@ -2,6 +2,7 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^\.github$
+^docs$
 ^notes$
 ^tmp_desc_check\.R$
 ^AUDIT_MIT\.md$

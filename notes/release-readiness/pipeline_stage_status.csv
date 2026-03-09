@@ -1,0 +1,8 @@
+"stage","status","summary","fatal"
+"clean install/load","WARN","Fresh-session install/load succeeded via `R CMD INSTALL` after an environment-specific `devtools::install()` failure.","FALSE"
+"public API wrapper verification","FAIL","Required public surface is incomplete on the current snapshot; missing or non-exported: NSE, KGE, RMSE, MAE, PBIAS, R2, NRMSE, preproc, valindex.","FALSE"
+"behavioral correctness matrix","FAIL","Edge-case matrix captured current runtime behavior, but the following representative functions are not exported: NSE, KGE, RMSE, PBIAS, R2, NRMSE, preproc.","FALSE"
+"mathematical contract verification","PASS","Runtime probes support the current mathematical contract for R2, NRMSE, NSE, KGE, and PBIAS.","FALSE"
+"tests and coverage","FAIL","Test commands status: FAIL / PASS; coverage overall: 86.59%.","FALSE"
+"vignette build and documentation regeneration","FAIL","Vignette command status: PASS; documentation command status: PASS; README present: FALSE; NEWS present: FALSE.","FALSE"
+"checks and CI cross-check","FAIL","Build/check/devtools::check statuses: PASS/PASS/FAIL; devtools::check(cran=TRUE): FAIL (environment-specific); CI remote status: unverified.","FALSE"

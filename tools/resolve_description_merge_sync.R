@@ -11,6 +11,16 @@ read_lines <- function(path) {
   readLines(path, warn = FALSE, encoding = "UTF-8")
 }
 
+git_value <- function(args) {
+  out <- tryCatch(
+    system2("git", args = args, stdout = TRUE, stderr = FALSE),
+    warning = function(w) character(),
+    error = function(e) character()
+  )
+  if (!length(out)) return(NA_character_)
+  trimws(out[[1]])
+}
+
 description_lines <- read_lines(description_path)
 merge_markers_present <- any(grepl("<<<<<<<|=======|>>>>>>>", description_lines))
 package_version <- if (file.exists(description_path)) {
@@ -18,6 +28,8 @@ package_version <- if (file.exists(description_path)) {
 } else {
   NA_character_
 }
+branch_name <- git_value(c("branch", "--show-current"))
+head_commit <- git_value(c("rev-parse", "--short", "HEAD"))
 
 baseline_files <- c(
   "README.md",
@@ -46,6 +58,8 @@ summary_lines <- c(
   "# Final Merge Sync Summary",
   "",
   sprintf("- Generated: %s", format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")),
+  sprintf("- Branch: `%s`", if (is.na(branch_name)) "unknown" else branch_name),
+  sprintf("- HEAD commit: `%s`", if (is.na(head_commit)) "unknown" else head_commit),
   sprintf("- Merge markers present: `%s`", if (merge_markers_present) "YES" else "NO"),
   sprintf("- Final package version: `%s`", if (is.na(package_version)) "missing" else package_version),
   sprintf("- Baseline files present count: `%s/%s`", baseline_count, length(baseline_files)),

@@ -1,21 +1,18 @@
-repo_path <- function(...) {
-  testthat::test_path("..", "..", ...)
-}
-
-test_that("Phase 2 fix-program artifacts exist after generation", {
-  script_path <- repo_path("tools", "phase2_fix_program.R")
-  artifacts_dir <- repo_path("notes", "fix-program")
+test_that("Phase 2 fix-program artifacts are archived and removed from production", {
+  script_path <- phase2_archive_repo_path("tools", "phase2_fix_program.R")
 
   testthat::skip_if_not(
-    file.exists(script_path) && dir.exists(artifacts_dir),
-    "Phase 2 fix-program source artifacts are unavailable in this test context."
+    phase2_archive_source_repo_available() &&
+      file.exists(script_path) &&
+      phase2_archive_branch_exists(),
+    "Phase 2 fix-program archive validation is unavailable in this test context."
   )
 
   expect_true(file.exists(script_path))
-  expect_true(dir.exists(artifacts_dir))
-  expect_true(file.exists(repo_path("notes", "fix-program", "fix_plan_matrix.csv")))
-  expect_true(file.exists(repo_path("notes", "fix-program", "fix_execution_log.md")))
-  expect_true(file.exists(repo_path("notes", "fix-program", "fix_validation_results.txt")))
+  expect_false(dir.exists(phase2_archive_repo_path("notes", "fix-program")))
+  expect_true(phase2_archive_has_path("notes/fix-program/fix_plan_matrix.csv"))
+  expect_true(phase2_archive_has_path("notes/fix-program/fix_execution_log.md"))
+  expect_true(phase2_archive_has_path("notes/fix-program/fix_validation_results.txt"))
 })
 
 test_that("Phase 2 fix-program release metadata and provenance fixes are present", {
@@ -34,9 +31,9 @@ test_that("Phase 2 fix-program release metadata and provenance fixes are present
   refs <- refs[refs$id %in% c("alpha", "beta", "r"), "references", drop = TRUE]
   expect_true(all(grepl("\\(2009\\)", refs)))
 
-  if (file.exists(repo_path("README.md")) && file.exists(repo_path("NEWS.md"))) {
-    expect_true(file.exists(repo_path("README.md")))
-    expect_true(file.exists(repo_path("NEWS.md")))
+  if (file.exists(phase2_archive_repo_path("README.md")) && file.exists(phase2_archive_repo_path("NEWS.md"))) {
+    expect_true(file.exists(phase2_archive_repo_path("README.md")))
+    expect_true(file.exists(phase2_archive_repo_path("NEWS.md")))
   } else {
     testthat::skip("Source-tree root-documentation checks are unavailable in this installed-package context.")
   }

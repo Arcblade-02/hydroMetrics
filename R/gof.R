@@ -230,6 +230,142 @@
   })
 }
 
+.hm_resolve_epsilon_type <- function(epsilon_type, epsilon_mode, epsilon_mode_missing) {
+  if (is.null(epsilon_type)) {
+    return(epsilon_mode)
+  }
+
+  if (!is.character(epsilon_type) || length(epsilon_type) != 1L || is.na(epsilon_type) || !nzchar(epsilon_type)) {
+    stop("`epsilon.type` must be a non-empty character scalar.", call. = FALSE)
+  }
+
+  alias_map <- c(
+    constant = "constant",
+    othervalue = "constant",
+    auto_min_positive = "auto_min_positive",
+    obs_mean_factor = "obs_mean_factor",
+    otherfactor = "obs_mean_factor"
+  )
+  key <- tolower(epsilon_type)
+  if (!key %in% names(alias_map)) {
+    stop(
+      "`epsilon.type` must be one of 'constant', 'auto_min_positive', 'obs_mean_factor', 'otherValue', or 'otherFactor'.",
+      call. = FALSE
+    )
+  }
+
+  mapped <- unname(alias_map[[key]])
+  if (!isTRUE(epsilon_mode_missing) && !identical(mapped, epsilon_mode)) {
+    stop("`epsilon.type` conflicts with `epsilon_mode`.", call. = FALSE)
+  }
+
+  mapped
+}
+
+.hm_apply_orchestration_compat <- function(methods,
+                                           na_strategy,
+                                           epsilon_mode,
+                                           epsilon,
+                                           epsilon_factor,
+                                           fun = NULL,
+                                           na.rm = NULL,
+                                           keep = NULL,
+                                           epsilon.type = NULL,
+                                           epsilon.value = NULL,
+                                           na_strategy_missing = FALSE,
+                                           epsilon_mode_missing = FALSE,
+                                           epsilon_missing = FALSE,
+                                           epsilon_factor_missing = FALSE) {
+  if (is.null(methods) && !is.null(fun)) {
+    methods <- fun
+  }
+
+  if (!is.null(na.rm)) {
+    if (!is.logical(na.rm) || length(na.rm) != 1L || is.na(na.rm)) {
+      stop("`na.rm` must be TRUE or FALSE.", call. = FALSE)
+    }
+    na_strategy <- if (isTRUE(na.rm)) "remove" else "fail"
+  } else if (!is.null(keep) && isTRUE(na_strategy_missing)) {
+    keep <- match.arg(keep, choices = c("complete", "pairwise"))
+    na_strategy <- if (identical(keep, "pairwise")) "pairwise" else "remove"
+  }
+
+  epsilon_mode <- .hm_resolve_epsilon_type(
+    epsilon_type = epsilon.type,
+    epsilon_mode = epsilon_mode,
+    epsilon_mode_missing = epsilon_mode_missing
+  )
+
+  if (!is.null(epsilon.value)) {
+    if (!is.numeric(epsilon.value) || length(epsilon.value) != 1L || is.na(epsilon.value)) {
+      stop("`epsilon.value` must be a non-missing numeric scalar.", call. = FALSE)
+    }
+
+    if (identical(epsilon_mode, "constant")) {
+      if (!isTRUE(epsilon_missing) && !is.null(epsilon) && !isTRUE(all.equal(as.numeric(epsilon), as.numeric(epsilon.value)))) {
+        stop("`epsilon.value` conflicts with `epsilon`.", call. = FALSE)
+      }
+      epsilon <- as.numeric(epsilon.value)
+    } else {
+      if (!isTRUE(epsilon_factor_missing) &&
+          !isTRUE(all.equal(as.numeric(epsilon_factor), as.numeric(epsilon.value)))) {
+        stop("`epsilon.value` conflicts with `epsilon_factor`.", call. = FALSE)
+      }
+      epsilon_factor <- as.numeric(epsilon.value)
+    }
+  }
+
+  list(
+    methods = methods,
+    na_strategy = na_strategy,
+    epsilon_mode = epsilon_mode,
+    epsilon = epsilon,
+    epsilon_factor = epsilon_factor
+  )
+}
+
+#' Evaluate hydrological metrics
+#'
+#' Clean-room orchestration wrapper that preprocesses aligned series and
+#' dispatches registered metric implementations without embedding metric
+#' formulas in the public API layer.
+#'
+#' @param sim Simulated values supplied as a numeric vector, `ts`, matrix-like
+#'   object, or aligned `zoo`/`xts` series.
+#' @param obs Observed values with the same shape contract as `sim`.
+#' @param methods Metric names to evaluate. When omitted, the package default
+#'   metric set is used.
+#' @param na_strategy Missing-value strategy forwarded to [preproc()].
+#' @param transform Transform mode forwarded to [preproc()].
+#' @param epsilon_mode Epsilon policy forwarded to [preproc()].
+#' @param epsilon Optional constant epsilon value used when
+#'   `epsilon_mode = "constant"`.
+#' @param epsilon_factor Scaling factor for automatic epsilon modes.
+#' @param components Compatibility flag retained in output metadata.
+#' @param fun Optional compatibility alias for `methods`.
+#' @param na.rm Optional compatibility alias for NA handling. `TRUE` maps to
+#'   `na_strategy = "remove"` and `FALSE` maps to `"fail"`.
+#' @param keep Optional compatibility alias for NA handling. `"complete"` maps
+#'   to `na_strategy = "remove"` and `"pairwise"` maps to `"pairwise"`.
+#' @param epsilon.type Optional compatibility alias for `epsilon_mode`. Supported
+#'   local spellings are `"constant"`, `"auto_min_positive"`,
+#'   `"obs_mean_factor"`, `"otherValue"`, and `"otherFactor"`.
+#' @param epsilon.value Optional compatibility alias for the epsilon numeric
+#'   value. It maps to `epsilon` when `epsilon_mode = "constant"` and to
+#'   `epsilon_factor` otherwise.
+#' @param ... Additional compatibility arguments, including `metric_params`.
+#'
+#' @return A structured object with class `"hydro_metrics"` containing
+#'   `metrics`, `n_obs`, `meta`, and `call`. Metric names are also exposed as
+#'   list elements for `$` access compatibility.
+#'
+#' @examples
+#' sim <- c(1, 2, 3, 4)
+#' obs <- c(1, 2, 2, 4)
+#'
+#' gof(sim, obs, methods = c("NSE", "rmse"))
+#' gof(sim, obs, fun = "rmse", na.rm = FALSE)
+#' @export
 gof <- function(sim,
                 obs,
                 methods = NULL,
@@ -239,30 +375,45 @@ gof <- function(sim,
                 epsilon = NULL,
                 epsilon_factor = 1,
                 components = FALSE,
+                fun = NULL,
+                na.rm = NULL,
+                keep = NULL,
+                epsilon.type = NULL,
+                epsilon.value = NULL,
                 ...) {
   na_strategy_missing <- missing(na_strategy)
+  epsilon_mode_missing <- missing(epsilon_mode)
+  epsilon_missing <- missing(epsilon)
+  epsilon_factor_missing <- missing(epsilon_factor)
+
+  compat <- .hm_apply_orchestration_compat(
+    methods = methods,
+    na_strategy = na_strategy,
+    epsilon_mode = epsilon_mode,
+    epsilon = epsilon,
+    epsilon_factor = epsilon_factor,
+    fun = fun,
+    na.rm = na.rm,
+    keep = keep,
+    epsilon.type = epsilon.type,
+    epsilon.value = epsilon.value,
+    na_strategy_missing = na_strategy_missing,
+    epsilon_mode_missing = epsilon_mode_missing,
+    epsilon_missing = epsilon_missing,
+    epsilon_factor_missing = epsilon_factor_missing
+  )
+  methods <- compat$methods
+  na_strategy <- compat$na_strategy
+  epsilon_mode <- compat$epsilon_mode
+  epsilon <- compat$epsilon
+  epsilon_factor <- compat$epsilon_factor
+
   na_strategy <- match.arg(na_strategy)
   transform <- match.arg(transform)
   epsilon_mode <- match.arg(epsilon_mode)
 
   dots <- list(...)
   metric_params <- dots$metric_params
-
-  fun <- dots$fun
-  if (is.null(methods) && !is.null(fun)) {
-    methods <- fun
-  }
-
-  if (!is.null(dots$na.rm)) {
-    na_rm <- dots$na.rm
-    if (!is.logical(na_rm) || length(na_rm) != 1L || is.na(na_rm)) {
-      stop("`na.rm` must be TRUE or FALSE.", call. = FALSE)
-    }
-    na_strategy <- if (isTRUE(na_rm)) "remove" else "fail"
-  } else if (!is.null(dots$keep) && isTRUE(na_strategy_missing)) {
-    keep <- match.arg(dots$keep, choices = c("complete", "pairwise"))
-    na_strategy <- if (identical(keep, "pairwise")) "pairwise" else "remove"
-  }
 
   available_ids <- as.character(.get_registry()$list()$id)
   available_alias <- .gof_alias_map()
@@ -364,14 +515,38 @@ gof <- function(sim,
   )
 }
 
+#' Numeric coercion for hydro_metrics
+#'
+#' @param x A `"hydro_metrics"` object.
+#' @param ... Unused.
+#'
+#' @return The numeric metric values carried by `x`.
+#' @rdname hydro-orchestration-methods
+#' @export
 as.numeric.hydro_metrics <- function(x, ...) {
   as.numeric(x$metrics)
 }
 
+#' Double coercion for hydro_metrics
+#'
+#' @param x A `"hydro_metrics"` object.
+#' @param ... Unused.
+#'
+#' @return The numeric metric values carried by `x`.
+#' @rdname hydro-orchestration-methods
+#' @export
 as.double.hydro_metrics <- function(x, ...) {
   as.numeric(x$metrics)
 }
 
+#' Print a hydro_metrics object
+#'
+#' @param x A `"hydro_metrics"` object.
+#' @param ... Additional arguments passed to [print()].
+#'
+#' @return The input object, invisibly.
+#' @rdname hydro-orchestration-methods
+#' @export
 print.hydro_metrics <- function(x, ...) {
   print(x$metrics, ...)
   invisible(x)

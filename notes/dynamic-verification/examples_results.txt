@@ -1,0 +1,18 @@
+Phase 2 Dynamic Verification - Examples
+Command: devtools::run_examples(run_donttest = TRUE) where feasible
+Exit status: 0
+Elapsed seconds: 0.240
+
+Evidence class: verified fact
+Rd files with examples = 0
+examples status = skipped_no_examples
+
+Raw output:
+EXAMPLE_RD_COUNT: 0
+EXAMPLES_STATUS: skipped_no_examples
+
+Evidence class: likely inference
+Full examples execution was infeasible because no runnable Rd example sections were present in the source tree.
+
+Evidence class: recommendation
+Record the exact scope completed here; do not infer example adequacy when the package currently ships no runnable examples.

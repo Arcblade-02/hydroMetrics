@@ -1,0 +1,49 @@
+Phase 2 Dynamic Verification - Clean-Session Installation
+Command: R CMD build; R CMD INSTALL; library(hydroMetrics)
+Build exit status: 0
+Install exit status: 0
+Library load exit status: 0
+
+Evidence class: verified fact
+build success = TRUE
+install success = TRUE
+library load success = success
+installed export count = 17
+library message count = 2
+library warning count = 0
+
+Build output:
+* checking for file './DESCRIPTION' ... OK
+* preparing 'hydroMetrics':
+* checking DESCRIPTION meta-information ... OK
+* checking for LF line-endings in source and make files and shell scripts
+* checking for empty or unneeded directories
+* building 'hydroMetrics_0.1.0.tar.gz'
+
+
+Install output:
+* installing *source* package 'hydroMetrics' ...
+** this is package 'hydroMetrics' version '0.1.0'
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (hydroMetrics)
+
+Library load output:
+INSTALLED_EXPORT_COUNT: 17
+LIBRARY_STATUS: success
+LIBRARY_MESSAGE_COUNT: 2
+LIBRARY_WARNING_COUNT: 0
+
+Evidence class: likely inference
+The package can be built, installed from source, and attached in a clean local session.
+
+Evidence class: recommendation
+Use this install evidence as the baseline for any packaging fixes; do not infer more than the recorded build/install/load facts.

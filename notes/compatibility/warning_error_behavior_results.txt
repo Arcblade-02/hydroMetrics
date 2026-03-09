@@ -1,0 +1,14 @@
+Phase 2 Compatibility Audit - Warning and Error Behavior
+Evidence class: verified fact
+threshold-sensitive HFB short-input error = HFB requires at least 3 points at or above the high-flow threshold.
+HFB invalid-threshold error = `threshold_prob` must be a numeric scalar in (0, 1).
+APFB non-indexed-input error = APFB requires zoo/xts inputs with a time index.
+alpha constant-observation error = sd(obs) is zero; alpha undefined
+gof unknown-metric error = Unknown metric(s): UNKNOWN. Use available metrics: alpha, apfb, beta, br2, cp, d, dr, hfb, kge, kgekm, kgelf, kgenp, mae, mape, md, me, mnse, mpe, mse, nrmse, nrmse_sd, nse, pbias, pbiasfdc, pfactor, r, r2, rd, rfactor, rmse, rnse, rpearson, rsd, rspearman, rsr, skge, ssq, ubrmse, ve, wnse, wsnse
+preproc mismatched-length error = `sim` and `obs` must have the same length.
+
+Evidence class: likely inference
+The observed failures are informative and deterministic for the representative threshold-sensitive and contract-violation cases exercised here.
+
+Evidence class: recommendation
+Use these exact messages as the compatibility baseline when triaging wrapper-contract regressions.

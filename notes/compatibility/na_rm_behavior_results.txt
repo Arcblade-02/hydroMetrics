@@ -1,0 +1,17 @@
+Phase 2 Compatibility Audit - na.rm and Missing-Value Behavior
+Evidence class: verified fact
+alpha with na.rm = TRUE succeeds = TRUE
+alpha with na.rm = FALSE error = Missing values found; use `na_strategy = 'remove'` to drop NA pairs.
+gof with na.rm = TRUE succeeds = TRUE
+gof with na.rm = FALSE error = Missing values found; use `na_strategy = 'remove'` to drop NA pairs.
+preproc with na.rm = TRUE succeeds = TRUE
+preproc with na.rm = FALSE error = Missing values found; use `na_strategy = 'remove'` to drop NA pairs.
+alpha with Inf behavior = error:Transformation produced non-finite values.
+APFB with na.rm = TRUE = none
+APFB with na.rm = FALSE = error:Missing values found; use `na_strategy = 'remove'` to drop NA pairs.
+
+Evidence class: likely inference
+Observed wrappers handle na.rm deterministically where the runtime path accepts na.rm, even when the argument is supplied through ....
+
+Evidence class: recommendation
+Preserve the recorded na.rm behavior as compatibility evidence before any signature-surface changes are considered.

@@ -1,0 +1,7 @@
+"Metric_A","Metric_B","relationship_type","Evidence","verified_status"
+"APFB","apfb","wrapper_alias","Wrapper 'APFB' delegates to gof(methods = 'apfb').","verified"
+"HFB","hfb","wrapper_alias","Wrapper 'HFB' delegates to gof(methods = 'hfb').","verified"
+"mNSeff","mnse","wrapper_alias","Wrapper 'mNSeff' delegates to gof(methods = 'mnse').","verified"
+"NSeff","nse","wrapper_alias","Wrapper 'NSeff' delegates to gof(methods = 'nse').","verified"
+"rNSeff","rnse","wrapper_alias","Wrapper 'rNSeff' delegates to gof(methods = 'rnse').","verified"
+"wsNSeff","wsnse","wrapper_alias","Wrapper 'wsNSeff' delegates to gof(methods = 'wsnse').","verified"

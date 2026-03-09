@@ -1,0 +1,4 @@
+"Branch","Purpose","Exists","Clean","Head commit","Ready","Notes"
+"archive/phase2-validation-artifacts","Archive preservation branch for full Phase 2 evidence.",TRUE,TRUE,"219f081addce6cb8d7b23f1fa3fd0c494b637feb",TRUE,"summary_file_expected=FALSE; archive_contents_present=TRUE"
+"dev","Production-facing Phase 2 branch after cleanup.",TRUE,TRUE,"4935b616b0e989171e21bb2b6d48eb4b9dbac94e",TRUE,"summary_file_present=TRUE; archive_contents_expected=FALSE"
+"feature/archive-phase2-artifacts","Final production cleanup source branch.",TRUE,TRUE,"4935b616b0e989171e21bb2b6d48eb4b9dbac94e",TRUE,"summary_file_present=TRUE; archive_contents_expected=FALSE"

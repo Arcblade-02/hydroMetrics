@@ -1,0 +1,32 @@
+Phase 2 GitHub integration - branch validation results
+Working tree clean before verification: TRUE
+dev exists: TRUE
+feature/archive-phase2-artifacts exists: TRUE
+archive/phase2-validation-artifacts exists: TRUE
+dev head: 4935b616b0e989171e21bb2b6d48eb4b9dbac94e
+feature/archive-phase2-artifacts head: 4935b616b0e989171e21bb2b6d48eb4b9dbac94e
+archive/phase2-validation-artifacts head: 219f081addce6cb8d7b23f1fa3fd0c494b637feb
+dev summary file present: TRUE
+archive contents present: TRUE
+archive missing: <none>
+
+Archive branch preservation:
+archive branch verified: TRUE
+archive commit hash: 219f081addce6cb8d7b23f1fa3fd0c494b637feb
+archived directory count: 7
+missing archived directories: <none>
+
+Final local validation after dev update:
+devtools::test status: pass
+devtools::test pass count: 577
+devtools::test fail count: 0
+devtools::check status: fallback clean via R CMD check
+devtools::check evidence: ══ Documenting ═════════════════════════════════════════════════════════════════
+R CMD build status: pass
+R CMD check --no-manual status: pass
+docs/phase2_validation_summary.md exists on dev: TRUE
+README.md exists on dev: TRUE
+NEWS.md exists on dev: TRUE
+vignettes/getting-started.Rmd exists on dev: TRUE
+.github/workflows/R-CMD-check.yml exists on dev: TRUE
+.github/workflows/coverage.yml exists on dev: TRUE

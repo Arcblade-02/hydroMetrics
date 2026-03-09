@@ -156,19 +156,15 @@ test_status <- attr(test_output, "status")
 if (is.null(test_status)) {
   test_status <- 0L
 }
-test_text <- paste(test_output, collapse = "\n")
+result_line <- trim1(grep("\\[ FAIL [0-9]+ \\| WARN [0-9]+ \\| SKIP [0-9]+ \\| PASS [0-9]+ \\]", test_output, value = TRUE))
 extract_count <- function(label) {
-  matches <- regmatches(
-    test_text,
-    gregexpr(sprintf("%s\\s+[0-9]+", label), test_text, perl = TRUE)
-  )[[1]]
-  value <- if (length(matches)) sub(sprintf("%s\\s+", label), "", tail(matches, 1L)) else "NA"
+  value <- sub(sprintf(".*%s ([0-9]+).*", label), "\\1", result_line)
   if (!grepl("^[0-9]+$", value)) "NA" else value
 }
-pass_count <- extract_count("PASS")
 fail_count <- extract_count("FAIL")
 warn_count <- extract_count("WARN")
 skip_count <- extract_count("SKIP")
+pass_count <- extract_count("PASS")
 
 build_output <- suppressWarnings(system2(
   rexe,

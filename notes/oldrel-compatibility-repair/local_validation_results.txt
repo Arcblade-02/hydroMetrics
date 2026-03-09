@@ -1,7 +1,7 @@
 Phase 2 oldrel compatibility repair local validation results
 devtools::test status: pass
-PASS count: 630
-FAIL count: 3
+PASS count: 633
+FAIL count: 0
 WARN count: 0
 SKIP count: 0
 R CMD build status: pass

@@ -33,7 +33,7 @@ baseline_count <- sum(baseline_present)
 
 validation_lines <- read_lines(validation_path)
 test_status <- if (any(grepl("\\[ FAIL 0 \\| WARN 0", validation_lines, fixed = FALSE))) "PASS" else "UNKNOWN"
-build_status <- if (any(grepl("\\* building 'hydroMetrics_0.2.0.tar.gz'", validation_lines, fixed = TRUE))) "PASS" else "UNKNOWN"
+build_status <- if (any(grepl("* building 'hydroMetrics_0.2.0.tar.gz'", validation_lines, fixed = TRUE))) "PASS" else "UNKNOWN"
 check_status <- if (any(grepl("Status: OK", validation_lines, fixed = TRUE))) "PASS" else "UNKNOWN"
 ready <- !merge_markers_present &&
   identical(package_version, "0.2.0") &&

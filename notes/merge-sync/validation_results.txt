@@ -1,1 +1,77 @@
-Pending validation run.
+Validation run date: 2026-03-10 IST
+Branch: feature/resolve-description-merge-and-baseline-sync
+Package version: 0.2.0
+
+Command:
+"C:\Program Files\R\R-4.5.2\bin\Rscript.exe" -e "devtools::test()"
+Exit code: 0
+Output:
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 14.4 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 898 ]
+ℹ Testing hydroMetrics
+
+Command:
+R CMD build .
+Resolved command:
+"C:\Program Files\R\R-4.5.2\bin\x64\Rcmd.exe" build .
+Exit code: 0
+Output:
+* checking for file './DESCRIPTION' ... OK
+* preparing 'hydroMetrics':
+* checking DESCRIPTION meta-information ... OK
+* installing the package to build vignettes
+* creating vignettes ... OK
+* checking for LF line-endings in source and make files and shell scripts
+* checking for empty or unneeded directories
+Omitted 'LazyData' from DESCRIPTION
+* building 'hydroMetrics_0.2.0.tar.gz'
+
+Command:
+R CMD check --no-manual hydroMetrics_0.2.0.tar.gz
+Resolved command:
+"C:\Program Files\R\R-4.5.2\bin\x64\Rcmd.exe" check --no-manual hydroMetrics_0.2.0.tar.gz
+Exit code: 0
+Output:
+* using log directory 'D:/R Package/hydroMetrics/hydroMetrics.Rcheck'
+* this is package 'hydroMetrics' version '0.2.0'
+* checking package dependencies ... OK
+* checking whether the package 'hydroMetrics' can be installed ... OK
+* checking whether the package can be loaded ... OK
+* checking Rd files ... OK
+* checking for missing documentation entries ... OK
+* checking examples ... OK
+* checking tests ... OK
+* checking package vignettes ... OK
+* DONE
+Status: OK
+
+Additional environment warnings emitted during R CMD check:
+Warning: unable to access index for repository https://CRAN.R-project.org/src/contrib:
+  cannot open URL 'https://CRAN.R-project.org/src/contrib/PACKAGES'
+Warning: unable to access index for repository https://bioconductor.org/packages/3.22/bioc/src/contrib:
+  cannot open URL 'https://bioconductor.org/packages/3.22/bioc/src/contrib/PACKAGES'
+Warning: unable to access index for repository https://bioconductor.org/packages/3.22/data/annotation/src/contrib:
+  cannot open URL 'https://bioconductor.org/packages/3.22/data/annotation/src/contrib/PACKAGES'
+Warning: unable to access index for repository https://bioconductor.org/packages/3.22/data/experiment/src/contrib:
+  cannot open URL 'https://bioconductor.org/packages/3.22/data/experiment/src/contrib/PACKAGES'
+Warning in system2("du", "-k", TRUE, TRUE) :
+  running command '"du" -k' had status 322
+  Running 'testthat.R'
+
+Command:
+"C:\Program Files\R\R-4.5.2\bin\Rscript.exe" -e "devtools::check()"
+Exit code: 1
+Classification: environment-specific
+Output:
+Error in `process_initialize(self, private, command, args, stdin, stdout, …`:
+! Native call to `processx_exec` failed
+Caused by error in `chain_call(c_processx_exec, command, c(command, args), pty, pty_options, …`:
+! creating write pipe for 'C:/PROGRA~1/R/R-45~1.2/bin/x64/Rcmd.exe' (system error 5, Access is denied.)
+
+Validation summary:
+- devtools::test(): PASS
+- R CMD build .: PASS
+- R CMD check --no-manual hydroMetrics_0.2.0.tar.gz: PASS
+- devtools::check(): environment-specific failure

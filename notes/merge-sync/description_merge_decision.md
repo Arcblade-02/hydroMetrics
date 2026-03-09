@@ -15,7 +15,7 @@
 | `LazyData` | `true` | absent | `true` | Preserve local release metadata. |
 | `URL` | absent | GitHub repository URL | keep incoming value | Valid release metadata addition. |
 | `BugReports` | absent | GitHub issues URL | keep incoming value | Valid release metadata addition. |
-| `Imports` | `stats`, `graphics` | `R6 (>= 2.5.1)` | union of both sides | Preserve actual runtime support and required `R6`. |
+| `Imports` | `stats`, `graphics` | `R6 (>= 2.5.1)` | `R6 (>= 2.5.1)`, `stats` | Keep the actual runtime imports and drop `graphics`, which is not imported anywhere in the package. |
 | `Suggests` | includes `microbenchmark`, `rmarkdown`, `xts`, `zoo` | adds `markdown`, retains tests/coverage/vignettes packages | union of both sides | Preserve compatible metadata additions needed for docs, tests, vignettes, and benchmarking. |
 | `VignetteBuilder` | `knitr` | `knitr` | `knitr` | Consistent across both sides. |
 | `Config/testthat/edition` | `3` | `3` | `3` | Consistent across both sides. |

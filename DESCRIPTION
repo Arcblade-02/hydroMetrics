@@ -21,6 +21,7 @@ Suggests:
     ggplot2,
     hydroGOF,
     knitr,
+    markdown,
     microbenchmark,
     rmarkdown,
     xts,

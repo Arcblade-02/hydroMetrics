@@ -1,7 +1,8 @@
 # hydroMetrics
 
 `hydroMetrics` is a clean-room MIT-licensed R package for hydrological model
-evaluation metrics.
+evaluation metrics. The current release-hardening line is aligned for the
+`0.2.0` package version.
 
 ## Scope
 
@@ -13,6 +14,15 @@ evaluation metrics.
   internal metric registry
 
 ## Install
+
+For local release validation, build the source bundle with `R CMD build .` and
+install the generated tarball:
+
+```r
+install.packages("hydroMetrics_0.2.0.tar.gz", repos = NULL, type = "source")
+```
+
+If you want the latest repository snapshot instead:
 
 ```r
 install.packages("pak")
@@ -31,6 +41,12 @@ gof(sim, obs, methods = c("NSE", "rmse", "pbias"))
 ggof(sim, obs, methods = c("NSE", "rmse"))
 mae(sim, obs)
 ```
+
+## Documentation
+
+- `vignette("getting-started", package = "hydroMetrics")` for a minimal
+  end-to-end walkthrough
+- `?gof`, `?ggof`, and `?preproc` for API details
 
 ## Compatibility Notes
 

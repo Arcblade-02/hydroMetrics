@@ -1,6 +1,6 @@
 Package: hydroMetrics
 Title: Clean-Room Hydrological Evaluation Metrics
-Version: 0.1.0
+Version: 0.2.0
 Authors@R:
     person("Arcblade-02", email = "pritamparida432@gmail.com", role = c("aut", "cre"))
 Author: Arcblade-02 [aut, cre]
@@ -24,4 +24,5 @@ Suggests:
     rmarkdown,
     xts,
     zoo
+VignetteBuilder: knitr
 Config/testthat/edition: 3

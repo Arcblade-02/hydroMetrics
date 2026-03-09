@@ -1,0 +1,39 @@
+Phase 2 release hardening - final validation results
+Command: devtools::test()
+Status: pass
+PASS count: 569
+FAIL count: 0
+WARN count: 0
+SKIP count: 0
+Non-regression vs readiness baseline (561): pass
+
+Command: devtools::check()
+Status: fallback clean via R CMD check
+Errors: 1
+Warnings: 0
+Notes: 0
+devtools::check first evidence line: ! Native call to `processx_exec` failed
+
+Command: R CMD build .
+Status: pass
+Tarball: hydroMetrics_0.2.0.tar.gz
+
+Command: R CMD check --no-manual hydroMetrics_0.2.0.tar.gz
+Status: pass
+Errors: 0
+Warnings: 0
+Notes: 0
+
+Vignette presence: TRUE
+Vignette build feasibility: TRUE
+CI workflow files present: TRUE
+Exported documentation complete: TRUE (17/17)
+Examples detected: 16
+Evidence directories preserved:
+- notes/audit: TRUE
+- notes/dynamic-verification: TRUE
+- notes/compatibility: TRUE
+- notes/math-validation: TRUE
+- notes/fix-program: TRUE
+- notes/readiness-review: TRUE
+Runner fatal error: none

@@ -1,0 +1,9 @@
+Branch,Exists,HEAD commit,Clean working tree,Notes
+origin/main,TRUE,a45aec62923e6bfccadaff5f6fbd47b60eb03cec,TRUE,Remote main reference available for merge input.
+origin/dev,TRUE,4935b616b0e989171e21bb2b6d48eb4b9dbac94e,TRUE,Remote dev reference available for push comparison.
+dev,TRUE,1ab4bda9f8cf541f975ae23adb6b63f3363524f4,TRUE,Local dev branch after Phase 2 conflict resolution.
+conflict:NAMESPACE,TRUE,f3d6bb61ce87aae95247ff444890e755317b411a,,Resolved with dev/ours content per Phase 2 stabilization policy.
+conflict:R/gof.R,TRUE,f3d6bb61ce87aae95247ff444890e755317b411a,,Resolved with dev/ours content per Phase 2 stabilization policy.
+conflict:R/ggof.R,TRUE,f3d6bb61ce87aae95247ff444890e755317b411a,,Resolved with dev/ours content per Phase 2 stabilization policy.
+conflict:man/gof.Rd,TRUE,f3d6bb61ce87aae95247ff444890e755317b411a,,Resolved with dev/ours content per Phase 2 stabilization policy.
+conflict:man/ggof.Rd,TRUE,f3d6bb61ce87aae95247ff444890e755317b411a,,Resolved with dev/ours content per Phase 2 stabilization policy.

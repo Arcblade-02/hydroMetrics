@@ -1,0 +1,9 @@
+Phase 2 main-dev merge validation results
+devtools::test status: pass
+devtools::test pass count: 593
+devtools::test fail count: 0
+devtools::test warn count: 0
+devtools::test skip count: 0
+R CMD build status: pass
+R CMD build tarball: hydroMetrics_0.2.0.tar.gz
+R CMD check --no-manual status: pass

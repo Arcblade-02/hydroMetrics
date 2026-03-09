@@ -246,7 +246,7 @@ core_metric_spec_beta <- function() {
     category = "bias",
     perfect = 1,
     range = c(-Inf, Inf),
-    references = "KGE component definition in hydrology literature using bias ratio mean(sim)/mean(obs).",
+    references = "Gupta, H. V., Kling, H., Yilmaz, K. K., & Martinez, G. F. (2009). KGE-family component definition using the bias ratio mean(sim)/mean(obs).",
     version_added = "0.1.0",
     tags = c("kge-component")
   )
@@ -274,7 +274,7 @@ core_metric_spec_alpha <- function() {
     category = "scale",
     perfect = 1,
     range = c(0, Inf),
-    references = "KGE component definition in hydrology literature using variability ratio sd(sim)/sd(obs).",
+    references = "Gupta, H. V., Kling, H., Yilmaz, K. K., & Martinez, G. F. (2009). KGE-family component definition using the variability ratio sd(sim)/sd(obs).",
     version_added = "0.1.0",
     tags = c("kge-component")
   )
@@ -310,7 +310,7 @@ core_metric_spec_r <- function() {
     category = "correlation",
     perfect = 1,
     range = c(-1, 1),
-    references = "Pearson correlation coefficient (standard definition).",
+    references = "Gupta, H. V., Kling, H., Yilmaz, K. K., & Martinez, G. F. (2009). KGE-family component definition using the Pearson correlation term.",
     version_added = "0.1.0",
     tags = character()
   )

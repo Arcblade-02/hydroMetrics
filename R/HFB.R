@@ -1,4 +1,19 @@
-HFB <- function(sim, obs, threshold_prob = 0.9, ...) {
+#' Evaluate high-flow bias
+#'
+#' `HFB()` is a deterministic exported wrapper over [gof()] for the registry
+#' metric `"hfb"`. The exact failure mode for sparse high-flow support is
+#' preserved as part of the public compatibility contract.
+#'
+#' @inheritParams gof
+#' @param threshold_prob Probability threshold used to define the high-flow
+#'   subset from `obs`.
+#'
+#' @return A numeric scalar with class `"hydro_metric_scalar"`.
+#'
+#' @examples
+#' HFB(1:30 + 1, 1:30)
+#' @export
+HFB <- function(sim, obs, threshold_prob = 0.9, na.rm = NULL, ...) {
   if (!is.numeric(threshold_prob) ||
       length(threshold_prob) != 1L ||
       is.na(threshold_prob) ||
@@ -19,7 +34,7 @@ HFB <- function(sim, obs, threshold_prob = 0.9, ...) {
     do.call(
       gof,
       c(
-        list(sim = sim, obs = obs, methods = "hfb"),
+        list(sim = sim, obs = obs, methods = "hfb", na.rm = na.rm),
         dots
       )
     ),

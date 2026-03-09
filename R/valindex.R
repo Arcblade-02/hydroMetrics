@@ -1,7 +1,19 @@
-valindex <- function(sim, obs, fun = NULL, ...) {
+#' Evaluate selected metrics through valindex
+#'
+#' Thin exported wrapper that forwards `fun` to [gof()] as `methods`.
+#'
+#' @inheritParams gof
+#' @param fun Character vector of metric names to evaluate.
+#'
+#' @return A `"hydro_metrics"` object returned by [gof()].
+#'
+#' @examples
+#' valindex(c(1, 2, 3), c(1, 2, 2), fun = c("NSE", "rmse"))
+#' @export
+valindex <- function(sim, obs, fun = NULL, na.rm = NULL, ...) {
   if (is.null(fun) || !is.character(fun) || length(fun) == 0L || any(!nzchar(fun))) {
     stop("`fun` must be provided as a non-empty character vector.", call. = FALSE)
   }
 
-  gof(sim = sim, obs = obs, methods = fun, ...)
+  gof(sim = sim, obs = obs, methods = fun, na.rm = na.rm, ...)
 }

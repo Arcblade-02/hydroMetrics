@@ -53,7 +53,25 @@
   years
 }
 
-APFB <- function(sim, obs, ...) {
+#' Evaluate annual peak flow bias
+#'
+#' `APFB()` is an indexed compatibility wrapper over [gof()] for the registry
+#' metric `"apfb"`. It requires univariate `zoo` or `xts` inputs with a time
+#' index so yearly maxima can be derived deterministically.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar with class `"hydro_metric_scalar"`.
+#'
+#' @examples
+#' if (requireNamespace("zoo", quietly = TRUE)) {
+#'   dates <- as.Date("2020-01-01") + 0:729
+#'   sim <- zoo::zoo(seq_along(dates), order.by = dates)
+#'   obs <- zoo::zoo(seq_along(dates) + 1, order.by = dates)
+#'   APFB(sim, obs)
+#' }
+#' @export
+APFB <- function(sim, obs, na.rm = NULL, ...) {
   if (!(inherits(sim, "zoo") || inherits(sim, "xts")) ||
       !(inherits(obs, "zoo") || inherits(obs, "xts"))) {
     stop("APFB requires zoo/xts inputs with a time index.", call. = FALSE)
@@ -78,7 +96,7 @@ APFB <- function(sim, obs, ...) {
   out <- do.call(
     gof,
     c(
-      list(sim = sim, obs = obs, methods = "apfb"),
+      list(sim = sim, obs = obs, methods = "apfb", na.rm = na.rm),
       dots
     )
   )

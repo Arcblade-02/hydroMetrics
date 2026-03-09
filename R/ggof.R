@@ -1,3 +1,21 @@
+#' Return a tabular compatibility summary
+#'
+#' `ggof()` is a non-plotting compatibility helper. It returns a tidy
+#' `data.frame` with class `"hydro_metrics_batch"` and does not open or mutate
+#' graphics devices.
+#'
+#' @inheritParams gof
+#' @param include_meta Whether to append orchestration metadata columns.
+#'
+#' @return A `data.frame` with class `c("hydro_metrics_batch", "data.frame")`
+#'   containing `model`, `metric`, `value`, and `n_obs` columns.
+#'
+#' @examples
+#' sim <- c(1, 2, 3, 4)
+#' obs <- c(1, 2, 2, 4)
+#'
+#' ggof(sim, obs, methods = c("NSE", "rmse"))
+#' @export
 ggof <- function(sim,
                  obs,
                  methods = NULL,
@@ -7,6 +25,11 @@ ggof <- function(sim,
                  epsilon = NULL,
                  epsilon_factor = 1,
                  include_meta = FALSE,
+                 fun = NULL,
+                 na.rm = NULL,
+                 keep = NULL,
+                 epsilon.type = NULL,
+                 epsilon.value = NULL,
                  ...) {
   out <- gof(
     sim = sim,
@@ -17,6 +40,11 @@ ggof <- function(sim,
     epsilon_mode = epsilon_mode,
     epsilon = epsilon,
     epsilon_factor = epsilon_factor,
+    fun = fun,
+    na.rm = na.rm,
+    keep = keep,
+    epsilon.type = epsilon.type,
+    epsilon.value = epsilon.value,
     ...
   )
 
@@ -61,6 +89,14 @@ ggof <- function(sim,
   res
 }
 
+#' Print a hydro_metrics_batch result
+#'
+#' @param x A `"hydro_metrics_batch"` object returned by [ggof()].
+#' @param ... Additional arguments passed to [print.data.frame()].
+#'
+#' @return The input object, invisibly.
+#' @rdname hydro-orchestration-methods
+#' @export
 print.hydro_metrics_batch <- function(x, ...) {
   print.data.frame(x, ...)
   invisible(x)

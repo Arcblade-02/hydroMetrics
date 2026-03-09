@@ -1,0 +1,8 @@
+"Path","Exists","File count","Purpose","Archive required","Remove from production branch","Verified status"
+"notes/audit",TRUE,4,"Phase 2 baseline audit evidence.",TRUE,TRUE,"archived_on_archive_branch_and_removed_from_production"
+"notes/compatibility",TRUE,11,"Phase 2 compatibility behavior and scorecard evidence.",TRUE,TRUE,"archived_on_archive_branch_and_removed_from_production"
+"notes/dynamic-verification",TRUE,12,"Phase 2 runtime, namespace, examples, coverage, and package-check evidence.",TRUE,TRUE,"archived_on_archive_branch_and_removed_from_production"
+"notes/fix-program",TRUE,3,"Phase 2 fix-program planning and validation evidence.",TRUE,TRUE,"archived_on_archive_branch_and_removed_from_production"
+"notes/math-validation",TRUE,11,"Phase 2 formula provenance and mathematical behavior evidence.",TRUE,TRUE,"archived_on_archive_branch_and_removed_from_production"
+"notes/readiness-review",TRUE,9,"Phase 2 readiness review and GO-gating evidence.",TRUE,TRUE,"archived_on_archive_branch_and_removed_from_production"
+"notes/release-hardening",TRUE,6,"Phase 2 release-hardening closure and final GO evidence.",TRUE,TRUE,"archived_on_archive_branch_and_removed_from_production"

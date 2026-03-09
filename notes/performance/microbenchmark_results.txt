@@ -1,0 +1,8 @@
+SECTION 1 - MICROBENCHMARK (n=10000, iterations=100)
+Generated: 2026-03-05 00:21:27 +0530
+
+       expr    min      lq     mean  median      uq     max neval
+ direct_nse   41.0   45.95   53.347   48.05   51.35   156.1   100
+ gof_single 1792.1 1944.45 2640.797 2079.20 2280.70 44083.0   100
+  gof_multi 2368.2 2565.35 2882.772 2714.85 2977.00  5353.4   100
+  gof_batch 3446.9 3776.85 5161.421 3989.80 4621.00 95639.6   100

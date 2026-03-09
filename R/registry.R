@@ -15,6 +15,8 @@ register_core_metrics <- function(registry) {
     core_metric_spec_mae(),
     core_metric_spec_mse(),
     core_metric_spec_nrmse(),
+    core_metric_spec_beta(),
+    core_metric_spec_alpha(),
     core_metric_spec_r(),
     core_metric_spec_r2(),
     core_metric_spec_kge(),
@@ -40,6 +42,8 @@ register_core_metrics <- function(registry) {
     core_metric_spec_kgenp(),
     core_metric_spec_skge(),
     core_metric_spec_pbiasfdc(),
+    core_metric_spec_apfb(),
+    core_metric_spec_hfb(),
     core_metric_spec_rpearson(),
     core_metric_spec_rspearman(),
     core_metric_spec_rsd()

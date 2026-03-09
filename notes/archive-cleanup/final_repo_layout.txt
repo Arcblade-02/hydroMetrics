@@ -1,0 +1,28 @@
+Final production repository layout
+Current branch: feature/archive-phase2-artifacts
+
+Retained package assets:
+- .github/workflows/
+- R/
+- man/
+- tests/
+- vignettes/
+- inst/
+- tools/
+- docs/phase2_validation_summary.md
+- DESCRIPTION
+- NAMESPACE
+- README.md
+- NEWS.md
+- LICENSE
+- notes/archive-cleanup/
+- notes/performance/
+
+Archived Phase 2 notes directories intentionally absent from production:
+- notes/audit
+- notes/dynamic-verification
+- notes/compatibility
+- notes/math-validation
+- notes/fix-program
+- notes/readiness-review
+- notes/release-hardening

@@ -1,12 +1,16 @@
 Package: hydroMetrics
 Title: Clean-Room Hydrological Evaluation Metrics
-Version: 0.1.0
+Version: 0.2.0
 Authors@R:
-    person("hydroMetrics Authors", "Team", email = "maintainers@example.com", role = c("aut", "cre"))
+    person("Arcblade-02", email = "pritamparida432@gmail.com", role = c("aut", "cre"))
+Author: Arcblade-02 [aut, cre]
+Maintainer: Arcblade-02 <pritamparida432@gmail.com>
 Description: Clean-room MIT package for hydrological evaluation metrics,
     with reproducible definitions and implementation-ready scaffolding.
 License: MIT + file LICENSE
 Encoding: UTF-8
+URL: https://github.com/Arcblade-02/hydroMetrics
+BugReports: https://github.com/Arcblade-02/hydroMetrics/issues
 Imports:
     R6 (>= 2.5.1)
 Roxygen: list(markdown = TRUE)
@@ -17,6 +21,10 @@ Suggests:
     ggplot2,
     hydroGOF,
     knitr,
+    markdown,
+    microbenchmark,
     rmarkdown,
+    xts,
     zoo
+VignetteBuilder: knitr
 Config/testthat/edition: 3

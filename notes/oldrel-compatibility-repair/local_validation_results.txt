@@ -1,0 +1,11 @@
+Phase 2 oldrel compatibility repair local validation results
+devtools::test status: pass
+PASS count: 633
+FAIL count: 0
+WARN count: 0
+SKIP count: 0
+R CMD build status: pass
+R CMD check --no-manual status: pass
+APFB example status: pass
+zoo alignment repair markers: pass
+targeted regression test markers: pass

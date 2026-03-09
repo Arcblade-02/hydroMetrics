@@ -1,0 +1,66 @@
+<!--
+%\VignetteIndexEntry{Getting Started with hydroMetrics}
+%\VignetteEngine{knitr::knitr}
+%\VignetteEncoding{UTF-8}
+-->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+`hydroMetrics` provides clean-room hydrological model-evaluation metrics with a
+small orchestration layer for deterministic preprocessing and wrapper
+compatibility.
+
+## Installation
+
+For local release validation, build the source tarball from the package root
+with `R CMD build .` and install the generated bundle:
+
+```r
+install.packages("hydroMetrics_0.2.0.tar.gz", repos = NULL, type = "source")
+```
+
+## Core usage
+
+The primary entry point is `gof()`. It evaluates one or more registered metrics
+over aligned simulated and observed series.
+
+```{r}
+library(hydroMetrics)
+
+sim <- c(1, 2, 3, 4)
+obs <- c(1, 2, 2, 4)
+
+gof_out <- gof(sim, obs, methods = c("NSE", "rmse", "pbias"))
+gof_out$metrics
+```
+
+## Batch summaries with `ggof()`
+
+`ggof()` returns a tabular `hydro_metrics_batch` object and does not open a
+graphics device.
+
+```{r}
+ggof(sim, obs, methods = c("NSE", "rmse"))
+```
+
+## Wrapper examples
+
+Compatibility wrappers remain available when a single metric is more
+convenient.
+
+```{r}
+NSeff(sim, obs)
+mae(sim, obs)
+pbias(sim, obs)
+```
+
+## Compatibility notes
+
+- `ggof()` is tabular output only; it does not create plots.
+- `APFB()` requires indexed `zoo` or `xts` inputs.
+- `preproc()` currently supports single-series vector or indexed inputs only.
+- Formal compatibility aliases such as `na.rm`, `fun`, `keep`,
+  `epsilon.type`, and `epsilon.value` are documented where already supported by
+  the package.

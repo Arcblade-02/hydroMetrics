@@ -1,0 +1,11 @@
+"metric","value"
+"direct_nse_median_ns",48.05
+"gof_single_median_ns",2079.2
+"gof_multi_median_ns",2714.85
+"gof_batch_median_ns",3989.8
+"large_vector_elapsed_sec",0.0700000000000001
+"matrix_scaling_elapsed_sec",0.11
+"memory_delta_mb",0
+"metric_time_pct",2.31098499422855
+"registry_dispatch_pct",97.6890150057715
+"load_time_elapsed_sec",0.05

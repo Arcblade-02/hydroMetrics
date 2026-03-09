@@ -23,7 +23,7 @@ if (exists(".get_registry", envir = ns, inherits = FALSE)) {
   invisible(get(".get_registry", envir = ns, inherits = FALSE)())
 }
 
-implemented <- hydroMetrics::list_metrics()
+implemented <- get("list_metrics", envir = ns, inherits = FALSE)()
 implemented <- implemented[order(tolower(implemented$id)), , drop = FALSE]
 implemented_ids <- unique(tolower(as.character(implemented$id)))
 exported_names <- tolower(getNamespaceExports("hydroMetrics"))

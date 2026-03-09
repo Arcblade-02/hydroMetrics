@@ -1,47 +1,103 @@
-#' Plot Hydrological Goodness-of-Fit Metrics
+#' Return a tabular compatibility summary
 #'
-#' Computes goodness-of-fit metrics and returns a `ggplot2` visualization.
+#' `ggof()` is a non-plotting compatibility helper. It returns a tidy
+#' `data.frame` with class `"hydro_metrics_batch"` and does not open or mutate
+#' graphics devices.
 #'
-#' @param sim Numeric simulated values; a vector for a single series or a matrix/data.frame/ts/zoo for multiple series.
-#' @param obs Numeric observed values with the same shape as `sim`.
-#' @param methods Metric name(s) to evaluate.
-#' @param fun Optional metric name(s), kept for hydroGOF compatibility.
-#' @param ... Additional arguments passed through to [gof()].
+#' @inheritParams gof
+#' @param include_meta Whether to append orchestration metadata columns.
 #'
-#' @details Argument order is `sim, obs` (simulation first, observation second).
+#' @return A `data.frame` with class `c("hydro_metrics_batch", "data.frame")`
+#'   containing `model`, `metric`, `value`, and `n_obs` columns.
 #'
-#' @return A `ggplot2::ggplot` object visualizing selected metric values.
+#' @examples
+#' sim <- c(1, 2, 3, 4)
+#' obs <- c(1, 2, 2, 4)
+#'
+#' ggof(sim, obs, methods = c("NSE", "rmse"))
 #' @export
-ggof <- function(sim, obs, methods = NULL, fun = NULL, ...) {
-  if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    stop("ggplot2 is required for ggof(); install it or use gof().", call. = FALSE)
-  }
-
-  values <- gof(sim = sim, obs = obs, methods = methods, fun = fun, ...)
-
-  if (is.numeric(values) && !is.matrix(values)) {
-    plot_df <- data.frame(
-      metric = names(values),
-      value = as.numeric(values),
-      series = "series1",
-      stringsAsFactors = FALSE
-    )
-
-    return(
-      ggplot2::ggplot(plot_df, ggplot2::aes(x = metric, y = value)) +
-        ggplot2::geom_col(fill = "#2C7FB8") +
-        ggplot2::labs(x = "Metric", y = "Value")
-    )
-  }
-
-  plot_df <- data.frame(
-    metric = rep(rownames(values), times = ncol(values)),
-    value = as.numeric(values),
-    series = rep(colnames(values), each = nrow(values)),
-    stringsAsFactors = FALSE
+ggof <- function(sim,
+                 obs,
+                 methods = NULL,
+                 na_strategy = c("fail", "remove", "pairwise"),
+                 transform = c("none", "log", "sqrt", "reciprocal"),
+                 epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
+                 epsilon = NULL,
+                 epsilon_factor = 1,
+                 include_meta = FALSE,
+                 fun = NULL,
+                 na.rm = NULL,
+                 keep = NULL,
+                 epsilon.type = NULL,
+                 epsilon.value = NULL,
+                 ...) {
+  out <- gof(
+    sim = sim,
+    obs = obs,
+    methods = methods,
+    na_strategy = na_strategy,
+    transform = transform,
+    epsilon_mode = epsilon_mode,
+    epsilon = epsilon,
+    epsilon_factor = epsilon_factor,
+    fun = fun,
+    na.rm = na.rm,
+    keep = keep,
+    epsilon.type = epsilon.type,
+    epsilon.value = epsilon.value,
+    ...
   )
 
-  ggplot2::ggplot(plot_df, ggplot2::aes(x = metric, y = value, fill = series)) +
-    ggplot2::geom_col(position = "dodge") +
-    ggplot2::labs(x = "Metric", y = "Value", fill = "Series")
+  metrics <- out$metrics
+  if (is.matrix(metrics)) {
+    model_names <- colnames(metrics)
+    if (is.null(model_names)) {
+      model_names <- paste0("model", seq_len(ncol(metrics)))
+    }
+
+    n_obs <- out$n_obs
+    if (length(n_obs) == 1L) {
+      n_obs <- rep(as.integer(n_obs), length(model_names))
+      names(n_obs) <- model_names
+    }
+
+    res <- data.frame(
+      model = rep(model_names, each = nrow(metrics)),
+      metric = rep(rownames(metrics), times = ncol(metrics)),
+      value = as.numeric(metrics),
+      n_obs = rep(as.integer(n_obs[model_names]), each = nrow(metrics)),
+      stringsAsFactors = FALSE
+    )
+  } else {
+    model_name <- "model1"
+    res <- data.frame(
+      model = rep(model_name, length(metrics)),
+      metric = names(metrics),
+      value = as.numeric(metrics),
+      n_obs = rep(as.integer(out$n_obs), length(metrics)),
+      stringsAsFactors = FALSE
+    )
+  }
+
+  if (isTRUE(include_meta)) {
+    res$transform <- out$meta$transform
+    res$na_strategy <- out$meta$na_strategy
+    res$epsilon_mode <- out$meta$epsilon_mode
+  }
+
+  class(res) <- c("hydro_metrics_batch", "data.frame")
+  res
+}
+
+#' Print a hydro_metrics_batch result
+#'
+#' @param x A `"hydro_metrics_batch"` object returned by [ggof()].
+#' @param ... Additional arguments passed to [print.data.frame()].
+#'
+#' @return The input object, invisibly.
+#' @rdname hydro-orchestration-methods
+#' @export
+print.hydro_metrics_batch <- function(x, ...) {
+  print.data.frame(x, ...)
+  invisible(x)
 }

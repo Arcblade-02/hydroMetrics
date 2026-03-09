@@ -52,7 +52,7 @@ test_that("nrmse errors when mean(obs) is zero", {
 test_that("r and r2 error for constant series", {
   expect_error(
     evaluate_metrics(sim = c(1, 1, 1), obs = c(1, 2, 3), metrics = "r"),
-    "constant|sd"
+    "zero variance|constant|sd"
   )
   expect_error(
     evaluate_metrics(sim = c(1, 2, 3), obs = c(4, 4, 4), metrics = "r2"),

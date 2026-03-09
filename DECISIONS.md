@@ -36,7 +36,7 @@
 - Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
 
 ## D-008: Core Metric Bootstrap Strategy
-- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `pbiasfdc`, `rpearson`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
+- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `beta`, `alpha`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `pbiasfdc`, `apfb`, `hfb`, `rpearson`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
 - Status: Accepted
 - Notes: Public API remains stable and users can evaluate core metrics without manual registration.
 
@@ -114,3 +114,33 @@
 - Decision: `rfactor` is defined as `mean(abs(sim - obs)) / mean(abs(obs))` and `pfactor` is defined as the proportion where `abs(sim - obs) <= tol * abs(obs)`, with `obs == 0` handled by absolute threshold `tol`.
 - Status: Accepted
 - Notes: `rfactor` requires at least one non-missing paired value and errors when `mean(abs(obs)) == 0`. `pfactor` requires `tol >= 0` and at least one non-missing paired value; default `tol` is `0.10`.
+
+## D-024: Phase 2B Batch 1 Parity Policies (rsr/pbias/mae)
+- Decision: `rsr`, `pbias`, and `mae` use explicit clean-room formulas with deterministic edge policies and wrappers routed through the Phase 2A preprocessing pipeline.
+- Status: Accepted
+- Notes: `rsr = RMSE/sd(obs)` requires at least two paired values and `sd(obs) > 0` (`"sd(obs) is zero; RSR undefined"`). `pbias = 100 * sum(sim - obs)/sum(obs)` requires `sum(obs) != 0` (`"sum(obs) is zero; PBIAS undefined"`). `mae = mean(abs(sim - obs))` requires at least one paired value. Metrics remain NA-free/transform-free and rely on preprocessing for alignment, NA strategy, and transformations.
+
+## D-025: Phase 2B Batch 2 KGE Component Metrics (beta/alpha/r)
+- Decision: Add clean-room parity metrics `beta`, `alpha`, and `r` as explicit KGE components, with wrappers routed through the Phase 2A preprocessing pipeline.
+- Status: Accepted
+- Notes: `beta = mean(sim)/mean(obs)` requires at least one value and `mean(obs) != 0` (`"mean(obs) is zero; beta undefined"`). `alpha = sd(sim)/sd(obs)` requires at least two values and `sd(obs) > 0` (`"sd(obs) is zero; alpha undefined"`). `r = cor(sim, obs, method = "pearson")` requires at least two values and fails on zero-variance inputs (`"zero variance; correlation undefined"`). No NA/transform logic is implemented in metric bodies.
+
+## D-026: Phase 2B Batch 3 Legacy NSE Alias Exports
+- Decision: Add `NSeff`, `mNSeff`, `rNSeff`, and `wsNSeff` as thin compatibility wrappers that route to existing metric ids (`nse`, `mnse`, `rnse`, `wsnse`) through `gof()`.
+- Status: Accepted
+- Notes: No new NSE-family formulas were introduced, and no NA handling was added to metric bodies. Wrapper behavior fully inherits existing implementation guards, including the `rNSeff` zero-observation policy from `rnse` (`obs == 0` is invalid and errors deterministically).
+
+## D-027: Phase 2B Batch 4A APFB/HFB Modern Scalar Exports
+- Decision: Add `APFB` and `HFB` as clean-room compatibility exports that must call `preproc()` and return numerically coercible S3 scalars with class `c("hydro_metric_scalar", "numeric")`.
+- Status: Accepted
+- Notes: `APFB` requires indexed zoo/xts input, aggregates annual maxima by calendar year, requires at least two years, and errors when any annual `obs_peak == 0`; invalid denominator states return `NA` with warning. `HFB` uses deterministic high-flow threshold `quantile(obs, probs = threshold_prob, type = 7)` (default `0.9`), requires at least three selected points, and returns `NA` with warning when `sum(obs_high) == 0`. Both metrics keep NA/alignment handling centralized via `preproc()` and attach metadata (`n_obs`, metric-specific `meta`, and call).
+
+## D-028: Phase 2B Batch 4B Modern Orchestration Compatibility Layer
+- Decision: Export `preproc`, `gof`, `ggof`, and `valindex` as clean-room compatibility wrappers over the existing preprocessing engine and registered metric dispatch, with structured S3 returns.
+- Status: Accepted
+- Notes: `preproc` is a public wrapper around `.hm_prepare_inputs` returning class `hydro_preproc`; `gof` returns class `hydro_metrics` containing `metrics`, `n_obs`, `meta`, and `call`, while preserving direct `$<metric>` access and `as.numeric()` coercion; `ggof` is tabular-only (class `hydro_metrics_batch`) and does not produce plots; `valindex` is a thin wrapper delegating to `gof(methods = fun, ...)`. No metric formulas are duplicated in orchestration code.
+
+## D-029: Phase 2C Metric Engine Consolidation
+- Decision: Consolidate to a single canonical metric tree in `R/core_metrics.R`, remove duplicate `R/metrics/*` definitions, and enforce registry-only metric execution from orchestration wrappers.
+- Status: Accepted
+- Notes: `gof` remains the sole orchestration path (`gof -> preproc -> .hm_prepare_inputs -> registry -> metric`). Exported compatibility wrappers (`APFB`, `HFB`, `pfactor`, `rfactor`) now dispatch through `gof` and no longer call `preproc` directly. Metric implementations were kept formula-equivalent while removing hidden NA-handling branches from the metric layer.

@@ -1,7 +1,0 @@
-"item","status","notes"
-"acceptable dependencies","pass","Imports remain limited to R6."
-"clean R CMD check","pass","R CMD build/check fallback"
-"deterministic tests","pass","Current PASS=561; baseline PASS target=493."
-"license declaration","pass","MIT + file LICENSE checked against on-disk LICENSE."
-"metadata completeness","pass","DESCRIPTION fields include URL and BugReports on the corrected baseline."
-"no undocumented exports","pass","17/17 exports documented."

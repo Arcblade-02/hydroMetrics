@@ -1,7 +1,0 @@
-"item","present","status","notes"
-"COMPATIBILITY_TRACKER.md",TRUE,"complete","Compatibility tracker presence inspected."
-"DESCRIPTION",TRUE,"complete","CRAN-facing DESCRIPTION fields inspected."
-"LICENSE",TRUE,"complete","File-based MIT license declaration inspected."
-"man pages",TRUE,"complete","17/17 exported aliases are documented."
-"NEWS.md",TRUE,"complete","Phase 2 fix-program baseline NEWS presence."
-"README.md",TRUE,"complete","Phase 2 fix-program baseline README presence."

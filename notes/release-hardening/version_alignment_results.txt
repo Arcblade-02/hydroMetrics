@@ -1,7 +1,0 @@
-Phase 2 release hardening - version alignment results
-Previous version: 0.1.0
-New version: 0.2.0
-Files changed: DESCRIPTION, README.md, NEWS.md
-Release-note alignment status: aligned
-README alignment status: reflects the current public API, local install validation path, and vignette entry point.
-NEWS alignment status: reflects CI hardening, vignette addition, version alignment, and reproducible release-hardening evidence.

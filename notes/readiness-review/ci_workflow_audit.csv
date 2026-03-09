@@ -1,5 +1,0 @@
-"item","status","notes"
-"OS matrix","partial","Linux and Windows runners detected; macOS absent."
-"R-version matrix","complete","Checked for multiple stable/devel R entries."
-"R CMD check workflow","complete","Checked for an r-lib package check workflow."
-"workflow files","complete","R-CMD-check.yml"

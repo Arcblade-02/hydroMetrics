@@ -3,6 +3,7 @@ Title: Hydrological Model Evaluation Metrics
 Version: 0.2.0
 Authors@R:
     person("Arcblade-02", email = "pritamparida432@gmail.com", role = c("aut", "cre"))
+Maintainer: Arcblade-02 <pritamparida432@gmail.com>
 Description: Clean-room MIT implementation of hydrological model
     evaluation metrics, including compatibility wrappers for
     hydroGOF-style functions and an extensible evaluation framework

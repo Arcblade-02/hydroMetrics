@@ -144,3 +144,18 @@
 - Decision: Consolidate to a single canonical metric tree in `R/core_metrics.R`, remove duplicate `R/metrics/*` definitions, and enforce registry-only metric execution from orchestration wrappers.
 - Status: Accepted
 - Notes: `gof` remains the sole orchestration path (`gof -> preproc -> .hm_prepare_inputs -> registry -> metric`). Exported compatibility wrappers (`APFB`, `HFB`, `pfactor`, `rfactor`) now dispatch through `gof` and no longer call `preproc` directly. Metric implementations were kept formula-equivalent while removing hidden NA-handling branches from the metric layer.
+
+## D-030: Phase 2 Wrapper Naming Freeze
+- Decision: Freeze the Phase 2 public compatibility surface with legacy hydroGOF-style uppercase exports (`NSE`, `KGE`, `MAE`, `RMSE`, `PBIAS`, `R2`, `NRMSE`) while retaining existing lowercase Phase 2 exports for backward compatibility.
+- Status: Accepted
+- Notes: No public renames are made at Phase 2 exit. Future Phase 3 additions must use lowercase or underscored names only.
+
+## D-031: Phase 2 Benchmark Outcome
+- Decision: `fast = TRUE` is not needed for Phase 2 and is not added to the public API.
+- Status: Accepted
+- Notes: The committed benchmark suite in `inst/benchmarks/` shows the compatibility wrapper and `gof()` paths remain low-latency at representative scales, including roughly 0.018-0.019 seconds at `n = 1e6` on the Phase 2 validation machine.
+
+## D-032: Phase 2 Output Contract Downgrade
+- Decision: Phase 2 exits with the shipped S3/data.frame output model rather than a tibble-first output contract, and no `output = "matrix"` switch is introduced.
+- Status: Accepted
+- Notes: `gof()` returns class `"hydro_metrics"`, `ggof()` returns class `"hydro_metrics_batch"`, and scalar wrappers return numeric outputs. Any earlier tibble-first plan claim is formally downgraded and tracked in the Phase 2 deviation register.

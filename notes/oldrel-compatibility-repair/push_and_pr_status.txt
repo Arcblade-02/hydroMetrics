@@ -1,0 +1,10 @@
+Phase 2 oldrel compatibility repair push and PR status
+Commit hash: 266b1b173963c2bd6cf7617593cf0c313dafea20
+Target branch: dev
+Push result: success
+origin/dev head: 266b1b173963c2bd6cf7617593cf0c313dafea20
+Expected PR effect: dev branch updated; GitHub Actions should rerun on the dev -> main PR.
+Addressed blocker: APFB example failure for zoo input.
+Addressed blocker: zoo alignment NA-failure path.
+Addressed blocker: xts subscript out of bounds path.
+Observed PR result from git only: remote branch updated; GitHub Actions result not observable via git alone.

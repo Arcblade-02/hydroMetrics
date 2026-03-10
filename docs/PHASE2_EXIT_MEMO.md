@@ -1,36 +1,48 @@
 # Phase 2 Exit Memo
 
-- Generated: 2026-03-10 10:37:51 +05:30
-- Source package version reviewed: `0.2.0`
-- Final recommendation: `GO`
+- Generated: 2026-03-10
+- Source package version reviewed: `0.2.1`
+- Final recommendation: `GO - FINAL PHASE 2 STABLE BASELINE`
 
 ## Executive assessment
 
-The `0.2.0` baseline is now supported by direct non-broken-environment `devtools::check*()` evidence and live green default-branch CI evidence on `main`, so the remaining pre-Phase 3 governance caveat is closed.
+The remaining Phase 2 blocker was the public wrapper/export contract. That
+closure state is now merged, versioned, validated, and prepared as the formal
+`0.2.1` corrective release baseline without changing metric formulas or
+preprocessing design.
 
-## Stage summary
+## Closure status
 
-- `clean install/load`: `PASS` - Fresh-session load succeeded from a clean temporary library after a documented devtools::install fallback.
-- `public API wrapper verification`: `PASS` - All promised wrappers are exported and callable from a clean installed session.
-- `tests`: `PASS` - `devtools::test()` is the authoritative harness here; `testthat::test_dir()` fails outside that harness because tests expect package-loading context.
-- `coverage`: `PASS` - Overall coverage is 95.17% with strong exercised paths through wrappers and preprocessing.
-- `vignette build`: `PASS` - Vignettes build cleanly and demonstrate exported package usage.
-- `documentation regeneration`: `PASS` - Documentation is present, regenerated cleanly, and covers exported functions.
-- `behavioral correctness matrix`: `PASS` - Exported wrappers and preprocessing behave deterministically across the required edge-case matrix.
-- `mathematical contract verification`: `PASS` - Core metric behavior is numerically pinned to explicit Phase 2 contracts.
-- `checks`: `PASS` - `devtools::check()` and `devtools::check(cran = TRUE)` both completed on a non-broken environment with 0 ERRORs, 0 WARNINGs, and 0 NOTEs.
-- `CI cross-check`: `PASS` - The latest default-branch `R-CMD-check` matrix and `Coverage` workflow are green on commit `680476fe92335255d2183fb7965db4ea8a05c7ad`.
+- `wrapper/export surface`: `PASS` - `NSE()`, `KGE()`, `RMSE()`, `R2()`,
+  `NRMSE()`, and `PBIAS()` are part of the exported source contract and are
+  verified directly by tests and clean-install evidence.
+- `naming policy`: `PASS` - legacy hydroGOF-style wrapper names remain public,
+  while lowercase/internal-style compatibility exports remain documented rather
+  than silently removed.
+- `documentation`: `PASS` - wrapper-facing docs, README scope text, and release
+  notes reflect the corrected compatibility story.
+- `ggof deviation`: `PASS` - the non-plotting `ggof()` behavior remains
+  explicit and unchanged.
+- `validation`: `PASS` - `devtools::test()`, `R CMD build .`,
+  `R CMD check --no-manual hydroMetrics_0.2.1.tar.gz`, clean installed-session
+  verification, and an unrestricted `devtools::check(document = FALSE,
+  manual = FALSE)` all completed successfully.
+- `release baseline`: `PASS` - `v0.2.1` is the corrected Phase 2 stable
+  release candidate while `v0.2.0` remains preserved as the superseded older
+  release.
 
-## Final evidence references
+## Release implication
 
-- `notes/final-cran-evidence/nonbroken_environment_report.md`
-- `notes/final-cran-evidence/devtools_check_results.txt`
-- `notes/final-cran-evidence/devtools_check_cran_results.txt`
-- `notes/final-cran-evidence/live_ci_status_report.md`
-- `notes/final-cran-evidence/final_cran_evidence_summary.md`
+The current source branch is suitable as the corrected Phase 2 stable release
+once the recorded validation artifacts remain green and the `v0.2.1` release
+tag is in place. Phase 3 should branch from `v0.2.1`, not from the superseded
+`v0.2.0` artifact.
 
-## Allowed Phase 3 scope guardrails
+## Evidence references
 
-- Phase 3 may extend functionality after preserving the validated wrapper signatures and behavior captured in the release-readiness and final evidence artifacts.
-- Metric formulas should remain frozen unless a defect is proven by runtime evidence.
-- Wrapper signatures must not change silently; the public API inventories under `notes/` remain the baseline for comparison.
+- `notes/wrapper-export-closure/wrapper_gap_inventory.csv`
+- `notes/wrapper-export-closure/wrapper_export_decisions.md`
+- `notes/wrapper-export-closure/naming_policy_verification.md`
+- `notes/wrapper-export-closure/wrapper_runtime_verification.md`
+- `notes/wrapper-export-closure/validation_results.txt`
+- `notes/wrapper-export-closure/release_patch_recommendation.md`

@@ -1,0 +1,37 @@
+Wrapper export closure validation
+Review date: 2026-03-10
+Source version: 0.2.0
+
+devtools::document(): PASS
+- Output:
+  - Updating hydroMetrics documentation
+  - Loading hydroMetrics
+- Result: no NAMESPACE diff and no man/ diff were generated.
+
+devtools::test(): PASS
+- Final output:
+  - Duration: 15.1 s
+  - [ FAIL 0 | WARN 0 | SKIP 0 | PASS 974 ]
+
+R CMD build .: PASS
+- Final output:
+  - checking for file './DESCRIPTION' ... OK
+  - creating vignettes ... OK
+  - Omitted 'LazyData' from DESCRIPTION
+  - building 'hydroMetrics_0.2.0.tar.gz'
+
+R CMD build/check: PASS
+- R CMD check --no-manual hydroMetrics_0.2.0.tar.gz final output:
+  - checking tests ... OK
+  - DONE
+  - Status: OK
+
+devtools::check(): PASS after unrestricted rerun
+- Initial sandboxed attempt:
+  - Native call to processx_exec failed
+  - creating write pipe for 'C:/PROGRA~1/R/R-45~1.2/bin/x64/Rcmd.exe' (system error 5, Access is denied.)
+- Unrestricted rerun final output:
+  - Duration: 32.2s
+  - 0 errors | 0 warnings | 0 notes
+
+Overall validation status: PASS

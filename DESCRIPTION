@@ -1,6 +1,6 @@
 Package: hydroMetrics
 Title: Hydrological Model Evaluation Metrics
-Version: 0.2.0
+Version: 0.2.1
 Authors@R:
     person("Arcblade-02", email = "pritamparida432@gmail.com", role = c("aut", "cre"))
 Maintainer: Arcblade-02 <pritamparida432@gmail.com>

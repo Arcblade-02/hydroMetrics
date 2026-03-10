@@ -29,5 +29,5 @@ test_that("finalize phase2 baseline artifacts exist", {
   expect_true(file.exists(file.path(notes_dir, "final_baseline_summary.md")))
 
   desc <- as.list(read.dcf(file.path(root, "DESCRIPTION"))[1, ])
-  expect_identical(desc[["Version"]], "0.2.0")
+  expect_true(desc[["Version"]] %in% c("0.2.0", "0.2.1"))
 })

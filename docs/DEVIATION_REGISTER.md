@@ -1,13 +1,27 @@
 # Deviation Register
 
-- Generated: 2026-03-10 01:27:57 IST
+- Generated: 2026-03-10
+- Source package version reviewed: `0.2.0`
 
-## Source snapshot deviations
+## Active deviations retained after wrapper/export closure
 
-- Current branch source version is `0.2.0`, not the requested `0.2.x` target.
-- Required public wrappers missing from exports: NSE, KGE, RMSE, MAE, PBIAS, R2, NRMSE, preproc, valindex.
-- README present: `TRUE`; NEWS present: `TRUE`; vignettes present: `TRUE`.
-- `R2` behaves as squared Pearson correlation and is not interchangeable with `NSE` on biased predictions.
-- `br2`, `pfactor`, and `rfactor` are project-defined compatibility metrics/variants rather than verified hydroGOF-equivalent exports on this branch.
-- The package currently exports `gof`, `ggof`, and `hm_result`; wrapper compatibility is therefore incomplete from a clean session.
-- CI does not currently prove vignette coverage and may not cover macOS or a dedicated coverage workflow on this branch.
+- `ggof()` remains a non-plotting compatibility helper. It returns a tabular
+  `hydro_metrics_batch` object and does not open or mutate a graphics device.
+- `R2()` remains squared Pearson correlation and is not interchangeable with
+  `NSE()` on biased predictions.
+- Phase 2 freezes `NRMSE()` at `norm = "mean"` only.
+- Lowercase/internal-style compatibility exports remain available where they
+  were already public in Phase 2: `alpha()`, `beta()`, `mae()`, `pbias()`,
+  `r()`, and `rsr()`.
+- `APFB()` remains an indexed compatibility wrapper that requires univariate
+  `zoo` or `xts` inputs with a time index.
+- `preproc()` remains intentionally limited to single-series numeric or indexed
+  inputs; matrix/data.frame preprocessing is not added in this closure.
+
+## Closed deviations
+
+- The public compatibility/export surface is no longer treated as incomplete on
+  the current source branch. The legacy hydroGOF-style wrappers `NSE()`,
+  `KGE()`, `RMSE()`, `R2()`, `NRMSE()`, and `PBIAS()` are present in source,
+  exported in `NAMESPACE`, documented, and covered by direct wrapper tests and
+  clean-install verification evidence.

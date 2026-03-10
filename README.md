@@ -4,7 +4,7 @@
 
 `hydroMetrics` is a clean-room MIT-licensed R package for hydrological model
 evaluation metrics. The current release-hardening line is aligned for the
-`0.2.0` package version.
+corrected `0.2.1` Phase 2 stable package version.
 
 ## Scope
 
@@ -24,7 +24,7 @@ For local release validation, build the source bundle with `R CMD build .` and
 install the generated tarball:
 
 ```r
-install.packages("hydroMetrics_0.2.0.tar.gz", repos = NULL, type = "source")
+install.packages("hydroMetrics_0.2.1.tar.gz", repos = NULL, type = "source")
 ```
 
 If you want the latest repository snapshot instead:

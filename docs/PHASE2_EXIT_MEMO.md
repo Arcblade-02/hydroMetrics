@@ -1,16 +1,15 @@
 # Phase 2 Exit Memo
 
 - Generated: 2026-03-10
-- Source package version reviewed: `0.2.0`
-- Final recommendation: `GO FOR PATCH RELEASE PREPARATION`
+- Source package version reviewed: `0.2.1`
+- Final recommendation: `GO - FINAL PHASE 2 STABLE BASELINE`
 
 ## Executive assessment
 
-The remaining Phase 2 blocker was the public wrapper/export contract: the
-legacy hydroGOF-style wrappers needed explicit exported-surface verification,
-clean-installed-session proof, and release-facing documentation alignment.
-That closure work is now present on the source branch without changing metric
-formulas or preprocessing design.
+The remaining Phase 2 blocker was the public wrapper/export contract. That
+closure state is now merged, versioned, validated, and prepared as the formal
+`0.2.1` corrective release baseline without changing metric formulas or
+preprocessing design.
 
 ## Closure status
 
@@ -25,15 +24,19 @@ formulas or preprocessing design.
 - `ggof deviation`: `PASS` - the non-plotting `ggof()` behavior remains
   explicit and unchanged.
 - `validation`: `PASS` - `devtools::test()`, `R CMD build .`,
-  `R CMD check --no-manual hydroMetrics_0.2.0.tar.gz`, clean installed-session
+  `R CMD check --no-manual hydroMetrics_0.2.1.tar.gz`, clean installed-session
   verification, and an unrestricted `devtools::check(document = FALSE,
   manual = FALSE)` all completed successfully.
+- `release baseline`: `PASS` - `v0.2.1` is the corrected Phase 2 stable
+  release candidate while `v0.2.0` remains preserved as the superseded older
+  release.
 
 ## Release implication
 
-The current source branch is suitable for a corrective patch release once the
-recorded validation artifacts remain green. Phase 3 should not start from an
-artifact that understates or omits the intended wrapper/export surface.
+The current source branch is suitable as the corrected Phase 2 stable release
+once the recorded validation artifacts remain green and the `v0.2.1` release
+tag is in place. Phase 3 should branch from `v0.2.1`, not from the superseded
+`v0.2.0` artifact.
 
 ## Evidence references
 

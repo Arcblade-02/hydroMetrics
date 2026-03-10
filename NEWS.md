@@ -1,5 +1,16 @@
 # hydroMetrics news
 
+## 0.2.1 (planned)
+
+- Close the Phase 2 wrapper/export contract so the hydroGOF-style public
+  wrappers `NSE()`, `KGE()`, `RMSE()`, `R2()`, `NRMSE()`, and `PBIAS()` are
+  explicitly validated from a clean installed session.
+- Regenerate the wrapper-facing documentation and record the naming-policy
+  relationship between legacy uppercase wrappers and retained lowercase
+  compatibility exports.
+- Add direct wrapper export, signature, return-type, and `na.rm` tests for the
+  released compatibility surface.
+
 ## 0.2.0
 
 - Expanded GitHub Actions release hardening to cover Linux, Windows, and macOS

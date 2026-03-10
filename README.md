@@ -9,8 +9,11 @@ evaluation metrics. The current release-hardening line is aligned for the
 ## Scope
 
 - Public orchestration entry points: `gof()`, `ggof()`, `preproc()`, and `valindex()`
-- Exported compatibility wrappers: `APFB()`, `HFB()`, `NSeff()`, `mNSeff()`,
-  `rNSeff()`, `wsNSeff()`, `alpha()`, `beta()`, `mae()`, `pbias()`, `r()`,
+- Legacy hydroGOF-style public wrappers: `NSE()`, `KGE()`, `MAE()`, `RMSE()`,
+  `PBIAS()`, `R2()`, `NRMSE()`, `NSeff()`, `mNSeff()`, `rNSeff()`, and
+  `wsNSeff()`
+- Additional exported compatibility wrappers retained alongside the legacy
+  names: `APFB()`, `HFB()`, `alpha()`, `beta()`, `mae()`, `pbias()`, `r()`,
   and `rsr()`
 - Additional metric ids are available through `gof(methods = ...)` and the
   internal metric registry
@@ -41,6 +44,7 @@ obs <- c(1, 2, 2, 4)
 
 gof(sim, obs, methods = c("NSE", "rmse", "pbias"))
 ggof(sim, obs, methods = c("NSE", "rmse"))
+NSE(sim, obs)
 mae(sim, obs)
 ```
 
@@ -52,6 +56,9 @@ mae(sim, obs)
 
 ## Compatibility Notes
 
+- Phase 2 keeps both the legacy hydroGOF-style public wrapper names and the
+  previously exported lowercase/internal-style compatibility names where they
+  already existed.
 - `ggof()` returns a tabular `hydro_metrics_batch` object and does not open a
   graphics device.
 - `APFB()` requires indexed `zoo` or `xts` inputs.

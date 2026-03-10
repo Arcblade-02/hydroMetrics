@@ -1,12 +1,8 @@
-# Phase 2 Exit Memo
+# CRAN Preflight Report
 
-- Generated: 2026-03-10 10:37:51 +05:30
-- Source package version reviewed: `0.2.0`
+- Generated: `2026-03-10 10:37:51 +05:30`
+- Source package version: `0.2.0`
 - Final recommendation: `GO`
-
-## Executive assessment
-
-The `0.2.0` baseline is now supported by direct non-broken-environment `devtools::check*()` evidence and live green default-branch CI evidence on `main`, so the remaining pre-Phase 3 governance caveat is closed.
 
 ## Stage summary
 
@@ -21,16 +17,10 @@ The `0.2.0` baseline is now supported by direct non-broken-environment `devtools
 - `checks`: `PASS` - `devtools::check()` and `devtools::check(cran = TRUE)` both completed on a non-broken environment with 0 ERRORs, 0 WARNINGs, and 0 NOTEs.
 - `CI cross-check`: `PASS` - The latest default-branch `R-CMD-check` matrix and `Coverage` workflow are green on commit `680476fe92335255d2183fb7965db4ea8a05c7ad`.
 
-## Final evidence references
+## Final evidence closure
 
-- `notes/final-cran-evidence/nonbroken_environment_report.md`
-- `notes/final-cran-evidence/devtools_check_results.txt`
-- `notes/final-cran-evidence/devtools_check_cran_results.txt`
-- `notes/final-cran-evidence/live_ci_status_report.md`
-- `notes/final-cran-evidence/final_cran_evidence_summary.md`
-
-## Allowed Phase 3 scope guardrails
-
-- Phase 3 may extend functionality after preserving the validated wrapper signatures and behavior captured in the release-readiness and final evidence artifacts.
-- Metric formulas should remain frozen unless a defect is proven by runtime evidence.
-- Wrapper signatures must not change silently; the public API inventories under `notes/` remain the baseline for comparison.
+- Non-broken environment evidence: `notes/final-cran-evidence/nonbroken_environment_report.md`
+- `devtools::check()` evidence: `notes/final-cran-evidence/devtools_check_results.txt`
+- `devtools::check(cran = TRUE)` evidence: `notes/final-cran-evidence/devtools_check_cran_results.txt`
+- Live CI evidence: `notes/final-cran-evidence/live_ci_status_report.md`
+- Final synthesis: `notes/final-cran-evidence/final_cran_evidence_summary.md`

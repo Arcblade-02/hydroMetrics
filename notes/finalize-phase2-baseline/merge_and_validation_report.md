@@ -16,6 +16,8 @@
 - devtools::test status: `pass`
 - R CMD build status: `pass`
 - R CMD check --no-manual status: `pass`
+- Main merge result: `fast-forward`
+- Main push result: `success`
 
 ## Merge output
 
@@ -377,4 +379,41 @@ Warning: unable to access index for repository https://bioconductor.org/packages
 Warning in system2("du", "-k", TRUE, TRUE) :
   running command '"du" -k' had status 322
   Running 'testthat.R'
+```
+
+## Main finalization
+
+```text
+$ git checkout main
+Your branch is up to date with 'origin/main'.
+Switched to branch 'main'
+
+$ git pull origin main
+Already up to date.
+From https://github.com/Arcblade-02/hydroMetrics
+ * branch            main       -> FETCH_HEAD
+
+$ git merge feature/finalize-phase2-baseline
+Updating 680476f..ce5cf29
+Fast-forward
+ docs/PHASE2_EXIT_MEMO.md                           |  37 +-
+ .../devtools_check_cran_results.txt                | 127 +++++++
+ .../final-cran-evidence/devtools_check_results.txt | 127 +++++++
+ .../final_cran_evidence_summary.md                 |  15 +
+ notes/final-cran-evidence/live_ci_status_report.md |  33 ++
+ .../nonbroken_environment_report.md                |  64 ++++
+ notes/finalize-phase2-baseline/cleanup_report.md   |  23 ++
+ .../final_baseline_summary.md                      |  16 +
+ .../merge_and_validation_report.md                 | 380 +++++++++++++++++++++
+ .../finalize-phase2-baseline/tag_release_report.md |  37 ++
+ .../cran_preflight_report.md                       |  26 ++
+ .../testthat/test-final-cran-evidence-artifacts.R  |  40 +++
+ .../test-finalize-phase2-baseline-artifacts.R      |  33 ++
+ tools/final_cran_evidence_confirmation.R           |  77 +++++
+ tools/finalize_phase2_baseline.R                   |  73 ++++
+ 15 files changed, 1095 insertions(+), 13 deletions(-)
+
+$ git push origin main
+To https://github.com/Arcblade-02/hydroMetrics.git
+   680476f..ce5cf29  main -> main
 ```

@@ -2,6 +2,10 @@
 
 ## 0.2.2
 
+- Continued Phase 3 Layer A with Batch A4 metrics `huber_loss`,
+  `quantile_loss`, `trimmed_rmse`, and `winsor_rmse`, including explicit
+  parameter defaults, registry entries, wrapper exports, and focused
+  regression coverage.
 - Continued Phase 3 Layer A with Batch A3 metrics `nrmse_range`,
   `fdc_slope_error`, `fdc_highflow_bias`, `fdc_lowflow_bias`,
   `log_fdc_rmse`, `low_flow_bias`, and `seasonal_bias`, including explicit

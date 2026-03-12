@@ -103,6 +103,15 @@
   length(idx) > 0L && is.finite(sum(obs[idx])) && sum(obs[idx]) != 0
 }
 
+.gof_can_auto_run_fdc_shape_distance <- function(sim, obs) {
+  !is.null(sim) &&
+    !is.null(obs) &&
+    length(sim) > 0L &&
+    length(obs) > 0L &&
+    isTRUE(diff(range(sim)) != 0) &&
+    isTRUE(diff(range(obs)) != 0)
+}
+
 .gof_can_auto_run_seasonal_bias <- function(index) {
   groups <- tryCatch(.hm_skge_month_groups_from_index(index), error = function(e) NULL)
   !is.null(groups) && length(groups) >= 12L && all(1:12 %in% groups)
@@ -134,6 +143,9 @@
   }
   if (!.gof_can_auto_run_low_flow_bias(obs)) {
     ids <- setdiff(ids, "low_flow_bias")
+  }
+  if (!.gof_can_auto_run_fdc_shape_distance(sim, obs)) {
+    ids <- setdiff(ids, "fdc_shape_distance")
   }
   if (!.gof_can_auto_run_seasonal_bias(index)) {
     ids <- setdiff(ids, "seasonal_bias")

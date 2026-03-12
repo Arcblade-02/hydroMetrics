@@ -2,6 +2,11 @@
 
 ## 0.2.2
 
+- Closed the v0.2.2 pre-Layer-A stabilization baseline after confirming
+  P3-FIX-01 through P3-FIX-05, `gof(extended = TRUE)`, `gof()` output-contract
+  reconciliation, `fast_path`, and `inst/REFERENCES.md` cleanup. The remaining
+  `devtools::check()` note on `dev` is the environmental
+  `unable to verify current time` note and is accepted as non-blocking.
 - Reconciled the canonical Phase 3 governance IDs (`D-025` through `D-031`)
   for the pre-Layer-A release gate and recorded the current exit-gate audit.
 - Reconciled the remaining pre-Layer-A blocker drift on `dev`: `pairwise`

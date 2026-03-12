@@ -50,14 +50,16 @@ ggof <- function(sim,
     ...
   )
 
-  metrics <- out$metrics
+  metrics <- out
+  n_obs <- attr(out, "n_obs", exact = TRUE)
+  meta <- attr(out, "meta", exact = TRUE)
+
   if (is.matrix(metrics)) {
     model_names <- colnames(metrics)
     if (is.null(model_names)) {
       model_names <- paste0("model", seq_len(ncol(metrics)))
     }
 
-    n_obs <- out$n_obs
     if (length(n_obs) == 1L) {
       n_obs <- rep(as.integer(n_obs), length(model_names))
       names(n_obs) <- model_names
@@ -76,15 +78,15 @@ ggof <- function(sim,
       model = rep(model_name, length(metrics)),
       metric = names(metrics),
       value = as.numeric(metrics),
-      n_obs = rep(as.integer(out$n_obs), length(metrics)),
+      n_obs = rep(as.integer(n_obs), length(metrics)),
       stringsAsFactors = FALSE
     )
   }
 
   if (isTRUE(include_meta)) {
-    res$transform <- out$meta$transform
-    res$na_strategy <- out$meta$na_strategy
-    res$epsilon_mode <- out$meta$epsilon_mode
+    res$transform <- meta$transform
+    res$na_strategy <- meta$na_strategy
+    res$epsilon_mode <- meta$epsilon_mode
   }
 
   class(res) <- c("hydro_metrics_batch", "data.frame")

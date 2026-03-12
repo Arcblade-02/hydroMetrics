@@ -19,7 +19,7 @@ pfactor <- function(sim, obs, tol = 0.10, na.rm = TRUE, ...) {
       dots
     )
   )
-  values <- out$pfactor
+  values <- out[["pfactor"]]
   if (length(values) == 1L) {
     return(as.numeric(values))
   }

@@ -28,9 +28,14 @@ test_that("gof defaults to the compat-10 metric set", {
   out <- .hm_gof_get("gof")(sim, obs)
 
   expect_s3_class(out, "hydro_metrics")
-  expect_type(out$metrics, "double")
-  expect_identical(names(out$metrics), expected_ids)
-  expect_identical(length(out$metrics), 10L)
+  expect_true(is.numeric(out))
+  expect_true(is.null(dim(out)))
+  expect_identical(names(out), expected_ids)
+  expect_identical(length(out), 10L)
+  expect_false(any(c("metrics", "n_obs", "meta", "call") %in% names(out)))
+  expect_identical(attr(out, "n_obs"), 5L)
+  expect_true(is.list(attr(out, "meta")))
+  expect_true(is.call(attr(out, "call")))
 })
 
 test_that("gof extended = FALSE matches plain default behavior", {
@@ -40,8 +45,10 @@ test_that("gof extended = FALSE matches plain default behavior", {
   out_default <- .hm_gof_get("gof")(sim, obs)
   out_explicit <- .hm_gof_get("gof")(sim, obs, extended = FALSE)
 
-  expect_identical(names(out_explicit$metrics), names(out_default$metrics))
-  expect_equal(out_explicit$metrics, out_default$metrics)
+  expect_identical(names(out_explicit), names(out_default))
+  expect_equal(as.numeric(out_explicit), as.numeric(out_default))
+  expect_identical(attr(out_explicit, "n_obs"), attr(out_default, "n_obs"))
+  expect_equal(attr(out_explicit, "meta"), attr(out_default, "meta"))
 })
 
 test_that("gof extended = TRUE returns all auto-applicable registered metrics", {
@@ -58,8 +65,12 @@ test_that("gof extended = TRUE returns all auto-applicable registered metrics", 
 
   out <- .hm_gof_get("gof")(sim, obs, extended = TRUE)
 
-  expect_identical(names(out$metrics), registered_ids)
-  expect_true(all(default_ids %in% names(out$metrics)))
+  expect_true(is.numeric(out))
+  expect_true(is.null(dim(out)))
+  expect_s3_class(out, "hydro_metrics")
+  expect_identical(names(out), registered_ids)
+  expect_true(length(out) > length(default_ids))
+  expect_true(all(default_ids %in% names(out)))
 })
 
 test_that("gof explicit methods override default and extended selection", {
@@ -68,7 +79,9 @@ test_that("gof explicit methods override default and extended selection", {
 
   out <- .hm_gof_get("gof")(sim, obs, methods = c("nse", "rmse"), extended = TRUE)
 
-  expect_identical(names(out$metrics), c("nse", "rmse"))
+  expect_true(is.numeric(out))
+  expect_s3_class(out, "hydro_metrics")
+  expect_identical(names(out), c("nse", "rmse"))
 })
 
 test_that("gof returns hydro_metrics object for single series", {
@@ -79,9 +92,9 @@ test_that("gof returns hydro_metrics object for single series", {
   )
 
   expect_s3_class(out, "hydro_metrics")
-  expect_true(is.numeric(out$metrics))
-  expect_true(all(c("NSE", "rmse", "rPearson") %in% names(out$metrics)))
-  expect_identical(out$NSE, out$metrics[["NSE"]])
+  expect_true(is.numeric(out))
+  expect_true(is.null(dim(out)))
+  expect_true(all(c("NSE", "rmse", "rPearson") %in% names(out)))
 })
 
 test_that("gof supports zoo alignment and method subsets", {
@@ -91,8 +104,8 @@ test_that("gof supports zoo alignment and method subsets", {
   obs <- zoo::zoo(c(1, 2, 4), order.by = as.Date("2020-01-02") + 0:2)
 
   out <- .hm_gof_get("gof")(sim = sim, obs = obs, methods = c("NSE", "rmse"), na_strategy = "fail")
-  expect_equal(names(out$metrics), c("NSE", "rmse"))
-  expect_identical(out$n_obs, 2L)
+  expect_equal(names(out), c("NSE", "rmse"))
+  expect_identical(attr(out, "n_obs"), 2L)
 })
 
 test_that("gof accepts valid aligned zoo inputs without NA failure on common index", {
@@ -120,8 +133,8 @@ test_that("gof accepts valid aligned zoo inputs without NA failure on common ind
   expect_no_error(
     out <- .hm_gof_get("gof")(sim = sim, obs = obs, methods = c("rmse", "pbias"), na_strategy = "fail")
   )
-  expect_identical(out$n_obs, 3L)
-  expect_identical(names(out$metrics), c("rmse", "pbias"))
+  expect_identical(attr(out, "n_obs"), 3L)
+  expect_identical(names(out), c("rmse", "pbias"))
 })
 
 test_that("gof returns method x model metrics matrix for multi-series input", {
@@ -130,11 +143,11 @@ test_that("gof returns method x model metrics matrix for multi-series input", {
 
   out <- .hm_gof_get("gof")(sim = sim, obs = obs, methods = c("rmse", "pbias"))
 
-  expect_true(is.matrix(out$metrics))
-  expect_identical(rownames(out$metrics), c("rmse", "pbias"))
-  expect_identical(colnames(out$metrics), c("a", "b"))
-  expect_true(is.numeric(out$rmse))
-  expect_equal(length(out$n_obs), 2L)
+  expect_true(is.matrix(out))
+  expect_s3_class(out, "hydro_metrics")
+  expect_identical(rownames(out), c("rmse", "pbias"))
+  expect_identical(colnames(out), c("a", "b"))
+  expect_equal(length(attr(out, "n_obs")), 2L)
 })
 
 test_that("gof preserves output contract for default multi-series output", {
@@ -145,9 +158,10 @@ test_that("gof preserves output contract for default multi-series output", {
   out <- .hm_gof_get("gof")(sim, obs)
 
   expect_s3_class(out, "hydro_metrics")
-  expect_true(is.matrix(out$metrics))
-  expect_identical(rownames(out$metrics), expected_ids)
-  expect_identical(colnames(out$metrics), c("a", "b"))
+  expect_true(is.matrix(out))
+  expect_identical(rownames(out), expected_ids)
+  expect_identical(colnames(out), c("a", "b"))
+  expect_null(names(out))
 })
 
 test_that("gof errors for unknown method names with available list hint", {
@@ -168,8 +182,10 @@ test_that("gof stores orchestration meta fields", {
     epsilon_mode = "constant"
   )
 
-  expect_identical(out$meta$na_strategy, "remove")
-  expect_identical(out$meta$transform, "none")
-  expect_identical(out$meta$epsilon_mode, "constant")
-  expect_identical(out$meta$components, TRUE)
+  meta <- attr(out, "meta")
+
+  expect_identical(meta$na_strategy, "remove")
+  expect_identical(meta$transform, "none")
+  expect_identical(meta$epsilon_mode, "constant")
+  expect_identical(meta$components, TRUE)
 })

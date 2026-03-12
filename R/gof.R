@@ -169,38 +169,25 @@
   })
 }
 
-.gof_hydrometric_slots <- function(metrics) {
-  if (is.matrix(metrics)) {
-    methods <- rownames(metrics)
-    out <- lapply(methods, function(m) {
-      vals <- metrics[m, , drop = TRUE]
-      if (length(vals) == 1L) {
-        as.numeric(vals[[1]])
-      } else {
-        as.numeric(vals)
-      }
-    })
-    names(out) <- methods
-    return(out)
+.new_hydro_metrics <- function(metrics, n_obs, meta, call) {
+  out <- metrics
+  attr(out, "n_obs") <- n_obs
+  attr(out, "meta") <- meta
+  attr(out, "call") <- call
+
+  base_class <- class(metrics)
+  if (length(base_class) > 0L) {
+    class(out) <- c("hydro_metrics", base_class)
+  } else {
+    class(out) <- "hydro_metrics"
   }
 
-  vals <- as.numeric(metrics)
-  names(vals) <- names(metrics)
-  as.list(vals)
+  out
 }
 
-.new_hydro_metrics <- function(metrics, n_obs, meta, call) {
-  out <- c(
-    list(
-      metrics = metrics,
-      n_obs = n_obs,
-      meta = meta,
-      call = call
-    ),
-    .gof_hydrometric_slots(metrics)
-  )
-  class(out) <- "hydro_metrics"
-  out
+.hydro_metrics_payload <- function(x) {
+  class(x) <- setdiff(class(x), "hydro_metrics")
+  x
 }
 
 .gof_preproc_call <- function(sim, obs, na_strategy, transform, epsilon_mode, epsilon, epsilon_factor) {
@@ -354,9 +341,9 @@
 #'   `epsilon_factor` otherwise.
 #' @param ... Additional compatibility arguments, including `metric_params`.
 #'
-#' @return A structured object with class `"hydro_metrics"` containing
-#'   `metrics`, `n_obs`, `meta`, and `call`. Metric names are also exposed as
-#'   list elements for `$` access compatibility.
+#' @return A named numeric vector for single-series inputs or a named numeric
+#'   matrix for multi-series inputs, with class `"hydro_metrics"`. Additional
+#'   metadata is attached via the `n_obs`, `meta`, and `call` attributes.
 #'
 #' @examples
 #' sim <- c(1, 2, 3, 4)
@@ -544,7 +531,7 @@ gof <- function(sim,
 #' @rdname hydro-orchestration-methods
 #' @export
 as.numeric.hydro_metrics <- function(x, ...) {
-  as.numeric(x$metrics)
+  as.numeric(.hydro_metrics_payload(x))
 }
 
 #' Double coercion for hydro_metrics
@@ -556,7 +543,7 @@ as.numeric.hydro_metrics <- function(x, ...) {
 #' @rdname hydro-orchestration-methods
 #' @export
 as.double.hydro_metrics <- function(x, ...) {
-  as.numeric(x$metrics)
+  as.double(.hydro_metrics_payload(x))
 }
 
 #' Print a hydro_metrics object
@@ -568,6 +555,6 @@ as.double.hydro_metrics <- function(x, ...) {
 #' @rdname hydro-orchestration-methods
 #' @export
 print.hydro_metrics <- function(x, ...) {
-  print(x$metrics, ...)
+  print(.hydro_metrics_payload(x), ...)
   invisible(x)
 }

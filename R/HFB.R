@@ -65,14 +65,15 @@ HFB <- function(sim, obs, threshold_prob = 0.9, na.rm = NULL, ...) {
     )
   }
 
-  obs_used <- out$meta$obs_used
+  meta <- attr(out, "meta", exact = TRUE)
+  obs_used <- meta$obs_used
   q_high <- as.numeric(stats::quantile(obs_used, probs = threshold_prob, type = 7, names = FALSE))
   n_high <- as.integer(sum(obs_used >= q_high))
 
   .new_hydro_metric_scalar(
-    value = out$hfb,
+    value = as.numeric(out[["hfb"]]),
     metric = "HFB",
-    n_obs = out$n_obs,
+    n_obs = attr(out, "n_obs", exact = TRUE),
     meta = list(
       threshold_prob = as.numeric(threshold_prob),
       n_high = n_high,

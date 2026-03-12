@@ -6,8 +6,9 @@ test_that("gof default usage matches v0.1.0 behavior", {
   ref <- evaluate_metrics(sim = sim, obs = obs, metrics = c("nse", "rmse", "pbias"))
   expected <- setNames(as.numeric(ref$value), c("NSE", "rmse", "pbias"))
 
-  expect_equal(out$metrics, expected)
-  expect_equal(out$NSE, expected[["NSE"]])
+  expect_equal(as.numeric(out), as.numeric(expected))
+  expect_identical(names(out), names(expected))
+  expect_equal(out[["NSE"]], expected[["NSE"]])
 })
 
 test_that("gof default NA behavior still fails when na.rm is not enabled", {
@@ -28,7 +29,10 @@ test_that("gof preserves na.rm compatibility mapping to na_strategy", {
   out_old <- gof(sim = sim, obs = obs, methods = "rmse", na.rm = TRUE)
   out_new <- gof(sim = sim, obs = obs, methods = "rmse", na_strategy = "remove")
 
-  expect_equal(out_old$metrics, out_new$metrics)
+  expect_equal(as.numeric(out_old), as.numeric(out_new))
+  expect_identical(names(out_old), names(out_new))
+  expect_identical(attr(out_old, "n_obs"), attr(out_new, "n_obs"))
+  expect_equal(attr(out_old, "meta"), attr(out_new, "meta"))
 })
 
 test_that("public wrappers and orchestration entry points expose compatibility formals", {
@@ -63,6 +67,8 @@ test_that("gof supports formal compatibility aliases without changing results", 
     epsilon = 0.5
   )
 
-  expect_equal(out_alias$metrics, out_native$metrics)
-  expect_identical(names(out_alias$metrics), "rmse")
+  expect_equal(as.numeric(out_alias), as.numeric(out_native))
+  expect_identical(names(out_alias), "rmse")
+  expect_identical(attr(out_alias, "n_obs"), attr(out_native, "n_obs"))
+  expect_equal(attr(out_alias, "meta"), attr(out_native, "meta"))
 })

@@ -6,7 +6,10 @@ test_that("valindex is a thin wrapper over gof(methods = fun)", {
   ref <- gof(sim, obs, methods = c("NSE", "rmse"))
 
   expect_s3_class(out, "hydro_metrics")
-  expect_equal(out$metrics, ref$metrics)
+  expect_equal(as.numeric(out), as.numeric(ref))
+  expect_identical(names(out), names(ref))
+  expect_identical(attr(out, "n_obs"), attr(ref, "n_obs"))
+  expect_equal(attr(out, "meta"), attr(ref, "meta"))
   expect_equal(as.numeric(out), as.numeric(ref))
 })
 
@@ -17,8 +20,8 @@ test_that("valindex supports multi-series inputs through gof", {
   out <- valindex(sim, obs, fun = c("rmse", "pbias"))
 
   expect_s3_class(out, "hydro_metrics")
-  expect_true(is.matrix(out$metrics))
-  expect_identical(rownames(out$metrics), c("rmse", "pbias"))
+  expect_true(is.matrix(out))
+  expect_identical(rownames(out), c("rmse", "pbias"))
 })
 
 test_that("valindex errors when fun is missing", {

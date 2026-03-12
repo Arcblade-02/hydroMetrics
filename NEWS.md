@@ -2,6 +2,11 @@
 
 ## 0.2.2
 
+- Closed Phase 3 Layer A on `dev`: all 27 Layer A metrics are implemented,
+  registered, exported, documented, and covered by the current validation
+  suite. The Batch A5 probabilistic metrics `crps`, `picp`, `mwpi`, and
+  `skill_score` remain explicit-wrapper metrics and are intentionally excluded
+  from deterministic `gof(sim, obs, extended = TRUE)` auto-selection.
 - Continued Phase 3 Layer A with Batch A5 probabilistic metrics `crps`,
   `picp`, `mwpi`, and `skill_score`, using explicit ensemble, interval, and
   baseline-score input contracts with focused regression coverage.

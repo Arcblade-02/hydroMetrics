@@ -219,7 +219,7 @@
 .gof_runtime_metric_calls <- function(metric_calls, payload) {
   lapply(metric_calls, function(call) {
     params <- call$params
-    if (identical(call$id, "apfb") && is.null(params$index)) {
+    if (call$id %in% c("apfb", "seasonal_bias") && is.null(params$index)) {
       params$index <- payload$index
     }
     call$params <- params

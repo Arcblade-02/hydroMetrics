@@ -308,3 +308,287 @@ core_metric_spec_log_nse <- function() {
     tags = c("phase-3", "layer-a", "batch-a2")
   )
 }
+
+# Shared Batch A3 FDC convention:
+# flows are sorted in descending order and paired with Weibull exceedance
+# probabilities p_i = i / (n + 1). Windowed FDC diagnostics use this single
+# construction throughout the batch.
+.hm_fdc_prepare <- function(x) {
+  if (length(x) < 1L) {
+    stop("FDC metrics require at least 1 value.", call. = FALSE)
+  }
+
+  list(
+    flow = sort(as.numeric(x), decreasing = TRUE),
+    exceedance = seq_along(x) / (length(x) + 1)
+  )
+}
+
+.hm_fdc_interp <- function(fdc, probs) {
+  stats::approx(
+    x = fdc$exceedance,
+    y = fdc$flow,
+    xout = probs,
+    rule = 2,
+    ties = "ordered"
+  )$y
+}
+
+.hm_fdc_segment_count <- function(n, fraction, min_count = 1L) {
+  max(as.integer(min_count), as.integer(ceiling(n * fraction)))
+}
+
+.hm_monthly_groups_for_seasonal_bias <- function(index) {
+  groups <- .hm_skge_month_groups_from_index(index)
+  if (is.null(groups) || length(groups) == 0L) {
+    stop(
+      "seasonal_bias requires monthly ts input or an aligned date-like index.",
+      call. = FALSE
+    )
+  }
+  if (!all(1:12 %in% groups)) {
+    stop(
+      "seasonal_bias requires monthly coverage for all 12 calendar months.",
+      call. = FALSE
+    )
+  }
+  groups
+}
+
+metric_nrmse_range <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("nrmse_range requires at least 1 value.", call. = FALSE)
+  }
+
+  obs_range <- diff(range(obs))
+  if (obs_range == 0) {
+    stop("nrmse_range is undefined because range(obs) == 0.", call. = FALSE)
+  }
+
+  metric_rmse(sim, obs) / obs_range
+}
+
+core_metric_spec_nrmse_range <- function() {
+  list(
+    id = "nrmse_range",
+    fun = metric_nrmse_range,
+    name = "Range-Normalized RMSE",
+    description = "RMSE normalized by the observed range max(obs) - min(obs).",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Pontius et al. (2008) and related normalized-RMSE comparison literature.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a3")
+  )
+}
+
+metric_fdc_slope_error <- function(sim, obs) {
+  if (length(obs) < 3L) {
+    stop("fdc_slope_error requires at least 3 values.", call. = FALSE)
+  }
+  if (any(sim <= 0) || any(obs <= 0)) {
+    stop("fdc_slope_error is undefined for non-positive values.", call. = FALSE)
+  }
+
+  sim_fdc <- .hm_fdc_prepare(sim)
+  obs_fdc <- .hm_fdc_prepare(obs)
+  sim_q <- .hm_fdc_interp(sim_fdc, c(0.2, 0.7))
+  obs_q <- .hm_fdc_interp(obs_fdc, c(0.2, 0.7))
+  sim_slope <- abs(log(sim_q[[1L]]) - log(sim_q[[2L]]))
+  obs_slope <- abs(log(obs_q[[1L]]) - log(obs_q[[2L]]))
+
+  if (obs_slope == 0) {
+    stop("fdc_slope_error is undefined because the observed FDC middle slope is zero.", call. = FALSE)
+  }
+
+  abs(100 * (sim_slope - obs_slope) / obs_slope)
+}
+
+core_metric_spec_fdc_slope_error <- function() {
+  list(
+    id = "fdc_slope_error",
+    fun = metric_fdc_slope_error,
+    name = "FDC Middle-Slope Error",
+    description = "Absolute percent error in the middle flow-duration-curve slope between 20% and 70% exceedance on log flow.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Yilmaz et al. (2008) middle-slope diagnostic (BiasFMS), reported here as an absolute error under the package FDC convention.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a3")
+  )
+}
+
+metric_fdc_highflow_bias <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("fdc_highflow_bias requires at least 1 value.", call. = FALSE)
+  }
+
+  sim_fdc <- .hm_fdc_prepare(sim)
+  obs_fdc <- .hm_fdc_prepare(obs)
+  n_high <- .hm_fdc_segment_count(length(obs), fraction = 0.02, min_count = 1L)
+  obs_high <- obs_fdc$flow[seq_len(n_high)]
+  sim_high <- sim_fdc$flow[seq_len(n_high)]
+  denom <- sum(obs_high)
+
+  if (denom == 0) {
+    stop("fdc_highflow_bias is undefined because the observed high-flow segment sums to zero.", call. = FALSE)
+  }
+
+  100 * sum(sim_high - obs_high) / denom
+}
+
+core_metric_spec_fdc_highflow_bias <- function() {
+  list(
+    id = "fdc_highflow_bias",
+    fun = metric_fdc_highflow_bias,
+    name = "FDC High-Flow Bias",
+    description = "Percent bias in the upper 2% of the descending flow-duration curve.",
+    category = "bias",
+    perfect = 0,
+    range = c(-Inf, Inf),
+    references = "Yilmaz et al. (2008) high-flow volume diagnostic (BiasFHV).",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a3")
+  )
+}
+
+metric_fdc_lowflow_bias <- function(sim, obs) {
+  if (length(obs) < 2L) {
+    stop("fdc_lowflow_bias requires at least 2 values.", call. = FALSE)
+  }
+
+  sim_fdc <- .hm_fdc_prepare(sim)
+  obs_fdc <- .hm_fdc_prepare(obs)
+  n_low <- .hm_fdc_segment_count(length(obs), fraction = 0.30, min_count = 2L)
+  sim_low <- utils::tail(sim_fdc$flow, n_low)
+  obs_low <- utils::tail(obs_fdc$flow, n_low)
+
+  if (any(sim_low <= 0) || any(obs_low <= 0)) {
+    stop("fdc_lowflow_bias is undefined for non-positive values in the low-flow segment.", call. = FALSE)
+  }
+
+  sim_terms <- log(sim_low) - log(sim_low[[n_low]])
+  obs_terms <- log(obs_low) - log(obs_low[[n_low]])
+  denom <- sum(obs_terms)
+
+  if (denom == 0) {
+    stop("fdc_lowflow_bias is undefined because the observed low-flow segment is not estimable.", call. = FALSE)
+  }
+
+  -100 * (sum(sim_terms) - sum(obs_terms)) / denom
+}
+
+core_metric_spec_fdc_lowflow_bias <- function() {
+  list(
+    id = "fdc_lowflow_bias",
+    fun = metric_fdc_lowflow_bias,
+    name = "FDC Low-Flow Bias",
+    description = "Percent bias in the lower 30% of the descending flow-duration curve on log flow.",
+    category = "bias",
+    perfect = 0,
+    range = c(-Inf, Inf),
+    references = "Yilmaz et al. (2008) low-flow diagnostic (BiasFLV).",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a3")
+  )
+}
+
+metric_log_fdc_rmse <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("log_fdc_rmse requires at least 1 value.", call. = FALSE)
+  }
+  if (any(sim <= 0) || any(obs <= 0)) {
+    stop("log_fdc_rmse is undefined for non-positive values.", call. = FALSE)
+  }
+
+  sim_fdc <- .hm_fdc_prepare(sim)
+  obs_fdc <- .hm_fdc_prepare(obs)
+  sqrt(mean((log(sim_fdc$flow) - log(obs_fdc$flow))^2))
+}
+
+core_metric_spec_log_fdc_rmse <- function() {
+  list(
+    id = "log_fdc_rmse",
+    fun = metric_log_fdc_rmse,
+    name = "Log FDC RMSE",
+    description = "RMSE between descending flow-duration curves computed on log-transformed positive flows.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Searcy (1959) flow-duration-curve construction with log-error emphasis following low-flow objective-function practice discussed by Krause et al. (2005).",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a3")
+  )
+}
+
+metric_low_flow_bias <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("low_flow_bias requires at least 1 value.", call. = FALSE)
+  }
+
+  q_low <- as.numeric(stats::quantile(obs, probs = 0.3, type = 7, names = FALSE))
+  idx <- which(obs <= q_low)
+  if (length(idx) == 0L) {
+    stop("low_flow_bias is undefined because the observed low-flow subset is empty.", call. = FALSE)
+  }
+
+  denom <- sum(obs[idx])
+  if (denom == 0) {
+    stop("low_flow_bias is undefined because the observed low-flow subset sums to zero.", call. = FALSE)
+  }
+
+  100 * sum(sim[idx] - obs[idx]) / denom
+}
+
+core_metric_spec_low_flow_bias <- function() {
+  list(
+    id = "low_flow_bias",
+    fun = metric_low_flow_bias,
+    name = "Low-Flow Bias",
+    description = "Percent bias over the observed lower-30% flow subset defined from paired observations.",
+    category = "bias",
+    perfect = 0,
+    range = c(-Inf, Inf),
+    references = "Yilmaz et al. (2008) low-flow diagnostic context, applied here to the paired observed lower-30% subset.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a3")
+  )
+}
+
+metric_seasonal_bias <- function(sim, obs, index = NULL) {
+  if (length(obs) < 12L) {
+    stop("seasonal_bias requires at least 12 monthly values.", call. = FALSE)
+  }
+
+  groups <- .hm_monthly_groups_for_seasonal_bias(index)
+  sim_month <- tapply(sim, groups, mean)
+  obs_month <- tapply(obs, groups, mean)
+  sim_month <- sim_month[as.character(1:12)]
+  obs_month <- obs_month[as.character(1:12)]
+
+  if (any(!is.finite(sim_month)) || any(!is.finite(obs_month))) {
+    stop("seasonal_bias is undefined because monthly climatology could not be estimated.", call. = FALSE)
+  }
+  if (any(obs_month == 0)) {
+    stop("seasonal_bias is undefined because at least one observed monthly mean is zero.", call. = FALSE)
+  }
+
+  100 * mean((sim_month - obs_month) / obs_month)
+}
+
+core_metric_spec_seasonal_bias <- function() {
+  list(
+    id = "seasonal_bias",
+    fun = metric_seasonal_bias,
+    name = "Seasonal Bias",
+    description = "Mean percent bias across monthly climatology groups inferred from monthly ts or date-like indexed input.",
+    category = "bias",
+    perfect = 0,
+    range = c(-Inf, Inf),
+    references = "Streamflow seasonality context from Gnann et al. (2020) and Berghuijs et al. (2025); the package metric is monthly-climatology bias under that seasonal grouping convention.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a3")
+  )
+}

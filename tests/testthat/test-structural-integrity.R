@@ -28,6 +28,12 @@ test_that("canonical metric tree contains no NA-handling logic tokens", {
     return(list(sim = sim, obs = obs, params = list(index = idx)))
   }
 
+  if (identical(id, "seasonal_bias")) {
+    obs <- stats::ts(c(1:12, 2:13), start = c(2000, 1), frequency = 12)
+    sim <- obs + 0.5
+    return(list(sim = as.numeric(sim), obs = as.numeric(obs), params = list(index = stats::time(obs))))
+  }
+
   if (identical(id, "hfb")) {
     obs <- 1:30
     sim <- obs + 1

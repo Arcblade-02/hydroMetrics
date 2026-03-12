@@ -1,11 +1,42 @@
+.struct_namespace <- local({
+  .find_pkg_root <- function(path = getwd()) {
+    path <- normalizePath(path, winslash = "/", mustWork = TRUE)
+
+    repeat {
+      if (file.exists(file.path(path, "DESCRIPTION"))) {
+        return(path)
+      }
+
+      parent <- dirname(path)
+      if (identical(parent, path)) {
+        stop("Could not locate package root for structural integrity tests.")
+      }
+      path <- parent
+    }
+  }
+
+  if (exists("list_metrics", mode = "function")) {
+    return(function() asNamespace("hydroMetrics"))
+  }
+
+  ns <- new.env(parent = baseenv())
+  r_dir <- file.path(.find_pkg_root(), "R")
+  r_files <- sort(list.files(r_dir, pattern = "[.][Rr]$", full.names = TRUE))
+  for (path in r_files) {
+    sys.source(path, envir = ns)
+  }
+
+  function() ns
+})
+
 test_that("no duplicate metric function definitions remain", {
-  ns <- asNamespace("hydroMetrics")
+  ns <- .struct_namespace()
   metric_names <- ls(envir = ns, pattern = "^metric_[A-Za-z0-9_]+$")
   expect_identical(length(metric_names), length(unique(metric_names)))
 })
 
 test_that("canonical metric tree contains no NA-handling logic tokens", {
-  ns <- asNamespace("hydroMetrics")
+  ns <- .struct_namespace()
   metric_names <- ls(envir = ns, pattern = "^metric_[A-Za-z0-9_]+$")
   metric_bodies <- vapply(metric_names, function(name) {
     paste(deparse(body(get(name, envir = ns))), collapse = "\n")
@@ -70,10 +101,11 @@ test_that("canonical metric tree contains no NA-handling logic tokens", {
 }
 
 test_that("every registered metric has a callable implementation", {
-  ids <- as.character(list_metrics()$id)
+  ns <- .struct_namespace()
+  ids <- as.character(get("list_metrics", envir = ns)()$id)
 
   for (id in ids) {
-    spec <- get_metric(id)
+    spec <- get("get_metric", envir = ns)(id)
     expect_true(is.function(spec$fun), info = sprintf("metric '%s' is not callable", id))
 
     fixture <- .struct_fixture_for_metric(id)

@@ -149,3 +149,162 @@ core_metric_spec_rrmse <- function() {
     tags = c("phase-3", "layer-a", "batch-a1")
   )
 }
+
+metric_smape <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("smape requires at least 1 value.", call. = FALSE)
+  }
+
+  denom <- abs(sim) + abs(obs)
+  terms <- numeric(length(denom))
+  nz <- denom != 0
+  terms[nz] <- 200 * abs(sim[nz] - obs[nz]) / denom[nz]
+  mean(terms)
+}
+
+core_metric_spec_smape <- function() {
+  list(
+    id = "smape",
+    fun = metric_smape,
+    name = "Symmetric Mean Absolute Percentage Error",
+    description = "sMAPE computed as mean(200 * abs(sim - obs) / (abs(sim) + abs(obs))) with 0/0 pairs contributing 0.",
+    category = "error",
+    perfect = 0,
+    range = c(0, 200),
+    references = "Makridakis (1993) and Goodwin & Lawton (1999) on sMAPE and its interpretation.",
+    version_added = "0.2.0",
+    tags = c("phase-3", "layer-a", "batch-a2")
+  )
+}
+
+metric_mare <- function(sim, obs) {
+  if (any(obs == 0)) {
+    stop("mare is undefined because obs contains zero.", call. = FALSE)
+  }
+
+  mean(abs((sim - obs) / obs))
+}
+
+core_metric_spec_mare <- function() {
+  list(
+    id = "mare",
+    fun = metric_mare,
+    name = "Mean Absolute Relative Error",
+    description = "Mean absolute paired relative error computed as mean(abs((sim - obs) / obs)).",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Relative-error criteria as used in regional hydrological hazard evaluation literature.",
+    version_added = "0.2.0",
+    tags = c("phase-3", "layer-a", "batch-a2")
+  )
+}
+
+metric_mrb <- function(sim, obs) {
+  if (any(obs == 0)) {
+    stop("mrb is undefined because obs contains zero.", call. = FALSE)
+  }
+
+  100 * mean((sim - obs) / obs)
+}
+
+core_metric_spec_mrb <- function() {
+  list(
+    id = "mrb",
+    fun = metric_mrb,
+    name = "Mean Relative Bias",
+    description = "Mean paired relative bias in percent computed as 100 * mean((sim - obs) / obs).",
+    category = "bias",
+    perfect = 0,
+    range = c(-Inf, Inf),
+    references = "Relative-bias criteria as used in regional hydrological hazard evaluation literature.",
+    version_added = "0.2.0",
+    tags = c("phase-3", "layer-a", "batch-a2")
+  )
+}
+
+metric_log_rmse <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("log_rmse requires at least 1 value.", call. = FALSE)
+  }
+  if (any(sim <= 0) || any(obs <= 0)) {
+    stop("log_rmse is undefined for non-positive values.", call. = FALSE)
+  }
+
+  sqrt(mean((log(sim) - log(obs))^2))
+}
+
+core_metric_spec_log_rmse <- function() {
+  list(
+    id = "log_rmse",
+    fun = metric_log_rmse,
+    name = "Log-Transformed RMSE",
+    description = "RMSE computed on log-transformed positive sim and obs values.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Log-transformed hydrological objective functions discussed by Krause et al. (2005).",
+    version_added = "0.2.0",
+    tags = c("phase-3", "layer-a", "batch-a2")
+  )
+}
+
+metric_msle <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("msle requires at least 1 value.", call. = FALSE)
+  }
+  if (any(sim < 0) || any(obs < 0)) {
+    stop("msle is undefined for negative values.", call. = FALSE)
+  }
+
+  mean((log1p(sim) - log1p(obs))^2)
+}
+
+core_metric_spec_msle <- function() {
+  list(
+    id = "msle",
+    fun = metric_msle,
+    name = "Mean Squared Logarithmic Error",
+    description = "MSLE computed as mean((log1p(sim) - log1p(obs))^2) for non-negative inputs.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Hodson (2021) and Hodson et al. (2021) on MSLE in streamflow prediction benchmarking.",
+    version_added = "0.2.0",
+    tags = c("phase-3", "layer-a", "batch-a2")
+  )
+}
+
+metric_log_nse <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("log_nse requires at least 1 value.", call. = FALSE)
+  }
+  if (any(sim <= 0) || any(obs <= 0)) {
+    stop("log_nse is undefined for non-positive values.", call. = FALSE)
+  }
+
+  log_sim <- log(sim)
+  log_obs <- log(obs)
+  denom <- sum((log_obs - mean(log_obs))^2)
+
+  if (denom == 0) {
+    stop("log_nse is undefined because log(obs) has zero variance.", call. = FALSE)
+  }
+
+  1 - sum((log_sim - log_obs)^2) / denom
+}
+
+core_metric_spec_log_nse <- function() {
+  list(
+    id = "log_nse",
+    fun = metric_log_nse,
+    name = "Log-Transformed Nash-Sutcliffe Efficiency",
+    description = "NSE computed on log-transformed positive sim and obs values to emphasize low flows.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "Log-transformed NSE use in hydrological model assessment discussed by Krause et al. (2005).",
+    version_added = "0.2.0",
+    tags = c("phase-3", "layer-a", "batch-a2")
+  )
+}

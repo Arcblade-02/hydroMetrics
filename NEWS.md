@@ -2,6 +2,11 @@
 
 ## 0.2.2
 
+- Reconciled the canonical Phase 3 governance IDs (`D-025` through `D-031`)
+  for the pre-Layer-A release gate and recorded the current exit-gate audit.
+- The `dev` branch is not yet closed as the v0.2.2 pre-Layer-A baseline:
+  remaining blockers are true pairwise NA handling, the canonical `br2`
+  correction, and canonical Pearson-id de-duplication (`r` vs `rpearson`).
 - Added `gof(extended = TRUE)` to expose the full automatically applicable
   registered metric set while keeping the default
   `gof()`/`gof(extended = FALSE)` behavior frozen to the compat-10

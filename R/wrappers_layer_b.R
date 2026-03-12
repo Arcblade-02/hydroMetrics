@@ -184,3 +184,105 @@ weighted_kge <- function(sim, obs, w_r = 1, w_alpha = 1, w_beta = 1, na.rm = NUL
 quantile_kge <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("quantile_kge", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
+
+#' Evaluate the hydrograph slope error wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"hydrograph_slope_error"`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' hydrograph_slope_error(c(1, 2, 4, 7), c(1, 2, 3, 6))
+#' @export
+hydrograph_slope_error <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("hydrograph_slope_error", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the derivative NSE wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"derivative_nse"`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' derivative_nse(c(1, 2, 4, 7), c(1, 2, 3, 6))
+#' @export
+derivative_nse <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("derivative_nse", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the peak timing error wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"peak_timing_error"`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' peak_timing_error(c(1, 2, 4, 7), c(1, 2, 3, 6))
+#' @export
+peak_timing_error <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("peak_timing_error", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the rising limb error wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"rising_limb_error"`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' rising_limb_error(c(1, 2, 4, 7), c(1, 2, 3, 6))
+#' @export
+rising_limb_error <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("rising_limb_error", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the recession constant error wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"recession_constant"`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' recession_constant(c(1, 2, 5, 4, 3, 2), c(1, 2, 6, 5, 4, 3))
+#' @export
+recession_constant <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("recession_constant", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the baseflow index error wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"baseflow_index_error"`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' baseflow_index_error(c(1, 2, 5, 4, 3, 2), c(1, 2, 6, 5, 4, 3))
+#' @export
+baseflow_index_error <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("baseflow_index_error", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}

@@ -365,3 +365,289 @@ core_metric_spec_quantile_kge <- function() {
     tags = c("phase-3", "layer-b", "batch-b2")
   )
 }
+
+# Shared Batch B3 conventions:
+# - ordered input vectors are treated as hydrograph time order without any
+#   magnitude-based reordering
+# - hydrograph_slope_error aggregates first-difference mismatches via RMSE
+# - derivative_nse applies the standard NSE formula to first differences
+# - peak_timing_error uses the first occurrence of the series maximum
+# - rising_limb_error uses observed positive first differences before the first
+#   observed peak
+# - recession_constant compares fitted log-recession constants on the first
+#   contiguous observed recession segment after the first observed peak
+# - baseflow_index_error uses a fixed three-pass Lyne-Hollick-style filter with
+#   alpha = 0.925 and compares absolute BFI differences
+
+.hm_b3_validate_ordered_series <- function(x, name, metric_id, min_length = 1L) {
+  validate_numeric_vector(x, name)
+  validate_finite(x, x)
+
+  if (length(x) < min_length) {
+    stop(sprintf("%s requires at least %d value%s.", metric_id, min_length, if (min_length == 1L) "" else "s"), call. = FALSE)
+  }
+
+  invisible(TRUE)
+}
+
+.hm_b3_first_differences <- function(x, metric_id) {
+  if (length(x) < 2L) {
+    stop(sprintf("%s requires at least 2 values.", metric_id), call. = FALSE)
+  }
+
+  diff(as.numeric(x))
+}
+
+.hm_b3_first_peak_index <- function(x) {
+  which.max(as.numeric(x))
+}
+
+.hm_b3_rising_limb_interval_idx <- function(obs, metric_id) {
+  peak_idx <- .hm_b3_first_peak_index(obs)
+  if (peak_idx <= 1L) {
+    stop(sprintf("%s is undefined because the observed peak occurs at the first time step.", metric_id), call. = FALSE)
+  }
+
+  dobs <- diff(as.numeric(obs))
+  idx <- which(dobs[seq_len(peak_idx - 1L)] > 0)
+  if (length(idx) == 0L) {
+    stop(sprintf("%s is undefined because the observed series has no rising-limb intervals before the peak.", metric_id), call. = FALSE)
+  }
+
+  idx
+}
+
+.hm_b3_recession_segment_idx <- function(obs, metric_id) {
+  peak_idx <- .hm_b3_first_peak_index(obs)
+  n <- length(obs)
+  if (peak_idx >= n) {
+    stop(sprintf("%s is undefined because the observed peak occurs at the final time step.", metric_id), call. = FALSE)
+  }
+
+  end_idx <- peak_idx
+  for (i in seq.int(peak_idx, n - 1L)) {
+    if (obs[[i]] > 0 && obs[[i + 1L]] > 0 && obs[[i + 1L]] < obs[[i]]) {
+      end_idx <- i + 1L
+    } else {
+      break
+    }
+  }
+
+  idx <- seq.int(peak_idx, end_idx)
+  if (length(idx) < 3L) {
+    stop(sprintf("%s is undefined because no valid recession segment with at least 3 positive points was found.", metric_id), call. = FALSE)
+  }
+
+  idx
+}
+
+.hm_b3_fit_recession_constant <- function(x, idx, metric_id, name) {
+  segment <- as.numeric(x[idx])
+  if (any(segment <= 0)) {
+    stop(sprintf("%s is undefined because the %s recession segment contains non-positive values.", metric_id, name), call. = FALSE)
+  }
+
+  time_idx <- seq_along(segment) - 1
+  fit <- stats::lm(log(segment) ~ time_idx)
+  slope <- stats::coef(fit)[["time_idx"]]
+  if (!is.finite(slope)) {
+    stop(sprintf("%s is undefined because the %s recession fit failed.", metric_id, name), call. = FALSE)
+  }
+
+  -as.numeric(slope)
+}
+
+.hm_b3_validate_nonnegative_flow <- function(x, metric_id, name) {
+  if (any(x < 0)) {
+    stop(sprintf("%s is undefined because %s contains negative values.", metric_id, name), call. = FALSE)
+  }
+}
+
+.hm_b3_lh_baseflow_pass <- function(flow, alpha = 0.925) {
+  n <- length(flow)
+  quick <- numeric(n)
+
+  for (i in 2:n) {
+    quick[[i]] <- alpha * quick[[i - 1L]] + ((1 + alpha) / 2) * (flow[[i]] - flow[[i - 1L]])
+    quick[[i]] <- min(max(quick[[i]], 0), flow[[i]])
+  }
+
+  pmin(pmax(flow - quick, 0), flow)
+}
+
+.hm_b3_baseflow_index_proxy <- function(flow, metric_id, alpha = 0.925) {
+  if (length(flow) < 3L) {
+    stop(sprintf("%s requires at least 3 values.", metric_id), call. = FALSE)
+  }
+  .hm_b3_validate_nonnegative_flow(flow, metric_id, "flow")
+
+  flow_sum <- sum(flow)
+  if (!is.finite(flow_sum) || flow_sum <= 0) {
+    stop(sprintf("%s is undefined because sum(flow) must be positive.", metric_id), call. = FALSE)
+  }
+
+  baseflow <- as.numeric(flow)
+  for (direction in c("forward", "backward", "forward")) {
+    if (identical(direction, "backward")) {
+      baseflow <- rev(.hm_b3_lh_baseflow_pass(rev(baseflow), alpha = alpha))
+    } else {
+      baseflow <- .hm_b3_lh_baseflow_pass(baseflow, alpha = alpha)
+    }
+  }
+
+  sum(baseflow) / flow_sum
+}
+
+metric_hydrograph_slope_error <- function(sim, obs) {
+  .hm_b3_validate_ordered_series(sim, "sim", "hydrograph_slope_error", min_length = 2L)
+  .hm_b3_validate_ordered_series(obs, "obs", "hydrograph_slope_error", min_length = 2L)
+
+  slopes_sim <- .hm_b3_first_differences(sim, "hydrograph_slope_error")
+  slopes_obs <- .hm_b3_first_differences(obs, "hydrograph_slope_error")
+
+  sqrt(mean((slopes_sim - slopes_obs)^2))
+}
+
+core_metric_spec_hydrograph_slope_error <- function() {
+  list(
+    id = "hydrograph_slope_error",
+    fun = metric_hydrograph_slope_error,
+    name = "Hydrograph Slope Error",
+    description = "RMSE between ordered first-difference hydrograph slopes of sim and obs.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Hydrograph diagnostic context from Yilmaz et al. (2008); the package metric is RMSE on ordered first differences.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-b", "batch-b3")
+  )
+}
+
+metric_derivative_nse <- function(sim, obs) {
+  .hm_b3_validate_ordered_series(sim, "sim", "derivative_nse", min_length = 3L)
+  .hm_b3_validate_ordered_series(obs, "obs", "derivative_nse", min_length = 3L)
+
+  dsim <- .hm_b3_first_differences(sim, "derivative_nse")
+  dobs <- .hm_b3_first_differences(obs, "derivative_nse")
+  denom <- sum((dobs - mean(dobs))^2)
+
+  if (denom == 0) {
+    stop("derivative_nse is undefined because diff(obs) has zero variance.", call. = FALSE)
+  }
+
+  1 - sum((dsim - dobs)^2) / denom
+}
+
+core_metric_spec_derivative_nse <- function() {
+  list(
+    id = "derivative_nse",
+    fun = metric_derivative_nse,
+    name = "Derivative NSE",
+    description = "NSE computed on ordered first-difference series diff(sim) and diff(obs).",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "Nash & Sutcliffe (1970) NSE with hydrograph-temporal-diagnostic context from Yilmaz et al. (2008); the package metric applies NSE to ordered first differences.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-b", "batch-b3")
+  )
+}
+
+metric_peak_timing_error <- function(sim, obs) {
+  .hm_b3_validate_ordered_series(sim, "sim", "peak_timing_error", min_length = 1L)
+  .hm_b3_validate_ordered_series(obs, "obs", "peak_timing_error", min_length = 1L)
+
+  abs(.hm_b3_first_peak_index(sim) - .hm_b3_first_peak_index(obs))
+}
+
+core_metric_spec_peak_timing_error <- function() {
+  list(
+    id = "peak_timing_error",
+    fun = metric_peak_timing_error,
+    name = "Peak Timing Error",
+    description = "Absolute time-step offset between the first simulated and observed peak occurrences.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Peak-timing evaluation context from Liu et al. (2011); the package metric uses the first occurrence of the maximum in each ordered series.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-b", "batch-b3")
+  )
+}
+
+metric_rising_limb_error <- function(sim, obs) {
+  .hm_b3_validate_ordered_series(sim, "sim", "rising_limb_error", min_length = 2L)
+  .hm_b3_validate_ordered_series(obs, "obs", "rising_limb_error", min_length = 2L)
+
+  idx <- .hm_b3_rising_limb_interval_idx(obs, "rising_limb_error")
+  dsim <- .hm_b3_first_differences(sim, "rising_limb_error")
+  dobs <- .hm_b3_first_differences(obs, "rising_limb_error")
+
+  sqrt(mean((dsim[idx] - dobs[idx])^2))
+}
+
+core_metric_spec_rising_limb_error <- function() {
+  list(
+    id = "rising_limb_error",
+    fun = metric_rising_limb_error,
+    name = "Rising Limb Error",
+    description = "RMSE between simulated and observed first differences on observed rising-limb intervals before the first observed peak.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Hydrograph rising-limb diagnostic context from Yilmaz et al. (2008); the package metric uses observed positive-difference intervals before the first peak.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-b", "batch-b3")
+  )
+}
+
+metric_recession_constant <- function(sim, obs) {
+  .hm_b3_validate_ordered_series(sim, "sim", "recession_constant", min_length = 3L)
+  .hm_b3_validate_ordered_series(obs, "obs", "recession_constant", min_length = 3L)
+
+  idx <- .hm_b3_recession_segment_idx(obs, "recession_constant")
+  k_sim <- .hm_b3_fit_recession_constant(sim, idx, "recession_constant", "sim")
+  k_obs <- .hm_b3_fit_recession_constant(obs, idx, "recession_constant", "obs")
+
+  abs(k_sim - k_obs)
+}
+
+core_metric_spec_recession_constant <- function() {
+  list(
+    id = "recession_constant",
+    fun = metric_recession_constant,
+    name = "Recession Constant Error",
+    description = "Absolute difference between fitted log-recession constants on the first contiguous observed recession segment after the peak.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Brutsaert & Nieber (1977) recession-analysis context; the package metric compares fitted log-recession constants on an observed post-peak recession segment.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-b", "batch-b3")
+  )
+}
+
+metric_baseflow_index_error <- function(sim, obs) {
+  .hm_b3_validate_ordered_series(sim, "sim", "baseflow_index_error", min_length = 3L)
+  .hm_b3_validate_ordered_series(obs, "obs", "baseflow_index_error", min_length = 3L)
+
+  abs(
+    .hm_b3_baseflow_index_proxy(sim, "baseflow_index_error") -
+      .hm_b3_baseflow_index_proxy(obs, "baseflow_index_error")
+  )
+}
+
+core_metric_spec_baseflow_index_error <- function() {
+  list(
+    id = "baseflow_index_error",
+    fun = metric_baseflow_index_error,
+    name = "Baseflow Index Error",
+    description = "Absolute difference between fixed-parameter Lyne-Hollick-style baseflow indices of sim and obs.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Ladson et al. (2013) Lyne-Hollick baseflow-separation context; the package metric compares absolute BFI differences using a fixed three-pass alpha = 0.925 filter.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-b", "batch-b3")
+  )
+}

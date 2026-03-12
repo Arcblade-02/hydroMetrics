@@ -71,6 +71,18 @@ test_that("canonical metric tree contains no NA-handling logic tokens", {
     return(list(sim = as.numeric(sim), obs = as.numeric(obs), params = list(index = stats::time(obs))))
   }
 
+  if (identical(id, "derivative_nse")) {
+    sim <- c(1, 2, 4, 7)
+    obs <- c(1, 2, 3, 5)
+    return(list(sim = sim, obs = obs, params = list()))
+  }
+
+  if (identical(id, "recession_constant")) {
+    sim <- c(1, 2, 5, 4, 3, 2)
+    obs <- c(1, 2, 6, 5, 4, 3)
+    return(list(sim = sim, obs = obs, params = list()))
+  }
+
   if (identical(id, "crps")) {
     sim <- matrix(c(1, 1.2, 0.8, 2, 2.2, 1.8), nrow = 2, byrow = TRUE)
     obs <- c(1.1, 2.1)

@@ -304,3 +304,139 @@ test_that("layer B batch B2 wrappers integrate with gof extended policy", {
 
   expect_true("seasonal_nse" %in% names(out_ts))
 })
+
+test_that("layer B batch B3 registry ids are present", {
+  ids <- list_metrics()$id
+  target <- c(
+    "hydrograph_slope_error",
+    "derivative_nse",
+    "peak_timing_error",
+    "rising_limb_error",
+    "recession_constant",
+    "baseflow_index_error"
+  )
+
+  expect_true(all(target %in% ids))
+})
+
+test_that("hydrograph_slope_error matches RMSE on ordered first differences", {
+  sim <- c(1, 2, 4, 7, 6, 5, 4, 3, 2, 1)
+  obs <- c(1, 2, 3, 6, 7, 6, 5, 4, 2, 1)
+  expected <- sqrt(mean((diff(sim) - diff(obs))^2))
+
+  expect_equal(hydrograph_slope_error(sim, obs), expected)
+  expect_equal(metric_hydrograph_slope_error(sim, obs), expected)
+  expect_equal(hydrograph_slope_error(obs, obs), 0)
+})
+
+test_that("derivative_nse matches NSE on first differences", {
+  sim <- c(1, 2, 4, 7, 6)
+  obs <- c(1, 2, 3, 6, 5)
+  dsim <- diff(sim)
+  dobs <- diff(obs)
+  expected <- 1 - sum((dsim - dobs)^2) / sum((dobs - mean(dobs))^2)
+
+  expect_equal(derivative_nse(sim, obs), expected)
+  expect_equal(metric_derivative_nse(sim, obs), expected)
+  expect_equal(derivative_nse(obs, obs), 1)
+})
+
+test_that("peak_timing_error uses the first peak occurrence deterministically", {
+  sim <- c(1, 3, 5, 5, 4)
+  obs <- c(1, 2, 4, 6, 6)
+
+  expect_equal(peak_timing_error(sim, obs), 1)
+  expect_equal(metric_peak_timing_error(sim, obs), 1)
+  expect_equal(peak_timing_error(obs, obs), 0)
+})
+
+test_that("rising_limb_error matches RMSE on observed rising-limb intervals", {
+  sim <- c(1, 2, 4, 7, 6, 5, 4, 3, 2, 1)
+  obs <- c(1, 2, 3, 6, 7, 6, 5, 4, 2, 1)
+  idx <- which(diff(obs)[seq_len(which.max(obs) - 1L)] > 0)
+  expected <- sqrt(mean((diff(sim)[idx] - diff(obs)[idx])^2))
+
+  expect_equal(rising_limb_error(sim, obs), expected)
+  expect_equal(metric_rising_limb_error(sim, obs), expected)
+  expect_equal(rising_limb_error(obs, obs), 0)
+})
+
+test_that("recession_constant matches the observed-segment log-recession fit difference", {
+  sim <- c(1, 2, 4, 8, 6, 4, 2)
+  obs <- c(1, 2, 4, 8, 5, 3, 2)
+  idx <- 4:7
+  time_idx <- seq_along(idx) - 1
+  k_sim <- -coef(stats::lm(log(sim[idx]) ~ time_idx))[["time_idx"]]
+  k_obs <- -coef(stats::lm(log(obs[idx]) ~ time_idx))[["time_idx"]]
+  expected <- abs(k_sim - k_obs)
+
+  expect_equal(recession_constant(sim, obs), expected)
+  expect_equal(metric_recession_constant(sim, obs), expected)
+  expect_equal(recession_constant(obs, obs), 0)
+})
+
+test_that("baseflow_index_error matches the fixed three-pass BFI proxy difference", {
+  sim <- c(1, 2, 4, 8, 6, 4, 2)
+  obs <- c(1, 2, 4, 8, 5, 3, 2)
+  expected <- abs(
+    .hm_b3_baseflow_index_proxy(sim, "baseflow_index_error") -
+      .hm_b3_baseflow_index_proxy(obs, "baseflow_index_error")
+  )
+
+  expect_equal(baseflow_index_error(sim, obs), expected)
+  expect_equal(metric_baseflow_index_error(sim, obs), expected)
+  expect_equal(baseflow_index_error(obs, obs), 0)
+})
+
+test_that("layer B batch B3 metrics reject invalid temporal edge cases", {
+  expect_error(
+    hydrograph_slope_error(c(1), c(1)),
+    "requires at least 2 values"
+  )
+  expect_error(
+    derivative_nse(c(1, 1), c(1, 1)),
+    "requires at least 3 values"
+  )
+  expect_error(
+    rising_limb_error(c(5, 4, 3), c(5, 4, 3)),
+    "first time step|no rising-limb intervals"
+  )
+  expect_error(
+    recession_constant(c(1, 0, -1), c(1, 0, -1)),
+    "positive points"
+  )
+  expect_error(
+    baseflow_index_error(c(1, 1), c(1, 1)),
+    "requires at least 3 values"
+  )
+})
+
+test_that("layer B batch B3 wrappers integrate with gof for ordered series metrics", {
+  sim <- c(1, 2, 4, 7, 6, 5, 4, 3, 2, 1)
+  obs <- c(1, 2, 3, 6, 7, 6, 5, 4, 2, 1)
+  out <- gof(
+    sim,
+    obs,
+    methods = c(
+      "hydrograph_slope_error",
+      "derivative_nse",
+      "peak_timing_error",
+      "rising_limb_error",
+      "recession_constant",
+      "baseflow_index_error"
+    )
+  )
+
+  expect_true(inherits(out, "hydro_metrics"))
+  expect_identical(
+    names(out),
+    c(
+      "hydrograph_slope_error",
+      "derivative_nse",
+      "peak_timing_error",
+      "rising_limb_error",
+      "recession_constant",
+      "baseflow_index_error"
+    )
+  )
+})

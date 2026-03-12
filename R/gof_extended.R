@@ -117,6 +117,42 @@
   !is.null(groups) && length(groups) >= 12L && all(1:12 %in% groups)
 }
 
+.gof_can_auto_run_hydrograph_slope_error <- function(sim, obs) {
+  !is.null(sim) && !is.null(obs) && length(sim) >= 2L && length(obs) >= 2L
+}
+
+.gof_can_auto_run_derivative_nse <- function(sim, obs) {
+  !is.null(sim) &&
+    !is.null(obs) &&
+    length(sim) >= 3L &&
+    length(obs) >= 3L &&
+    isTRUE(sum((diff(obs) - mean(diff(obs)))^2) != 0)
+}
+
+.gof_can_auto_run_rising_limb_error <- function(obs) {
+  tryCatch({
+    idx <- .hm_b3_rising_limb_interval_idx(obs, "rising_limb_error")
+    length(idx) > 0L
+  }, error = function(e) FALSE)
+}
+
+.gof_can_auto_run_recession_constant <- function(sim, obs) {
+  tryCatch({
+    idx <- .hm_b3_recession_segment_idx(obs, "recession_constant")
+    .hm_b3_fit_recession_constant(sim, idx, "recession_constant", "sim")
+    .hm_b3_fit_recession_constant(obs, idx, "recession_constant", "obs")
+    TRUE
+  }, error = function(e) FALSE)
+}
+
+.gof_can_auto_run_baseflow_index_error <- function(sim, obs) {
+  tryCatch({
+    .hm_b3_baseflow_index_proxy(sim, "baseflow_index_error")
+    .hm_b3_baseflow_index_proxy(obs, "baseflow_index_error")
+    TRUE
+  }, error = function(e) FALSE)
+}
+
 .gof_auto_applicable_ids <- function(available_ids, sim = NULL, obs = NULL, index = NULL) {
   ids <- available_ids
   ids <- setdiff(ids, c("crps", "picp", "mwpi", "skill_score"))
@@ -146,6 +182,21 @@
   }
   if (!.gof_can_auto_run_fdc_shape_distance(sim, obs)) {
     ids <- setdiff(ids, "fdc_shape_distance")
+  }
+  if (!.gof_can_auto_run_hydrograph_slope_error(sim, obs)) {
+    ids <- setdiff(ids, c("hydrograph_slope_error", "peak_timing_error"))
+  }
+  if (!.gof_can_auto_run_derivative_nse(sim, obs)) {
+    ids <- setdiff(ids, "derivative_nse")
+  }
+  if (!.gof_can_auto_run_rising_limb_error(obs)) {
+    ids <- setdiff(ids, "rising_limb_error")
+  }
+  if (!.gof_can_auto_run_recession_constant(sim, obs)) {
+    ids <- setdiff(ids, "recession_constant")
+  }
+  if (!.gof_can_auto_run_baseflow_index_error(sim, obs)) {
+    ids <- setdiff(ids, "baseflow_index_error")
   }
   if (!.gof_can_auto_run_seasonal_bias(index)) {
     ids <- setdiff(ids, c("seasonal_bias", "seasonal_nse"))

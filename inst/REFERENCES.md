@@ -1,49 +1,29 @@
-﻿# References Scaffold
+# References
 
-## Core Hydrology Evaluation References
-- Nash, J. E., and Sutcliffe, J. V. (1970) - NSE - River flow forecasting through conceptual models part I: A discussion of principles. DOI/URL (TODO)
-- Moriasi, D. N., et al. (2007) - PBIAS and model-evaluation context - Model evaluation guidelines for systematic quantification of accuracy in watershed simulations. DOI/URL (TODO)
-- Standard statistical references (multiple) - RMSE - Definition of root mean squared error as `sqrt(mean((sim - obs)^2))`. DOI/URL (TODO)
-- Standard statistical references (multiple) - MAE - Definition of mean absolute error as `mean(abs(sim - obs))`. DOI/URL (TODO)
-- Standard statistical references (multiple) - MSE - Definition of mean squared error as `mean((sim - obs)^2)`. DOI/URL (TODO)
-- Model-evaluation references (multiple) - NRMSE - Common normalization by `mean(obs)` with explicit zero-mean handling policy. DOI/URL (TODO)
-- Pearson, K. (classical statistics text lineage) - R - Pearson product-moment correlation coefficient. DOI/URL (TODO)
-- Standard statistical references (multiple) - R2 - Squared Pearson correlation `cor(sim, obs)^2` (project definition). DOI/URL (TODO)
-- Kling, H., Fuchs, M., and Paulin, M. (2009) - KGE - Original KGE definition using correlation, variability ratio, and bias ratio. DOI/URL (TODO)
-- Moriasi, D. N., et al. (2007) - RSR - Model-evaluation guidance defining RSR as RMSE normalized by observed variability. DOI/URL (TODO)
-- Criss, R. E., and Winston, W. E. (2008) - VE - Volumetric-efficiency style formulation for hydrologic fit diagnostics. DOI/URL (TODO)
-- Standard forecasting/error-analysis references - MAPE - Mean absolute percentage error with explicit zero-observation safeguards. DOI/URL (TODO)
-- Standard forecasting/error-analysis references - MPE - Mean percentage error with explicit zero-observation safeguards. DOI/URL (TODO)
-- Project decision record - NRMSE_SD - NRMSE variant defined as RMSE divided by `sd(obs)`. DOI/URL (TODO)
-- Standard forecast-error references - ME - Mean error defined as `mean(sim - obs)`. DOI/URL (TODO)
-- Willmott, C. J. (1981) - d - Index of agreement in model validation context. DOI/URL (TODO)
-- Willmott, C. J., Robeson, S. M., and Matsuura, K. (2012) - md - Modified/refined agreement index family. DOI/URL (TODO)
-- Agreement-index relative formulations (project-selected variants) - rd - Relative squared-error agreement using observation normalization. DOI/URL (TODO)
-- Agreement-index relative formulations (project-selected variants) - dr - Relative absolute-error agreement using observation normalization. DOI/URL (TODO)
-- Project decision record - br2 - Bias-corrected R2 defined as bias-penalized Pearson correlation squared. DOI/URL (TODO)
-- Nash, J. E., and Sutcliffe, J. V. (1970) - rNSE/mNSE/wNSE/wsNSE lineage - Base NSE definition; weighted/modified/relative variants per hydrology literature (exact citations to refine). DOI/URL (TODO)
-- hydroGOF compatibility surface (documentation-only reference) - NSeff/mNSeff/rNSeff/wsNSeff - Legacy export names mapped to existing clean-room NSE-family implementations in this package. DOI/URL (TODO)
-- Standard model-evaluation references - ubRMSE - Unbiased RMSE from mean-removed anomaly differences. DOI/URL (TODO)
-- Standard least-squares references - ssq - Sum of squared errors objective `sum((sim - obs)^2)`. DOI/URL (TODO)
-- Gupta, H. V., Kling, H., Yilmaz, K. K., and Martinez, G. F. (2009) - KGE family baseline - Decomposition of NSE and KGE-style performance measures. DOI/URL (TODO)
-- KGE variant references (to refine) - KGEkm/KGElf/KGEnp - Common hydrology-practice variants for variability ratio, low-flow transform, and nonparametric components. DOI/URL (TODO)
-- KGE component definitions (clean-room parity) - beta/alpha/r - `beta = mean(sim)/mean(obs)`, `alpha = sd(sim)/sd(obs)`, and `r = cor(sim, obs, method='pearson')` with explicit undefined-domain guards. DOI/URL (TODO)
-- Seasonal performance metric practice (to refine) - sKGE - Seasonal grouping implementation using monthly KGE averaging. DOI/URL (TODO)
-- Flow duration curve references (to refine) - pbiasfdc - Percent bias over FDC quantile grid (project-defined deterministic grid). DOI/URL (TODO)
-- Pearson, K. (classical statistics references) - rPearson - Pearson product-moment correlation coefficient. DOI/URL (TODO)
-- Spearman, C. (classical statistics references) - rSpearman - Spearman rank correlation coefficient. DOI/URL (TODO)
-- Project decision record - rSD - Ratio `sd(sim)/sd(obs)` for scale compatibility metric. DOI/URL (TODO)
-- Persistence-skill hydrology references (to refine) - cp - Coefficient of persistence against one-step observed persistence baseline. DOI/URL (TODO)
-- Project helper definition - preproc - Deterministic preprocessing helper for NA filtering and aligned input coercion prior to metric evaluation. DOI/URL (TODO)
-- Project definition record - valindex - Weighted normalized aggregate over selected gof metrics (v1 project-defined normalization). DOI/URL (TODO)
-- SWAT uncertainty-analysis literature context - pfactor/rfactor - P-factor and R-factor terminology are widely used for calibration/uncertainty diagnostics; this package uses explicit clean-room compatibility definitions recorded in DECISIONS.md. DOI/URL (TODO)
-- Project definition record - pfactor/rfactor - `pfactor` tolerance-band hit proportion and `rfactor` MAE normalized by `mean(abs(obs))` for deterministic single-series compatibility. DOI/URL (TODO)
-- Batch 1 parity policy record - rsr/pbias/mae - Explicit clean-room edge policies: `rsr = RMSE/sd(obs)` (requires `n >= 2`, `sd(obs) > 0`), `pbias = 100 * sum(sim - obs)/sum(obs)` (requires `sum(obs) != 0`), and `mae = mean(abs(sim - obs))` (requires `n >= 1`). DOI/URL (TODO)
-- High-flow diagnostic literature context (to refine) - APFB/HFB - Annual-peak and high-flow bias diagnostics implemented as clean-room compatibility exports with deterministic year/quantile policies. DOI/URL (TODO)
-- Orchestration compatibility record (project decision) - preproc/gof/ggof/valindex - Modern clean-room orchestration wrappers over preprocessing and registered metrics with structured S3 return contracts. DOI/URL (TODO)
-- Phase 2C architecture record - metric engine consolidation - Canonical single-tree metric implementation and registry-only dispatch policy with duplicate-tree removal. DOI/URL (TODO)
+## Literature-backed references
+- Nash, J. E., and Sutcliffe, J. V. (1970). River flow forecasting through conceptual models part I: A discussion of principles. *Journal of Hydrology*, 10(3), 282-290. DOI: `10.1016/0022-1694(70)90255-6`. URL: https://doi.org/10.1016/0022-1694(70)90255-6. Metrics: `nse`; baseline literature lineage for `mnse`, `rnse`, `wnse`, and `wsnse`.
+- Kitanidis, P. K., and Bras, R. L. (1980). Real-time forecasting with a conceptual hydrologic model. Part II: Applications and results. *Water Resources Research*, 16(6), 1034-1044. DOI: `10.1029/WR016i006p01034`. URL: https://doi.org/10.1029/WR016i006p01034. Metrics: `cp`.
+- Moriasi, D. N., Arnold, J. G., Van Liew, M. W., Bingner, R. L., Harmel, R. D., and Veith, T. L. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations. *Transactions of the ASABE*, 50(3), 885-900. DOI: `10.13031/2013.23153`. URL: https://doi.org/10.13031/2013.23153. Metrics: `pbias`, `rsr`.
+- Gupta, H. V., Kling, H., Yilmaz, K. K., and Martinez, G. F. (2009). Decomposition of the mean squared error and NSE performance criteria: Implications for improving hydrological modelling. *Journal of Hydrology*, 377(1-2), 80-91. DOI: `10.1016/j.jhydrol.2009.08.003`. URL: https://doi.org/10.1016/j.jhydrol.2009.08.003. Metrics: `kge`, `alpha`, `beta`, and the KGE component interpretation of `r`.
+- Kling, H., Fuchs, M., and Paulin, M. (2012). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. *Journal of Hydrology*, 424-425, 264-277. DOI: `10.1016/j.jhydrol.2012.01.011`. URL: https://doi.org/10.1016/j.jhydrol.2012.01.011. Metrics: `kgekm`.
+- Pool, S., Vis, M., and Seibert, J. (2018). Evaluating model performance: towards a non-parametric variant of the Kling-Gupta efficiency. *Hydrological Sciences Journal*, 63(13-14), 1941-1953. DOI: `10.1080/02626667.2018.1552002`. URL: https://doi.org/10.1080/02626667.2018.1552002. Metrics: `kgenp`.
+- Willmott, C. J. (1981). On the validation of models. *Physical Geography*, 2(2), 184-194. DOI: `10.1080/02723646.1981.10642213`. URL: https://doi.org/10.1080/02723646.1981.10642213. Metrics: `d`; broader model-validation context for `rmse`, `mse`, and `ve`.
+- Willmott, C. J., Robeson, S. M., and Matsuura, K. (2012). A refined index of model performance. *International Journal of Climatology*, 32(13), 2088-2094. DOI: `10.1002/joc.2419`. URL: https://doi.org/10.1002/joc.2419. Metrics: `md`; literature context for the `rd` and `dr` agreement-index family.
+- Criss, R. E., and Winston, W. E. (2008). Do Nash values have value? Discussion and alternate proposals. *Hydrological Processes*, 22(14), 2723-2725. DOI: `10.1002/hyp.7072`. URL: https://doi.org/10.1002/hyp.7072. Metrics: `ve`.
+- Hyndman, R. J., and Koehler, A. B. (2006). Another look at measures of forecast accuracy. *International Journal of Forecasting*, 22(4), 679-688. DOI: `10.1016/j.ijforecast.2006.03.001`. URL: https://doi.org/10.1016/j.ijforecast.2006.03.001. Metrics: `rmse`, `mae`, `mape`, `mpe`, and `me`.
+- Heckert, N. A., Filliben, J. J., Croarkin, C. M., Hembree, B., Guthrie, W. F., Tobias, P., and Prinz, J. (2002). *Handbook 151: NIST/SEMATECH e-Handbook of Statistical Methods*. National Institute of Standards and Technology. DOI unavailable. Stable URL: https://www.itl.nist.gov/div898/handbook/. Metrics: `mse` and general error-statistic definitions supporting `ssq`.
+- Pearson, K. (1896). Mathematical contributions to the theory of evolution. III. Regression, heredity, and panmixia. *Philosophical Transactions of the Royal Society of London A*, 187, 253-318. DOI: `10.1098/rsta.1896.0007`. URL: https://doi.org/10.1098/rsta.1896.0007. Metrics: `r`, `r2`, and `rpearson`.
+- Spearman, C. (1904). The proof and measurement of association between two things. *The American Journal of Psychology*, 15(1), 72-101. DOI: `10.2307/1412159`. URL: https://doi.org/10.2307/1412159. Metrics: `rspearman`.
+- Abbaspour, K. C., Vaghefi, S. A., and Srinivasan, R. (2018). A guideline for successful calibration and uncertainty analysis for Soil and Water Assessment: A review of papers from the 2016 International SWAT Conference. *Water*, 10(1), 6. DOI: `10.3390/w10010006`. URL: https://doi.org/10.3390/w10010006. Metrics: `pfactor` and `rfactor` terminology context.
 
-## Placeholder Entries
-- Author (Year) - Metric(s) - DOI/URL (TODO)
-- Author (Year) - Metric(s) - DOI/URL (TODO)
-- Author (Year) - Metric(s) - DOI/URL (TODO)
+## Package-defined and decision-backed references
+- hydroMetrics Architecture Decisions, D-009 and D-012. Exact pre-Layer-A package definitions for `nrmse` and `nrmse_sd`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
+- hydroMetrics Architecture Decisions, D-014. Exact package formulations for `rd` and `dr`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
+- hydroMetrics Architecture Decisions, D-015. Current pre-Layer-A package definition for `br2`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
+- hydroMetrics Architecture Decisions, D-016 and D-026. Exact package formulas and export mapping for `mnse`, `rnse`, `wnse`, `wsnse`, `NSeff`, `mNSeff`, `rNSeff`, and `wsNSeff`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
+- hydroMetrics Architecture Decisions, D-017. Exact package definitions for `ubrmse` and `ssq`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
+- hydroMetrics Architecture Decisions, D-018 and D-019. Exact package definitions for `kgelf`, `skge`, and `pbiasfdc`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
+- hydroMetrics Architecture Decisions, D-020 and D-023. Exact package definitions for `rsd`, `pfactor`, and `rfactor`; the external SWAT literature above covers terminology only. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
+- hydroMetrics Architecture Decisions, D-022 and D-028. Project definition and public wrapper contract for `valindex`, `preproc`, `gof`, and `ggof`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
+- hydroMetrics Architecture Decisions, D-027. Exact package definitions for `APFB` and `HFB`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
+- hydroMetrics Architecture Decisions, D-029 and D-030. Registry-only metric dispatch and the current `gof()` default-versus-extended selection contract for the pre-Layer-A baseline. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md

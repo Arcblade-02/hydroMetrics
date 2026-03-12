@@ -1,5 +1,12 @@
 # hydroMetrics news
 
+## 0.2.2
+
+- Added `gof(extended = TRUE)` to expose the full automatically applicable
+  registered metric set while keeping the default
+  `gof()`/`gof(extended = FALSE)` behavior frozen to the compat-10
+  hydroGOF-style metric set.
+
 ## 0.2.0
 
 - Expanded GitHub Actions release hardening to cover Linux, Windows, and macOS

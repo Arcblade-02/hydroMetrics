@@ -144,3 +144,8 @@
 - Decision: Consolidate to a single canonical metric tree in `R/core_metrics.R`, remove duplicate `R/metrics/*` definitions, and enforce registry-only metric execution from orchestration wrappers.
 - Status: Accepted
 - Notes: `gof` remains the sole orchestration path (`gof -> preproc -> .hm_prepare_inputs -> registry -> metric`). Exported compatibility wrappers (`APFB`, `HFB`, `pfactor`, `rfactor`) now dispatch through `gof` and no longer call `preproc` directly. Metric implementations were kept formula-equivalent while removing hidden NA-handling branches from the metric layer.
+
+## D-030: gof Extended Metric Selection Contract
+- Decision: `gof()` defaults to the compat-10 metric set (`nse`, `kge`, `rmse`, `pbias`, `mae`, `mse`, `r2`, `ve`, `rsr`, `nrmse`), while `gof(extended = TRUE)` expands omitted/`NULL` selection to all automatically applicable registered metrics for the current input context.
+- Status: Accepted
+- Notes: Explicit `methods` input always takes precedence over `extended`. Context-bound metrics that require unsupported side inputs remain available through explicit `methods` plus params, but are not auto-selected when the current inputs cannot support them. Output structure remains unchanged: named numeric vector for single-series inputs, named numeric matrix for multi-series inputs, all wrapped in class `"hydro_metrics"`.

@@ -9,6 +9,9 @@
 - Corrected `gof()` to return the metric payload directly as a
   `hydro_metrics` vector or matrix, with `n_obs`, `meta`, and `call`
   preserved as attributes instead of top-level wrapper fields.
+- Added an internal fast path for simple single-metric wrapper calls on plain
+  numeric no-NA vectors, with conservative fallback to the full engine for all
+  non-trivial cases.
 
 ## 0.2.0
 

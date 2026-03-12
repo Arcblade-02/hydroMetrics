@@ -2,6 +2,11 @@
 
 ## 0.2.2
 
+- Started Phase 3 Layer B Batch B1 with empirical-distribution comparison
+  metrics `ks_statistic`, `cdf_rmse`, `quantile_deviation`,
+  `fdc_shape_distance`, `anderson_darling_stat`, and
+  `wasserstein_distance`, including explicit EDF/FDC conventions, registry
+  entries, wrapper exports, and focused regression coverage.
 - Closed Phase 3 Layer A on `dev`: all 27 Layer A metrics are implemented,
   registered, exported, documented, and covered by the current validation
   suite. The Batch A5 probabilistic metrics `crps`, `picp`, `mwpi`, and

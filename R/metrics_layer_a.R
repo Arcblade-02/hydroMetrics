@@ -592,3 +592,160 @@ core_metric_spec_seasonal_bias <- function() {
     tags = c("phase-3", "layer-a", "batch-a3")
   )
 }
+
+.hm_validate_huber_delta <- function(delta) {
+  if (!is.numeric(delta) || length(delta) != 1L || is.na(delta) || delta <= 0) {
+    stop("`delta` must be a positive numeric scalar.", call. = FALSE)
+  }
+
+  as.numeric(delta)
+}
+
+.hm_validate_quantile_tau <- function(tau) {
+  if (!is.numeric(tau) || length(tau) != 1L || is.na(tau) || tau <= 0 || tau >= 1) {
+    stop("`tau` must be a numeric scalar in (0, 1).", call. = FALSE)
+  }
+
+  as.numeric(tau)
+}
+
+.hm_validate_fraction_01 <- function(x, name) {
+  if (!is.numeric(x) || length(x) != 1L || is.na(x) || x < 0 || x >= 0.5) {
+    stop(sprintf("`%s` must be a numeric scalar in [0, 0.5).", name), call. = FALSE)
+  }
+
+  as.numeric(x)
+}
+
+.hm_trimmed_residuals <- function(sim, obs, trim) {
+  residuals <- sort(as.numeric(sim - obs))
+  n <- length(residuals)
+  k <- floor(trim * n)
+
+  if (k == 0L) {
+    return(residuals)
+  }
+
+  residuals[seq.int(k + 1L, n - k)]
+}
+
+.hm_winsorized_residuals <- function(sim, obs, winsor) {
+  residuals <- sort(as.numeric(sim - obs))
+  n <- length(residuals)
+  k <- floor(winsor * n)
+
+  if (k == 0L) {
+    return(residuals)
+  }
+
+  lower <- residuals[[k + 1L]]
+  upper <- residuals[[n - k]]
+  pmin(pmax(residuals, lower), upper)
+}
+
+metric_huber_loss <- function(sim, obs, delta = 1) {
+  if (length(obs) < 1L) {
+    stop("huber_loss requires at least 1 value.", call. = FALSE)
+  }
+
+  delta <- .hm_validate_huber_delta(delta)
+  residuals <- sim - obs
+  abs_residuals <- abs(residuals)
+  quadratic <- 0.5 * residuals^2
+  linear <- delta * (abs_residuals - 0.5 * delta)
+
+  mean(ifelse(abs_residuals <= delta, quadratic, linear))
+}
+
+core_metric_spec_huber_loss <- function() {
+  list(
+    id = "huber_loss",
+    fun = metric_huber_loss,
+    name = "Mean Huber Loss",
+    description = "Mean Huber loss with stable default delta = 1.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Huber (1964) robust loss with package default delta = 1.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a4")
+  )
+}
+
+metric_quantile_loss <- function(sim, obs, tau = 0.5) {
+  if (length(obs) < 1L) {
+    stop("quantile_loss requires at least 1 value.", call. = FALSE)
+  }
+
+  tau <- .hm_validate_quantile_tau(tau)
+  residuals <- obs - sim
+
+  mean(ifelse(residuals >= 0, tau * residuals, (tau - 1) * residuals))
+}
+
+core_metric_spec_quantile_loss <- function() {
+  list(
+    id = "quantile_loss",
+    fun = metric_quantile_loss,
+    name = "Mean Quantile Loss",
+    description = "Mean pinball loss on obs - sim residuals with stable default tau = 0.5.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Koenker & Bassett (1978) quantile loss with package default tau = 0.5.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a4")
+  )
+}
+
+metric_trimmed_rmse <- function(sim, obs, trim = 0.2) {
+  if (length(obs) < 1L) {
+    stop("trimmed_rmse requires at least 1 value.", call. = FALSE)
+  }
+
+  trim <- .hm_validate_fraction_01(trim, "trim")
+  residuals <- .hm_trimmed_residuals(sim, obs, trim = trim)
+
+  sqrt(mean(residuals^2))
+}
+
+core_metric_spec_trimmed_rmse <- function() {
+  list(
+    id = "trimmed_rmse",
+    fun = metric_trimmed_rmse,
+    name = "Trimmed RMSE",
+    description = "RMSE after symmetric trimming of the signed residual distribution with stable default trim = 0.2.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Robust trimmed-estimation practice summarized by Wilcox (2012), adapted here to residual RMSE with package default trim = 0.2.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a4")
+  )
+}
+
+metric_winsor_rmse <- function(sim, obs, winsor = 0.2) {
+  if (length(obs) < 1L) {
+    stop("winsor_rmse requires at least 1 value.", call. = FALSE)
+  }
+
+  winsor <- .hm_validate_fraction_01(winsor, "winsor")
+  residuals <- .hm_winsorized_residuals(sim, obs, winsor = winsor)
+
+  sqrt(mean(residuals^2))
+}
+
+core_metric_spec_winsor_rmse <- function() {
+  list(
+    id = "winsor_rmse",
+    fun = metric_winsor_rmse,
+    name = "Winsorized RMSE",
+    description = "RMSE after symmetric winsorization of the signed residual distribution with stable default winsor = 0.2.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Robust winsorization practice summarized by Wilcox (2012), adapted here to residual RMSE with package default winsor = 0.2.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a4")
+  )
+}

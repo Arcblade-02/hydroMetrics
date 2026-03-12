@@ -369,3 +369,95 @@ test_that("seasonal_bias rejects unsupported or incomplete seasonal structure", 
     "requires monthly ts input or an aligned date-like index"
   )
 })
+
+test_that("layer A batch A4 registry ids are present", {
+  ids <- list_metrics()$id
+  target <- c("huber_loss", "quantile_loss", "trimmed_rmse", "winsor_rmse")
+
+  expect_true(all(target %in% ids))
+})
+
+test_that("huber_loss matches the mean Huber loss formula", {
+  sim <- c(1.2, 1.8, 3.4, 3.9, 5.1, 6.0, 7.2, 8.1)
+  obs <- c(1.0, 2.0, 3.0, 4.0, 5.0, 6.2, 7.0, 8.0)
+  delta <- 1
+  residuals <- sim - obs
+  expected <- mean(ifelse(
+    abs(residuals) <= delta,
+    0.5 * residuals^2,
+    delta * (abs(residuals) - 0.5 * delta)
+  ))
+
+  expect_equal(huber_loss(sim, obs), expected)
+  expect_equal(evaluate_metrics(sim, obs, "huber_loss")$value[[1]], expected)
+  expect_equal(huber_loss(sim, obs, delta = 0.25), metric_huber_loss(sim, obs, delta = 0.25))
+})
+
+test_that("quantile_loss matches the pinball-loss formula", {
+  sim <- c(1.2, 1.8, 3.4, 3.9, 5.1, 6.0, 7.2, 8.1)
+  obs <- c(1.0, 2.0, 3.0, 4.0, 5.0, 6.2, 7.0, 8.0)
+  tau <- 0.5
+  residuals <- obs - sim
+  expected <- mean(ifelse(residuals >= 0, tau * residuals, (tau - 1) * residuals))
+
+  expect_equal(quantile_loss(sim, obs), expected)
+  expect_equal(evaluate_metrics(sim, obs, "quantile_loss")$value[[1]], expected)
+  expect_equal(quantile_loss(sim, obs, tau = 0.25), metric_quantile_loss(sim, obs, tau = 0.25))
+})
+
+test_that("trimmed_rmse and winsor_rmse match deterministic robust residual rules", {
+  sim <- c(0, 2, 4, 6, 20)
+  obs <- c(1, 2, 3, 4, 5)
+  residuals <- sort(sim - obs)
+  trim <- 0.2
+  winsor <- 0.2
+  k_trim <- floor(trim * length(residuals))
+  trimmed <- residuals[(k_trim + 1):(length(residuals) - k_trim)]
+  expected_trimmed <- sqrt(mean(trimmed^2))
+
+  k_winsor <- floor(winsor * length(residuals))
+  lower <- residuals[[k_winsor + 1]]
+  upper <- residuals[[length(residuals) - k_winsor]]
+  wins <- pmin(pmax(residuals, lower), upper)
+  expected_winsor <- sqrt(mean(wins^2))
+
+  expect_equal(trimmed_rmse(sim, obs), expected_trimmed)
+  expect_equal(winsor_rmse(sim, obs), expected_winsor)
+
+  out <- evaluate_metrics(sim, obs, c("trimmed_rmse", "winsor_rmse"))
+  values <- setNames(out$value, out$metric)
+  expect_equal(values[["trimmed_rmse"]], expected_trimmed)
+  expect_equal(values[["winsor_rmse"]], expected_winsor)
+})
+
+test_that("trimmed_rmse and winsor_rmse reduce to RMSE when trim fractions are zero", {
+  sim <- c(0, 2, 4, 6, 20)
+  obs <- c(1, 2, 3, 4, 5)
+  expected <- sqrt(mean((sim - obs)^2))
+
+  expect_equal(trimmed_rmse(sim, obs, trim = 0), expected)
+  expect_equal(winsor_rmse(sim, obs, winsor = 0), expected)
+})
+
+test_that("Batch A4 parameter validation is explicit and conservative", {
+  sim <- c(1, 2, 3, 4, 5)
+  obs <- c(1, 2, 3, 4, 5)
+
+  expect_error(huber_loss(sim, obs, delta = 0), "`delta` must be a positive")
+  expect_error(quantile_loss(sim, obs, tau = 1), "`tau` must be a numeric scalar in \\(0, 1\\)")
+  expect_error(trimmed_rmse(sim, obs, trim = 0.6), "`trim` must be a numeric scalar in \\[0, 0.5\\)")
+  expect_error(winsor_rmse(sim, obs, winsor = -0.1), "`winsor` must be a numeric scalar in \\[0, 0.5\\)")
+})
+
+test_that("Batch A4 wrappers integrate with metric_params for multi-series input", {
+  sim <- cbind(a = c(0, 2, 4, 6, 20), b = c(1, 2, 3, 4, 5))
+  obs <- cbind(a = c(1, 2, 3, 4, 5), b = c(1, 2, 3, 4, 5))
+
+  out <- huber_loss(sim, obs, delta = 0.5)
+  expect_true(is.numeric(out))
+  expect_identical(names(out), c("a", "b"))
+
+  out_trim <- trimmed_rmse(sim, obs, trim = 0.2)
+  expect_true(is.numeric(out_trim))
+  expect_identical(names(out_trim), c("a", "b"))
+})

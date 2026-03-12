@@ -149,3 +149,43 @@
 - Decision: `gof()` defaults to the compat-10 metric set (`nse`, `kge`, `rmse`, `pbias`, `mae`, `mse`, `r2`, `ve`, `rsr`, `nrmse`), while `gof(extended = TRUE)` expands omitted/`NULL` selection to all automatically applicable registered metrics for the current input context.
 - Status: Accepted
 - Notes: Explicit `methods` input always takes precedence over `extended`. Context-bound metrics that require unsupported side inputs remain available through explicit `methods` plus params, but are not auto-selected when the current inputs cannot support them. Output structure remains unchanged: named numeric vector for single-series inputs or named numeric matrix for multi-series inputs, with class `hydro_metrics` and metadata preserved on attributes rather than top-level wrapper fields.
+
+## Phase 3 Canonical Decision Reconciliation (v0.2.2 Pre-Layer-A Gate)
+- Decision: The entries below are the canonical Phase 3 execution-plan IDs for release-governance and cross-reference purposes.
+- Status: Accepted
+- Notes: Earlier `D-025` through `D-030` headings above record historical implementation decisions from Phase 2B/2C. Where numbering drift occurred during implementation, the canonical meanings for pre-Layer-A closure are the `D-025` through `D-031` entries in this section.
+
+## D-025: Frozen gof() Output Contract (Canonical Phase 3 ID)
+- Decision: `gof()` must return the metric payload directly: a named numeric vector for single-series input or a named numeric matrix for multi-series input, both with class `hydro_metrics` and metadata carried on attributes.
+- Status: Accepted
+- Notes: This is the authoritative Phase 3 contract for `gof()` output shape. The operational implementation currently matches this contract on `dev`.
+
+## D-026: Canonical Metric ID and Alias Policy (Canonical Phase 3 ID)
+- Decision: Phase 3 metric IDs are unique canonical registry identifiers. Compatibility aliases or deprecated names may remain only as wrappers or resolution aliases and must not persist as duplicate canonical registry entries.
+- Status: Accepted
+- Notes: The release-governance target is canonical `r` for Pearson correlation. The current `dev` branch still registers `rpearson` as an independent metric id, so this decision is accepted but not yet fully implemented.
+
+## D-027: gof() Default and Extended Metric-Set Contract (Canonical Phase 3 ID)
+- Decision: `gof()` and `gof(extended = FALSE)` default to the compat-10 baseline set (`nse`, `kge`, `rmse`, `pbias`, `mae`, `mse`, `r2`, `ve`, `rsr`, `nrmse`), while `gof(extended = TRUE)` expands omitted or `NULL` selection to the full registered metric set supported by the current input context.
+- Status: Accepted
+- Notes: Explicit `methods` input always takes precedence. This canonical Phase 3 ID supersedes the earlier implementation-drift use of `D-030` for the same contract.
+
+## D-028: Internal Fast-Path Scope and Fallback Rule (Canonical Phase 3 ID)
+- Decision: Any internal direct-computation fast path is limited to simple public single-metric wrapper calls on plain numeric, finite, no-NA vectors with no preprocessing-sensitive options; all other cases must fall back to the full orchestration path unchanged.
+- Status: Accepted
+- Notes: The current `dev` implementation matches this scope and fallback rule. This canonical Phase 3 ID aligns with the fast-path behavior already captured operationally in the earlier orchestration decision.
+
+## D-029: br2 Literature Correction Policy (Canonical Phase 3 ID)
+- Decision: `br2` must follow the Krause et al. (2005) `bR2` interpretation selected by project policy, and this canonical decision supersedes the earlier project-specific formula recorded in `D-015`.
+- Status: Accepted
+- Notes: This is a release-governance correction, not a new metric. The current `dev` branch still implements the superseded `D-015` formula, so pre-Layer-A closure remains blocked until code and registry text are reconciled.
+
+## D-030: Information-Theoretic Metric Disclosure Rule (Canonical Phase 3 ID)
+- Decision: Information-theoretic metrics may not be added or released without explicit bandwidth-sensitivity disclosure, estimator assumptions, and literature citations sufficient for reproducible interpretation.
+- Status: Accepted
+- Notes: This rule is forward-looking for Phase 3 expansion. No current public metric on `dev` claims exemption from this disclosure requirement.
+
+## D-031: No Uncited Layer C / Research-Frontier Additions (Canonical Phase 3 ID)
+- Decision: No uncited Layer C metric or other research-frontier metric may be added to the package. Any such addition must carry literature grounding in `inst/REFERENCES.md` before implementation is considered release-ready.
+- Status: Accepted
+- Notes: Project-defined compatibility behavior remains allowed only when explicitly documented as package-defined and backed by a stable decision record. This rule is part of the pre-Layer-A governance gate and is now recorded explicitly.

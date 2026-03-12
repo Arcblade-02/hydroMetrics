@@ -2,6 +2,12 @@
 
 ## 0.2.2
 
+- Continued Phase 3 Layer B with Batch B2 metrics `sqrt_nse`,
+  `seasonal_nse`, `weighted_kge`, and `quantile_kge`, including explicit
+  transform, monthly-seasonality, weighting, and fixed-quantile-grid
+  conventions. `seasonal_nse` follows the same monthly-structure policy as
+  `seasonal_bias` and is not auto-selected by deterministic
+  `gof(sim, obs, extended = TRUE)` unless monthly seasonality is available.
 - Started Phase 3 Layer B Batch B1 with empirical-distribution comparison
   metrics `ks_statistic`, `cdf_rmse`, `quantile_deviation`,
   `fdc_shape_distance`, `anderson_darling_stat`, and

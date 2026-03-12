@@ -68,9 +68,9 @@ value. It maps to \code{epsilon} when \code{epsilon_mode = "constant"} and to
 \item{...}{Additional compatibility arguments, including \code{metric_params}.}
 }
 \value{
-A structured object with class \code{"hydro_metrics"} containing
-\code{metrics}, \code{n_obs}, \code{meta}, and \code{call}. Metric names are also exposed as
-list elements for \code{$} access compatibility.
+A named numeric vector for single-series inputs or a named numeric
+matrix for multi-series inputs, with class \code{"hydro_metrics"}. Additional
+metadata is attached via the \code{n_obs}, \code{meta}, and \code{call} attributes.
 }
 \description{
 Clean-room orchestration wrapper that preprocesses aligned series and

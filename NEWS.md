@@ -6,6 +6,9 @@
   registered metric set while keeping the default
   `gof()`/`gof(extended = FALSE)` behavior frozen to the compat-10
   hydroGOF-style metric set.
+- Corrected `gof()` to return the metric payload directly as a
+  `hydro_metrics` vector or matrix, with `n_obs`, `meta`, and `call`
+  preserved as attributes instead of top-level wrapper fields.
 
 ## 0.2.0
 

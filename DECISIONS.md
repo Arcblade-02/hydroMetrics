@@ -138,7 +138,7 @@
 ## D-028: Phase 2B Batch 4B Modern Orchestration Compatibility Layer
 - Decision: Export `preproc`, `gof`, `ggof`, and `valindex` as clean-room compatibility wrappers over the existing preprocessing engine and registered metric dispatch, with structured S3 returns.
 - Status: Accepted
-- Notes: `preproc` is a public wrapper around `.hm_prepare_inputs` returning class `hydro_preproc`; `gof` returns class `hydro_metrics` containing `metrics`, `n_obs`, `meta`, and `call`, while preserving direct `$<metric>` access and `as.numeric()` coercion; `ggof` is tabular-only (class `hydro_metrics_batch`) and does not produce plots; `valindex` is a thin wrapper delegating to `gof(methods = fun, ...)`. No metric formulas are duplicated in orchestration code.
+- Notes: `preproc` is a public wrapper around `.hm_prepare_inputs` returning class `hydro_preproc`; `gof` returns the metric payload directly as a named numeric vector for single-series input or a named numeric matrix for multi-series input, with class `hydro_metrics` and metadata attached via `n_obs`, `meta`, and `call` attributes; `ggof` is tabular-only (class `hydro_metrics_batch`) and does not produce plots; `valindex` is a thin wrapper delegating to `gof(methods = fun, ...)`. No metric formulas are duplicated in orchestration code.
 
 ## D-029: Phase 2C Metric Engine Consolidation
 - Decision: Consolidate to a single canonical metric tree in `R/core_metrics.R`, remove duplicate `R/metrics/*` definitions, and enforce registry-only metric execution from orchestration wrappers.
@@ -148,4 +148,4 @@
 ## D-030: gof Extended Metric Selection Contract
 - Decision: `gof()` defaults to the compat-10 metric set (`nse`, `kge`, `rmse`, `pbias`, `mae`, `mse`, `r2`, `ve`, `rsr`, `nrmse`), while `gof(extended = TRUE)` expands omitted/`NULL` selection to all automatically applicable registered metrics for the current input context.
 - Status: Accepted
-- Notes: Explicit `methods` input always takes precedence over `extended`. Context-bound metrics that require unsupported side inputs remain available through explicit `methods` plus params, but are not auto-selected when the current inputs cannot support them. Output structure remains unchanged: named numeric vector for single-series inputs, named numeric matrix for multi-series inputs, all wrapped in class `"hydro_metrics"`.
+- Notes: Explicit `methods` input always takes precedence over `extended`. Context-bound metrics that require unsupported side inputs remain available through explicit `methods` plus params, but are not auto-selected when the current inputs cannot support them. Output structure remains unchanged: named numeric vector for single-series inputs or named numeric matrix for multi-series inputs, with class `hydro_metrics` and metadata preserved on attributes rather than top-level wrapper fields.

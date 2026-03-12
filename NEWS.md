@@ -2,6 +2,10 @@
 
 ## 0.2.2
 
+- Continued Phase 3 Layer B with the narrow Batch B4 delivery `event_nse`,
+  implemented as NSE on pooled observed event windows defined by contiguous
+  observed values strictly above the observed 0.8 quantile, with no broader
+  public event framework introduced.
 - Continued Phase 3 Layer B with Batch B3 hydrograph diagnostics
   `hydrograph_slope_error`, `derivative_nse`, `peak_timing_error`,
   `rising_limb_error`, `recession_constant`, and

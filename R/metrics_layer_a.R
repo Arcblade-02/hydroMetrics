@@ -749,3 +749,160 @@ core_metric_spec_winsor_rmse <- function() {
     tags = c("phase-3", "layer-a", "batch-a4")
   )
 }
+
+.hm_validate_numeric_matrix <- function(x, name) {
+  if (!is.matrix(x) || !is.numeric(x)) {
+    stop(sprintf("`%s` must be a numeric matrix.", name), call. = FALSE)
+  }
+  if (nrow(x) < 1L || ncol(x) < 1L) {
+    stop(sprintf("`%s` must have at least one row and one column.", name), call. = FALSE)
+  }
+  if (anyNA(x) || any(is.nan(x)) || any(!is.finite(x))) {
+    stop(sprintf("`%s` must not contain missing, NaN, or infinite values.", name), call. = FALSE)
+  }
+
+  invisible(TRUE)
+}
+
+.hm_validate_interval_vectors <- function(lower, upper, obs = NULL) {
+  validate_numeric_vector(lower, "lower")
+  validate_numeric_vector(upper, "upper")
+  validate_equal_length(lower, upper)
+  validate_finite(lower, upper)
+
+  if (any(lower > upper)) {
+    stop("`lower` must be less than or equal to `upper` for every interval.", call. = FALSE)
+  }
+
+  if (!is.null(obs)) {
+    validate_numeric_vector(obs, "obs")
+    validate_equal_length(lower, obs)
+    validate_finite(lower, obs)
+  }
+
+  invisible(TRUE)
+}
+
+.hm_validate_skill_inputs <- function(score, baseline_score) {
+  validate_numeric_vector(score, "score")
+  validate_numeric_vector(baseline_score, "baseline_score")
+  validate_equal_length(score, baseline_score)
+  validate_finite(score, baseline_score)
+
+  if (any(score < 0) || any(baseline_score < 0)) {
+    stop("`score` and `baseline_score` must be non-negative.", call. = FALSE)
+  }
+
+  base_mean <- mean(baseline_score)
+  if (base_mean == 0) {
+    stop("skill_score is undefined because mean(baseline_score) == 0.", call. = FALSE)
+  }
+
+  invisible(TRUE)
+}
+
+metric_crps <- function(sim, obs) {
+  .hm_validate_numeric_matrix(sim, "sim")
+  validate_numeric_vector(obs, "obs")
+  if (nrow(sim) != length(obs)) {
+    stop("`obs` length must match `nrow(sim)` for crps.", call. = FALSE)
+  }
+  validate_finite(as.numeric(sim), obs)
+  if (ncol(sim) < 2L) {
+    stop("crps requires at least 2 ensemble members.", call. = FALSE)
+  }
+
+  m <- ncol(sim)
+  case_scores <- vapply(seq_len(nrow(sim)), function(i) {
+    ens <- as.numeric(sim[i, ])
+    term_obs <- mean(abs(ens - obs[[i]]))
+    pairwise <- abs(outer(ens, ens, "-"))
+    term_ens <- sum(pairwise) / (2 * m^2)
+    term_obs - term_ens
+  }, numeric(1))
+
+  mean(case_scores)
+}
+
+core_metric_spec_crps <- function() {
+  list(
+    id = "crps",
+    fun = metric_crps,
+    name = "Continuous Ranked Probability Score",
+    description = "Mean empirical-ensemble CRPS over forecast cases.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Gneiting & Raftery (2007) and Hersbach (2000) empirical ensemble CRPS.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a5", "probabilistic")
+  )
+}
+
+metric_picp <- function(sim, obs, upper) {
+  lower <- sim
+  .hm_validate_interval_vectors(lower, upper, obs = obs)
+
+  mean(obs >= lower & obs <= upper)
+}
+
+core_metric_spec_picp <- function() {
+  list(
+    id = "picp",
+    fun = metric_picp,
+    name = "Prediction Interval Coverage Probability",
+    description = "Coverage proportion for inclusive prediction intervals.",
+    category = "agreement",
+    perfect = 1,
+    range = c(0, 1),
+    references = "Khosravi et al. (2011) prediction interval coverage probability (PICP).",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a5", "probabilistic")
+  )
+}
+
+metric_mwpi <- function(sim, obs) {
+  lower <- sim
+  upper <- obs
+  .hm_validate_interval_vectors(lower, upper)
+
+  mean(upper - lower)
+}
+
+core_metric_spec_mwpi <- function() {
+  list(
+    id = "mwpi",
+    fun = metric_mwpi,
+    name = "Mean Width of Prediction Intervals",
+    description = "Mean interval width computed as mean(upper - lower).",
+    category = "scale",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Khosravi et al. (2011) mean width / mean prediction interval width diagnostic.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a5", "probabilistic")
+  )
+}
+
+metric_skill_score <- function(sim, obs) {
+  score <- sim
+  baseline_score <- obs
+  .hm_validate_skill_inputs(score, baseline_score)
+
+  1 - mean(score) / mean(baseline_score)
+}
+
+core_metric_spec_skill_score <- function() {
+  list(
+    id = "skill_score",
+    fun = metric_skill_score,
+    name = "Relative Skill Score",
+    description = "Lower-is-better skill score defined as 1 - mean(score) / mean(baseline_score).",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "Murphy & Epstein (1989) general skill-score normalization relative to a reference score.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-a", "batch-a5", "probabilistic")
+  )
+}

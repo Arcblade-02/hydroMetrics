@@ -34,6 +34,28 @@ test_that("canonical metric tree contains no NA-handling logic tokens", {
     return(list(sim = as.numeric(sim), obs = as.numeric(obs), params = list(index = stats::time(obs))))
   }
 
+  if (identical(id, "crps")) {
+    sim <- matrix(c(1, 1.2, 0.8, 2, 2.2, 1.8), nrow = 2, byrow = TRUE)
+    obs <- c(1.1, 2.1)
+    return(list(sim = sim, obs = obs, params = list()))
+  }
+
+  if (identical(id, "picp")) {
+    return(list(
+      sim = c(0.9, 1.9),
+      obs = c(1.1, 2.1),
+      params = list(upper = c(1.3, 2.3))
+    ))
+  }
+
+  if (identical(id, "mwpi")) {
+    return(list(sim = c(0.9, 1.9), obs = c(1.3, 2.3), params = list()))
+  }
+
+  if (identical(id, "skill_score")) {
+    return(list(sim = c(0.8, 0.7), obs = c(1.0, 1.0), params = list()))
+  }
+
   if (identical(id, "hfb")) {
     obs <- 1:30
     sim <- obs + 1

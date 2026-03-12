@@ -110,6 +110,7 @@
 
 .gof_auto_applicable_ids <- function(available_ids, sim = NULL, obs = NULL, index = NULL) {
   ids <- available_ids
+  ids <- setdiff(ids, c("crps", "picp", "mwpi", "skill_score"))
   if (!.gof_can_auto_run_apfb(index)) {
     ids <- setdiff(ids, "apfb")
   }

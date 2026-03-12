@@ -461,3 +461,72 @@ test_that("Batch A4 wrappers integrate with metric_params for multi-series input
   expect_true(is.numeric(out_trim))
   expect_identical(names(out_trim), c("a", "b"))
 })
+
+test_that("layer A batch A5 registry ids are present", {
+  ids <- list_metrics()$id
+  target <- c("crps", "picp", "mwpi", "skill_score")
+
+  expect_true(all(target %in% ids))
+})
+
+test_that("crps matches the empirical ensemble formula", {
+  ens <- matrix(
+    c(
+      1.0, 1.2, 0.8,
+      2.0, 2.2, 1.8,
+      3.0, 3.2, 2.8
+    ),
+    nrow = 3,
+    byrow = TRUE
+  )
+  obs <- c(1.1, 2.1, 3.1)
+
+  expected_case <- vapply(seq_len(nrow(ens)), function(i) {
+    members <- ens[i, ]
+    mean(abs(members - obs[[i]])) - sum(abs(outer(members, members, "-"))) / (2 * ncol(ens)^2)
+  }, numeric(1))
+  expected <- mean(expected_case)
+
+  expect_equal(crps(ens, obs), expected)
+  expect_equal(metric_crps(ens, obs), expected)
+})
+
+test_that("picp and mwpi match interval coverage and width definitions", {
+  lower <- c(0.9, 1.9, 2.9)
+  upper <- c(1.3, 2.3, 3.3)
+  obs <- c(1.1, 2.4, 3.1)
+
+  expect_equal(picp(lower, upper, obs), mean(obs >= lower & obs <= upper))
+  expect_equal(mwpi(lower, upper), mean(upper - lower))
+  expect_equal(metric_picp(lower, obs, upper = upper), mean(obs >= lower & obs <= upper))
+  expect_equal(metric_mwpi(lower, upper), mean(upper - lower))
+})
+
+test_that("skill_score matches lower-is-better baseline normalization", {
+  score <- c(0.8, 0.7, 0.9)
+  baseline <- c(1.0, 1.0, 1.0)
+  expected <- 1 - mean(score) / mean(baseline)
+
+  expect_equal(skill_score(score, baseline), expected)
+  expect_equal(metric_skill_score(score, baseline), expected)
+})
+
+test_that("A5 input contracts reject unsupported structures", {
+  ens_bad <- matrix(c(1, 2, 3), nrow = 3)
+  obs <- c(1, 2, 3)
+
+  expect_error(crps(ens_bad, obs), "at least 2 ensemble members")
+  expect_error(crps(c(1, 2, 3), obs), "numeric matrix")
+  expect_error(picp(c(2, 1), c(1, 2), c(1.5, 1.5)), "`lower` must be less than or equal to `upper`")
+  expect_error(mwpi(c(2, 1), c(1, 2)), "`lower` must be less than or equal to `upper`")
+  expect_error(skill_score(score = 1, baseline_score = 0), "mean\\(baseline_score\\) == 0")
+})
+
+test_that("A5 contracts reject mismatched lengths and invalid score inputs", {
+  ens <- matrix(c(1, 2, 3, 2, 3, 4), nrow = 2, byrow = TRUE)
+
+  expect_error(crps(ens, c(1)), "must match `nrow\\(sim\\)`")
+  expect_error(picp(c(0, 1), c(1, 2), c(0.5)), "same length")
+  expect_error(mwpi(c(0, 1), c(1)), "same length")
+  expect_error(skill_score(score = c(-1, 1), baseline_score = c(1, 1)), "must be non-negative")
+})

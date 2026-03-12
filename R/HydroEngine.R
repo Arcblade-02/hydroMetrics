@@ -1,3 +1,33 @@
+.hm_metric_id_aliases <- function() {
+  c(rpearson = "r")
+}
+
+.hm_canonicalize_metric_ids <- function(metric_ids, warn = TRUE) {
+  if (!length(metric_ids)) {
+    return(metric_ids)
+  }
+
+  aliases <- .hm_metric_id_aliases()
+  keys <- tolower(metric_ids)
+  deprecated <- unique(keys[keys %in% names(aliases)])
+
+  if (isTRUE(warn) && length(deprecated) > 0L) {
+    for (id in deprecated) {
+      warning(
+        sprintf("`%s` is deprecated; use `%s`.", id, aliases[[id]]),
+        call. = FALSE
+      )
+    }
+  }
+
+  resolved <- metric_ids
+  if (length(deprecated) > 0L) {
+    resolved[keys %in% names(aliases)] <- unname(aliases[keys[keys %in% names(aliases)]])
+  }
+
+  resolved
+}
+
 HydroEngine <- R6::R6Class(
   "HydroEngine",
   public = list(
@@ -22,6 +52,7 @@ HydroEngine <- R6::R6Class(
         if (length(metrics) == 0L || any(!nzchar(metrics))) {
           stop("`metrics` must be a non-empty character vector of metric ids.", call. = FALSE)
         }
+        metrics <- .hm_canonicalize_metric_ids(metrics, warn = TRUE)
         return(lapply(metrics, function(metric_id) {
           list(id = metric_id, params = list())
         }))
@@ -40,6 +71,7 @@ HydroEngine <- R6::R6Class(
         if (!is.character(metric_id) || length(metric_id) != 1L || !nzchar(metric_id)) {
           stop("Each metric call must include a non-empty character `id`.", call. = FALSE)
         }
+        metric_id <- .hm_canonicalize_metric_ids(metric_id, warn = TRUE)
 
         params <- metric$params
         if (is.null(params)) {
@@ -49,7 +81,7 @@ HydroEngine <- R6::R6Class(
           stop(sprintf("Metric params for '%s' must be a list.", metric_id), call. = FALSE)
         }
 
-        list(id = metric_id, params = params)
+        list(id = metric_id[[1L]], params = params)
       })
     },
 

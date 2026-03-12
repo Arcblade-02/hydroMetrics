@@ -614,16 +614,8 @@ core_metric_spec_dr <- function() {
 }
 
 metric_br2 <- function(sim, obs) {
-  sd_sim <- stats::sd(sim)
-  sd_obs <- stats::sd(obs)
-  mean_sim <- mean(sim)
-  mean_obs <- mean(obs)
-
-  if (sd_sim == 0 || sd_obs == 0) {
-    stop("br2 undefined because sd == 0.", call. = FALSE)
-  }
-  if (mean_sim == 0 || mean_obs == 0) {
-    stop("br2 undefined because mean == 0.", call. = FALSE)
+  if (stats::sd(obs) == 0) {
+    stop("br2 undefined because sd(obs) == 0.", call. = FALSE)
   }
 
   r <- stats::cor(sim, obs)
@@ -631,10 +623,12 @@ metric_br2 <- function(sim, obs) {
     stop("br2 undefined because cor(sim, obs) is NA.", call. = FALSE)
   }
 
-  sd_penalty <- min(sd_sim, sd_obs) / max(sd_sim, sd_obs)
-  mean_penalty <- min(mean_sim, mean_obs) / max(mean_sim, mean_obs)
+  slope <- unname(stats::coef(stats::lm(sim ~ obs))[2])
+  if (!is.finite(slope)) {
+    stop("br2 undefined because lm(sim ~ obs) slope is NA.", call. = FALSE)
+  }
 
-  (r^2) * (sd_penalty^2) * (mean_penalty^2)
+  abs(slope) * (r^2)
 }
 
 core_metric_spec_br2 <- function() {
@@ -642,11 +636,11 @@ core_metric_spec_br2 <- function() {
     id = "br2",
     fun = metric_br2,
     name = "Bias-Corrected R-squared",
-    description = "Bias-penalized Pearson r^2 using variability and mean-ratio penalties.",
+    description = "Bias-corrected R-squared computed as abs(slope(sim ~ obs)) * cor(sim, obs)^2.",
     category = "correlation",
     perfect = 1,
-    range = c(0, 1),
-    references = "Project-defined bias-corrected R2 variant pending dedicated paper citation.",
+    range = c(0, Inf),
+    references = "Krause, P., Boyle, D. P., & Base, F. (2005). Comparison of different efficiency criteria for hydrological model assessment.",
     version_added = "0.1.0",
     tags = character()
   )

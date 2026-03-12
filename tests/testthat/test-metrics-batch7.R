@@ -3,7 +3,10 @@ test_that("rPearson matches base cor pearson", {
   obs <- c(1, 2, 1)
   expected <- stats::cor(sim, obs, method = "pearson")
 
-  out <- evaluate_metrics(sim, obs, "rpearson")
+  expect_warning(
+    out <- evaluate_metrics(sim, obs, "rpearson"),
+    "deprecated"
+  )
   expect_equal(out$value[[1]], expected)
 })
 
@@ -26,9 +29,12 @@ test_that("rSD matches sd(sim)/sd(obs)", {
 })
 
 test_that("rPearson and rSpearman error for constant observed series", {
-  expect_error(
-    evaluate_metrics(c(1, 2, 3), c(2, 2, 2), "rpearson"),
-    "correlation undefined"
+  expect_warning(
+    expect_error(
+      evaluate_metrics(c(1, 2, 3), c(2, 2, 2), "rpearson"),
+      "undefined"
+    ),
+    "deprecated"
   )
   expect_error(
     evaluate_metrics(c(1, 2, 3), c(2, 2, 2), "rspearman"),

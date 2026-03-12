@@ -13,7 +13,7 @@
     "ve" = "ve",
     "rsr" = "rsr",
     "nrmse" = "nrmse",
-    "rpearson" = "rpearson",
+    "rpearson" = "r",
     "rspearman" = "rspearman",
     "rsd" = "rsd",
     "rnse" = "rnse",
@@ -60,7 +60,7 @@
   }
 
   list(
-    ids = unname(alias[keys]),
+    ids = .hm_canonicalize_metric_ids(unname(alias[keys]), warn = TRUE),
     labels = requested
   )
 }
@@ -191,7 +191,7 @@
 }
 
 .gof_preproc_call <- function(sim, obs, na_strategy, transform, epsilon_mode, epsilon, epsilon_factor) {
-  preproc(
+  payload <- preproc(
     sim = sim,
     obs = obs,
     na_strategy = na_strategy,
@@ -199,6 +199,20 @@
     epsilon_mode = epsilon_mode,
     epsilon = epsilon,
     epsilon_factor = epsilon_factor
+  )
+
+  list(
+    sim = payload$sim,
+    obs = payload$obs,
+    index = payload$index,
+    meta = list(
+      n_original = payload$n_original,
+      n_aligned = payload$n_aligned,
+      n_used = payload$n,
+      n_removed_na = payload$n_removed_na,
+      transform = transform,
+      epsilon_mode = epsilon_mode
+    )
   )
 }
 
@@ -211,6 +225,14 @@
     call$params <- params
     call
   })
+}
+
+.gof_materialize_payload <- function(payload, na_strategy) {
+  if (!identical(na_strategy, "pairwise")) {
+    return(payload)
+  }
+
+  .hm_materialize_pairwise_payload(payload)
 }
 
 .hm_resolve_epsilon_type <- function(epsilon_type, epsilon_mode, epsilon_mode_missing) {
@@ -422,13 +444,14 @@ gof <- function(sim,
       epsilon = epsilon,
       epsilon_factor = epsilon_factor
     )
+    runtime_payload <- .gof_materialize_payload(payload, na_strategy = na_strategy)
     requested <- .gof_select_methods(
       methods = methods,
       available_ids = available_ids,
       extended = extended,
-      sim = payload$sim,
-      obs = payload$obs,
-      index = payload$index
+      sim = runtime_payload$sim,
+      obs = runtime_payload$obs,
+      index = runtime_payload$index
     )
     if (length(requested) == 0L) {
       stop("No valid methods available for gof().", call. = FALSE)
@@ -439,27 +462,27 @@ gof <- function(sim,
       labels = resolved$labels,
       metric_params = metric_params
     )
-    runtime_calls <- .gof_runtime_metric_calls(metric_calls, payload)
-    out <- engine$evaluate(payload$sim, payload$obs, runtime_calls)
+    runtime_calls <- .gof_runtime_metric_calls(metric_calls, runtime_payload)
+    out <- engine$evaluate(runtime_payload$sim, runtime_payload$obs, runtime_calls)
     vals <- as.numeric(out$value)
     names(vals) <- resolved$labels
 
     return(
       .new_hydro_metrics(
         metrics = vals,
-        n_obs = as.integer(length(payload$sim)),
+        n_obs = as.integer(length(runtime_payload$sim)),
         meta = list(
           transform = transform,
           na_strategy = na_strategy,
           epsilon_mode = epsilon_mode,
           components = isTRUE(components),
-          n_original = as.integer(payload$n_original),
-          n_aligned = as.integer(payload$n_aligned),
-          n_removed_na = as.integer(payload$n_removed_na),
-          aligned = isTRUE(payload$n_original == payload$n_aligned),
-          index = payload$index,
-          sim_used = payload$sim,
-          obs_used = payload$obs
+          n_original = as.integer(runtime_payload$meta$n_original),
+          n_aligned = as.integer(runtime_payload$meta$n_aligned),
+          n_removed_na = as.integer(runtime_payload$meta$n_removed_na),
+          aligned = isTRUE(runtime_payload$meta$n_original == runtime_payload$meta$n_aligned),
+          index = runtime_payload$index,
+          sim_used = runtime_payload$sim,
+          obs_used = runtime_payload$obs
         ),
         call = match.call()
       )
@@ -503,10 +526,11 @@ gof <- function(sim,
       epsilon = epsilon,
       epsilon_factor = epsilon_factor
     )
-    runtime_calls <- .gof_runtime_metric_calls(metric_calls, payload)
-    out <- engine$evaluate(payload$sim, payload$obs, runtime_calls)
+    runtime_payload <- .gof_materialize_payload(payload, na_strategy = na_strategy)
+    runtime_calls <- .gof_runtime_metric_calls(metric_calls, runtime_payload)
+    out <- engine$evaluate(runtime_payload$sim, runtime_payload$obs, runtime_calls)
     metrics_mat[, j] <- as.numeric(out$value)
-    n_obs[[j]] <- as.integer(length(payload$sim))
+    n_obs[[j]] <- as.integer(length(runtime_payload$sim))
   }
 
   .new_hydro_metrics(

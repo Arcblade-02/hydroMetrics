@@ -105,8 +105,10 @@ test_that("preproc supports NA strategies", {
   out_pairwise <- preproc(sim, obs, na_strategy = "pairwise")
 
   expect_identical(out_remove$sim, c(1, 3))
-  expect_identical(out_pairwise$sim, out_remove$sim)
-  expect_identical(out_pairwise$n_removed_na, out_remove$n_removed_na)
+  expect_identical(out_pairwise$sim, sim)
+  expect_identical(out_pairwise$obs, obs)
+  expect_identical(out_pairwise$n_removed_na, 0L)
+  expect_identical(out_pairwise$n, 3L)
 })
 
 test_that("preproc supports transform and epsilon modes", {

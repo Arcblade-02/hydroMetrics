@@ -2,6 +2,9 @@
 
 ## 0.2.2
 
+- Continued Phase 3 Layer A with Batch A5 probabilistic metrics `crps`,
+  `picp`, `mwpi`, and `skill_score`, using explicit ensemble, interval, and
+  baseline-score input contracts with focused regression coverage.
 - Continued Phase 3 Layer A with Batch A4 metrics `huber_loss`,
   `quantile_loss`, `trimmed_rmse`, and `winsor_rmse`, including explicit
   parameter defaults, registry entries, wrapper exports, and focused

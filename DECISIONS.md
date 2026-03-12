@@ -36,7 +36,7 @@
 - Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
 
 ## D-008: Core Metric Bootstrap Strategy
-- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `beta`, `alpha`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `pbiasfdc`, `apfb`, `hfb`, `rpearson`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
+- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `beta`, `alpha`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `pbiasfdc`, `apfb`, `hfb`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
 - Status: Accepted
 - Notes: Public API remains stable and users can evaluate core metrics without manual registration.
 
@@ -96,7 +96,7 @@
 - Notes: `skge` currently requires a monthly time index and errors for plain numeric vectors; `pbiasfdc` quantile-grid choice favors deterministic comparability and may be revisited after benchmark review.
 
 ## D-020: Correlation and Scale Compatibility Metrics
-- Decision: `rpearson` and `rspearman` are direct correlation wrappers with explicit constant-series NA guards; `rsd` is defined as `sd(sim)/sd(obs)`.
+- Decision: Canonical Pearson correlation is `r`; `rpearson` is retained only as a deprecated compatibility alias, while `rspearman` remains a direct correlation metric and `rsd` is defined as `sd(sim)/sd(obs)`.
 - Status: Accepted
 - Notes: `rsd` errors only when `sd(obs) == 0`; `sd(sim) == 0` remains valid and yields `0`.
 
@@ -106,7 +106,7 @@
 - Notes: `ggof()` requires `ggplot2` in Suggests and errors gracefully if unavailable.
 
 ## D-022: Batch 8A Compatibility Definitions
-- Decision: `cp` is defined as `1 - sum((obs_t - sim_t)^2)/sum((obs_t - obs_{t-1})^2)` on aligned `t = 2..n`; `preproc(keep = "pairwise")` currently uses the same complete-case row filter as `keep = "complete"`; `valindex` is a project-defined weighted aggregate of normalized `gof()` metrics.
+- Decision: `cp` is defined as `1 - sum((obs_t - sim_t)^2)/sum((obs_t - obs_{t-1})^2)` on aligned `t = 2..n`; `preproc(keep = "pairwise")` defers NA dropping until pairwise metric evaluation instead of collapsing to `keep = "complete"`; `valindex` is a project-defined weighted aggregate of normalized `gof()` metrics.
 - Status: Accepted
 - Notes: `cp` errors when persistence denominator is zero or length < 2. `valindex` v1 supports `NSE`, `KGE`, `rmse`, `pbias`, and `rPearson` with fixed normalization transforms and returns scalar (single series) or `1 x n` matrix (multi-series).
 
@@ -163,7 +163,7 @@
 ## D-026: Canonical Metric ID and Alias Policy (Canonical Phase 3 ID)
 - Decision: Phase 3 metric IDs are unique canonical registry identifiers. Compatibility aliases or deprecated names may remain only as wrappers or resolution aliases and must not persist as duplicate canonical registry entries.
 - Status: Accepted
-- Notes: The release-governance target is canonical `r` for Pearson correlation. The current `dev` branch still registers `rpearson` as an independent metric id, so this decision is accepted but not yet fully implemented.
+- Notes: Canonical Pearson correlation id is `r`. Deprecated `rpearson` requests resolve to `r` with a warning and no longer persist as an independent registry entry.
 
 ## D-027: gof() Default and Extended Metric-Set Contract (Canonical Phase 3 ID)
 - Decision: `gof()` and `gof(extended = FALSE)` default to the compat-10 baseline set (`nse`, `kge`, `rmse`, `pbias`, `mae`, `mse`, `r2`, `ve`, `rsr`, `nrmse`), while `gof(extended = TRUE)` expands omitted or `NULL` selection to the full registered metric set supported by the current input context.
@@ -178,7 +178,7 @@
 ## D-029: br2 Literature Correction Policy (Canonical Phase 3 ID)
 - Decision: `br2` must follow the Krause et al. (2005) `bR2` interpretation selected by project policy, and this canonical decision supersedes the earlier project-specific formula recorded in `D-015`.
 - Status: Accepted
-- Notes: This is a release-governance correction, not a new metric. The current `dev` branch still implements the superseded `D-015` formula, so pre-Layer-A closure remains blocked until code and registry text are reconciled.
+- Notes: This is a release-governance correction, not a new metric. `dev` now implements `bR2 = abs(slope(sim ~ obs)) * cor(sim, obs)^2`, with the older `D-015` formula retained only as historical record.
 
 ## D-030: Information-Theoretic Metric Disclosure Rule (Canonical Phase 3 ID)
 - Decision: Information-theoretic metrics may not be added or released without explicit bandwidth-sensitivity disclosure, estimator assumptions, and literature citations sufficient for reproducible interpretation.

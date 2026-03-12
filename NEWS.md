@@ -2,6 +2,11 @@
 
 ## 0.2.2
 
+- Continued Phase 3 Layer A with Batch A3 metrics `nrmse_range`,
+  `fdc_slope_error`, `fdc_highflow_bias`, `fdc_lowflow_bias`,
+  `log_fdc_rmse`, `low_flow_bias`, and `seasonal_bias`, including explicit
+  FDC conventions, log/seasonality guards, registry entries, wrapper exports,
+  and focused regression coverage.
 - Continued Phase 3 Layer A with Batch A2 metrics `smape`, `mare`, `mrb`,
   `log_rmse`, `msle`, and `log_nse`, including explicit zero/log-domain guards,
   registry entries, wrapper exports, and regression coverage.

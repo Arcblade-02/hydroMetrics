@@ -2,6 +2,9 @@
 
 ## 0.2.2
 
+- Started Phase 3 Layer A Batch A1 with the literature-backed metrics `mdae`,
+  `maxae`, `rbias`, `ccc`, `e1`, and `rrmse`, including registry entries,
+  wrapper exports, and focused regression coverage.
 - Closed the v0.2.2 pre-Layer-A stabilization baseline after confirming
   P3-FIX-01 through P3-FIX-05, `gof(extended = TRUE)`, `gof()` output-contract
   reconciliation, `fast_path`, and `inst/REFERENCES.md` cleanup. The remaining

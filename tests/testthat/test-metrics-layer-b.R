@@ -440,3 +440,64 @@ test_that("layer B batch B3 wrappers integrate with gof for ordered series metri
     )
   )
 })
+
+test_that("layer B batch B4 registry id is present", {
+  ids <- list_metrics()$id
+  expect_true("event_nse" %in% ids)
+})
+
+test_that("event_nse matches NSE on pooled observed event windows", {
+  obs <- c(1, 2, 5, 6, 2, 1, 1, 4, 5, 2, 1, 1)
+  sim <- c(1, 2, 4, 7, 2, 1, 1, 3, 6, 2, 1, 1)
+  idx <- c(3, 4, 9)
+  expected <- 1 - sum((sim[idx] - obs[idx])^2) / sum((obs[idx] - mean(obs[idx]))^2)
+
+  expect_equal(event_nse(sim, obs), expected)
+  expect_equal(metric_event_nse(sim, obs), expected)
+})
+
+test_that("event_nse reaches the optimum on identical valid event windows", {
+  obs <- c(1, 2, 5, 6, 2, 1, 1, 4, 5, 2, 1, 1)
+
+  expect_equal(event_nse(obs, obs), 1)
+})
+
+test_that("event_nse rejects no-event, too-few-event, and degenerate cases", {
+  expect_error(
+    event_nse(c(1, 2, 3, 4), c(1, 1, 1, 1)),
+    "no event windows"
+  )
+  expect_error(
+    event_nse(c(1, 2, 5, 6, 2, 1), c(1, 2, 5, 6, 2, 1)),
+    "at least 2 observed event windows"
+  )
+  expect_error(
+    event_nse(c(1, 5, 1, 1, 1, 1, 1, 5, 1, 1), c(1, 5, 1, 1, 1, 1, 1, 5, 1, 1)),
+    "at least 3 observations"
+  )
+  expect_error(
+    event_nse(
+      c(1, 5, 1, 1, 1, 1, 5, 1, 1, 1, 1, 5, 1, 1, 1),
+      c(1, 5, 1, 1, 1, 1, 5, 1, 1, 1, 1, 5, 1, 1, 1)
+    ),
+    "zero variance"
+  )
+})
+
+test_that("event_nse accepts ordered numeric vectors as time order", {
+  obs <- c(1, 2, 5, 6, 2, 1, 1, 4, 5, 2, 1, 1)
+  sim <- c(1, 2, 4, 7, 2, 1, 1, 3, 6, 2, 1, 1)
+
+  expect_true(is.numeric(event_nse(sim, obs)))
+  expect_length(event_nse(sim, obs), 1L)
+})
+
+test_that("event_nse integrates with gof when event windows are auto-applicable", {
+  obs <- c(1, 2, 5, 6, 2, 1, 1, 4, 5, 2, 1, 1)
+  sim <- c(1, 2, 4, 7, 2, 1, 1, 3, 6, 2, 1, 1)
+  out <- gof(sim, obs, methods = "event_nse")
+
+  expect_true(inherits(out, "hydro_metrics"))
+  expect_identical(names(out), "event_nse")
+  expect_equal(unname(out[["event_nse"]]), event_nse(sim, obs))
+})

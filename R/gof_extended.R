@@ -153,6 +153,14 @@
   }, error = function(e) FALSE)
 }
 
+.gof_can_auto_run_event_nse <- function(obs) {
+  tryCatch({
+    idx <- .hm_b4_event_indices(obs, "event_nse")
+    denom <- sum((obs[idx] - mean(obs[idx]))^2)
+    is.finite(denom) && denom != 0
+  }, error = function(e) FALSE)
+}
+
 .gof_auto_applicable_ids <- function(available_ids, sim = NULL, obs = NULL, index = NULL) {
   ids <- available_ids
   ids <- setdiff(ids, c("crps", "picp", "mwpi", "skill_score"))
@@ -197,6 +205,9 @@
   }
   if (!.gof_can_auto_run_baseflow_index_error(sim, obs)) {
     ids <- setdiff(ids, "baseflow_index_error")
+  }
+  if (!.gof_can_auto_run_event_nse(obs)) {
+    ids <- setdiff(ids, "event_nse")
   }
   if (!.gof_can_auto_run_seasonal_bias(index)) {
     ids <- setdiff(ids, c("seasonal_bias", "seasonal_nse"))

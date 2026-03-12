@@ -83,6 +83,12 @@ test_that("canonical metric tree contains no NA-handling logic tokens", {
     return(list(sim = sim, obs = obs, params = list()))
   }
 
+  if (identical(id, "event_nse")) {
+    sim <- c(1, 2, 4, 7, 2, 1, 1, 3, 6, 2, 1, 1)
+    obs <- c(1, 2, 5, 6, 2, 1, 1, 4, 5, 2, 1, 1)
+    return(list(sim = sim, obs = obs, params = list()))
+  }
+
   if (identical(id, "crps")) {
     sim <- matrix(c(1, 1.2, 0.8, 2, 2.2, 1.8), nrow = 2, byrow = TRUE)
     obs <- c(1.1, 2.1)

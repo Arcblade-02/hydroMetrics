@@ -651,3 +651,82 @@ core_metric_spec_baseflow_index_error <- function() {
     tags = c("phase-3", "layer-b", "batch-b3")
   )
 }
+
+# Shared Batch B4 conventions:
+# - event_nse is the only public B4 metric
+# - events are segmented on the observed series only
+# - threshold = observed values strictly above the observed 0.8 quantile
+# - each event is one contiguous run above that threshold
+# - simulated values are evaluated only on the pooled observed event windows
+# - the final score is standard NSE on the pooled event-window values
+
+.hm_b4_event_threshold <- function(obs, metric_id) {
+  q <- stats::quantile(obs, probs = 0.8, type = 7, names = FALSE)
+  if (!is.finite(q)) {
+    stop(sprintf("%s is undefined because the observed event threshold could not be estimated.", metric_id), call. = FALSE)
+  }
+  as.numeric(q)
+}
+
+.hm_b4_event_windows <- function(obs, metric_id) {
+  .hm_b3_validate_ordered_series(obs, "obs", metric_id, min_length = 1L)
+
+  threshold <- .hm_b4_event_threshold(obs, metric_id)
+  active <- as.numeric(obs) > threshold
+  idx <- which(active)
+
+  if (!length(idx)) {
+    stop(sprintf("%s is undefined because the observed series contains no event windows above the 0.8 quantile threshold.", metric_id), call. = FALSE)
+  }
+
+  split_points <- cumsum(c(1L, diff(idx) > 1L))
+  windows <- split(idx, split_points)
+
+  if (length(windows) < 2L) {
+    stop(sprintf("%s is undefined because at least 2 observed event windows are required.", metric_id), call. = FALSE)
+  }
+
+  windows
+}
+
+.hm_b4_event_indices <- function(obs, metric_id) {
+  windows <- .hm_b4_event_windows(obs, metric_id)
+  idx <- unlist(windows, use.names = FALSE)
+
+  if (length(idx) < 3L) {
+    stop(sprintf("%s is undefined because pooled event windows must contain at least 3 observations.", metric_id), call. = FALSE)
+  }
+
+  idx
+}
+
+metric_event_nse <- function(sim, obs) {
+  .hm_b3_validate_ordered_series(sim, "sim", "event_nse", min_length = 1L)
+  .hm_b3_validate_ordered_series(obs, "obs", "event_nse", min_length = 1L)
+
+  idx <- .hm_b4_event_indices(obs, "event_nse")
+  sim_event <- as.numeric(sim)[idx]
+  obs_event <- as.numeric(obs)[idx]
+  denom <- sum((obs_event - mean(obs_event))^2)
+
+  if (denom == 0) {
+    stop("event_nse is undefined because pooled observed event windows have zero variance.", call. = FALSE)
+  }
+
+  1 - sum((sim_event - obs_event)^2) / denom
+}
+
+core_metric_spec_event_nse <- function() {
+  list(
+    id = "event_nse",
+    fun = metric_event_nse,
+    name = "Event NSE",
+    description = "NSE computed on pooled observed event windows defined by contiguous observed values strictly above the observed 0.8 quantile.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "Nash & Sutcliffe (1970) baseline NSE with event-focused hydrograph diagnostic context from Yilmaz et al. (2008); the exact observed-window pooled-event formulation is a stable package-defined Phase 3 variant.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-b", "batch-b4")
+  )
+}

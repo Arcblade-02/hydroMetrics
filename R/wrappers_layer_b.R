@@ -286,3 +286,24 @@ recession_constant <- function(sim, obs, na.rm = NULL, ...) {
 baseflow_index_error <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("baseflow_index_error", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
+
+#' Evaluate the event NSE wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric `"event_nse"`.
+#' Observed event windows are defined as contiguous runs of observed values
+#' strictly above the observed 0.8 quantile and the score is computed as NSE on
+#' the pooled observed event windows.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' obs <- c(1, 2, 5, 6, 2, 1, 1, 4, 5, 2, 1, 1)
+#' sim <- c(1, 2, 4, 7, 2, 1, 1, 3, 6, 2, 1, 1)
+#' event_nse(sim, obs)
+#' @export
+event_nse <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("event_nse", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}

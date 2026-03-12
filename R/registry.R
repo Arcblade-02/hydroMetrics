@@ -54,6 +54,7 @@ register_core_metrics <- function(registry) {
     core_metric_spec_rising_limb_error(),
     core_metric_spec_recession_constant(),
     core_metric_spec_baseflow_index_error(),
+    core_metric_spec_event_nse(),
     core_metric_spec_rbias(),
     core_metric_spec_beta(),
     core_metric_spec_alpha(),

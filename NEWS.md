@@ -2,6 +2,9 @@
 
 ## 0.2.2
 
+- Continued Phase 3 Layer A with Batch A2 metrics `smape`, `mare`, `mrb`,
+  `log_rmse`, `msle`, and `log_nse`, including explicit zero/log-domain guards,
+  registry entries, wrapper exports, and regression coverage.
 - Started Phase 3 Layer A Batch A1 with the literature-backed metrics `mdae`,
   `maxae`, `rbias`, `ccc`, `e1`, and `rrmse`, including registry entries,
   wrapper exports, and focused regression coverage.

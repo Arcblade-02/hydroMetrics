@@ -148,7 +148,7 @@
     ids <- setdiff(ids, "fdc_shape_distance")
   }
   if (!.gof_can_auto_run_seasonal_bias(index)) {
-    ids <- setdiff(ids, "seasonal_bias")
+    ids <- setdiff(ids, c("seasonal_bias", "seasonal_nse"))
   }
   ids
 }

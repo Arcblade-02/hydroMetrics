@@ -93,3 +93,94 @@ anderson_darling_stat <- function(sim, obs, na.rm = NULL, ...) {
 wasserstein_distance <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("wasserstein_distance", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
+
+#' Evaluate the square-root NSE wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric `"sqrt_nse"`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' sqrt_nse(c(1.2, 1.8, 3.4), c(1, 2, 3))
+#' @export
+sqrt_nse <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("sqrt_nse", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the seasonal NSE wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric `"seasonal_nse"`.
+#' This metric requires monthly seasonality that can be inferred from a monthly
+#' `ts` series or from aligned date-like indexed input.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' sim <- ts(rep(c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11), 2), frequency = 12)
+#' obs <- ts(rep(c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10), 2), frequency = 12)
+#' seasonal_nse(sim, obs)
+#' @export
+seasonal_nse <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("seasonal_nse", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the weighted KGE wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"weighted_kge"`.
+#'
+#' @inheritParams gof
+#' @param w_r Positive weight applied to the correlation component deviation.
+#'   The stable package default is `1`.
+#' @param w_alpha Positive weight applied to the variability-ratio component
+#'   deviation. The stable package default is `1`.
+#' @param w_beta Positive weight applied to the bias-ratio component deviation.
+#'   The stable package default is `1`.
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' weighted_kge(c(1.2, 1.8, 3.4), c(1, 2, 3))
+#' @export
+weighted_kge <- function(sim, obs, w_r = 1, w_alpha = 1, w_beta = 1, na.rm = NULL, ...) {
+  .hm_b2_validate_positive_weight(w_r, "w_r")
+  .hm_b2_validate_positive_weight(w_alpha, "w_alpha")
+  .hm_b2_validate_positive_weight(w_beta, "w_beta")
+
+  .hm_run_single_metric_param_wrapper(
+    "weighted_kge",
+    sim = sim,
+    obs = obs,
+    na.rm = na.rm,
+    dots = list(...),
+    params = list(
+      w_r = as.numeric(w_r),
+      w_alpha = as.numeric(w_alpha),
+      w_beta = as.numeric(w_beta)
+    )
+  )
+}
+
+#' Evaluate the quantile KGE wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"quantile_kge"`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' quantile_kge(c(1.2, 1.8, 3.4), c(1, 2, 3))
+#' @export
+quantile_kge <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("quantile_kge", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}

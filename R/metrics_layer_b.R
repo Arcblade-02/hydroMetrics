@@ -205,3 +205,163 @@ core_metric_spec_wasserstein_distance <- function() {
     tags = c("phase-3", "layer-b", "batch-b1")
   )
 }
+
+# Shared Batch B2 conventions:
+# - sqrt_nse applies sqrt() to both sim and obs before the standard NSE formula
+# - seasonal_nse computes NSE on monthly climatology means and therefore
+#   requires monthly seasonal structure
+# - weighted_kge uses the explicit weighted Euclidean distance in KGE component
+#   space with stable defaults w_r = w_alpha = w_beta = 1
+# - quantile_kge uses type-7 sample quantiles on the fixed probability grid
+#   p = 0.1, ..., 0.9 and applies the standard KGE form to those summaries
+
+.hm_b2_validate_positive_weight <- function(x, name) {
+  if (!is.numeric(x) || length(x) != 1L || is.na(x) || !is.finite(x) || x <= 0) {
+    stop(sprintf("`%s` must be a positive finite numeric scalar.", name), call. = FALSE)
+  }
+
+  as.numeric(x)
+}
+
+metric_sqrt_nse <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("sqrt_nse requires at least 1 value.", call. = FALSE)
+  }
+  if (any(sim < 0) || any(obs < 0)) {
+    stop("sqrt_nse is undefined for negative values.", call. = FALSE)
+  }
+
+  sim_sqrt <- sqrt(sim)
+  obs_sqrt <- sqrt(obs)
+  denom <- sum((obs_sqrt - mean(obs_sqrt))^2)
+
+  if (denom == 0) {
+    stop("sqrt_nse is undefined because sqrt(obs) has zero variance.", call. = FALSE)
+  }
+
+  1 - sum((sim_sqrt - obs_sqrt)^2) / denom
+}
+
+core_metric_spec_sqrt_nse <- function() {
+  list(
+    id = "sqrt_nse",
+    fun = metric_sqrt_nse,
+    name = "Square-Root NSE",
+    description = "NSE computed after applying the square-root transform to non-negative sim and obs.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "Nash & Sutcliffe (1970) baseline NSE with transformed-objective-function context from Krause et al. (2005).",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-b", "batch-b2")
+  )
+}
+
+metric_seasonal_nse <- function(sim, obs, index = NULL) {
+  if (length(obs) < 12L) {
+    stop("seasonal_nse requires at least 12 monthly values.", call. = FALSE)
+  }
+
+  groups <- .hm_monthly_groups_for_seasonal_bias(index)
+  sim_month <- tapply(sim, groups, mean)
+  obs_month <- tapply(obs, groups, mean)
+  sim_month <- as.numeric(sim_month[as.character(1:12)])
+  obs_month <- as.numeric(obs_month[as.character(1:12)])
+
+  if (any(!is.finite(sim_month)) || any(!is.finite(obs_month))) {
+    stop("seasonal_nse is undefined because monthly climatology could not be estimated.", call. = FALSE)
+  }
+
+  denom <- sum((obs_month - mean(obs_month))^2)
+  if (denom == 0) {
+    stop("seasonal_nse is undefined because observed monthly climatology has zero variance.", call. = FALSE)
+  }
+
+  1 - sum((sim_month - obs_month)^2) / denom
+}
+
+core_metric_spec_seasonal_nse <- function() {
+  list(
+    id = "seasonal_nse",
+    fun = metric_seasonal_nse,
+    name = "Seasonal NSE",
+    description = "NSE computed on monthly climatology means inferred from monthly ts or aligned date-like indexed input.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "Nash & Sutcliffe (1970) baseline NSE with seasonal streamflow context from Gnann et al. (2020) and Berghuijs et al. (2025); the package metric is monthly-climatology NSE.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-b", "batch-b2")
+  )
+}
+
+metric_weighted_kge <- function(sim, obs, w_r = 1, w_alpha = 1, w_beta = 1) {
+  w_r <- .hm_b2_validate_positive_weight(w_r, "w_r")
+  w_alpha <- .hm_b2_validate_positive_weight(w_alpha, "w_alpha")
+  w_beta <- .hm_b2_validate_positive_weight(w_beta, "w_beta")
+
+  r <- metric_r(sim, obs)
+  alpha <- metric_alpha(sim, obs)
+  beta <- metric_beta(sim, obs)
+
+  1 - sqrt((w_r * (r - 1))^2 + (w_alpha * (alpha - 1))^2 + (w_beta * (beta - 1))^2)
+}
+
+core_metric_spec_weighted_kge <- function() {
+  list(
+    id = "weighted_kge",
+    fun = metric_weighted_kge,
+    name = "Weighted Kling-Gupta Efficiency",
+    description = "Weighted KGE with defaults w_r = 1, w_alpha = 1, and w_beta = 1.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "Gupta et al. (2009) KGE component framework; the exact weighted extension is a stable package-defined Phase 3 variant.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-b", "batch-b2")
+  )
+}
+
+metric_quantile_kge <- function(sim, obs) {
+  if (length(obs) < 3L) {
+    stop("quantile_kge requires at least 3 values.", call. = FALSE)
+  }
+
+  probs <- .hm_b1_fixed_prob_grid()
+  sim_q <- stats::quantile(sim, probs = probs, type = 7, names = FALSE)
+  obs_q <- stats::quantile(obs, probs = probs, type = 7, names = FALSE)
+  obs_q_sd <- stats::sd(obs_q)
+  sim_q_sd <- stats::sd(sim_q)
+  obs_q_mean <- mean(obs_q)
+
+  if (obs_q_sd == 0) {
+    stop("quantile_kge is undefined because quantile(obs) has zero variance.", call. = FALSE)
+  }
+  if (sim_q_sd == 0) {
+    stop("quantile_kge is undefined for constant quantile(sim) summaries.", call. = FALSE)
+  }
+  if (obs_q_mean == 0) {
+    stop("quantile_kge is undefined because mean(quantile(obs)) == 0.", call. = FALSE)
+  }
+
+  r_q <- stats::cor(sim_q, obs_q)
+  alpha_q <- sim_q_sd / obs_q_sd
+  beta_q <- mean(sim_q) / obs_q_mean
+
+  1 - sqrt((r_q - 1)^2 + (alpha_q - 1)^2 + (beta_q - 1)^2)
+}
+
+core_metric_spec_quantile_kge <- function() {
+  list(
+    id = "quantile_kge",
+    fun = metric_quantile_kge,
+    name = "Quantile Kling-Gupta Efficiency",
+    description = "KGE applied to type-7 sample quantiles on the fixed probability grid p = 0.1, ..., 0.9.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "Gupta et al. (2009) KGE component framework with Hyndman & Fan (1996) quantile conventions; the exact quantile-summary extension is a stable package-defined Phase 3 variant.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-b", "batch-b2")
+  )
+}

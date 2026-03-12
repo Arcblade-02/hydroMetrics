@@ -65,6 +65,12 @@ test_that("canonical metric tree contains no NA-handling logic tokens", {
     return(list(sim = as.numeric(sim), obs = as.numeric(obs), params = list(index = stats::time(obs))))
   }
 
+  if (identical(id, "seasonal_nse")) {
+    obs <- stats::ts(c(1:12, 2:13), start = c(2000, 1), frequency = 12)
+    sim <- obs + c(rep(0.5, 12), rep(-0.5, 12))
+    return(list(sim = as.numeric(sim), obs = as.numeric(obs), params = list(index = stats::time(obs))))
+  }
+
   if (identical(id, "crps")) {
     sim <- matrix(c(1, 1.2, 0.8, 2, 2.2, 1.8), nrow = 2, byrow = TRUE)
     obs <- c(1.1, 2.1)

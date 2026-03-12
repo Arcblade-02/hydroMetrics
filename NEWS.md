@@ -2,6 +2,11 @@
 
 ## 0.2.2
 
+- Continued Phase 3 Layer B with Batch B3 hydrograph diagnostics
+  `hydrograph_slope_error`, `derivative_nse`, `peak_timing_error`,
+  `rising_limb_error`, `recession_constant`, and
+  `baseflow_index_error`, with explicit ordered-series, peak-tie, recession,
+  and baseflow-proxy conventions plus focused regression coverage.
 - Continued Phase 3 Layer B with Batch B2 metrics `sqrt_nse`,
   `seasonal_nse`, `weighted_kge`, and `quantile_kge`, including explicit
   transform, monthly-seasonality, weighting, and fixed-quantile-grid

@@ -20,11 +20,72 @@
   get(name, envir = .hm_fast_path_test_env, inherits = FALSE)
 }
 
+.hm_fast_path_exports <- function() {
+  if ("package:hydroMetrics" %in% search()) {
+    return(getNamespaceExports("hydroMetrics"))
+  }
+
+  ns_path <- if (file.exists("NAMESPACE")) {
+    "NAMESPACE"
+  } else if (file.exists(file.path("..", "..", "NAMESPACE"))) {
+    file.path("..", "..", "NAMESPACE")
+  } else {
+    stop("Could not locate NAMESPACE for standalone fast-path tests.", call. = FALSE)
+  }
+
+  ns_lines <- readLines(ns_path, warn = FALSE)
+  sub("^export\\(([^)]+)\\)$", "\\1", grep("^export\\(", ns_lines, value = TRUE))
+}
+
+test_that("public compatibility wrapper surface matches the exported contract", {
+  exported_expected <- c(
+    "gof", "NSeff", "mNSeff", "rNSeff", "wsNSeff",
+    "pbias", "mae", "r", "rsr", "alpha", "beta"
+  )
+  uppercase_absent <- c("NSE", "KGE", "RMSE", "R2", "NRMSE", "PBIAS")
+
+  ns_exports <- .hm_fast_path_exports()
+
+  expect_true(all(exported_expected %in% ns_exports))
+  expect_true(all(vapply(
+    exported_expected,
+    exists,
+    logical(1),
+    mode = "function",
+    envir = .hm_fast_path_test_env,
+    inherits = FALSE
+  )))
+  expect_false(any(uppercase_absent %in% ns_exports))
+  expect_true(all(!vapply(
+    uppercase_absent,
+    exists,
+    logical(1),
+    mode = "function",
+    envir = .hm_fast_path_test_env,
+    inherits = FALSE
+  )))
+})
+
+test_that("public compatibility wrappers produce valid results on simple numeric input", {
+  sim <- c(1.1, 2.2, 2.8, 4.1, 5.2)
+  obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
+  wrappers <- c("NSeff", "mNSeff", "rNSeff", "wsNSeff", "pbias", "mae", "r", "rsr", "alpha", "beta")
+
+  for (wrapper_name in wrappers) {
+    value <- .hm_fast_path_get(wrapper_name)(sim, obs)
+    expect_true(is.numeric(value), info = wrapper_name)
+    expect_identical(length(value), 1L, info = wrapper_name)
+  }
+})
+
 test_that("eligible wrappers match gof() engine results on plain numeric input", {
   sim <- c(1.1, 2.2, 2.8, 4.1, 5.2)
   obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
   wrappers <- c(
     NSeff = "nse",
+    mNSeff = "mnse",
+    rNSeff = "rnse",
+    wsNSeff = "wsnse",
     pbias = "pbias",
     mae = "mae",
     r = "r",

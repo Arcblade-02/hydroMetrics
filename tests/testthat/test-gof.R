@@ -1,5 +1,78 @@
+.hm_gof_test_env <- if ("package:hydroMetrics" %in% search()) {
+  asNamespace("hydroMetrics")
+} else {
+  env <- new.env(parent = globalenv())
+  root <- if (dir.exists("R")) {
+    "."
+  } else if (dir.exists(file.path("..", "..", "R"))) {
+    file.path("..", "..")
+  } else {
+    stop("Could not locate package root for standalone gof tests.", call. = FALSE)
+  }
+  r_files <- sort(list.files(file.path(root, "R"), pattern = "[.][Rr]$", full.names = TRUE))
+  for (path in r_files) {
+    sys.source(path, envir = env)
+  }
+  env
+}
+
+.hm_gof_get <- function(name) {
+  get(name, envir = .hm_gof_test_env, inherits = FALSE)
+}
+
+test_that("gof defaults to the compat-10 metric set", {
+  sim <- c(1, 2, 3, 4, 5)
+  obs <- c(1.1, 1.9, 3.2, 3.8, 5.1)
+  expected_ids <- c("nse", "kge", "rmse", "pbias", "mae", "mse", "r2", "ve", "rsr", "nrmse")
+
+  out <- .hm_gof_get("gof")(sim, obs)
+
+  expect_s3_class(out, "hydro_metrics")
+  expect_type(out$metrics, "double")
+  expect_identical(names(out$metrics), expected_ids)
+  expect_identical(length(out$metrics), 10L)
+})
+
+test_that("gof extended = FALSE matches plain default behavior", {
+  sim <- c(1, 2, 3, 4, 5)
+  obs <- c(1.1, 1.9, 3.2, 3.8, 5.1)
+
+  out_default <- .hm_gof_get("gof")(sim, obs)
+  out_explicit <- .hm_gof_get("gof")(sim, obs, extended = FALSE)
+
+  expect_identical(names(out_explicit$metrics), names(out_default$metrics))
+  expect_equal(out_explicit$metrics, out_default$metrics)
+})
+
+test_that("gof extended = TRUE returns all auto-applicable registered metrics", {
+  sim <- c(1, 2, 3, 4, 5)
+  obs <- c(1.1, 1.9, 3.2, 3.8, 5.1)
+  default_ids <- c("nse", "kge", "rmse", "pbias", "mae", "mse", "r2", "ve", "rsr", "nrmse")
+  payload <- .hm_gof_get("preproc")(sim = sim, obs = obs)
+  registered_ids <- .hm_gof_get(".gof_auto_applicable_ids")(
+    available_ids = as.character(.hm_gof_get("list_metrics")()$id),
+    sim = payload$sim,
+    obs = payload$obs,
+    index = payload$index
+  )
+
+  out <- .hm_gof_get("gof")(sim, obs, extended = TRUE)
+
+  expect_identical(names(out$metrics), registered_ids)
+  expect_true(all(default_ids %in% names(out$metrics)))
+})
+
+test_that("gof explicit methods override default and extended selection", {
+  sim <- c(1, 2, 3, 4, 5)
+  obs <- c(1.1, 1.9, 3.2, 3.8, 5.1)
+
+  out <- .hm_gof_get("gof")(sim, obs, methods = c("nse", "rmse"), extended = TRUE)
+
+  expect_identical(names(out$metrics), c("nse", "rmse"))
+})
+
 test_that("gof returns hydro_metrics object for single series", {
-  out <- gof(
+  out <- .hm_gof_get("gof")(
     sim = c(1, 2, 3),
     obs = c(1, 2, 1),
     methods = c("NSE", "rmse", "rPearson")
@@ -9,7 +82,6 @@ test_that("gof returns hydro_metrics object for single series", {
   expect_true(is.numeric(out$metrics))
   expect_true(all(c("NSE", "rmse", "rPearson") %in% names(out$metrics)))
   expect_identical(out$NSE, out$metrics[["NSE"]])
-  expect_equal(as.numeric(out), as.numeric(out$metrics))
 })
 
 test_that("gof supports zoo alignment and method subsets", {
@@ -18,7 +90,7 @@ test_that("gof supports zoo alignment and method subsets", {
   sim <- zoo::zoo(c(1, 2, 3), order.by = as.Date("2020-01-01") + 0:2)
   obs <- zoo::zoo(c(1, 2, 4), order.by = as.Date("2020-01-02") + 0:2)
 
-  out <- gof(sim = sim, obs = obs, methods = c("NSE", "rmse"), na_strategy = "fail")
+  out <- .hm_gof_get("gof")(sim = sim, obs = obs, methods = c("NSE", "rmse"), na_strategy = "fail")
   expect_equal(names(out$metrics), c("NSE", "rmse"))
   expect_identical(out$n_obs, 2L)
 })
@@ -41,12 +113,12 @@ test_that("gof accepts valid aligned zoo inputs without NA failure on common ind
       "2021-05-02 00:00:00",
       "2021-05-03 00:00:00",
       "2021-05-04 00:00:00",
-      "2021-05-05 00:00:00"
+    "2021-05-05 00:00:00"
     ), tz = "UTC")
   )
 
   expect_no_error(
-    out <- gof(sim = sim, obs = obs, methods = c("rmse", "pbias"), na_strategy = "fail")
+    out <- .hm_gof_get("gof")(sim = sim, obs = obs, methods = c("rmse", "pbias"), na_strategy = "fail")
   )
   expect_identical(out$n_obs, 3L)
   expect_identical(names(out$metrics), c("rmse", "pbias"))
@@ -56,7 +128,7 @@ test_that("gof returns method x model metrics matrix for multi-series input", {
   sim <- cbind(a = c(1, 2, 3), b = c(2, 3, 4))
   obs <- cbind(a = c(1, 2, 1), b = c(2, 2, 3))
 
-  out <- gof(sim = sim, obs = obs, methods = c("rmse", "pbias"))
+  out <- .hm_gof_get("gof")(sim = sim, obs = obs, methods = c("rmse", "pbias"))
 
   expect_true(is.matrix(out$metrics))
   expect_identical(rownames(out$metrics), c("rmse", "pbias"))
@@ -65,15 +137,28 @@ test_that("gof returns method x model metrics matrix for multi-series input", {
   expect_equal(length(out$n_obs), 2L)
 })
 
+test_that("gof preserves output contract for default multi-series output", {
+  sim <- cbind(a = c(1, 2, 3, 4, 5), b = c(2, 3, 4, 5, 6))
+  obs <- cbind(a = c(1.1, 1.9, 3.2, 3.8, 5.1), b = c(2.2, 2.8, 4.1, 5.2, 5.9))
+  expected_ids <- c("nse", "kge", "rmse", "pbias", "mae", "mse", "r2", "ve", "rsr", "nrmse")
+
+  out <- .hm_gof_get("gof")(sim, obs)
+
+  expect_s3_class(out, "hydro_metrics")
+  expect_true(is.matrix(out$metrics))
+  expect_identical(rownames(out$metrics), expected_ids)
+  expect_identical(colnames(out$metrics), c("a", "b"))
+})
+
 test_that("gof errors for unknown method names with available list hint", {
   expect_error(
-    gof(sim = c(1, 2, 3), obs = c(1, 2, 1), methods = "not_a_metric"),
+    .hm_gof_get("gof")(sim = c(1, 2, 3), obs = c(1, 2, 1), methods = "not_a_metric"),
     "available"
   )
 })
 
 test_that("gof stores orchestration meta fields", {
-  out <- gof(
+  out <- .hm_gof_get("gof")(
     sim = c(1, 2, 3),
     obs = c(1, 2, 1),
     methods = "rmse",

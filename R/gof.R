@@ -32,10 +32,6 @@
   )
 }
 
-.gof_default_methods <- function() {
-  c("NSE", "KGE", "rmse", "pbias", "mae", "mse", "R2", "VE", "rsr", "nrmse")
-}
-
 .gof_resolve_methods <- function(requested) {
   available <- .get_registry()$list()
   available_ids <- as.character(available$id)
@@ -334,7 +330,10 @@
 #'   object, or aligned `zoo`/`xts` series.
 #' @param obs Observed values with the same shape contract as `sim`.
 #' @param methods Metric names to evaluate. When omitted, the package default
-#'   metric set is used.
+#'   compat-10 set is used unless `extended = TRUE`.
+#' @param extended Whether omitted/`NULL` method selection should expand from
+#'   the compat-10 default set to all registered metrics that are applicable to
+#'   the current input context.
 #' @param na_strategy Missing-value strategy forwarded to [preproc()].
 #' @param transform Transform mode forwarded to [preproc()].
 #' @param epsilon_mode Epsilon policy forwarded to [preproc()].
@@ -369,6 +368,7 @@
 gof <- function(sim,
                 obs,
                 methods = NULL,
+                extended = FALSE,
                 na_strategy = c("fail", "remove", "pairwise"),
                 transform = c("none", "log", "sqrt", "reciprocal"),
                 epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
@@ -408,6 +408,10 @@ gof <- function(sim,
   epsilon <- compat$epsilon
   epsilon_factor <- compat$epsilon_factor
 
+  if (!is.logical(extended) || length(extended) != 1L || is.na(extended)) {
+    stop("`extended` must be TRUE or FALSE.", call. = FALSE)
+  }
+
   na_strategy <- match.arg(na_strategy)
   transform <- match.arg(transform)
   epsilon_mode <- match.arg(epsilon_mode)
@@ -415,30 +419,11 @@ gof <- function(sim,
   dots <- list(...)
   metric_params <- dots$metric_params
 
+  prepared <- .gof_prepare_inputs(sim, obs)
+  engine <- .get_engine()
   available_ids <- as.character(.get_registry()$list()$id)
   available_alias <- .gof_alias_map()
   available_alias <- available_alias[available_alias %in% available_ids]
-
-  requested <- as.character(methods)
-  if (length(requested) == 0L || all(!nzchar(requested))) {
-    defaults <- .gof_default_methods()
-    resolved_defaults <- defaults[tolower(defaults) %in% names(available_alias)]
-    requested <- resolved_defaults
-  }
-  requested <- requested[nzchar(requested)]
-  if (length(requested) == 0L) {
-    stop("No valid methods available for gof().", call. = FALSE)
-  }
-
-  resolved <- .gof_resolve_methods(requested)
-  metric_calls <- .gof_normalize_metric_calls(
-    ids = resolved$ids,
-    labels = resolved$labels,
-    metric_params = metric_params
-  )
-
-  prepared <- .gof_prepare_inputs(sim, obs)
-  engine <- .get_engine()
 
   if (identical(prepared$type, "single")) {
     payload <- .gof_preproc_call(
@@ -449,6 +434,23 @@ gof <- function(sim,
       epsilon_mode = epsilon_mode,
       epsilon = epsilon,
       epsilon_factor = epsilon_factor
+    )
+    requested <- .gof_select_methods(
+      methods = methods,
+      available_ids = available_ids,
+      extended = extended,
+      sim = payload$sim,
+      obs = payload$obs,
+      index = payload$index
+    )
+    if (length(requested) == 0L) {
+      stop("No valid methods available for gof().", call. = FALSE)
+    }
+    resolved <- .gof_resolve_methods(requested)
+    metric_calls <- .gof_normalize_metric_calls(
+      ids = resolved$ids,
+      labels = resolved$labels,
+      metric_params = metric_params
     )
     runtime_calls <- .gof_runtime_metric_calls(metric_calls, payload)
     out <- engine$evaluate(payload$sim, payload$obs, runtime_calls)
@@ -476,6 +478,24 @@ gof <- function(sim,
       )
     )
   }
+
+  requested <- .gof_select_methods(
+    methods = methods,
+    available_ids = available_ids,
+    extended = extended,
+    sim = NULL,
+    obs = NULL,
+    index = NULL
+  )
+  if (length(requested) == 0L) {
+    stop("No valid methods available for gof().", call. = FALSE)
+  }
+  resolved <- .gof_resolve_methods(requested)
+  metric_calls <- .gof_normalize_metric_calls(
+    ids = resolved$ids,
+    labels = resolved$labels,
+    metric_params = metric_params
+  )
 
   metrics_mat <- matrix(
     NA_real_,

@@ -41,9 +41,70 @@ if (!exists("gof", mode = "function")) {
   as.numeric(qs[[2L]] - qs[[1L]])
 }
 
+.test_c2_sturges_bin_count <- function(n) {
+  max(2L, as.integer(ceiling(log(n, base = 2) + 1)))
+}
+
+.test_c2_pooled_breaks <- function(sim, obs) {
+  pooled <- c(sim, obs)
+  x_min <- min(pooled)
+  x_max <- max(pooled)
+
+  if (x_min == x_max) {
+    delta <- max(0.5, abs(x_min) * 1e-8)
+    return(c(x_min - delta, x_max + delta))
+  }
+
+  seq(x_min, x_max, length.out = .test_c2_sturges_bin_count(length(pooled)) + 1L)
+}
+
+.test_c2_hist_probs <- function(x, breaks) {
+  bins <- cut(x, breaks = breaks, include.lowest = TRUE, right = TRUE, labels = FALSE)
+  tabulate(bins, nbins = length(breaks) - 1L) / length(x)
+}
+
+.test_c2_entropy <- function(x, breaks) {
+  probs <- .test_c2_hist_probs(x, breaks)
+  positive <- probs > 0
+  -sum(probs[positive] * log(probs[positive]))
+}
+
+.test_c2_joint_probs <- function(sim, obs, breaks) {
+  sim_bins <- cut(sim, breaks = breaks, include.lowest = TRUE, right = TRUE, labels = FALSE)
+  obs_bins <- cut(obs, breaks = breaks, include.lowest = TRUE, right = TRUE, labels = FALSE)
+  n_bins <- length(breaks) - 1L
+  joint_index <- (sim_bins - 1L) * n_bins + obs_bins
+  counts <- tabulate(joint_index, nbins = n_bins * n_bins)
+  matrix(counts / length(sim), nrow = n_bins, ncol = n_bins, byrow = TRUE)
+}
+
+.test_c2_mutual_information <- function(sim, obs, breaks) {
+  joint <- .test_c2_joint_probs(sim, obs, breaks)
+  px <- rowSums(joint)
+  py <- colSums(joint)
+  denom <- outer(px, py)
+  positive <- joint > 0
+  sum(joint[positive] * log(joint[positive] / denom[positive]))
+}
+
+.test_c2_kl_obs_vs_sim <- function(sim, obs, breaks, epsilon = 1e-12) {
+  p_obs <- .test_c2_hist_probs(obs, breaks)
+  p_sim <- .test_c2_hist_probs(sim, breaks)
+  p_obs <- (p_obs + epsilon) / sum(p_obs + epsilon)
+  p_sim <- (p_sim + epsilon) / sum(p_sim + epsilon)
+  sum(p_obs * log(p_obs / p_sim))
+}
+
 test_that("layer C batch C1 registry ids are present", {
   ids <- list_metrics()$id
   target <- c("skewness_error", "kurtosis_error", "iqr_error")
+
+  expect_true(all(target %in% ids))
+})
+
+test_that("layer C batch C2 registry ids are present", {
+  ids <- list_metrics()$id
+  target <- c("entropy_diff", "mutual_information_score", "kl_divergence_flow")
 
   expect_true(all(target %in% ids))
 })
@@ -136,10 +197,107 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
   sim <- c(1, 2, 3, 4, 8, 9, 10, 11)
   obs <- c(1, 2, 3, 4, 5, 6, 7, 8)
 
-  out <- gof(sim, obs, methods = c("skewness_error", "kurtosis_error", "iqr_error"))
+  out <- gof(
+    sim,
+    obs,
+    methods = c(
+      "skewness_error",
+      "kurtosis_error",
+      "iqr_error",
+      "entropy_diff",
+      "mutual_information_score",
+      "kl_divergence_flow"
+    )
+  )
   expect_true(inherits(out, "hydro_metrics"))
-  expect_identical(names(out), c("skewness_error", "kurtosis_error", "iqr_error"))
+  expect_identical(
+    names(out),
+    c(
+      "skewness_error",
+      "kurtosis_error",
+      "iqr_error",
+      "entropy_diff",
+      "mutual_information_score",
+      "kl_divergence_flow"
+    )
+  )
 
   out_ext <- gof(sim, obs, extended = TRUE)
-  expect_true(all(c("skewness_error", "kurtosis_error", "iqr_error") %in% names(out_ext)))
+  expect_true(
+    all(
+      c(
+        "skewness_error",
+        "kurtosis_error",
+        "iqr_error",
+        "entropy_diff",
+        "mutual_information_score",
+        "kl_divergence_flow"
+      ) %in% names(out_ext)
+    )
+  )
+})
+
+test_that("entropy_diff matches manual pooled-grid Shannon entropy difference", {
+  sim <- c(1, 2, 2, 3, 4, 5, 5, 6, 7, 8)
+  obs <- c(1, 1, 2, 3, 3, 4, 5, 6, 7, 9)
+  breaks <- .test_c2_pooled_breaks(sim, obs)
+  expected <- abs(.test_c2_entropy(sim, breaks) - .test_c2_entropy(obs, breaks))
+
+  expect_equal(entropy_diff(sim, obs), expected)
+  expect_equal(metric_entropy_diff(sim, obs), expected)
+})
+
+test_that("entropy_diff is zero on identical series and handles constant series", {
+  const <- c(1, 1, 1, 1, 1, 1)
+  var <- c(1, 2, 3, 4, 5, 6)
+  breaks <- .test_c2_pooled_breaks(const, var)
+
+  expect_equal(entropy_diff(var, var), 0)
+  expect_equal(entropy_diff(const, const), 0)
+  expect_equal(entropy_diff(const, var), abs(0 - .test_c2_entropy(var, breaks)))
+  expect_error(entropy_diff(1, 1), "requires at least 2 values")
+})
+
+test_that("mutual_information_score matches manual pooled-grid mutual information", {
+  sim <- c(1, 2, 2, 3, 4, 5, 5, 6, 7, 8)
+  obs <- c(1, 1, 2, 3, 3, 4, 5, 6, 7, 9)
+  breaks <- .test_c2_pooled_breaks(sim, obs)
+  expected <- .test_c2_mutual_information(sim, obs, breaks)
+
+  expect_equal(mutual_information_score(sim, obs), expected)
+  expect_equal(metric_mutual_information_score(sim, obs), expected)
+})
+
+test_that("mutual_information_score handles constant inputs and rejects too-short inputs", {
+  const <- c(1, 1, 1, 1, 1, 1)
+  var <- c(1, 2, 3, 4, 5, 6)
+  paired <- c(1, 2, 2, 3, 4, 5)
+
+  expect_equal(mutual_information_score(const, var), 0)
+  expect_gt(mutual_information_score(paired, paired), 0)
+  expect_error(
+    mutual_information_score(c(1, 2), c(1, 2)),
+    "requires at least 3 values"
+  )
+})
+
+test_that("kl_divergence_flow matches manual KL(obs || sim) with fixed smoothing", {
+  sim <- c(1, 2, 2, 3, 4, 5, 5, 6, 7, 8)
+  obs <- c(1, 1, 2, 3, 3, 4, 5, 6, 7, 9)
+  breaks <- .test_c2_pooled_breaks(sim, obs)
+  expected <- .test_c2_kl_obs_vs_sim(sim, obs, breaks)
+
+  expect_equal(kl_divergence_flow(sim, obs), expected)
+  expect_equal(metric_kl_divergence_flow(sim, obs), expected)
+})
+
+test_that("kl_divergence_flow keeps direction explicit and constant-series cases finite", {
+  const <- c(1, 1, 1, 1, 1, 1)
+  var <- c(1, 2, 3, 4, 5, 6)
+  breaks <- .test_c2_pooled_breaks(const, var)
+
+  expect_true(is.finite(kl_divergence_flow(const, var)))
+  expect_equal(kl_divergence_flow(const, var), .test_c2_kl_obs_vs_sim(const, var, breaks))
+  expect_gt(abs(kl_divergence_flow(const, var) - kl_divergence_flow(var, const)), 0)
+  expect_error(kl_divergence_flow(1, 1), "requires at least 2 values")
 })

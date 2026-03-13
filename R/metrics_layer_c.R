@@ -121,3 +121,169 @@ core_metric_spec_iqr_error <- function() {
     tags = c("phase-3", "layer-c", "batch-c1")
   )
 }
+
+# Shared Batch C2 conventions:
+# - all C2 metrics use histogram-based discrete approximations with the
+#   Sturges bin-count rule k = ceiling(log2(n_pool) + 1)
+# - non-constant pooled support uses at least 2 equal-width bins; constant
+#   pooled support collapses to 1 bin with a small symmetric padding interval
+# - entropy_diff and kl_divergence_flow bin sim and obs on the same pooled
+#   shared-support grid
+# - mutual_information_score uses the same pooled support grid on both axes for
+#   the paired (sim, obs) joint histogram
+# - Shannon quantities use the natural logarithm
+# - kl_divergence_flow reports KL(P_obs || P_sim) after additive epsilon
+#   smoothing with epsilon = 1e-12 and renormalization
+
+.hm_c2_validate_info_pair <- function(sim, obs, metric_id, min_length, require_equal_length = FALSE) {
+  sim <- .hm_c1_validate_summary_vector(sim, metric_id, "sim", min_length = min_length)
+  obs <- .hm_c1_validate_summary_vector(obs, metric_id, "obs", min_length = min_length)
+
+  if (require_equal_length) {
+    validate_equal_length(sim, obs)
+  }
+
+  list(sim = sim, obs = obs)
+}
+
+.hm_c2_sturges_bin_count <- function(n) {
+  max(2L, as.integer(ceiling(log(n, base = 2) + 1)))
+}
+
+.hm_c2_pooled_breaks <- function(sim, obs, metric_id) {
+  pooled <- c(sim, obs)
+  x_min <- min(pooled)
+  x_max <- max(pooled)
+
+  if (!is.finite(x_min) || !is.finite(x_max)) {
+    stop(sprintf("%s requires finite pooled support.", metric_id), call. = FALSE)
+  }
+
+  if (x_min == x_max) {
+    delta <- max(0.5, abs(x_min) * 1e-8)
+    return(c(x_min - delta, x_max + delta))
+  }
+
+  n_bins <- .hm_c2_sturges_bin_count(length(pooled))
+  seq(x_min, x_max, length.out = n_bins + 1L)
+}
+
+.hm_c2_bin_index <- function(x, breaks, metric_id, name) {
+  bins <- cut(x, breaks = breaks, include.lowest = TRUE, right = TRUE, labels = FALSE)
+  if (anyNA(bins)) {
+    stop(sprintf("%s could not assign %s values to the shared histogram grid.", metric_id, name), call. = FALSE)
+  }
+
+  as.integer(bins)
+}
+
+.hm_c2_hist_probs <- function(x, breaks, metric_id, name) {
+  bins <- .hm_c2_bin_index(x, breaks, metric_id, name)
+  counts <- tabulate(bins, nbins = length(breaks) - 1L)
+  counts / sum(counts)
+}
+
+.hm_c2_entropy_from_probs <- function(probs) {
+  positive <- probs > 0
+  -sum(probs[positive] * log(probs[positive]))
+}
+
+.hm_c2_smoothed_probs <- function(probs, epsilon = 1e-12) {
+  smoothed <- as.numeric(probs) + epsilon
+  smoothed / sum(smoothed)
+}
+
+.hm_c2_joint_probs <- function(sim, obs, breaks, metric_id) {
+  sim_bins <- .hm_c2_bin_index(sim, breaks, metric_id, "sim")
+  obs_bins <- .hm_c2_bin_index(obs, breaks, metric_id, "obs")
+  n_bins <- length(breaks) - 1L
+  joint_index <- (sim_bins - 1L) * n_bins + obs_bins
+  counts <- tabulate(joint_index, nbins = n_bins * n_bins)
+  matrix(counts / sum(counts), nrow = n_bins, ncol = n_bins, byrow = TRUE)
+}
+
+metric_entropy_diff <- function(sim, obs) {
+  inputs <- .hm_c2_validate_info_pair(sim, obs, "entropy_diff", min_length = 2L)
+  breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "entropy_diff")
+  sim_entropy <- .hm_c2_entropy_from_probs(.hm_c2_hist_probs(inputs$sim, breaks, "entropy_diff", "sim"))
+  obs_entropy <- .hm_c2_entropy_from_probs(.hm_c2_hist_probs(inputs$obs, breaks, "entropy_diff", "obs"))
+
+  abs(sim_entropy - obs_entropy)
+}
+
+core_metric_spec_entropy_diff <- function() {
+  list(
+    id = "entropy_diff",
+    fun = metric_entropy_diff,
+    name = "Entropy Difference",
+    description = "Absolute difference between pooled-grid Shannon entropies of the Sturges-binned empirical sim and obs distributions.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Shannon (1948) entropy foundation with Sturges (1926) histogram binning; package metric uses absolute entropy difference on the pooled support grid.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "batch-c2")
+  )
+}
+
+metric_mutual_information_score <- function(sim, obs) {
+  inputs <- .hm_c2_validate_info_pair(
+    sim,
+    obs,
+    "mutual_information_score",
+    min_length = 3L,
+    require_equal_length = TRUE
+  )
+  breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "mutual_information_score")
+  joint <- .hm_c2_joint_probs(inputs$sim, inputs$obs, breaks, "mutual_information_score")
+  px <- rowSums(joint)
+  py <- colSums(joint)
+  denom <- outer(px, py)
+  positive <- joint > 0
+
+  sum(joint[positive] * log(joint[positive] / denom[positive]))
+}
+
+core_metric_spec_mutual_information_score <- function() {
+  list(
+    id = "mutual_information_score",
+    fun = metric_mutual_information_score,
+    name = "Mutual Information Score",
+    description = "Raw mutual information on the paired Sturges-binned joint empirical distribution using the pooled support grid and natural logs.",
+    category = "agreement",
+    perfect = Inf,
+    range = c(0, Inf),
+    references = "Shannon (1948) mutual-information foundation with Sturges (1926) histogram binning; package metric reports raw pooled-grid mutual information in nats.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "batch-c2")
+  )
+}
+
+metric_kl_divergence_flow <- function(sim, obs) {
+  inputs <- .hm_c2_validate_info_pair(sim, obs, "kl_divergence_flow", min_length = 2L)
+  breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "kl_divergence_flow")
+  p_obs <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$obs, breaks, "kl_divergence_flow", "obs"))
+  p_sim <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$sim, breaks, "kl_divergence_flow", "sim"))
+  value <- sum(p_obs * log(p_obs / p_sim))
+
+  if (!is.finite(value)) {
+    stop("kl_divergence_flow remained non-finite after epsilon smoothing.", call. = FALSE)
+  }
+
+  value
+}
+
+core_metric_spec_kl_divergence_flow <- function() {
+  list(
+    id = "kl_divergence_flow",
+    fun = metric_kl_divergence_flow,
+    name = "Flow KL Divergence",
+    description = "Directed KL(P_obs || P_sim) on Sturges-binned empirical flow distributions over the pooled support grid with fixed epsilon smoothing.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Kullback & Leibler (1951) directed divergence foundation with Sturges (1926) histogram binning; package metric reports KL(P_obs || P_sim) after fixed epsilon smoothing.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "batch-c2")
+  )
+}

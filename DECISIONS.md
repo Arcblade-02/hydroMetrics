@@ -204,3 +204,8 @@
 - Decision: No uncited Layer C metric or other research-frontier metric may be added to the package. Any such addition must carry literature grounding in `inst/REFERENCES.md` before implementation is considered release-ready.
 - Status: Accepted
 - Notes: Project-defined compatibility behavior remains allowed only when explicitly documented as package-defined and backed by a stable decision record. This rule is part of the pre-Layer-A governance gate and is now recorded explicitly.
+
+## Stage 6 Pareto Disposition
+- Decision: Phase 3 is complete, `pareto_skill` remains deferred, and any future Pareto-based calibration support should be implemented as a helper/evaluation utility rather than as a registry metric.
+- Status: Accepted
+- Notes: Current literature support fits multi-objective calibration workflows, Pareto-front evaluation, and best-compromise selection more strongly than a `sim, obs -> scalar` Pareto metric. A future `pareto_evaluate()`-style helper remains the preferred direction.

@@ -2,6 +2,11 @@
 
 Generated on: 2026-03-04
 
+This tracker is retained as a Phase 2 compatibility ledger for the legacy
+hydroGOF-style wrapper surface. It is not the full post-Phase-3 metric
+catalog; use the metric-reference, calibration-guide, and uncertainty-eval
+vignettes for the broader current package surface.
+
 ## Exported wrappers and core entry points
 - [x] APFB
 - [x] ggof

@@ -29,5 +29,5 @@ test_that("DESCRIPTION merge-sync artifacts exist", {
 
   description_lines <- readLines(file.path(root, "DESCRIPTION"), warn = FALSE, encoding = "UTF-8")
   expect_false(any(grepl("<<<<<<<|=======|>>>>>>>", description_lines)))
-  expect_true(any(grepl("^Version:[[:space:]]+0\\.(2\\.0|2\\.1)$", description_lines)))
+  expect_true(any(grepl("^Version:[[:space:]]+0\\.(2\\.0|2\\.1|3\\.0)$", description_lines)))
 })

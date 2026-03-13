@@ -1,13 +1,14 @@
 Package: hydroMetrics
 Title: Hydrological Model Evaluation Metrics
-Version: 0.2.1
+Version: 0.3.0
 Authors@R:
     person("Arcblade-02", email = "pritamparida432@gmail.com", role = c("aut", "cre"))
 Maintainer: Arcblade-02 <pritamparida432@gmail.com>
 Description: Clean-room MIT implementation of hydrological model
-    evaluation metrics, including compatibility wrappers for
-    hydroGOF-style functions and an extensible evaluation framework
-    for hydrological time series diagnostics.
+    evaluation metrics, covering compatibility/default metrics,
+    extended deterministic diagnostics, seasonal and regime-sensitive
+    metrics, and selected probabilistic workflows, with calibration
+    and uncertainty guidance for hydrological time series evaluation.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

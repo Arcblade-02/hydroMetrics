@@ -182,6 +182,22 @@
   }, error = function(e) FALSE)
 }
 
+.gof_can_auto_run_metric <- function(metric_id, sim, obs, index = NULL) {
+  if (is.null(sim) || is.null(obs)) {
+    return(TRUE)
+  }
+
+  params <- list()
+  if (metric_id %in% c("apfb", "seasonal_bias", "seasonal_nse")) {
+    params$index <- index
+  }
+
+  tryCatch({
+    .get_engine()$evaluate(sim, obs, list(list(id = metric_id, params = params)))
+    TRUE
+  }, error = function(e) FALSE)
+}
+
 .gof_auto_applicable_ids <- function(available_ids, sim = NULL, obs = NULL, index = NULL) {
   ids <- available_ids
   ids <- setdiff(ids, c("crps", "picp", "mwpi", "skill_score"))
@@ -241,6 +257,13 @@
   }
   if (!.gof_can_auto_run_seasonal_bias(index)) {
     ids <- setdiff(ids, c("seasonal_bias", "seasonal_nse"))
+  }
+  if (!is.null(sim) && !is.null(obs)) {
+    ids <- ids[vapply(
+      ids,
+      function(id) .gof_can_auto_run_metric(id, sim = sim, obs = obs, index = index),
+      logical(1)
+    )]
   }
   ids
 }

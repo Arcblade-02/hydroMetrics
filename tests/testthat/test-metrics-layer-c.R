@@ -523,3 +523,15 @@ test_that("auto-applicability excludes C4 quantile-shift metric when observed IQ
   expect_true("rank_turnover_score" %in% ids)
   expect_true("distribution_overlap" %in% ids)
 })
+
+test_that("gof extended remains robust on constant observed series while excluding zero-IQR-sensitive metrics", {
+  sim <- c(1, 2, 3, 4, 5, 6)
+  obs <- c(1, 1, 1, 1, 1, 1)
+
+  out_ext <- gof(sim, obs, extended = TRUE)
+
+  expect_true(inherits(out_ext, "hydro_metrics"))
+  expect_false("quantile_shift_index" %in% names(out_ext))
+  expect_false(any(c("alpha", "kge", "r2", "rsr") %in% names(out_ext)))
+  expect_true("distribution_overlap" %in% names(out_ext))
+})

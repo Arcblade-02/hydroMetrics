@@ -1,5 +1,20 @@
 # hydroMetrics news
 
+## 0.3.0
+
+- Finalized the post-Phase-3 release-facing surface on `dev`: `DESCRIPTION`
+  now reflects the completed deterministic, seasonal/regime-sensitive, and
+  selected probabilistic package scope, the root documentation is aligned to
+  the finished vignette and validation-artifact surface, and the stale
+  release-artifact tests were updated for the current `0.3.0` package state.
+- Phase 3 remains complete and Stage 6 package hardening is in place,
+  including `inst/validation/` artifacts built from a compact USGS NWIS daily
+  streamflow subset and the current API stability declaration for the
+  pre-1.0 package line.
+- `pareto_skill` remains intentionally deferred; any future Pareto-based work
+  should be delivered as a helper/evaluation utility outside the metric
+  registry rather than as a new scalar registered metric.
+
 ## 0.2.2
 
 - Recorded the Stage 6 pre-1.0 stabilization audit on `dev`: release-facing

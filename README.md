@@ -3,8 +3,10 @@
 ![R-CMD-check](https://github.com/Arcblade-02/hydroMetrics/actions/workflows/R-CMD-check.yml/badge.svg)
 
 `hydroMetrics` is a clean-room MIT-licensed R package for hydrological model
-evaluation metrics. The current release-hardening line is aligned for the
-corrected `0.2.1` Phase 2 stable package version.
+evaluation metrics. The current post-Phase-3 release-hardening line covers
+compatibility/default metrics, extended deterministic diagnostics, seasonal
+and regime-sensitive evaluation, wrapper-only probabilistic workflows, and
+release-facing validation artifacts for reproducible package checks.
 
 ## Scope
 
@@ -15,8 +17,14 @@ corrected `0.2.1` Phase 2 stable package version.
 - Additional exported compatibility wrappers retained alongside the legacy
   names: `APFB()`, `HFB()`, `alpha()`, `beta()`, `mae()`, `pbias()`, `r()`,
   and `rsr()`
-- Additional metric ids are available through `gof(methods = ...)` and the
-  internal metric registry
+- Default `gof()` remains compat-oriented, while `gof(extended = TRUE)`
+  exposes the broader automatically applicable deterministic surface
+- Seasonal, regime-sensitive, information-theory, and tail-sensitive metrics
+  are available through exported wrappers and the registered metric surface
+  when their documented input contracts hold
+- Probabilistic metrics such as `crps()`, `picp()`, `mwpi()`, and
+  `skill_score()` remain wrapper-only special-interface workflows rather than
+  part of default deterministic `gof(sim, obs)` auto-selection
 
 ## Install
 
@@ -24,7 +32,7 @@ For local release validation, build the source bundle with `R CMD build .` and
 install the generated tarball:
 
 ```r
-install.packages("hydroMetrics_0.2.1.tar.gz", repos = NULL, type = "source")
+install.packages("hydroMetrics_0.3.0.tar.gz", repos = NULL, type = "source")
 ```
 
 If you want the latest repository snapshot instead:
@@ -52,13 +60,24 @@ mae(sim, obs)
 
 - `vignette("getting-started", package = "hydroMetrics")` for a minimal
   end-to-end walkthrough
+- `vignette("metric-reference", package = "hydroMetrics")` for a concise
+  metric catalog and navigation guide
+- `vignette("calibration-guide", package = "hydroMetrics")` for metric
+  selection in calibration workflows
+- `vignette("uncertainty-eval", package = "hydroMetrics")` for probabilistic
+  and interval-evaluation workflows
 - `?gof`, `?ggof`, and `?preproc` for API details
 
-## Compatibility Notes
+## Validation Notes
 
-- Phase 2 keeps both the legacy hydroGOF-style public wrapper names and the
-  previously exported lowercase/internal-style compatibility names where they
-  already existed.
+- The default public baseline remains the compat-10 `gof()` surface together
+  with the exported legacy hydroGOF-style wrappers.
+- `gof(extended = TRUE)` expands to the broader deterministic registry surface
+  only when each metric's documented applicability conditions are satisfied.
+- Seasonal and event/tail metrics are intentionally gated and are not exposed
+  for unsupported plain deterministic inputs.
+- Release-facing validation summaries and the compact USGS NWIS real-data
+  subset artifacts live under `inst/validation/`.
 - `ggof()` returns a tabular `hydro_metrics_batch` object and does not open a
   graphics device.
 - `APFB()` requires indexed `zoo` or `xts` inputs.

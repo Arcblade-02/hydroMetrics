@@ -71,6 +71,7 @@ register_core_metrics <- function(registry) {
     core_metric_spec_rank_turnover_score(),
     core_metric_spec_distribution_overlap(),
     core_metric_spec_quantile_shift_index(),
+    core_metric_spec_seasonal_skill(),
     core_metric_spec_rbias(),
     core_metric_spec_beta(),
     core_metric_spec_alpha(),

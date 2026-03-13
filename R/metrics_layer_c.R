@@ -631,3 +631,48 @@ core_metric_spec_quantile_shift_index <- function() {
     tags = c("phase-3", "layer-c", "batch-c4")
   )
 }
+
+# Seasonal climatology skill convention:
+# - seasonal_skill reuses the existing monthly grouping contract from
+#   seasonal_bias/seasonal_nse and therefore only supports monthly ts input or
+#   aligned date-like indexed input with complete coverage for all 12 months
+# - the score is an NSE-style skill on the 12 monthly climatology means:
+#   1 - sum((sim_clim - obs_clim)^2) / sum((obs_clim - mean(obs_clim))^2)
+
+metric_seasonal_skill <- function(sim, obs, index = NULL) {
+  if (length(obs) < 12L) {
+    stop("seasonal_skill requires at least 12 monthly values.", call. = FALSE)
+  }
+
+  groups <- .hm_monthly_groups_for_seasonal_bias(index)
+  sim_month <- tapply(sim, groups, mean)
+  obs_month <- tapply(obs, groups, mean)
+  sim_month <- as.numeric(sim_month[as.character(1:12)])
+  obs_month <- as.numeric(obs_month[as.character(1:12)])
+
+  if (any(!is.finite(sim_month)) || any(!is.finite(obs_month))) {
+    stop("seasonal_skill is undefined because monthly climatology could not be estimated.", call. = FALSE)
+  }
+
+  denom <- sum((obs_month - mean(obs_month))^2)
+  if (denom == 0) {
+    stop("seasonal_skill is undefined because observed monthly climatology has zero variance.", call. = FALSE)
+  }
+
+  1 - sum((sim_month - obs_month)^2) / denom
+}
+
+core_metric_spec_seasonal_skill <- function() {
+  list(
+    id = "seasonal_skill",
+    fun = metric_seasonal_skill,
+    name = "Seasonal Skill",
+    description = "NSE-style skill computed on monthly climatology means inferred from monthly ts or aligned date-like indexed input.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "Nash & Sutcliffe (1970) baseline NSE with seasonal streamflow context from Gnann et al. (2020) and Berghuijs et al. (2025); the package metric is monthly-climatology skill on the 12 month-of-year means.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "seasonal")
+  )
+}

@@ -129,6 +129,13 @@ if (!exists("gof", mode = "function")) {
   mean(abs(sim_q - obs_q)) / .test_c1_type7_iqr(obs)
 }
 
+.test_seasonal_skill_expected <- function(sim, obs) {
+  groups <- cycle(obs)
+  sim_month <- as.numeric(tapply(as.numeric(sim), groups, mean)[as.character(1:12)])
+  obs_month <- as.numeric(tapply(as.numeric(obs), groups, mean)[as.character(1:12)])
+  1 - sum((sim_month - obs_month)^2) / sum((obs_month - mean(obs_month))^2)
+}
+
 test_that("layer C batch C1 registry ids are present", {
   ids <- list_metrics()$id
   target <- c("skewness_error", "kurtosis_error", "iqr_error")
@@ -163,6 +170,10 @@ test_that("layer C batch C4 registry ids are present", {
   target <- c("rank_turnover_score", "distribution_overlap", "quantile_shift_index")
 
   expect_true(all(target %in% ids))
+})
+
+test_that("seasonal_skill registry id is present", {
+  expect_true("seasonal_skill" %in% list_metrics()$id)
 })
 
 test_that("skewness_error matches adjusted Fisher-Pearson skewness error", {
@@ -620,4 +631,49 @@ test_that("gof extended remains robust on constant observed series while excludi
   expect_false("quantile_shift_index" %in% names(out_ext))
   expect_false(any(c("alpha", "kge", "r2", "rsr") %in% names(out_ext)))
   expect_true("distribution_overlap" %in% names(out_ext))
+})
+
+test_that("seasonal_skill matches manual monthly climatology skill", {
+  sim <- ts(c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11, 10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11), frequency = 12)
+  obs <- ts(c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10, 9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10), frequency = 12)
+  expected <- .test_seasonal_skill_expected(sim, obs)
+
+  expect_equal(seasonal_skill(sim, obs), expected)
+  expect_equal(metric_seasonal_skill(as.numeric(sim), as.numeric(obs), index = time(sim)), expected)
+  expect_equal(seasonal_skill(sim, obs), seasonal_nse(sim, obs))
+})
+
+test_that("seasonal_skill is optimal on identical seasonal series and non-optimal on shifted patterns", {
+  obs <- ts(rep(c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10), 2), frequency = 12)
+  shifted <- ts(rep(c(10, 10, 11, 8, 6, 5, 5, 6, 7, 9, 9, 11), 2), frequency = 12)
+
+  expect_equal(seasonal_skill(obs, obs), 1)
+  expect_lt(seasonal_skill(shifted, obs), 1)
+})
+
+test_that("seasonal_skill rejects unsupported, too-short, and zero-variance seasonal cases", {
+  flat <- ts(rep(5, 24), frequency = 12)
+
+  expect_error(
+    seasonal_skill(c(1, 2, 3), c(1, 2, 3)),
+    "requires at least 12 monthly values"
+  )
+  expect_error(
+    seasonal_skill(rep(1:12, 2), rep(1:12, 2)),
+    "requires monthly ts input or an aligned date-like index"
+  )
+  expect_error(
+    seasonal_skill(flat, flat),
+    "observed monthly climatology has zero variance"
+  )
+})
+
+test_that("gof extended includes seasonal_skill only for valid seasonal inputs", {
+  sim_ts <- ts(c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11, 10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11), frequency = 12)
+  obs_ts <- ts(c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10, 9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10), frequency = 12)
+  out_ts <- gof(sim_ts, obs_ts, extended = TRUE)
+  out_num <- gof(1:12, 1:12, extended = TRUE)
+
+  expect_true("seasonal_skill" %in% names(out_ts))
+  expect_false("seasonal_skill" %in% names(out_num))
 })

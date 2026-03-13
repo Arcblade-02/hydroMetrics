@@ -188,7 +188,7 @@
   }
 
   params <- list()
-  if (metric_id %in% c("apfb", "seasonal_bias", "seasonal_nse")) {
+  if (metric_id %in% c("apfb", "seasonal_bias", "seasonal_nse", "seasonal_skill")) {
     params$index <- index
   }
 
@@ -256,7 +256,7 @@
     ids <- setdiff(ids, "quantile_shift_index")
   }
   if (!.gof_can_auto_run_seasonal_bias(index)) {
-    ids <- setdiff(ids, c("seasonal_bias", "seasonal_nse"))
+    ids <- setdiff(ids, c("seasonal_bias", "seasonal_nse", "seasonal_skill"))
   }
   if (!is.null(sim) && !is.null(obs)) {
     ids <- ids[vapply(

@@ -131,6 +131,14 @@ core_metric_spec_iqr_error <- function() {
 #   shared-support grid
 # - mutual_information_score uses the same pooled support grid on both axes for
 #   the paired (sim, obs) joint histogram
+# - mutual_information is the canonical alias of mutual_information_score under
+#   the same pooled-grid raw-MI convention
+# - kl_divergence is the canonical alias of kl_divergence_flow under the same
+#   directed KL(P_obs || P_sim) convention
+# - normalised_mi reports MI / sqrt(H_sim * H_obs) and is undefined when either
+#   marginal entropy is zero
+# - js_divergence reports 0.5 * KL(P_sim || M) + 0.5 * KL(P_obs || M) with
+#   M = 0.5 * (P_sim + P_obs) using the same smoothed pooled-grid marginals
 # - Shannon quantities use the natural logarithm
 # - kl_divergence_flow reports KL(P_obs || P_sim) after additive epsilon
 #   smoothing with epsilon = 1e-12 and renormalization
@@ -202,6 +210,37 @@ core_metric_spec_iqr_error <- function() {
   matrix(counts / sum(counts), nrow = n_bins, ncol = n_bins, byrow = TRUE)
 }
 
+.hm_c2_mutual_information_value <- function(sim, obs, metric_id) {
+  inputs <- .hm_c2_validate_info_pair(
+    sim,
+    obs,
+    metric_id,
+    min_length = 3L,
+    require_equal_length = TRUE
+  )
+  breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, metric_id)
+  joint <- .hm_c2_joint_probs(inputs$sim, inputs$obs, breaks, metric_id)
+  px <- rowSums(joint)
+  py <- colSums(joint)
+  denom <- outer(px, py)
+  positive <- joint > 0
+
+  list(
+    value = sum(joint[positive] * log(joint[positive] / denom[positive])),
+    sim_probs = px,
+    obs_probs = py
+  )
+}
+
+.hm_c2_kl_value_from_probs <- function(p_ref, p_cmp, metric_id) {
+  value <- sum(p_ref * log(p_ref / p_cmp))
+  if (!is.finite(value)) {
+    stop(sprintf("%s remained non-finite after epsilon smoothing.", metric_id), call. = FALSE)
+  }
+
+  value
+}
+
 metric_entropy_diff <- function(sim, obs) {
   inputs <- .hm_c2_validate_info_pair(sim, obs, "entropy_diff", min_length = 2L)
   breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "entropy_diff")
@@ -227,21 +266,7 @@ core_metric_spec_entropy_diff <- function() {
 }
 
 metric_mutual_information_score <- function(sim, obs) {
-  inputs <- .hm_c2_validate_info_pair(
-    sim,
-    obs,
-    "mutual_information_score",
-    min_length = 3L,
-    require_equal_length = TRUE
-  )
-  breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "mutual_information_score")
-  joint <- .hm_c2_joint_probs(inputs$sim, inputs$obs, breaks, "mutual_information_score")
-  px <- rowSums(joint)
-  py <- colSums(joint)
-  denom <- outer(px, py)
-  positive <- joint > 0
-
-  sum(joint[positive] * log(joint[positive] / denom[positive]))
+  .hm_c2_mutual_information_value(sim, obs, "mutual_information_score")$value
 }
 
 core_metric_spec_mutual_information_score <- function() {
@@ -259,18 +284,58 @@ core_metric_spec_mutual_information_score <- function() {
   )
 }
 
+metric_mutual_information <- function(sim, obs) {
+  .hm_c2_mutual_information_value(sim, obs, "mutual_information")$value
+}
+
+core_metric_spec_mutual_information <- function() {
+  list(
+    id = "mutual_information",
+    fun = metric_mutual_information,
+    name = "Mutual Information",
+    description = "Canonical raw mutual information in nats on the paired Sturges-binned joint empirical distribution using the pooled support grid.",
+    category = "agreement",
+    perfect = Inf,
+    range = c(0, Inf),
+    references = "Shannon (1948) mutual-information foundation with Sturges (1926) histogram binning; package metric is the canonical raw pooled-grid mutual information in nats and matches mutual_information_score under the current deterministic policy.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "canonical-info-theory")
+  )
+}
+
+metric_normalised_mi <- function(sim, obs) {
+  out <- .hm_c2_mutual_information_value(sim, obs, "normalised_mi")
+  h_sim <- .hm_c2_entropy_from_probs(out$sim_probs)
+  h_obs <- .hm_c2_entropy_from_probs(out$obs_probs)
+
+  if (!is.finite(h_sim) || !is.finite(h_obs) || h_sim <= 0 || h_obs <= 0) {
+    stop("normalised_mi is undefined because both marginal entropies must be positive.", call. = FALSE)
+  }
+
+  out$value / sqrt(h_sim * h_obs)
+}
+
+core_metric_spec_normalised_mi <- function() {
+  list(
+    id = "normalised_mi",
+    fun = metric_normalised_mi,
+    name = "Normalised Mutual Information",
+    description = "Canonical normalized mutual information MI / sqrt(H_sim * H_obs) on pooled-support Sturges histograms using natural logs.",
+    category = "agreement",
+    perfect = 1,
+    range = c(0, 1),
+    references = "Shannon (1948) mutual-information and entropy foundations, Sturges (1926) histogram binning, and Strehl & Ghosh (2002) normalized mutual-information context; package metric uses the explicit normalization MI / sqrt(H_sim * H_obs) and rejects zero-entropy cases.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "canonical-info-theory")
+  )
+}
+
 metric_kl_divergence_flow <- function(sim, obs) {
   inputs <- .hm_c2_validate_info_pair(sim, obs, "kl_divergence_flow", min_length = 2L)
   breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "kl_divergence_flow")
   p_obs <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$obs, breaks, "kl_divergence_flow", "obs"))
   p_sim <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$sim, breaks, "kl_divergence_flow", "sim"))
-  value <- sum(p_obs * log(p_obs / p_sim))
-
-  if (!is.finite(value)) {
-    stop("kl_divergence_flow remained non-finite after epsilon smoothing.", call. = FALSE)
-  }
-
-  value
+  .hm_c2_kl_value_from_probs(p_obs, p_sim, "kl_divergence_flow")
 }
 
 core_metric_spec_kl_divergence_flow <- function() {
@@ -285,6 +350,55 @@ core_metric_spec_kl_divergence_flow <- function() {
     references = "Kullback & Leibler (1951) directed divergence foundation with Sturges (1926) histogram binning; package metric reports KL(P_obs || P_sim) after fixed epsilon smoothing.",
     version_added = "0.2.2",
     tags = c("phase-3", "layer-c", "batch-c2")
+  )
+}
+
+metric_kl_divergence <- function(sim, obs) {
+  inputs <- .hm_c2_validate_info_pair(sim, obs, "kl_divergence", min_length = 2L)
+  breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "kl_divergence")
+  p_obs <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$obs, breaks, "kl_divergence", "obs"))
+  p_sim <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$sim, breaks, "kl_divergence", "sim"))
+  .hm_c2_kl_value_from_probs(p_obs, p_sim, "kl_divergence")
+}
+
+core_metric_spec_kl_divergence <- function() {
+  list(
+    id = "kl_divergence",
+    fun = metric_kl_divergence,
+    name = "KL Divergence",
+    description = "Canonical directed KL(P_obs || P_sim) on Sturges-binned empirical distributions over the pooled support grid with fixed epsilon smoothing.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Kullback & Leibler (1951) directed divergence foundation with Sturges (1926) histogram binning; package metric is the canonical directed KL(P_obs || P_sim) and matches kl_divergence_flow under the current deterministic policy.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "canonical-info-theory")
+  )
+}
+
+metric_js_divergence <- function(sim, obs) {
+  inputs <- .hm_c2_validate_info_pair(sim, obs, "js_divergence", min_length = 2L)
+  breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "js_divergence")
+  p_sim <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$sim, breaks, "js_divergence", "sim"))
+  p_obs <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$obs, breaks, "js_divergence", "obs"))
+  midpoint <- 0.5 * (p_sim + p_obs)
+
+  0.5 * .hm_c2_kl_value_from_probs(p_sim, midpoint, "js_divergence") +
+    0.5 * .hm_c2_kl_value_from_probs(p_obs, midpoint, "js_divergence")
+}
+
+core_metric_spec_js_divergence <- function() {
+  list(
+    id = "js_divergence",
+    fun = metric_js_divergence,
+    name = "Jensen-Shannon Divergence",
+    description = "Jensen-Shannon divergence 0.5 * KL(P_sim || M) + 0.5 * KL(P_obs || M) on pooled-support Sturges histograms with fixed epsilon smoothing.",
+    category = "error",
+    perfect = 0,
+    range = c(0, log(2)),
+    references = "Lin (1991) Jensen-Shannon divergence foundation with Shannon (1948), Kullback & Leibler (1951), and Sturges (1926); package metric uses pooled-grid Sturges histograms, natural logs, and fixed epsilon smoothing.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "canonical-info-theory")
   )
 }
 

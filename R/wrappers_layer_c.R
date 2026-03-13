@@ -98,6 +98,50 @@ mutual_information_score <- function(sim, obs, na.rm = NULL, ...) {
   )
 }
 
+#' Evaluate the mutual information wrapper
+#'
+#' Thin exported wrapper over [gof()] for the canonical registry metric
+#' `"mutual_information"`. Under the current deterministic policy this is the
+#' canonical name for the same pooled-grid raw mutual information reported by
+#' `"mutual_information_score"`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' mutual_information(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))
+#' @export
+mutual_information <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper(
+    "mutual_information",
+    sim = sim,
+    obs = obs,
+    na.rm = na.rm,
+    dots = list(...)
+  )
+}
+
+#' Evaluate the normalised mutual information wrapper
+#'
+#' Thin exported wrapper over [gof()] for the canonical registry metric
+#' `"normalised_mi"`. The metric uses pooled-support Sturges histograms and
+#' reports `MI / sqrt(H_sim * H_obs)` in natural-log units. Zero-entropy
+#' normalization cases are rejected explicitly.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' normalised_mi(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))
+#' @export
+normalised_mi <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("normalised_mi", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
 #' Evaluate the flow KL divergence wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric
@@ -115,6 +159,44 @@ mutual_information_score <- function(sim, obs, na.rm = NULL, ...) {
 #' @export
 kl_divergence_flow <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("kl_divergence_flow", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the KL divergence wrapper
+#'
+#' Thin exported wrapper over [gof()] for the canonical registry metric
+#' `"kl_divergence"`. Under the current deterministic policy this is the
+#' canonical name for the same directed `KL(P_obs || P_sim)` quantity reported
+#' by `"kl_divergence_flow"`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' kl_divergence(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))
+#' @export
+kl_divergence <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("kl_divergence", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the Jensen-Shannon divergence wrapper
+#'
+#' Thin exported wrapper over [gof()] for the canonical registry metric
+#' `"js_divergence"`. The metric uses pooled-support Sturges histograms,
+#' natural logs, and fixed epsilon smoothing to report
+#' `0.5 * KL(P_sim || M) + 0.5 * KL(P_obs || M)` with `M = 0.5 * (P_sim + P_obs)`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' js_divergence(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))
+#' @export
+js_divergence <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("js_divergence", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
 #' Evaluate the flow-duration entropy wrapper

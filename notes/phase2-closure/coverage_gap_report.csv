@@ -1,0 +1,93 @@
+filename,function,line,value,category
+R/alpha.R,alpha,  16,0,wrappers
+R/APFB.R,.hm_scalar_na_method,   3,0,NA handling
+R/APFB.R,.hm_scalar_na_method,  10,0,NA handling
+R/APFB.R,.hm_scalar_na_method,  11,0,NA handling
+R/APFB.R,.hm_scalar_na_method,  13,0,NA handling
+R/APFB.R,.extract_calendar_year,  51,0,other
+R/APFB.R,APFB,  80,0,NA handling
+R/APFB.R,APFB,  86,0,NA handling
+R/APFB.R,APFB,  89,0,NA handling
+R/beta.R,beta,  16,0,wrappers
+R/core_metrics.R,metric_kge, 351,0,wrappers
+R/core_metrics.R,metric_rd, 568,0,method dispatch
+R/core_metrics.R,metric_dr, 596,0,method dispatch
+R/core_metrics.R,metric_br2, 626,0,wrappers
+R/core_metrics.R,metric_br2, 631,0,wrappers
+R/core_metrics.R,metric_kgekm, 815,0,wrappers
+R/core_metrics.R,metric_kgelf, 849,0,wrappers
+R/core_metrics.R,metric_kgenp, 883,0,wrappers
+R/core_metrics.R,metric_skge, 912,0,wrappers
+R/core_metrics.R,metric_skge, 922,0,wrappers
+R/core_metrics.R,metric_skge, 934,0,wrappers
+R/core_metrics.R,metric_pbiasfdc, 957,0,wrappers
+R/core_metrics.R,.metric_year_from_index, 989,0,method dispatch
+R/core_metrics.R,metric_apfb, 996,0,NA handling
+R/core_metrics.R,metric_apfb, 999,0,NA handling
+R/core_metrics.R,metric_apfb,1011,0,NA handling
+R/core_metrics.R,metric_apfb,1016,0,NA handling
+R/core_metrics.R,metric_hfb,1043,0,NA handling
+R/core_metrics.R,metric_hfb,1061,0,NA handling
+R/cp.R,cp,   4,0,other
+R/ggof.R,ggof,  55,0,ggof plotting paths
+R/ggof.R,ggof,  60,0,ggof plotting paths
+R/ggof.R,ggof,  61,0,ggof plotting paths
+R/gof.R,.gof_is_single_series,  78,0,method dispatch
+R/gof.R,.gof_is_single_series,  83,0,method dispatch
+R/gof.R,.gof_is_single_series,  87,0,method dispatch
+R/gof.R,.gof_prepare_inputs, 110,0,NA handling
+R/gof.R,.gof_lookup_metric_params, 130,0,method dispatch
+R/gof.R,.gof_lookup_metric_params, 135,0,method dispatch
+R/gof.R,.gof_normalize_metric_calls, 154,0,normalization logic
+R/gof.R,.gof_normalize_metric_calls, 161,0,normalization logic
+R/gof.R,.gof_hydrometric_slots, 182,0,method dispatch
+R/gof.R,.hm_resolve_epsilon_type, 239,0,normalization logic
+R/gof.R,gof, 430,0,method dispatch
+R/gof.R,as.numeric.hydro_metrics, 527,0,output formatting paths
+R/hm_prepare.R,.hm_as_numeric_vector,  14,0,normalization logic
+R/hm_prepare.R,.hm_as_numeric_vector,  19,0,normalization logic
+R/hm_prepare.R,.hm_as_numeric_vector,  30,0,normalization logic
+R/hm_prepare.R,.hm_as_numeric_vector,  31,0,normalization logic
+R/hm_prepare.R,.hm_as_numeric_vector,  34,0,normalization logic
+R/hm_prepare.R,.hm_compute_epsilon,  45,0,error branches
+R/hm_prepare.R,.hm_apply_transform,  95,0,normalization logic
+R/hm_prepare.R,.hm_apply_transform, 108,0,normalization logic
+R/hm_prepare.R,.hm_index_key, 122,0,normalization logic
+R/hm_prepare.R,.hm_align_indexed_series, 135,0,normalization logic
+R/hm_prepare.R,.hm_align_indexed_series, 156,0,normalization logic
+R/hm_prepare.R,.hm_prepare_inputs, 183,0,NA handling
+R/hm_prepare.R,.hm_prepare_inputs, 186,0,NA handling
+R/hm_prepare.R,.hm_prepare_inputs, 189,0,NA handling
+R/hm_prepare.R,.hm_prepare_inputs, 195,0,NA handling
+R/hm_prepare.R,.hm_prepare_inputs, 198,0,NA handling
+R/hm_prepare.R,.hm_prepare_inputs, 222,0,NA handling
+R/hm_prepare.R,.hm_prepare_inputs, 227,0,NA handling
+R/hm_prepare.R,.hm_prepare_inputs, 228,0,NA handling
+R/hm_prepare.R,.hm_prepare_inputs, 229,0,NA handling
+R/hm_prepare.R,.hm_prepare_inputs, 230,0,NA handling
+R/hm_prepare.R,.hm_prepare_inputs, 231,0,NA handling
+R/hm_prepare.R,.hm_prepare_inputs, 247,0,NA handling
+R/hm_prepare.R,.hm_prepare_inputs, 279,0,NA handling
+R/hm_prepare.R,.hm_prepare_inputs, 282,0,NA handling
+R/HydroEngine.R,normalize_metrics,  46,0,error branches
+R/mae.R,mae,  16,0,wrappers
+R/MetricRegistry.R,validate_spec,  35,0,error branches
+R/MetricRegistry.R,validate_spec,  47,0,error branches
+R/MetricRegistry.R,validate_spec,  69,0,error branches
+R/MetricRegistry.R,get,  92,0,error branches
+R/mNSeff.R,mNSeff,  16,0,wrappers
+R/NSeff.R,NSeff,  16,0,wrappers
+R/pbias.R,pbias,  16,0,wrappers
+R/pfactor.R,pfactor,  26,0,other
+R/phase2_compat_wrappers.R,NRMSE, 131,0,wrappers
+R/preproc.R,.preproc_apply_na_compat,   3,0,NA handling
+R/preproc.R,.preproc_apply_na_compat,   4,0,NA handling
+R/preproc.R,.preproc_apply_na_compat,   5,0,NA handling
+R/preproc.R,.preproc_apply_na_compat,   7,0,NA handling
+R/preproc.R,.preproc_apply_na_compat,  11,0,NA handling
+R/preproc.R,.preproc_apply_na_compat,  12,0,NA handling
+R/r.R,r,  16,0,other
+R/rfactor.R,rfactor,   7,0,wrappers
+R/rNSeff.R,rNSeff,  16,0,wrappers
+R/rsr.R,rsr,  16,0,wrappers
+R/wsNSeff.R,wsNSeff,  16,0,wrappers

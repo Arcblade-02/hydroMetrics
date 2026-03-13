@@ -1,20 +1,21 @@
 Package: hydroMetrics
-Title: Clean-Room Hydrological Evaluation Metrics
-Version: 0.2.0
+Title: Hydrological Model Evaluation Metrics
+Version: 0.2.1
 Authors@R:
     person("Arcblade-02", email = "pritamparida432@gmail.com", role = c("aut", "cre"))
-Author: Arcblade-02 [aut, cre]
 Maintainer: Arcblade-02 <pritamparida432@gmail.com>
-Description: Clean-room MIT package for hydrological evaluation metrics,
-    with reproducible definitions and implementation-ready scaffolding.
+Description: Clean-room MIT implementation of hydrological model
+    evaluation metrics, including compatibility wrappers for
+    hydroGOF-style functions and an extensible evaluation framework
+    for hydrological time series diagnostics.
 License: MIT + file LICENSE
 Encoding: UTF-8
+LazyData: true
 URL: https://github.com/Arcblade-02/hydroMetrics
 BugReports: https://github.com/Arcblade-02/hydroMetrics/issues
 Imports:
-    R6 (>= 2.5.1)
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
+    R6 (>= 2.5.1),
+    stats
 Suggests:
     testthat (>= 3.0.0),
     covr,
@@ -28,3 +29,5 @@ Suggests:
     zoo
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3

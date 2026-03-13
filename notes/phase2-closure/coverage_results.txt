@@ -1,0 +1,4 @@
+Phase 2 closure coverage results
+Coverage percent: 95.17%
+Target met (>=95%): TRUE
+

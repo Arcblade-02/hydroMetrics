@@ -76,7 +76,6 @@
 - Added an internal fast path for simple single-metric wrapper calls on plain
   numeric no-NA vectors, with conservative fallback to the full engine for all
   non-trivial cases.
-
 ## 0.2.1
 
 - Correct the exported hydroGOF-style wrapper surface so `NSE()`, `KGE()`,

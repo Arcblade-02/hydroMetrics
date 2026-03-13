@@ -1,0 +1,336 @@
+# Test suite results generated 2026-03-10 01:27:05 IST
+
+## `testthat::test_dir("tests/testthat")`
+
+$ C:/PROGRA~1/R/R-45~1.2/bin/x64/Rscript.exe --vanilla C:\Users\prita\AppData\Local\Temp\RtmpGU4si6\release-readiness-137d41a6437dc.R
+✔ | F W  S  OK | Context
+
+⠏ |          0 | alpha                                                          
+✖ | 4        0 | alpha
+────────────────────────────────────────────────────────────────────────────────
+Error ('test-alpha.R:5:3'): alpha matches hand calculation on simple vector
+Error in `alpha(sim, obs)`: could not find function "alpha"
+Backtrace:
+    ▆
+ 1. └─testthat::expect_equal(alpha(sim, obs), 2) at test-alpha.R:5:3
+ 2.   └─testthat::quasi_label(enquo(object), label)
+ 3.     └─rlang::eval_bare(expr, quo_get_env(quo))
+
+Error ('test-alpha.R:12:3'): alpha errors when sd(obs) is zero
+Error in `alpha(c(1, 2, 3), c(2, 2, 2))`: could not find function "alpha"
+Backtrace:
+    ▆
+ 1. └─testthat::expect_error(alpha(c(1, 2, 3), c(2, 2, 2)), "sd\\(obs\\) is zero; alpha undefined") at test-alpha.R:12:3
+ 2.   └─testthat:::expect_condition_matching_(...)
+ 3.     └─testthat:::quasi_capture(...)
+ 4.       ├─testthat (local) .capture(...)
+ 5.       │ └─base::withCallingHandlers(...)
+ 6.       └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+
+Error ('test-alpha.R:19:3'): alpha errors when fewer than 2 values are available
+Error in `alpha(c(1), c(1))`: could not find function "alpha"
+Backtrace:
+    ▆
+ 1. └─testthat::expect_error(alpha(c(1), c(1)), "alpha requires at least 2 values") at test-alpha.R:19:3
+ 2.   └─testthat:::expect_condition_matching_(...)
+ 3.     └─testthat:::quasi_capture(...)
+ 4.       ├─testthat (local) .capture(...)
+ 5.       │ └─base::withCallingHandlers(...)
+ 6.       └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+
+Error ('test-alpha.R:30:3'): alpha wrapper uses preprocessing pipeline NA removal
+Error in `alpha(sim, obs, na.rm = TRUE)`: could not find function "alpha"
+Backtrace:
+    ▆
+ 1. └─testthat::expect_equal(alpha(sim, obs, na.rm = TRUE), sqrt(8)/sqrt(2)) at test-alpha.R:30:3
+ 2.   └─testthat::quasi_label(enquo(object), label)
+ 3.     └─rlang::eval_bare(expr, quo_get_env(quo))
+────────────────────────────────────────────────────────────────────────────────
+
+⠏ |          0 | apfb                                                           
+✖ | 7        0 | apfb
+────────────────────────────────────────────────────────────────────────────────
+Error ('test-apfb.R:8:3'): APFB computes annual peak-flow bias for zoo input
+Error in `APFB(sim, obs)`: could not find function "APFB"
+
+Error ('test-apfb.R:27:3'): APFB supports xts input
+Error in `APFB(sim, obs)`: could not find function "APFB"
+
+Error ('test-apfb.R:33:3'): APFB errors when time index is absent
+Error in `APFB(c(1, 2, 3), c(1, 2, 3))`: could not find function "APFB"
+Backtrace:
+    ▆
+ 1. └─testthat::expect_error(APFB(c(1, 2, 3), c(1, 2, 3)), "requires zoo/xts inputs") at test-apfb.R:33:3
+ 2.   └─testthat:::expect_condition_matching_(...)
+ 3.     └─testthat:::quasi_capture(...)
+ 4.       ├─testthat (local) .capture(...)
+ 5.       │ └─base::withCallingHandlers(...)
+ 6.       └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+
+Error ('test-apfb.R:46:3'): APFB errors when fewer than two years remain
+Error in `APFB(sim, obs)`: could not find function "APFB"
+Backtrace:
+    ▆
+ 1. └─testthat::expect_error(APFB(sim, obs), "at least 2 years") at test-apfb.R:46:3
+ 2.   └─testthat:::expect_condition_matching_(...)
+ 3.     └─testthat:::quasi_capture(...)
+ 4.       ├─testthat (local) .capture(...)
+ 5.       │ └─base::withCallingHandlers(...)
+ 6.       └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+
+Error ('test-apfb.R:59:3'): APFB returns a numerically coercible scalar
+Error in `APFB(sim, obs)`: could not find function "APFB"
+
+Failure ('test-apfb.R:90:3'): APFB supports partially overlapping zoo inputs after deterministic alignment
+Expected `out <- APFB(sim, obs)` not to throw any errors.
+Actually got a <simpleError> with message:
+  could not find function "APFB"
+
+Error ('test-apfb.R:93:3'): APFB supports partially overlapping zoo inputs after deterministic alignment
+Error in `eval(code, test_env)`: object 'out' not found
+Backtrace:
+    ▆
+ 1. └─testthat::expect_s3_class(out, "hydro_metric_scalar") at test-apfb.R:93:3
+ 2.   └─testthat::quasi_label(enquo(object))
+ 3.     └─rlang::eval_bare(expr, quo_get_env(quo))
+────────────────────────────────────────────────────────────────────────────────
+
+Maximum number of failures exceeded; quitting.
+ℹ Increase this number with (e.g.) `testthat::set_max_fails(Inf)` 
+[stderr]
+Error:
+! Test failures.
+Execution halted
+
+## `devtools::test()`
+
+$ C:/PROGRA~1/R/R-45~1.2/bin/x64/Rscript.exe --vanilla C:\Users\prita\AppData\Local\Temp\RtmpGU4si6\release-readiness-137d47506f2a.R
+✔ | F W  S  OK | Context
+
+⠏ |          0 | alpha                                                          
+⠹ |          3 | alpha                                                          
+✔ |          5 | alpha
+
+⠏ |          0 | apfb                                                           
+⠙ |         12 | apfb                                                           
+✔ |         20 | apfb
+
+⠏ |          0 | backward-compatibility                                         
+⠙ |         22 | backward-compatibility                                         
+✔ |         22 | backward-compatibility
+
+⠏ |          0 | beta                                                           
+✔ |          5 | beta
+
+⠏ |          0 | compat-hydrogof                                                
+✔ |          1 | compat-hydrogof
+
+⠏ |          0 | cp                                                             
+✔ |          4 | cp
+
+⠏ |          0 | description-merge-sync-exists                                  
+✔ |          7 | description-merge-sync-exists
+
+⠏ |          0 | engine                                                         
+⠋ |         11 | engine                                                         
+✔ |         14 | engine
+
+⠏ |          0 | error-handling-phase2                                          
+⠼ |         25 | error-handling-phase2                                          
+⠏ |         60 | error-handling-phase2                                          
+✔ |         75 | error-handling-phase2
+
+⠏ |          0 | ggof                                                           
+✔ |         13 | ggof
+
+⠏ |          0 | gof                                                            
+✔ |         20 | gof
+
+⠏ |          0 | hfb                                                            
+✔ |         16 | hfb
+
+⠏ |          0 | indexed-public-api-phase2                                      
+✔ |         24 | indexed-public-api-phase2
+
+⠏ |          0 | init                                                           
+✔ |          1 | init
+
+⠏ |          0 | legacy-nse-aliases                                             
+⠼ |         15 | legacy-nse-aliases                                             
+✔ |         17 | legacy-nse-aliases
+
+⠏ |          0 | mae                                                            
+✔ |          5 | mae
+
+⠏ |          0 | metric-params                                                  
+✔ |          4 | metric-params
+
+⠏ |          0 | metrics-batch2                                                 
+✔ |         17 | metrics-batch2
+
+⠏ |          0 | metrics-batch3                                                 
+⠋ |         21 | metrics-batch3                                                 
+✔ |         23 | metrics-batch3
+
+⠏ |          0 | metrics-batch4                                                 
+⠏ |         20 | metrics-batch4                                                 
+✔ |         21 | metrics-batch4
+
+⠏ |          0 | metrics-batch5                                                 
+⠧ |         18 | metrics-batch5                                                 
+✔ |         23 | metrics-batch5
+
+⠏ |          0 | metrics-batch6                                                 
+⠹ |         13 | metrics-batch6                                                 
+✔ |         22 | metrics-batch6
+
+⠏ |          0 | metrics-batch7                                                 
+✔ |          7 | metrics-batch7
+
+⠏ |          0 | normalization-paths-phase2                                     
+⠼ |         25 | normalization-paths-phase2                                     
+✔ |         31 | normalization-paths-phase2
+
+⠏ |          0 | output-contract-phase2                                         
+✔ |         20 | output-contract-phase2
+
+⠏ |          0 | pbias                                                          
+✔ |          5 | pbias
+
+⠏ |          0 | performance-suite-exists                                       
+✔ |          3 | performance-suite-exists
+
+⠏ |          0 | pfactor                                                        
+✔ |          6 | pfactor
+
+⠏ |          0 | phase2-archive-cleanup-exists                                  
+✔ |          7 | phase2-archive-cleanup-exists
+
+⠏ |          0 | phase2-audit-exists                                            
+⠋ |          1 | phase2-audit-exists                                            
+⠹ |          3 | phase2-audit-exists                                            
+⠸ |          4 | phase2-audit-exists                                            
+⠼ |          5 | phase2-audit-exists                                            
+⠴ |          6 | phase2-audit-exists                                            
+✔ |          6 | phase2-audit-exists [1.2s]
+
+⠏ |          0 | phase2-ci-repair-exists                                        
+✔ |          7 | phase2-ci-repair-exists
+
+⠏ |          0 | phase2-compatibility-audit-exists                              
+⠋ |          1 | phase2-compatibility-audit-exists                              
+⠹ |          3 | phase2-compatibility-audit-exists                              
+⠸ |          4 | phase2-compatibility-audit-exists                              
+⠼ |          5 | phase2-compatibility-audit-exists                              
+⠴ |          6 | phase2-compatibility-audit-exists                              
+⠦ |          7 | phase2-compatibility-audit-exists                              
+⠧ |          8 | phase2-compatibility-audit-exists                              
+⠇ |          9 | phase2-compatibility-audit-exists                              
+✔ |          9 | phase2-compatibility-audit-exists [1.8s]
+
+⠏ |          0 | phase2-dynamic-verification-exists                             
+⠋ |          1 | phase2-dynamic-verification-exists                             
+⠹ |          3 | phase2-dynamic-verification-exists                             
+⠸ |          4 | phase2-dynamic-verification-exists                             
+⠼ |          5 | phase2-dynamic-verification-exists                             
+⠴ |          6 | phase2-dynamic-verification-exists                             
+⠦ |          7 | phase2-dynamic-verification-exists                             
+⠧ |          8 | phase2-dynamic-verification-exists                             
+✔ |          8 | phase2-dynamic-verification-exists [1.6s]
+
+⠏ |          0 | phase2-exit-contract-exists                                    
+✔ |         11 | phase2-exit-contract-exists
+
+⠏ |          0 | phase2-fix-program-exists                                      
+⠋ |          1 | phase2-fix-program-exists                                      
+⠹ |          3 | phase2-fix-program-exists                                      
+⠸ |          4 | phase2-fix-program-exists                                      
+⠼ |          5 | phase2-fix-program-exists                                      
+✔ |         15 | phase2-fix-program-exists
+
+⠏ |          0 | phase2-github-integration-exists                               
+✔ |          8 | phase2-github-integration-exists
+
+⠏ |          0 | phase2-math-validation-exists                                  
+⠋ |          1 | phase2-math-validation-exists                                  
+⠹ |          3 | phase2-math-validation-exists                                  
+⠸ |          4 | phase2-math-validation-exists                                  
+⠼ |          5 | phase2-math-validation-exists                                  
+⠴ |          6 | phase2-math-validation-exists                                  
+⠦ |          7 | phase2-math-validation-exists                                  
+⠧ |          8 | phase2-math-validation-exists                                  
+⠇ |          9 | phase2-math-validation-exists                                  
+✔ |          9 | phase2-math-validation-exists [1.8s]
+
+⠏ |          0 | phase2-merge-resolution-exists                                 
+✔ |          6 | phase2-merge-resolution-exists
+
+⠏ |          0 | phase2-oldrel-compatibility-repair-exists                      
+✔ |          7 | phase2-oldrel-compatibility-repair-exists
+
+⠏ |          0 | phase2-readiness-rebase-exists                                 
+⠋ |          1 | phase2-readiness-rebase-exists                                 
+⠙ |          2 | phase2-readiness-rebase-exists                                 
+⠹ |          3 | phase2-readiness-rebase-exists                                 
+⠸ |          4 | phase2-readiness-rebase-exists                                 
+⠼ |          5 | phase2-readiness-rebase-exists                                 
+⠴ |          6 | phase2-readiness-rebase-exists                                 
+✔ |          6 | phase2-readiness-rebase-exists [1.3s]
+
+⠏ |          0 | phase2-release-hardening-exists                                
+⠋ |          1 | phase2-release-hardening-exists                                
+⠹ |          3 | phase2-release-hardening-exists                                
+⠸ |          4 | phase2-release-hardening-exists                                
+⠼ |          5 | phase2-release-hardening-exists                                
+⠴ |          6 | phase2-release-hardening-exists                                
+⠦ |          7 | phase2-release-hardening-exists                                
+⠧ |          8 | phase2-release-hardening-exists                                
+✔ |          8 | phase2-release-hardening-exists [1.5s]
+
+⠏ |          0 | preproc-export                                                 
+⠙ |         22 | preproc-export                                                 
+✔ |         35 | preproc-export
+
+⠏ |          0 | preprocessing                                                  
+⠼ |         25 | preprocessing                                                  
+✔ |         34 | preprocessing
+
+⠏ |          0 | r                                                              
+✔ |          7 | r
+
+⠏ |          0 | r2-nrmse-phase2                                                
+✔ |          5 | r2-nrmse-phase2
+
+⠏ |          0 | release-readiness-pipeline-exists                              
+✔ |         15 | release-readiness-pipeline-exists
+
+⠏ |          0 | rfactor                                                        
+✔ |          5 | rfactor
+
+⠏ |          0 | rsr                                                            
+✔ |          5 | rsr
+
+⠏ |          0 | structural-integrity                                           
+⠧ |         28 | structural-integrity                                           
+⠸ |         64 | structural-integrity                                           
+⠧ |         88 | structural-integrity                                           
+⠼ |        125 | structural-integrity                                           
+⠹ |        163 | structural-integrity                                           
+✔ |        170 | structural-integrity
+
+⠏ |          0 | valindex                                                       
+✔ |          7 | valindex
+
+⠏ |          0 | wrapper-contract-phase2                                        
+✔ |         22 | wrapper-contract-phase2
+
+⠏ |          0 | wrapper-edgecases-phase2                                       
+⠇ |         29 | wrapper-edgecases-phase2                                       
+✔ |         55 | wrapper-edgecases-phase2
+
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 14.5 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 898 ]
+[stderr]
+ℹ Testing hydroMetrics

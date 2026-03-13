@@ -35,7 +35,7 @@ test_that("v0.2.1 release finalization artifacts are present in the source tree"
   }
 })
 
-test_that("v0.2.1 release finalization metadata is in place", {
+test_that("v0.2.1 release finalization metadata is preserved alongside the current package state", {
   root <- find_release_v0_2_1_root()
   if (is.na(root)) {
     skip("source-tree release finalization metadata checks are excluded from built package checks")
@@ -48,6 +48,6 @@ test_that("v0.2.1 release finalization metadata is in place", {
 
   expect_true(file.exists(description_path))
   expect_true(file.exists(news_path))
-  expect_match(description_text, "(?m)^Version:\\s*0\\.2\\.1\\s*$", perl = TRUE)
+  expect_match(description_text, "(?m)^Version:\\s*0\\.3\\.0\\s*$", perl = TRUE)
   expect_match(news_text, "(?m)^##\\s+0\\.2\\.1\\s*$", perl = TRUE)
 })

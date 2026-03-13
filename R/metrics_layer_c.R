@@ -413,3 +413,107 @@ core_metric_spec_extreme_event_ratio <- function() {
     tags = c("phase-3", "layer-c", "batch-c3")
   )
 }
+
+# Shared Batch C4 conventions:
+# - rank_turnover_score uses paired average ranks via rank(..., ties.method =
+#   "average"), computes the mean absolute rank difference, and normalizes by
+#   the reversed-order maximum for length n so the score is in [0, 1]
+# - distribution_overlap uses the C2 pooled-support Sturges histogram policy
+#   and returns the overlap coefficient sum(min(p_sim, p_obs))
+# - quantile_shift_index uses the fixed probability grid p = 0.1, ..., 0.9
+#   with stats::quantile(..., type = 7), then scales the mean absolute
+#   quantile difference by the observed IQR
+
+.hm_c4_average_ranks <- function(x) {
+  rank(as.numeric(x), ties.method = "average")
+}
+
+.hm_c4_max_mean_rank_diff <- function(n) {
+  mean(abs(seq_len(n) - rev(seq_len(n))))
+}
+
+metric_rank_turnover_score <- function(sim, obs) {
+  inputs <- .hm_c2_validate_info_pair(
+    sim,
+    obs,
+    "rank_turnover_score",
+    min_length = 2L,
+    require_equal_length = TRUE
+  )
+  rank_diff <- abs(.hm_c4_average_ranks(inputs$sim) - .hm_c4_average_ranks(inputs$obs))
+  max_diff <- .hm_c4_max_mean_rank_diff(length(inputs$obs))
+
+  if (!is.finite(max_diff) || max_diff <= 0) {
+    stop("rank_turnover_score is undefined because the rank normalization denominator is not positive.", call. = FALSE)
+  }
+
+  mean(rank_diff) / max_diff
+}
+
+core_metric_spec_rank_turnover_score <- function() {
+  list(
+    id = "rank_turnover_score",
+    fun = metric_rank_turnover_score,
+    name = "Rank Turnover Score",
+    description = "Mean absolute average-rank difference between sim and obs, normalized by the reversed-order maximum for length n.",
+    category = "error",
+    perfect = 0,
+    range = c(0, 1),
+    references = "Spearman (1904) rank-order association context; package metric uses average ranks and a normalized mean absolute rank-difference score.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "batch-c4")
+  )
+}
+
+metric_distribution_overlap <- function(sim, obs) {
+  inputs <- .hm_c2_validate_info_pair(sim, obs, "distribution_overlap", min_length = 2L)
+  breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "distribution_overlap")
+  p_sim <- .hm_c2_hist_probs(inputs$sim, breaks, "distribution_overlap", "sim")
+  p_obs <- .hm_c2_hist_probs(inputs$obs, breaks, "distribution_overlap", "obs")
+
+  sum(pmin(p_sim, p_obs))
+}
+
+core_metric_spec_distribution_overlap <- function() {
+  list(
+    id = "distribution_overlap",
+    fun = metric_distribution_overlap,
+    name = "Distribution Overlap",
+    description = "Overlap coefficient sum(min(p_sim, p_obs)) on pooled-support Sturges histograms of sim and obs.",
+    category = "agreement",
+    perfect = 1,
+    range = c(0, 1),
+    references = "Sturges (1926) histogram binning; package metric reports the pooled-grid overlap coefficient sum(min(p_sim, p_obs)).",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "batch-c4")
+  )
+}
+
+metric_quantile_shift_index <- function(sim, obs) {
+  inputs <- .hm_c2_validate_info_pair(sim, obs, "quantile_shift_index", min_length = 3L)
+  probs <- .hm_b1_fixed_prob_grid()
+  sim_q <- stats::quantile(inputs$sim, probs = probs, type = 7, names = FALSE)
+  obs_q <- stats::quantile(inputs$obs, probs = probs, type = 7, names = FALSE)
+  iqr_obs <- .hm_c1_type7_iqr(inputs$obs, "quantile_shift_index", "obs")
+
+  if (iqr_obs == 0) {
+    stop("quantile_shift_index is undefined because IQR(obs) == 0.", call. = FALSE)
+  }
+
+  mean(abs(sim_q - obs_q)) / iqr_obs
+}
+
+core_metric_spec_quantile_shift_index <- function() {
+  list(
+    id = "quantile_shift_index",
+    fun = metric_quantile_shift_index,
+    name = "Quantile Shift Index",
+    description = "Mean absolute type-7 quantile difference on p = 0.1, ..., 0.9 scaled by the observed interquartile range.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Hyndman & Fan (1996) quantile conventions; package metric uses a fixed p = 0.1..0.9 grid and scales the mean absolute quantile shift by IQR(obs).",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "batch-c4")
+  )
+}

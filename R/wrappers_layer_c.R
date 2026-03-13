@@ -173,3 +173,59 @@ tail_dependence_score <- function(sim, obs, na.rm = NULL, ...) {
 extreme_event_ratio <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("extreme_event_ratio", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
+
+#' Evaluate the rank turnover score wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"rank_turnover_score"`. The metric compares average ranks with
+#' `ties.method = "average"` and returns the mean absolute rank difference
+#' normalized by the reversed-order maximum for the current length.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' rank_turnover_score(c(1, 4, 2, 8, 5, 7), c(1, 2, 3, 4, 5, 6))
+#' @export
+rank_turnover_score <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("rank_turnover_score", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the distribution overlap wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"distribution_overlap"`. The metric uses pooled-support Sturges histograms
+#' and reports the overlap coefficient `sum(min(p_sim, p_obs))`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' distribution_overlap(c(1, 4, 2, 8, 5, 7), c(1, 2, 3, 4, 5, 6))
+#' @export
+distribution_overlap <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("distribution_overlap", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the quantile shift index wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"quantile_shift_index"`. The metric uses type-7 quantiles on the fixed
+#' grid `p = 0.1, ..., 0.9`, computes the mean absolute quantile difference,
+#' and scales it by `IQR(obs)`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' quantile_shift_index(c(1, 4, 2, 8, 5, 7), c(1, 2, 3, 4, 5, 6))
+#' @export
+quantile_shift_index <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("quantile_shift_index", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}

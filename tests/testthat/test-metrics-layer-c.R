@@ -108,6 +108,27 @@ if (!exists("gof", mode = "function")) {
   length(split(idx, cumsum(c(1L, diff(idx) > 1L))))
 }
 
+.test_c4_rank_turnover <- function(sim, obs) {
+  sim_rank <- rank(sim, ties.method = "average")
+  obs_rank <- rank(obs, ties.method = "average")
+  max_diff <- mean(abs(seq_along(obs) - rev(seq_along(obs))))
+  mean(abs(sim_rank - obs_rank)) / max_diff
+}
+
+.test_c4_distribution_overlap <- function(sim, obs) {
+  breaks <- .test_c2_pooled_breaks(sim, obs)
+  p_sim <- .test_c2_hist_probs(sim, breaks)
+  p_obs <- .test_c2_hist_probs(obs, breaks)
+  sum(pmin(p_sim, p_obs))
+}
+
+.test_c4_quantile_shift_index <- function(sim, obs) {
+  probs <- seq(0.1, 0.9, by = 0.1)
+  sim_q <- stats::quantile(sim, probs = probs, type = 7, names = FALSE)
+  obs_q <- stats::quantile(obs, probs = probs, type = 7, names = FALSE)
+  mean(abs(sim_q - obs_q)) / .test_c1_type7_iqr(obs)
+}
+
 test_that("layer C batch C1 registry ids are present", {
   ids <- list_metrics()$id
   target <- c("skewness_error", "kurtosis_error", "iqr_error")
@@ -125,6 +146,13 @@ test_that("layer C batch C2 registry ids are present", {
 test_that("layer C batch C3 registry ids are present", {
   ids <- list_metrics()$id
   target <- c("flow_duration_entropy", "tail_dependence_score", "extreme_event_ratio")
+
+  expect_true(all(target %in% ids))
+})
+
+test_that("layer C batch C4 registry ids are present", {
+  ids <- list_metrics()$id
+  target <- c("rank_turnover_score", "distribution_overlap", "quantile_shift_index")
 
   expect_true(all(target %in% ids))
 })
@@ -229,7 +257,10 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "kl_divergence_flow",
       "flow_duration_entropy",
       "tail_dependence_score",
-      "extreme_event_ratio"
+      "extreme_event_ratio",
+      "rank_turnover_score",
+      "distribution_overlap",
+      "quantile_shift_index"
     )
   )
   expect_true(inherits(out, "hydro_metrics"))
@@ -244,7 +275,10 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "kl_divergence_flow",
       "flow_duration_entropy",
       "tail_dependence_score",
-      "extreme_event_ratio"
+      "extreme_event_ratio",
+      "rank_turnover_score",
+      "distribution_overlap",
+      "quantile_shift_index"
     )
   )
 
@@ -260,7 +294,10 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
         "kl_divergence_flow",
         "flow_duration_entropy",
         "tail_dependence_score",
-        "extreme_event_ratio"
+        "extreme_event_ratio",
+        "rank_turnover_score",
+        "distribution_overlap",
+        "quantile_shift_index"
       ) %in% names(out_ext)
     )
   )
@@ -414,4 +451,75 @@ test_that("gof extended excludes threshold-gated C3 metrics when observed tails 
   expect_false("tail_dependence_score" %in% names(out_ext))
   expect_false("extreme_event_ratio" %in% names(out_ext))
   expect_true("flow_duration_entropy" %in% names(out_ext))
+})
+
+test_that("rank_turnover_score matches normalized average-rank turnover", {
+  sim <- c(1, 4, 2, 8, 5, 7, 3, 6)
+  obs <- c(1, 2, 3, 4, 5, 6, 7, 8)
+  expected <- .test_c4_rank_turnover(sim, obs)
+
+  expect_equal(rank_turnover_score(sim, obs), expected)
+  expect_equal(metric_rank_turnover_score(sim, obs), expected)
+})
+
+test_that("rank_turnover_score is zero for identical rankings and positive for reorderings", {
+  const <- c(1, 1, 1, 1, 1, 1)
+  inc <- c(1, 2, 3, 4, 5, 6)
+  rev_inc <- rev(inc)
+
+  expect_equal(rank_turnover_score(inc, inc), 0)
+  expect_equal(rank_turnover_score(const, const), 0)
+  expect_gt(rank_turnover_score(rev_inc, inc), 0)
+  expect_error(rank_turnover_score(1, 1), "requires at least 2 values")
+})
+
+test_that("distribution_overlap matches pooled-grid overlap coefficient", {
+  sim <- c(1, 4, 2, 8, 5, 7, 3, 6)
+  obs <- c(1, 2, 3, 4, 5, 6, 7, 8)
+  expected <- .test_c4_distribution_overlap(sim, obs)
+
+  expect_equal(distribution_overlap(sim, obs), expected)
+  expect_equal(metric_distribution_overlap(sim, obs), expected)
+})
+
+test_that("distribution_overlap stays bounded and handles constant series deterministically", {
+  const <- c(1, 1, 1, 1, 1, 1)
+  inc <- c(1, 2, 3, 4, 5, 6)
+  value <- distribution_overlap(const, inc)
+
+  expect_equal(distribution_overlap(inc, inc), 1)
+  expect_equal(distribution_overlap(const, const), 1)
+  expect_gte(value, 0)
+  expect_lte(value, 1)
+  expect_error(distribution_overlap(1, 1), "requires at least 2 values")
+})
+
+test_that("quantile_shift_index matches fixed-grid type-7 quantile shift scaling", {
+  sim <- c(1, 4, 2, 8, 5, 7, 3, 6)
+  obs <- c(1, 2, 3, 4, 5, 6, 7, 8)
+  expected <- .test_c4_quantile_shift_index(sim, obs)
+
+  expect_equal(quantile_shift_index(sim, obs), expected)
+  expect_equal(metric_quantile_shift_index(sim, obs), expected)
+})
+
+test_that("quantile_shift_index is zero on identical series and rejects zero observed IQR", {
+  inc <- c(1, 2, 3, 4, 5, 6)
+  const <- c(1, 1, 1, 1, 1, 1)
+
+  expect_equal(quantile_shift_index(inc, inc), 0)
+  expect_error(
+    quantile_shift_index(inc, const),
+    "IQR\\(obs\\) == 0"
+  )
+})
+
+test_that("auto-applicability excludes C4 quantile-shift metric when observed IQR is zero", {
+  sim <- c(1, 2, 2, 2, 2, 2)
+  obs <- c(1, 1, 1, 1, 1, 2)
+  ids <- .gof_auto_applicable_ids(list_metrics()$id, sim = sim, obs = obs)
+
+  expect_false("quantile_shift_index" %in% ids)
+  expect_true("rank_turnover_score" %in% ids)
+  expect_true("distribution_overlap" %in% ids)
 })

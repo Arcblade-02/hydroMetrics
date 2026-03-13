@@ -1,0 +1,278 @@
+---
+title: "Calibration Guide"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Calibration Guide}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r}
+library(hydroMetrics)
+```
+
+This vignette shows how to choose and use `hydroMetrics` metrics in practical
+calibration workflows. The focus is narrow: deterministic calibration guidance
+for the current package surface, not a general review of hydrologic calibration
+theory.
+
+In `hydroMetrics`, calibration means comparing simulated and observed series
+with metrics that emphasize different aspects of fit such as overall error,
+correlation, bias, variability, seasonality, or selected flow regimes. No
+single metric is universally best. A calibration target should match the
+modeling objective.
+
+## Start With the Recommended Shortlist
+
+For most deterministic calibration workflows, the safest starting point is the
+same compat-10 shortlist that powers the default `gof()` behavior:
+
+- `nse`
+- `kge`
+- `rmse`
+- `pbias`
+- `mae`
+- `mse`
+- `r2`
+- `ve`
+- `rsr`
+- `nrmse`
+
+The package currently exposes that curated shortlist through the internal
+registry helper `hydroMetrics:::list_metrics(recommended = TRUE)`. This helper
+is useful for package-development or audit workflows; the main public user path
+is simply to call `gof(sim, obs)` with no explicit `methods`.
+
+```{r}
+hydroMetrics:::list_metrics(recommended = TRUE)[, c("id", "name")]
+```
+
+## Core Deterministic Calibration Metrics
+
+The public default is `gof(sim, obs)`. It returns the compat-10 metrics on
+aligned prepared data.
+
+```{r}
+sim <- c(1.2, 1.8, 3.4, 3.9, 5.1, 6.0, 7.2, 8.1)
+obs <- c(1.0, 2.0, 3.0, 4.0, 5.0, 6.2, 7.0, 8.0)
+
+default_out <- gof(sim, obs)
+default_out
+```
+
+These metrics emphasize different calibration properties:
+
+- `nse`, `kge`: overall efficiency relative to observed behavior
+- `rmse`, `mae`, `mse`, `nrmse`: absolute or squared error magnitude
+- `pbias`: directional volume bias
+- `r2`: linear association strength
+- `ve`: volumetric agreement
+- `rsr`: error relative to observed variability
+
+When you want a single metric directly, the exported wrappers are often more
+convenient than a multi-metric `gof()` call. For core metrics that are not
+exposed as direct wrappers in the current public namespace, use
+`gof(methods = ...)`.
+
+```{r}
+gof(sim, obs, methods = c("nse", "kge", "rmse"))
+mae(sim, obs)
+pbias(sim, obs)
+```
+
+## When to Use `gof()` vs Wrappers
+
+Use `gof()` when you want one consistent preprocessing path and several metrics
+at once:
+
+```{r}
+gof(sim, obs, methods = c("nse", "kge", "rmse", "pbias"))
+```
+
+Use a wrapper when the metric itself is the focus or when the metric has a
+more specialized contract that you want to call explicitly:
+
+```{r}
+extended_valindex(sim, obs)
+```
+
+`valindex()` is also available, but it remains the historical orchestration
+wrapper around `gof(methods = fun, ...)`, not a fixed composite score:
+
+```{r}
+valindex(sim, obs, fun = c("nse", "rmse"))
+```
+
+## Extended Deterministic Metrics
+
+`gof(sim, obs, extended = TRUE)` expands omitted method selection from the
+compat-10 default to all registered metrics that are applicable to the current
+input context.
+
+This does not mean every metric is always included. Conditional metrics are
+only auto-selected when their documented preconditions are satisfied.
+
+```{r}
+ext_out <- gof(sim, obs, extended = TRUE)
+sort(intersect(
+  c(
+    "entropy_diff",
+    "flow_duration_entropy",
+    "tail_dependence_score",
+    "extended_valindex",
+    "seasonal_skill"
+  ),
+  names(ext_out)
+))
+```
+
+For a plain numeric vector, `extended = TRUE` can expose useful additional
+diagnostics such as distribution, information-theory, or composite metrics, but
+it still respects conditional gating.
+
+## Seasonal, Regime, and Tail-Sensitive Metrics
+
+Some calibration targets are about more than overall fit. If the modeling goal
+is seasonal timing, regime shape, or selected extremes, metric choice should
+reflect that.
+
+### Seasonal Metrics
+
+`seasonal_nse` and `seasonal_skill` require valid monthly seasonality. They are
+defined on monthly climatology vectors, so the input must carry monthly time
+structure such as a `ts` series with `frequency = 12`.
+
+```{r}
+sim_ts <- ts(
+  c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11,
+    10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11),
+  frequency = 12
+)
+obs_ts <- ts(
+  c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10,
+    9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10),
+  frequency = 12
+)
+
+seasonal_nse(sim_ts, obs_ts)
+seasonal_skill(sim_ts, obs_ts)
+intersect(c("seasonal_nse", "seasonal_skill"), names(gof(sim_ts, obs_ts, extended = TRUE)))
+```
+
+For plain numeric vectors without monthly structure, these seasonal metrics are
+not auto-selected by `gof(extended = TRUE)`.
+
+### Regime and Flow-Duration Diagnostics
+
+Metrics such as `fdc_slope_error`, `fdc_highflow_bias`, `fdc_lowflow_bias`, and
+`flow_duration_entropy` are useful when calibration is aimed at regime shape or
+flow-duration behavior instead of only pointwise error.
+
+These can be requested directly when that is the modeling objective:
+
+```{r}
+gof(sim, obs, methods = c("fdc_slope_error", "fdc_highflow_bias", "flow_duration_entropy"))
+```
+
+### Tail and Event-Sensitive Metrics
+
+Metrics such as `tail_dependence_score`, `extreme_event_ratio`, and `event_nse`
+are narrower. They rely on observed tail or event structure. When that
+structure is absent, `gof(extended = TRUE)` excludes them rather than failing.
+
+```{r}
+sim_flat <- c(1, 2, 2, 2, 2, 2)
+obs_flat <- c(1, 1, 1, 1, 2, 2)
+
+intersect(
+  c("tail_dependence_score", "extreme_event_ratio", "event_nse"),
+  names(gof(sim_flat, obs_flat, extended = TRUE))
+)
+```
+
+These are best treated as targeted diagnostics, not generic first-choice
+calibration objectives.
+
+## Probabilistic and Special-Interface Metrics
+
+Not every package metric is a drop-in deterministic calibration score.
+
+The probabilistic Layer A metrics:
+
+- `crps`
+- `picp`
+- `mwpi`
+- `skill_score`
+
+are explicit-wrapper metrics with special input contracts. They are not part of
+default deterministic `gof(sim, obs)` selection, and they are not auto-selected
+by `gof(sim, obs, extended = TRUE)` for ordinary single simulated and observed
+vectors.
+
+Likewise, some specialized metrics need structural context or extra parameters.
+Use direct wrappers or explicit `gof(methods = ..., metric_params = ...)` calls
+only when that input contract matches the calibration problem.
+
+## Practical Calibration Workflows
+
+### A conservative deterministic workflow
+
+Start with the default shortlist, review a few complementary metrics, then add
+specialized diagnostics only if the modeling objective requires them.
+
+```{r}
+default_out[c("nse", "kge", "rmse", "pbias", "ve", "rsr")]
+```
+
+If you want one fixed scalar summary for comparing candidate runs, the package
+also provides `extended_valindex()`. It is a package-defined composite of
+stable core metrics, so it can be useful as a secondary summary, but it should
+not replace objective-specific diagnostics.
+
+```{r}
+extended_valindex(sim, obs)
+```
+
+### A seasonal workflow
+
+When the calibration objective is seasonal climatology rather than only
+pointwise fit, move from the default deterministic metrics to seasonal
+wrappers:
+
+```{r}
+c(
+  seasonal_nse = seasonal_nse(sim_ts, obs_ts),
+  seasonal_skill = seasonal_skill(sim_ts, obs_ts)
+)
+```
+
+## Caveats for Metric Choice
+
+- No single metric is universally best for calibration.
+- Default `gof()` is a stable starting point because it uses the curated
+  compat-10 shortlist.
+- `gof(extended = TRUE)` is useful for exploration, but conditional metrics
+  appear only when their contracts are satisfied.
+- Seasonal metrics require genuine monthly structure.
+- Tail/event metrics require qualifying observed extremes or events.
+- Probabilistic metrics are not generic deterministic drop-ins.
+- Log-sensitive or zero-sensitive metrics should only be used when their input
+  assumptions match the data and calibration objective.
+
+Choose metrics that match the behavior you want the model to reproduce:
+overall efficiency, low-flow fidelity, bias, seasonality, regime shape, or
+extreme-event behavior.
+
+## Next Steps
+
+Use this vignette as the calibration-oriented starting point, then consult:
+
+- `vignette("getting-started", package = "hydroMetrics")` for a minimal package
+  walkthrough
+- `?gof`, `?ggof`, and wrapper help pages for exact function contracts
+- [NEWS.md](../NEWS.md) for the current Phase 3 implementation boundary and
+  closure notes

@@ -1,0 +1,229 @@
+---
+title: "Uncertainty and Probabilistic Evaluation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Uncertainty and Probabilistic Evaluation}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r}
+library(hydroMetrics)
+```
+
+This vignette shows how to use the current `hydroMetrics` uncertainty and
+probabilistic evaluation tools. The scope is narrow: interval, ensemble, and
+score-against-baseline evaluation with the package surface that exists today.
+
+In `hydroMetrics`, deterministic fit metrics and probabilistic metrics answer
+different questions. A deterministic score asks how close one simulated series
+is to one observed series. Probabilistic metrics instead evaluate forecast
+distributions, predictive intervals, or relative improvement against a
+reference score.
+
+## What hydroMetrics Supports Today
+
+The current uncertainty-facing metrics are explicit wrappers:
+
+- `crps()` for ensemble forecasts
+- `picp()` for prediction-interval coverage
+- `mwpi()` for mean prediction-interval width
+- `skill_score()` for lower-is-better relative improvement against a baseline
+
+These are not part of the default deterministic `gof(sim, obs)` workflow, and
+they are not auto-selected by `gof(sim, obs, extended = TRUE)` for ordinary
+single simulated and observed vectors.
+
+```{r}
+sim <- c(1.2, 1.8, 3.4, 3.9, 5.1, 6.0)
+obs <- c(1.0, 2.0, 3.0, 4.0, 5.0, 6.2)
+
+names(gof(sim, obs))
+intersect(c("crps", "picp", "mwpi", "skill_score"), names(gof(sim, obs, extended = TRUE)))
+```
+
+That boundary is intentional. These metrics require shaped inputs that do not
+fit the plain deterministic `gof(sim, obs)` contract.
+
+## Input Contracts and Data Shape
+
+### Ensemble Evaluation with `crps()`
+
+`crps()` expects:
+
+- a numeric matrix `sim`
+- rows = forecast cases
+- columns = ensemble members
+- `obs` as a numeric vector with length `nrow(sim)`
+
+```{r}
+ens <- matrix(
+  c(
+    1.0, 1.2, 0.8,
+    2.0, 2.2, 1.8,
+    3.0, 3.2, 2.8
+  ),
+  nrow = 3,
+  byrow = TRUE
+)
+obs_ens <- c(1.1, 2.1, 3.1)
+
+crps(ens, obs_ens)
+```
+
+Lower values indicate a sharper and better-centered ensemble forecast.
+
+### Interval Evaluation with `picp()` and `mwpi()`
+
+`picp()` and `mwpi()` work with deterministic lower and upper predictive
+intervals.
+
+- `picp(lower, upper, obs)` evaluates inclusive coverage
+- `mwpi(lower, upper)` evaluates average interval width
+
+```{r}
+lower <- c(0.9, 1.9, 2.9, 3.8)
+upper <- c(1.3, 2.3, 3.3, 4.4)
+obs_int <- c(1.1, 2.4, 3.1, 4.0)
+
+picp(lower, upper, obs_int)
+mwpi(lower, upper)
+```
+
+Coverage and width should be interpreted together:
+
+- higher `picp()` is better when the target is reliable coverage
+- lower `mwpi()` is better when the target is sharp intervals
+
+Wide intervals can inflate coverage, so `picp()` alone is not enough.
+
+### Relative Improvement with `skill_score()`
+
+`skill_score()` compares a lower-is-better forecast score to a lower-is-better
+baseline score using:
+
+`1 - mean(score) / mean(baseline_score)`
+
+```{r}
+score <- c(0.8, 0.7, 0.9)
+baseline <- c(1.0, 1.0, 1.0)
+
+skill_score(score = score, baseline_score = baseline)
+```
+
+Positive values indicate improvement over the baseline. Negative values mean
+the candidate score is worse than the baseline on average.
+
+## Practical Examples
+
+### Interval Evaluation Workflow
+
+A simple interval workflow pairs coverage and width rather than optimizing one
+in isolation.
+
+```{r}
+interval_summary <- c(
+  picp = picp(lower, upper, obs_int),
+  mwpi = mwpi(lower, upper)
+)
+
+interval_summary
+```
+
+Use this kind of summary when you want to compare competing interval methods
+and inspect the reliability-versus-sharpness tradeoff explicitly.
+
+### Ensemble Evaluation Workflow
+
+For ensemble forecasts, `crps()` is the most direct current package entry
+point.
+
+```{r}
+better_ens <- ens
+worse_ens <- ens + 0.8
+
+c(
+  better = crps(better_ens, obs_ens),
+  worse = crps(worse_ens, obs_ens)
+)
+```
+
+This is often a better fit than forcing the ensemble into a single
+deterministic summary before evaluation.
+
+### Skill Score Workflow
+
+`skill_score()` is useful when you already have forecast scores from two
+comparable methods and want a simple relative-improvement summary.
+
+```{r}
+candidate_score <- c(0.6, 0.7, 0.8)
+reference_score <- c(0.9, 0.9, 0.9)
+
+skill_score(candidate_score, reference_score)
+```
+
+The result depends directly on the baseline choice, so the baseline must be
+defensible and stable.
+
+## Deterministic vs Special-Interface Boundaries
+
+`gof()` is still the right entry point for deterministic single-series
+evaluation:
+
+```{r}
+gof(sim, obs)
+```
+
+But the probabilistic wrappers are intentionally separate because their input
+contracts differ:
+
+- `crps()` needs an ensemble matrix
+- `picp()` needs lower and upper interval vectors plus observations
+- `mwpi()` needs lower and upper interval vectors
+- `skill_score()` needs score values and baseline score values
+
+That is why `gof(sim, obs, extended = TRUE)` does not auto-select them:
+
+```{r}
+intersect(
+  c("crps", "picp", "mwpi", "skill_score"),
+  names(gof(sim, obs, extended = TRUE))
+)
+```
+
+## Caveats and Limits
+
+- `hydroMetrics` does not currently provide a full probabilistic calibration
+  framework.
+- The uncertainty-facing metrics are wrapper-driven and contract-specific.
+- Interval diagnostics need both coverage and width to be interpreted well.
+- `skill_score()` is only as meaningful as the baseline it compares against.
+- Deterministic metrics and probabilistic metrics should not be treated as
+  interchangeable summaries of the same objective.
+
+Choose the evaluation path that matches the forecast product you actually have:
+
+- single deterministic series: `gof()` or deterministic wrappers
+- ensemble forecasts: `crps()`
+- predictive intervals: `picp()` and `mwpi()`
+- score comparison against a reference: `skill_score()`
+
+## Related Guides
+
+For deterministic calibration workflows, see:
+
+- `vignette("calibration-guide", package = "hydroMetrics")`
+- `vignette("getting-started", package = "hydroMetrics")`
+
+For exact function contracts, consult:
+
+- `?gof`
+- `?crps`
+- `?picp`
+- `?mwpi`
+- `?skill_score`

@@ -36,7 +36,7 @@
 - Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
 
 ## D-008: Core Metric Bootstrap Strategy
-- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `beta`, `alpha`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `pbiasfdc`, `apfb`, `hfb`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
+- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `beta`, `alpha`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `pbiasfdc`, `apfb`, `hfb`, `rpearson`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
 - Status: Accepted
 - Notes: Public API remains stable and users can evaluate core metrics without manual registration.
 
@@ -96,7 +96,7 @@
 - Notes: `skge` currently requires a monthly time index and errors for plain numeric vectors; `pbiasfdc` quantile-grid choice favors deterministic comparability and may be revisited after benchmark review.
 
 ## D-020: Correlation and Scale Compatibility Metrics
-- Decision: Canonical Pearson correlation is `r`; `rpearson` is retained only as a deprecated compatibility alias, while `rspearman` remains a direct correlation metric and `rsd` is defined as `sd(sim)/sd(obs)`.
+- Decision: `rpearson` and `rspearman` are direct correlation wrappers with explicit constant-series NA guards; `rsd` is defined as `sd(sim)/sd(obs)`.
 - Status: Accepted
 - Notes: `rsd` errors only when `sd(obs) == 0`; `sd(sim) == 0` remains valid and yields `0`.
 
@@ -106,7 +106,7 @@
 - Notes: `ggof()` requires `ggplot2` in Suggests and errors gracefully if unavailable.
 
 ## D-022: Batch 8A Compatibility Definitions
-- Decision: `cp` is defined as `1 - sum((obs_t - sim_t)^2)/sum((obs_t - obs_{t-1})^2)` on aligned `t = 2..n`; `preproc(keep = "pairwise")` defers NA dropping until pairwise metric evaluation instead of collapsing to `keep = "complete"`; `valindex` is a project-defined weighted aggregate of normalized `gof()` metrics.
+- Decision: `cp` is defined as `1 - sum((obs_t - sim_t)^2)/sum((obs_t - obs_{t-1})^2)` on aligned `t = 2..n`; `preproc(keep = "pairwise")` currently uses the same complete-case row filter as `keep = "complete"`; `valindex` is a project-defined weighted aggregate of normalized `gof()` metrics.
 - Status: Accepted
 - Notes: `cp` errors when persistence denominator is zero or length < 2. `valindex` v1 supports `NSE`, `KGE`, `rmse`, `pbias`, and `rPearson` with fixed normalization transforms and returns scalar (single series) or `1 x n` matrix (multi-series).
 
@@ -138,12 +138,27 @@
 ## D-028: Phase 2B Batch 4B Modern Orchestration Compatibility Layer
 - Decision: Export `preproc`, `gof`, `ggof`, and `valindex` as clean-room compatibility wrappers over the existing preprocessing engine and registered metric dispatch, with structured S3 returns.
 - Status: Accepted
-- Notes: `preproc` is a public wrapper around `.hm_prepare_inputs` returning class `hydro_preproc`; `gof` returns the metric payload directly as a named numeric vector for single-series input or a named numeric matrix for multi-series input, with class `hydro_metrics` and metadata attached via `n_obs`, `meta`, and `call` attributes; `ggof` is tabular-only (class `hydro_metrics_batch`) and does not produce plots; `valindex` is a thin wrapper delegating to `gof(methods = fun, ...)`. Thin single-metric compatibility wrappers may use an internal fast path only for plain numeric, finite, no-NA vector inputs with no extra preprocessing options; all other cases fall back to the full orchestration path unchanged. No metric formulas are duplicated in orchestration code.
+- Notes: `preproc` is a public wrapper around `.hm_prepare_inputs` returning class `hydro_preproc`; `gof` returns class `hydro_metrics` containing `metrics`, `n_obs`, `meta`, and `call`, while preserving direct `$<metric>` access and `as.numeric()` coercion; `ggof` is tabular-only (class `hydro_metrics_batch`) and does not produce plots; `valindex` is a thin wrapper delegating to `gof(methods = fun, ...)`. No metric formulas are duplicated in orchestration code.
 
 ## D-029: Phase 2C Metric Engine Consolidation
 - Decision: Consolidate to a single canonical metric tree in `R/core_metrics.R`, remove duplicate `R/metrics/*` definitions, and enforce registry-only metric execution from orchestration wrappers.
 - Status: Accepted
 - Notes: `gof` remains the sole orchestration path (`gof -> preproc -> .hm_prepare_inputs -> registry -> metric`). Exported compatibility wrappers (`APFB`, `HFB`, `pfactor`, `rfactor`) now dispatch through `gof` and no longer call `preproc` directly. Metric implementations were kept formula-equivalent while removing hidden NA-handling branches from the metric layer.
+
+## D-030: Phase 2 Wrapper Naming Freeze
+- Decision: Freeze the Phase 2 public compatibility surface with legacy hydroGOF-style uppercase exports (`NSE`, `KGE`, `MAE`, `RMSE`, `PBIAS`, `R2`, `NRMSE`) while retaining existing lowercase Phase 2 exports for backward compatibility.
+- Status: Accepted
+- Notes: No public renames are made at Phase 2 exit. Future Phase 3 additions must use lowercase or underscored names only.
+
+## D-031: Phase 2 Benchmark Outcome
+- Decision: `fast = TRUE` is not needed for Phase 2 and is not added to the public API.
+- Status: Accepted
+- Notes: The committed benchmark suite in `inst/benchmarks/` shows the compatibility wrapper and `gof()` paths remain low-latency at representative scales, including roughly 0.018-0.019 seconds at `n = 1e6` on the Phase 2 validation machine.
+
+## D-032: Phase 2 Output Contract Downgrade
+- Decision: Phase 2 exits with the shipped S3/data.frame output model rather than a tibble-first output contract, and no `output = "matrix"` switch is introduced.
+- Status: Accepted
+- Notes: `gof()` returns class `"hydro_metrics"`, `ggof()` returns class `"hydro_metrics_batch"`, and scalar wrappers return numeric outputs. Any earlier tibble-first plan claim is formally downgraded and tracked in the Phase 2 deviation register.
 
 ## D-030: gof Extended Metric Selection Contract
 - Decision: `gof()` defaults to the compat-10 metric set (`nse`, `kge`, `rmse`, `pbias`, `mae`, `mse`, `r2`, `ve`, `rsr`, `nrmse`), while `gof(extended = TRUE)` expands omitted/`NULL` selection to all automatically applicable registered metrics for the current input context.
@@ -153,7 +168,7 @@
 ## Phase 3 Canonical Decision Reconciliation (v0.2.2 Pre-Layer-A Gate)
 - Decision: The entries below are the canonical Phase 3 execution-plan IDs for release-governance and cross-reference purposes.
 - Status: Accepted
-- Notes: Earlier `D-025` through `D-030` headings above record historical implementation decisions from Phase 2B/2C. Where numbering drift occurred during implementation, the canonical meanings for pre-Layer-A closure are the `D-025` through `D-031` entries in this section.
+- Notes: Earlier `D-025` through `D-032` headings above record historical implementation decisions from Phase 2B/2C and Phase 2 exit governance. Where numbering drift occurred during implementation, the canonical meanings for pre-Layer-A closure are the `D-025` through `D-031` entries in this section.
 
 ## D-025: Frozen gof() Output Contract (Canonical Phase 3 ID)
 - Decision: `gof()` must return the metric payload directly: a named numeric vector for single-series input or a named numeric matrix for multi-series input, both with class `hydro_metrics` and metadata carried on attributes.

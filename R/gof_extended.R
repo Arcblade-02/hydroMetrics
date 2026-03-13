@@ -161,6 +161,43 @@
   }, error = function(e) FALSE)
 }
 
+.gof_can_auto_run_tail_dependence_score <- function(obs) {
+  tryCatch({
+    threshold <- .hm_c3_tail_threshold(obs, "tail_dependence_score")
+    any(as.numeric(obs) > threshold)
+  }, error = function(e) FALSE)
+}
+
+.gof_can_auto_run_extreme_event_ratio <- function(obs) {
+  tryCatch({
+    threshold <- .hm_c3_tail_threshold(obs, "extreme_event_ratio")
+    windows <- .hm_c3_event_windows_from_threshold(obs, threshold, "extreme_event_ratio", "obs")
+    length(windows) > 0L
+  }, error = function(e) FALSE)
+}
+
+.gof_can_auto_run_quantile_shift_index <- function(obs) {
+  tryCatch({
+    length(obs) >= 3L && .hm_c1_type7_iqr(obs, "quantile_shift_index", "obs") != 0
+  }, error = function(e) FALSE)
+}
+
+.gof_can_auto_run_metric <- function(metric_id, sim, obs, index = NULL) {
+  if (is.null(sim) || is.null(obs)) {
+    return(TRUE)
+  }
+
+  params <- list()
+  if (metric_id %in% c("apfb", "seasonal_bias", "seasonal_nse")) {
+    params$index <- index
+  }
+
+  tryCatch({
+    .get_engine()$evaluate(sim, obs, list(list(id = metric_id, params = params)))
+    TRUE
+  }, error = function(e) FALSE)
+}
+
 .gof_auto_applicable_ids <- function(available_ids, sim = NULL, obs = NULL, index = NULL) {
   ids <- available_ids
   ids <- setdiff(ids, c("crps", "picp", "mwpi", "skill_score"))
@@ -209,8 +246,24 @@
   if (!.gof_can_auto_run_event_nse(obs)) {
     ids <- setdiff(ids, "event_nse")
   }
+  if (!.gof_can_auto_run_tail_dependence_score(obs)) {
+    ids <- setdiff(ids, "tail_dependence_score")
+  }
+  if (!.gof_can_auto_run_extreme_event_ratio(obs)) {
+    ids <- setdiff(ids, "extreme_event_ratio")
+  }
+  if (!.gof_can_auto_run_quantile_shift_index(obs)) {
+    ids <- setdiff(ids, "quantile_shift_index")
+  }
   if (!.gof_can_auto_run_seasonal_bias(index)) {
     ids <- setdiff(ids, c("seasonal_bias", "seasonal_nse"))
+  }
+  if (!is.null(sim) && !is.null(obs)) {
+    ids <- ids[vapply(
+      ids,
+      function(id) .gof_can_auto_run_metric(id, sim = sim, obs = obs, index = index),
+      logical(1)
+    )]
   }
   ids
 }

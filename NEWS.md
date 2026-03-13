@@ -2,6 +2,17 @@
 
 ## 0.2.2
 
+- Closed Phase 3 Layer C on `dev`: all 12 Layer C metrics are implemented,
+  registered, exported, documented, and covered by the current validation
+  gate. The information-theory and tail-sensitive metrics keep the narrow
+  reproducible package conventions introduced in Layer C, and
+  `tail_dependence_score`, `extreme_event_ratio`, and
+  `quantile_shift_index` are auto-selected by deterministic
+  `gof(sim, obs, extended = TRUE)` only when their documented tail/event/IQR
+  preconditions hold. Closure validation passed `load_all`, Layer C and
+  structural-integrity tests, full `devtools::test()`, and
+  `devtools::check(document = FALSE, error_on = 'warning')` with only the
+  accepted environmental `unable to verify current time` note.
 - Continued Phase 3 Layer B with the narrow Batch B4 delivery `event_nse`,
   implemented as NSE on pooled observed event windows defined by contiguous
   observed values strictly above the observed 0.8 quantile, with no broader

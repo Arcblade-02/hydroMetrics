@@ -2,6 +2,15 @@
 
 ## 0.2.2
 
+- Recorded the Stage 6 pre-1.0 stabilization audit on `dev`: release-facing
+  validation summaries now live under `inst/validation/`; the default
+  `gof()`/`gof(extended = FALSE)` compat surface is treated as the current
+  stable API baseline; `gof(extended = TRUE)` remains a broader but
+  applicability-gated deterministic route; wrapper-only probabilistic metrics
+  and other special-interface metrics remain outside default deterministic
+  auto-selection; `pareto_skill` remains deferred pending stronger direct
+  metric literature; and no genuine packaged real-dataset validation outputs
+  are currently shipped in the repository.
 - Closed Phase 3 Layer C on `dev`: all 12 Layer C metrics are implemented,
   registered, exported, documented, and covered by the current validation
   gate. The information-theory and tail-sensitive metrics keep the narrow

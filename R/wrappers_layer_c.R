@@ -332,3 +332,22 @@ quantile_shift_index <- function(sim, obs, na.rm = NULL, ...) {
 seasonal_skill <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("seasonal_skill", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
+
+#' Evaluate the extended validation index wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"extended_valindex"`. The metric is a fixed equal-weight composite of
+#' normalized `nse`, `kge`, `rmse`, `pbias`, `r`, `mae`, `rsr`, and `ve`
+#' component scores computed on the same aligned prepared data.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' extended_valindex(c(1.2, 1.8, 3.4, 3.9, 5.1), c(1.0, 2.0, 3.0, 4.0, 5.0))
+#' @export
+extended_valindex <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("extended_valindex", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}

@@ -176,6 +176,10 @@ test_that("seasonal_skill registry id is present", {
   expect_true("seasonal_skill" %in% list_metrics()$id)
 })
 
+test_that("extended_valindex registry id is present", {
+  expect_true("extended_valindex" %in% list_metrics()$id)
+})
+
 test_that("skewness_error matches adjusted Fisher-Pearson skewness error", {
   sim <- c(1, 2, 3, 4, 8, 9, 10, 11)
   obs <- c(1, 2, 3, 4, 5, 6, 7, 8)
@@ -283,7 +287,8 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "extreme_event_ratio",
       "rank_turnover_score",
       "distribution_overlap",
-      "quantile_shift_index"
+      "quantile_shift_index",
+      "extended_valindex"
     )
   )
   expect_true(inherits(out, "hydro_metrics"))
@@ -305,7 +310,8 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "extreme_event_ratio",
       "rank_turnover_score",
       "distribution_overlap",
-      "quantile_shift_index"
+      "quantile_shift_index",
+      "extended_valindex"
     )
   )
 
@@ -328,7 +334,8 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
         "extreme_event_ratio",
         "rank_turnover_score",
         "distribution_overlap",
-        "quantile_shift_index"
+        "quantile_shift_index",
+        "extended_valindex"
       ) %in% names(out_ext)
     )
   )

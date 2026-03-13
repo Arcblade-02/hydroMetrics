@@ -676,3 +676,79 @@ core_metric_spec_seasonal_skill <- function() {
     tags = c("phase-3", "layer-c", "seasonal")
   )
 }
+
+# Composite validation-index convention:
+# - extended_valindex is a fixed, equal-weight extension of the package's
+#   existing valindex idea of combining multiple diagnostics
+# - it uses the stable component set nse, kge, rmse, pbias, r, mae, rsr, and ve
+# - all components are evaluated on the same aligned prepared sim/obs vectors
+# - each component is converted to a bounded higher-is-better score before
+#   aggregation; undefined component states are rejected explicitly
+
+.hm_extended_valindex_component_ids <- function() {
+  c("nse", "kge", "rmse", "pbias", "r", "mae", "rsr", "ve")
+}
+
+.hm_extended_valindex_obs_scale <- function(obs) {
+  scale <- mean(abs(obs))
+  if (!is.finite(scale) || scale <= 0) {
+    stop("extended_valindex is undefined because mean(abs(obs)) must be positive.", call. = FALSE)
+  }
+
+  as.numeric(scale)
+}
+
+.hm_extended_valindex_require_finite <- function(value, metric_id, component_id) {
+  if (!is.numeric(value) || length(value) != 1L || !is.finite(value)) {
+    stop(
+      sprintf("%s is undefined because component '%s' is not finite.", metric_id, component_id),
+      call. = FALSE
+    )
+  }
+
+  as.numeric(value)
+}
+
+.hm_extended_valindex_component_scores <- function(sim, obs, metric_id = "extended_valindex") {
+  obs_scale <- .hm_extended_valindex_obs_scale(obs)
+  values <- c(
+    nse = .hm_extended_valindex_require_finite(metric_nse(sim, obs), metric_id, "nse"),
+    kge = .hm_extended_valindex_require_finite(metric_kge(sim, obs), metric_id, "kge"),
+    rmse = .hm_extended_valindex_require_finite(metric_rmse(sim, obs), metric_id, "rmse"),
+    pbias = .hm_extended_valindex_require_finite(metric_pbias(sim, obs), metric_id, "pbias"),
+    r = .hm_extended_valindex_require_finite(metric_r(sim, obs), metric_id, "r"),
+    mae = .hm_extended_valindex_require_finite(metric_mae(sim, obs), metric_id, "mae"),
+    rsr = .hm_extended_valindex_require_finite(metric_rsr(sim, obs), metric_id, "rsr"),
+    ve = .hm_extended_valindex_require_finite(metric_ve(sim, obs), metric_id, "ve")
+  )
+
+  c(
+    nse = 1 / (1 + abs(1 - values[["nse"]])),
+    kge = 1 / (1 + abs(1 - values[["kge"]])),
+    rmse = 1 / (1 + (values[["rmse"]] / obs_scale)),
+    pbias = 1 / (1 + (abs(values[["pbias"]]) / 100)),
+    r = (values[["r"]] + 1) / 2,
+    mae = 1 / (1 + (values[["mae"]] / obs_scale)),
+    rsr = 1 / (1 + values[["rsr"]]),
+    ve = 1 / (1 + abs(1 - values[["ve"]]))
+  )
+}
+
+metric_extended_valindex <- function(sim, obs) {
+  mean(.hm_extended_valindex_component_scores(sim, obs, metric_id = "extended_valindex"))
+}
+
+core_metric_spec_extended_valindex <- function() {
+  list(
+    id = "extended_valindex",
+    fun = metric_extended_valindex,
+    name = "Extended Validation Index",
+    description = "Equal-weight composite of normalized NSE, KGE, RMSE, PBIAS, r, MAE, RSR, and VE component scores on the same aligned data.",
+    category = "agreement",
+    perfect = 1,
+    range = c(0, 1),
+    references = "Package-defined composite validation index grounded in the valindex decision context plus the NSE, KGE, correlation, bias, error, and volumetric-efficiency literature already cited in the package references; the metric uses fixed equal weights and explicit bounded normalizations.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "composite")
+  )
+}

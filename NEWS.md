@@ -22,6 +22,16 @@
   `fdc_shape_distance`, `anderson_darling_stat`, and
   `wasserstein_distance`, including explicit EDF/FDC conventions, registry
   entries, wrapper exports, and focused regression coverage.
+- Closed Phase 3 Layer B on `dev`: all 17 Layer B metrics are implemented,
+  registered, exported, documented, and covered by the current validation
+  gate. `seasonal_nse` is auto-applicable only when valid monthly seasonal
+  structure is available, `event_nse` remains the only public event metric and
+  keeps the narrow observed-window-only policy, and the Batch A5
+  probabilistic metrics `crps`, `picp`, `mwpi`, and `skill_score` remain
+  explicit-wrapper metrics excluded from deterministic
+  `gof(sim, obs, extended = TRUE)` auto-selection. Closure validation passed
+  `load_all`, Layer B and structural-integrity tests, full `devtools::test()`,
+  and `devtools::check(document = FALSE, error_on = 'warning')`.
 - Closed Phase 3 Layer A on `dev`: all 27 Layer A metrics are implemented,
   registered, exported, documented, and covered by the current validation
   suite. The Batch A5 probabilistic metrics `crps`, `picp`, `mwpi`, and

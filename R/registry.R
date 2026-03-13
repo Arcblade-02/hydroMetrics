@@ -60,13 +60,19 @@ register_core_metrics <- function(registry) {
     core_metric_spec_iqr_error(),
     core_metric_spec_entropy_diff(),
     core_metric_spec_mutual_information_score(),
+    core_metric_spec_mutual_information(),
+    core_metric_spec_normalised_mi(),
     core_metric_spec_kl_divergence_flow(),
+    core_metric_spec_kl_divergence(),
+    core_metric_spec_js_divergence(),
     core_metric_spec_flow_duration_entropy(),
     core_metric_spec_tail_dependence_score(),
     core_metric_spec_extreme_event_ratio(),
     core_metric_spec_rank_turnover_score(),
     core_metric_spec_distribution_overlap(),
     core_metric_spec_quantile_shift_index(),
+    core_metric_spec_seasonal_skill(),
+    core_metric_spec_extended_valindex(),
     core_metric_spec_rbias(),
     core_metric_spec_beta(),
     core_metric_spec_alpha(),
@@ -156,8 +162,22 @@ register_metric <- function(id, fun, name, description, references = NULL, tags 
   .get_registry()$register(spec)
 }
 
-list_metrics <- function() {
-  .get_registry()$list()
+.hm_recommended_metric_ids <- function() {
+  # Stable curated shortlist aligned to the existing compat-10 defaults.
+  c("nse", "kge", "rmse", "pbias", "mae", "mse", "r2", "ve", "rsr", "nrmse")
+}
+
+list_metrics <- function(recommended = FALSE) {
+  if (!is.logical(recommended) || length(recommended) != 1L || is.na(recommended)) {
+    stop("`recommended` must be TRUE or FALSE.", call. = FALSE)
+  }
+
+  metrics <- .get_registry()$list()
+  if (!isTRUE(recommended)) {
+    return(metrics)
+  }
+
+  metrics[metrics$id %in% .hm_recommended_metric_ids(), , drop = FALSE]
 }
 
 get_metric <- function(id) {

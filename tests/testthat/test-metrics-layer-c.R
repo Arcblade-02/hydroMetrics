@@ -129,6 +129,13 @@ if (!exists("gof", mode = "function")) {
   mean(abs(sim_q - obs_q)) / .test_c1_type7_iqr(obs)
 }
 
+.test_seasonal_skill_expected <- function(sim, obs) {
+  groups <- cycle(obs)
+  sim_month <- as.numeric(tapply(as.numeric(sim), groups, mean)[as.character(1:12)])
+  obs_month <- as.numeric(tapply(as.numeric(obs), groups, mean)[as.character(1:12)])
+  1 - sum((sim_month - obs_month)^2) / sum((obs_month - mean(obs_month))^2)
+}
+
 test_that("layer C batch C1 registry ids are present", {
   ids <- list_metrics()$id
   target <- c("skewness_error", "kurtosis_error", "iqr_error")
@@ -138,7 +145,15 @@ test_that("layer C batch C1 registry ids are present", {
 
 test_that("layer C batch C2 registry ids are present", {
   ids <- list_metrics()$id
-  target <- c("entropy_diff", "mutual_information_score", "kl_divergence_flow")
+  target <- c(
+    "entropy_diff",
+    "mutual_information_score",
+    "mutual_information",
+    "normalised_mi",
+    "kl_divergence_flow",
+    "kl_divergence",
+    "js_divergence"
+  )
 
   expect_true(all(target %in% ids))
 })
@@ -155,6 +170,14 @@ test_that("layer C batch C4 registry ids are present", {
   target <- c("rank_turnover_score", "distribution_overlap", "quantile_shift_index")
 
   expect_true(all(target %in% ids))
+})
+
+test_that("seasonal_skill registry id is present", {
+  expect_true("seasonal_skill" %in% list_metrics()$id)
+})
+
+test_that("extended_valindex registry id is present", {
+  expect_true("extended_valindex" %in% list_metrics()$id)
 })
 
 test_that("skewness_error matches adjusted Fisher-Pearson skewness error", {
@@ -254,13 +277,18 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "iqr_error",
       "entropy_diff",
       "mutual_information_score",
+      "mutual_information",
+      "normalised_mi",
       "kl_divergence_flow",
+      "kl_divergence",
+      "js_divergence",
       "flow_duration_entropy",
       "tail_dependence_score",
       "extreme_event_ratio",
       "rank_turnover_score",
       "distribution_overlap",
-      "quantile_shift_index"
+      "quantile_shift_index",
+      "extended_valindex"
     )
   )
   expect_true(inherits(out, "hydro_metrics"))
@@ -272,13 +300,18 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "iqr_error",
       "entropy_diff",
       "mutual_information_score",
+      "mutual_information",
+      "normalised_mi",
       "kl_divergence_flow",
+      "kl_divergence",
+      "js_divergence",
       "flow_duration_entropy",
       "tail_dependence_score",
       "extreme_event_ratio",
       "rank_turnover_score",
       "distribution_overlap",
-      "quantile_shift_index"
+      "quantile_shift_index",
+      "extended_valindex"
     )
   )
 
@@ -291,13 +324,18 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
         "iqr_error",
         "entropy_diff",
         "mutual_information_score",
+        "mutual_information",
+        "normalised_mi",
         "kl_divergence_flow",
+        "kl_divergence",
+        "js_divergence",
         "flow_duration_entropy",
         "tail_dependence_score",
         "extreme_event_ratio",
         "rank_turnover_score",
         "distribution_overlap",
-        "quantile_shift_index"
+        "quantile_shift_index",
+        "extended_valindex"
       ) %in% names(out_ext)
     )
   )
@@ -334,6 +372,17 @@ test_that("mutual_information_score matches manual pooled-grid mutual informatio
   expect_equal(metric_mutual_information_score(sim, obs), expected)
 })
 
+test_that("mutual_information is the canonical equivalent of mutual_information_score", {
+  sim <- c(1, 2, 2, 3, 4, 5, 5, 6, 7, 8)
+  obs <- c(1, 1, 2, 3, 3, 4, 5, 6, 7, 9)
+  breaks <- .test_c2_pooled_breaks(sim, obs)
+  expected <- .test_c2_mutual_information(sim, obs, breaks)
+
+  expect_equal(mutual_information(sim, obs), expected)
+  expect_equal(metric_mutual_information(sim, obs), expected)
+  expect_equal(mutual_information(sim, obs), mutual_information_score(sim, obs))
+})
+
 test_that("mutual_information_score handles constant inputs and rejects too-short inputs", {
   const <- c(1, 1, 1, 1, 1, 1)
   var <- c(1, 2, 3, 4, 5, 6)
@@ -347,6 +396,27 @@ test_that("mutual_information_score handles constant inputs and rejects too-shor
   )
 })
 
+test_that("normalised_mi uses MI / sqrt(H_sim * H_obs) and rejects zero-entropy cases", {
+  sim <- c(1, 2, 2, 3, 4, 5, 5, 6, 7, 8)
+  obs <- c(1, 1, 2, 3, 3, 4, 5, 6, 7, 9)
+  breaks <- .test_c2_pooled_breaks(sim, obs)
+  mi <- .test_c2_mutual_information(sim, obs, breaks)
+  h_sim <- .test_c2_entropy(sim, breaks)
+  h_obs <- .test_c2_entropy(obs, breaks)
+  expected <- mi / sqrt(h_sim * h_obs)
+
+  expect_equal(normalised_mi(sim, obs), expected)
+  expect_equal(metric_normalised_mi(sim, obs), expected)
+  expect_gte(normalised_mi(sim, obs), 0)
+  expect_lte(normalised_mi(sim, obs), 1)
+
+  const <- c(1, 1, 1, 1, 1, 1)
+  expect_error(
+    normalised_mi(const, const),
+    "both marginal entropies must be positive"
+  )
+})
+
 test_that("kl_divergence_flow matches manual KL(obs || sim) with fixed smoothing", {
   sim <- c(1, 2, 2, 3, 4, 5, 5, 6, 7, 8)
   obs <- c(1, 1, 2, 3, 3, 4, 5, 6, 7, 9)
@@ -355,6 +425,17 @@ test_that("kl_divergence_flow matches manual KL(obs || sim) with fixed smoothing
 
   expect_equal(kl_divergence_flow(sim, obs), expected)
   expect_equal(metric_kl_divergence_flow(sim, obs), expected)
+})
+
+test_that("kl_divergence is the canonical equivalent of kl_divergence_flow", {
+  sim <- c(1, 2, 2, 3, 4, 5, 5, 6, 7, 8)
+  obs <- c(1, 1, 2, 3, 3, 4, 5, 6, 7, 9)
+  breaks <- .test_c2_pooled_breaks(sim, obs)
+  expected <- .test_c2_kl_obs_vs_sim(sim, obs, breaks)
+
+  expect_equal(kl_divergence(sim, obs), expected)
+  expect_equal(metric_kl_divergence(sim, obs), expected)
+  expect_equal(kl_divergence(sim, obs), kl_divergence_flow(sim, obs))
 })
 
 test_that("kl_divergence_flow keeps direction explicit and constant-series cases finite", {
@@ -366,6 +447,29 @@ test_that("kl_divergence_flow keeps direction explicit and constant-series cases
   expect_equal(kl_divergence_flow(const, var), .test_c2_kl_obs_vs_sim(const, var, breaks))
   expect_gt(abs(kl_divergence_flow(const, var) - kl_divergence_flow(var, const)), 0)
   expect_error(kl_divergence_flow(1, 1), "requires at least 2 values")
+})
+
+test_that("js_divergence matches the manual Jensen-Shannon divergence and is symmetric", {
+  sim <- c(1, 2, 2, 3, 4, 5, 5, 6, 7, 8)
+  obs <- c(1, 1, 2, 3, 3, 4, 5, 6, 7, 9)
+  breaks <- .test_c2_pooled_breaks(sim, obs)
+  p_sim <- .test_c2_hist_probs(sim, breaks)
+  p_obs <- .test_c2_hist_probs(obs, breaks)
+  p_sim <- (p_sim + 1e-12) / sum(p_sim + 1e-12)
+  p_obs <- (p_obs + 1e-12) / sum(p_obs + 1e-12)
+  midpoint <- 0.5 * (p_sim + p_obs)
+  expected <- 0.5 * sum(p_sim * log(p_sim / midpoint)) + 0.5 * sum(p_obs * log(p_obs / midpoint))
+
+  expect_equal(js_divergence(sim, obs), expected)
+  expect_equal(metric_js_divergence(sim, obs), expected)
+  expect_equal(js_divergence(sim, obs), js_divergence(obs, sim))
+})
+
+test_that("js_divergence handles constant identical distributions deterministically", {
+  const <- c(1, 1, 1, 1, 1, 1)
+
+  expect_equal(js_divergence(const, const), 0)
+  expect_error(js_divergence(1, 1), "requires at least 2 values")
 })
 
 test_that("flow_duration_entropy matches manual FDC-ordered entropy difference", {
@@ -534,4 +638,49 @@ test_that("gof extended remains robust on constant observed series while excludi
   expect_false("quantile_shift_index" %in% names(out_ext))
   expect_false(any(c("alpha", "kge", "r2", "rsr") %in% names(out_ext)))
   expect_true("distribution_overlap" %in% names(out_ext))
+})
+
+test_that("seasonal_skill matches manual monthly climatology skill", {
+  sim <- ts(c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11, 10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11), frequency = 12)
+  obs <- ts(c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10, 9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10), frequency = 12)
+  expected <- .test_seasonal_skill_expected(sim, obs)
+
+  expect_equal(seasonal_skill(sim, obs), expected)
+  expect_equal(metric_seasonal_skill(as.numeric(sim), as.numeric(obs), index = time(sim)), expected)
+  expect_equal(seasonal_skill(sim, obs), seasonal_nse(sim, obs))
+})
+
+test_that("seasonal_skill is optimal on identical seasonal series and non-optimal on shifted patterns", {
+  obs <- ts(rep(c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10), 2), frequency = 12)
+  shifted <- ts(rep(c(10, 10, 11, 8, 6, 5, 5, 6, 7, 9, 9, 11), 2), frequency = 12)
+
+  expect_equal(seasonal_skill(obs, obs), 1)
+  expect_lt(seasonal_skill(shifted, obs), 1)
+})
+
+test_that("seasonal_skill rejects unsupported, too-short, and zero-variance seasonal cases", {
+  flat <- ts(rep(5, 24), frequency = 12)
+
+  expect_error(
+    seasonal_skill(c(1, 2, 3), c(1, 2, 3)),
+    "requires at least 12 monthly values"
+  )
+  expect_error(
+    seasonal_skill(rep(1:12, 2), rep(1:12, 2)),
+    "requires monthly ts input or an aligned date-like index"
+  )
+  expect_error(
+    seasonal_skill(flat, flat),
+    "observed monthly climatology has zero variance"
+  )
+})
+
+test_that("gof extended includes seasonal_skill only for valid seasonal inputs", {
+  sim_ts <- ts(c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11, 10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11), frequency = 12)
+  obs_ts <- ts(c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10, 9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10), frequency = 12)
+  out_ts <- gof(sim_ts, obs_ts, extended = TRUE)
+  out_num <- gof(1:12, 1:12, extended = TRUE)
+
+  expect_true("seasonal_skill" %in% names(out_ts))
+  expect_false("seasonal_skill" %in% names(out_num))
 })

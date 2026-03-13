@@ -98,6 +98,50 @@ mutual_information_score <- function(sim, obs, na.rm = NULL, ...) {
   )
 }
 
+#' Evaluate the mutual information wrapper
+#'
+#' Thin exported wrapper over [gof()] for the canonical registry metric
+#' `"mutual_information"`. Under the current deterministic policy this is the
+#' canonical name for the same pooled-grid raw mutual information reported by
+#' `"mutual_information_score"`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' mutual_information(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))
+#' @export
+mutual_information <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper(
+    "mutual_information",
+    sim = sim,
+    obs = obs,
+    na.rm = na.rm,
+    dots = list(...)
+  )
+}
+
+#' Evaluate the normalised mutual information wrapper
+#'
+#' Thin exported wrapper over [gof()] for the canonical registry metric
+#' `"normalised_mi"`. The metric uses pooled-support Sturges histograms and
+#' reports `MI / sqrt(H_sim * H_obs)` in natural-log units. Zero-entropy
+#' normalization cases are rejected explicitly.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' normalised_mi(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))
+#' @export
+normalised_mi <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("normalised_mi", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
 #' Evaluate the flow KL divergence wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric
@@ -115,6 +159,44 @@ mutual_information_score <- function(sim, obs, na.rm = NULL, ...) {
 #' @export
 kl_divergence_flow <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("kl_divergence_flow", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the KL divergence wrapper
+#'
+#' Thin exported wrapper over [gof()] for the canonical registry metric
+#' `"kl_divergence"`. Under the current deterministic policy this is the
+#' canonical name for the same directed `KL(P_obs || P_sim)` quantity reported
+#' by `"kl_divergence_flow"`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' kl_divergence(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))
+#' @export
+kl_divergence <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("kl_divergence", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the Jensen-Shannon divergence wrapper
+#'
+#' Thin exported wrapper over [gof()] for the canonical registry metric
+#' `"js_divergence"`. The metric uses pooled-support Sturges histograms,
+#' natural logs, and fixed epsilon smoothing to report
+#' `0.5 * KL(P_sim || M) + 0.5 * KL(P_obs || M)` with `M = 0.5 * (P_sim + P_obs)`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' js_divergence(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))
+#' @export
+js_divergence <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("js_divergence", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
 #' Evaluate the flow-duration entropy wrapper
@@ -228,4 +310,44 @@ distribution_overlap <- function(sim, obs, na.rm = NULL, ...) {
 #' @export
 quantile_shift_index <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("quantile_shift_index", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the seasonal skill wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"seasonal_skill"`. The metric requires monthly seasonality that can be
+#' inferred from a monthly `ts` input or from aligned date-like indices, then
+#' computes an NSE-style skill score on the 12 monthly climatology means.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' sim <- ts(rep(c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11), 2), frequency = 12)
+#' obs <- ts(rep(c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10), 2), frequency = 12)
+#' seasonal_skill(sim, obs)
+#' @export
+seasonal_skill <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("seasonal_skill", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the extended validation index wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"extended_valindex"`. The metric is a fixed equal-weight composite of
+#' normalized `nse`, `kge`, `rmse`, `pbias`, `r`, `mae`, `rsr`, and `ve`
+#' component scores computed on the same aligned prepared data.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' extended_valindex(c(1.2, 1.8, 3.4, 3.9, 5.1), c(1.0, 2.0, 3.0, 4.0, 5.0))
+#' @export
+extended_valindex <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("extended_valindex", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }

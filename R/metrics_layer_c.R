@@ -131,6 +131,14 @@ core_metric_spec_iqr_error <- function() {
 #   shared-support grid
 # - mutual_information_score uses the same pooled support grid on both axes for
 #   the paired (sim, obs) joint histogram
+# - mutual_information is the canonical alias of mutual_information_score under
+#   the same pooled-grid raw-MI convention
+# - kl_divergence is the canonical alias of kl_divergence_flow under the same
+#   directed KL(P_obs || P_sim) convention
+# - normalised_mi reports MI / sqrt(H_sim * H_obs) and is undefined when either
+#   marginal entropy is zero
+# - js_divergence reports 0.5 * KL(P_sim || M) + 0.5 * KL(P_obs || M) with
+#   M = 0.5 * (P_sim + P_obs) using the same smoothed pooled-grid marginals
 # - Shannon quantities use the natural logarithm
 # - kl_divergence_flow reports KL(P_obs || P_sim) after additive epsilon
 #   smoothing with epsilon = 1e-12 and renormalization
@@ -202,6 +210,37 @@ core_metric_spec_iqr_error <- function() {
   matrix(counts / sum(counts), nrow = n_bins, ncol = n_bins, byrow = TRUE)
 }
 
+.hm_c2_mutual_information_value <- function(sim, obs, metric_id) {
+  inputs <- .hm_c2_validate_info_pair(
+    sim,
+    obs,
+    metric_id,
+    min_length = 3L,
+    require_equal_length = TRUE
+  )
+  breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, metric_id)
+  joint <- .hm_c2_joint_probs(inputs$sim, inputs$obs, breaks, metric_id)
+  px <- rowSums(joint)
+  py <- colSums(joint)
+  denom <- outer(px, py)
+  positive <- joint > 0
+
+  list(
+    value = sum(joint[positive] * log(joint[positive] / denom[positive])),
+    sim_probs = px,
+    obs_probs = py
+  )
+}
+
+.hm_c2_kl_value_from_probs <- function(p_ref, p_cmp, metric_id) {
+  value <- sum(p_ref * log(p_ref / p_cmp))
+  if (!is.finite(value)) {
+    stop(sprintf("%s remained non-finite after epsilon smoothing.", metric_id), call. = FALSE)
+  }
+
+  value
+}
+
 metric_entropy_diff <- function(sim, obs) {
   inputs <- .hm_c2_validate_info_pair(sim, obs, "entropy_diff", min_length = 2L)
   breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "entropy_diff")
@@ -227,21 +266,7 @@ core_metric_spec_entropy_diff <- function() {
 }
 
 metric_mutual_information_score <- function(sim, obs) {
-  inputs <- .hm_c2_validate_info_pair(
-    sim,
-    obs,
-    "mutual_information_score",
-    min_length = 3L,
-    require_equal_length = TRUE
-  )
-  breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "mutual_information_score")
-  joint <- .hm_c2_joint_probs(inputs$sim, inputs$obs, breaks, "mutual_information_score")
-  px <- rowSums(joint)
-  py <- colSums(joint)
-  denom <- outer(px, py)
-  positive <- joint > 0
-
-  sum(joint[positive] * log(joint[positive] / denom[positive]))
+  .hm_c2_mutual_information_value(sim, obs, "mutual_information_score")$value
 }
 
 core_metric_spec_mutual_information_score <- function() {
@@ -259,18 +284,58 @@ core_metric_spec_mutual_information_score <- function() {
   )
 }
 
+metric_mutual_information <- function(sim, obs) {
+  .hm_c2_mutual_information_value(sim, obs, "mutual_information")$value
+}
+
+core_metric_spec_mutual_information <- function() {
+  list(
+    id = "mutual_information",
+    fun = metric_mutual_information,
+    name = "Mutual Information",
+    description = "Canonical raw mutual information in nats on the paired Sturges-binned joint empirical distribution using the pooled support grid.",
+    category = "agreement",
+    perfect = Inf,
+    range = c(0, Inf),
+    references = "Shannon (1948) mutual-information foundation with Sturges (1926) histogram binning; package metric is the canonical raw pooled-grid mutual information in nats and matches mutual_information_score under the current deterministic policy.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "canonical-info-theory")
+  )
+}
+
+metric_normalised_mi <- function(sim, obs) {
+  out <- .hm_c2_mutual_information_value(sim, obs, "normalised_mi")
+  h_sim <- .hm_c2_entropy_from_probs(out$sim_probs)
+  h_obs <- .hm_c2_entropy_from_probs(out$obs_probs)
+
+  if (!is.finite(h_sim) || !is.finite(h_obs) || h_sim <= 0 || h_obs <= 0) {
+    stop("normalised_mi is undefined because both marginal entropies must be positive.", call. = FALSE)
+  }
+
+  out$value / sqrt(h_sim * h_obs)
+}
+
+core_metric_spec_normalised_mi <- function() {
+  list(
+    id = "normalised_mi",
+    fun = metric_normalised_mi,
+    name = "Normalised Mutual Information",
+    description = "Canonical normalized mutual information MI / sqrt(H_sim * H_obs) on pooled-support Sturges histograms using natural logs.",
+    category = "agreement",
+    perfect = 1,
+    range = c(0, 1),
+    references = "Shannon (1948) mutual-information and entropy foundations, Sturges (1926) histogram binning, and Strehl & Ghosh (2002) normalized mutual-information context; package metric uses the explicit normalization MI / sqrt(H_sim * H_obs) and rejects zero-entropy cases.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "canonical-info-theory")
+  )
+}
+
 metric_kl_divergence_flow <- function(sim, obs) {
   inputs <- .hm_c2_validate_info_pair(sim, obs, "kl_divergence_flow", min_length = 2L)
   breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "kl_divergence_flow")
   p_obs <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$obs, breaks, "kl_divergence_flow", "obs"))
   p_sim <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$sim, breaks, "kl_divergence_flow", "sim"))
-  value <- sum(p_obs * log(p_obs / p_sim))
-
-  if (!is.finite(value)) {
-    stop("kl_divergence_flow remained non-finite after epsilon smoothing.", call. = FALSE)
-  }
-
-  value
+  .hm_c2_kl_value_from_probs(p_obs, p_sim, "kl_divergence_flow")
 }
 
 core_metric_spec_kl_divergence_flow <- function() {
@@ -285,6 +350,55 @@ core_metric_spec_kl_divergence_flow <- function() {
     references = "Kullback & Leibler (1951) directed divergence foundation with Sturges (1926) histogram binning; package metric reports KL(P_obs || P_sim) after fixed epsilon smoothing.",
     version_added = "0.2.2",
     tags = c("phase-3", "layer-c", "batch-c2")
+  )
+}
+
+metric_kl_divergence <- function(sim, obs) {
+  inputs <- .hm_c2_validate_info_pair(sim, obs, "kl_divergence", min_length = 2L)
+  breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "kl_divergence")
+  p_obs <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$obs, breaks, "kl_divergence", "obs"))
+  p_sim <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$sim, breaks, "kl_divergence", "sim"))
+  .hm_c2_kl_value_from_probs(p_obs, p_sim, "kl_divergence")
+}
+
+core_metric_spec_kl_divergence <- function() {
+  list(
+    id = "kl_divergence",
+    fun = metric_kl_divergence,
+    name = "KL Divergence",
+    description = "Canonical directed KL(P_obs || P_sim) on Sturges-binned empirical distributions over the pooled support grid with fixed epsilon smoothing.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Kullback & Leibler (1951) directed divergence foundation with Sturges (1926) histogram binning; package metric is the canonical directed KL(P_obs || P_sim) and matches kl_divergence_flow under the current deterministic policy.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "canonical-info-theory")
+  )
+}
+
+metric_js_divergence <- function(sim, obs) {
+  inputs <- .hm_c2_validate_info_pair(sim, obs, "js_divergence", min_length = 2L)
+  breaks <- .hm_c2_pooled_breaks(inputs$sim, inputs$obs, "js_divergence")
+  p_sim <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$sim, breaks, "js_divergence", "sim"))
+  p_obs <- .hm_c2_smoothed_probs(.hm_c2_hist_probs(inputs$obs, breaks, "js_divergence", "obs"))
+  midpoint <- 0.5 * (p_sim + p_obs)
+
+  0.5 * .hm_c2_kl_value_from_probs(p_sim, midpoint, "js_divergence") +
+    0.5 * .hm_c2_kl_value_from_probs(p_obs, midpoint, "js_divergence")
+}
+
+core_metric_spec_js_divergence <- function() {
+  list(
+    id = "js_divergence",
+    fun = metric_js_divergence,
+    name = "Jensen-Shannon Divergence",
+    description = "Jensen-Shannon divergence 0.5 * KL(P_sim || M) + 0.5 * KL(P_obs || M) on pooled-support Sturges histograms with fixed epsilon smoothing.",
+    category = "error",
+    perfect = 0,
+    range = c(0, log(2)),
+    references = "Lin (1991) Jensen-Shannon divergence foundation with Shannon (1948), Kullback & Leibler (1951), and Sturges (1926); package metric uses pooled-grid Sturges histograms, natural logs, and fixed epsilon smoothing.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "canonical-info-theory")
   )
 }
 
@@ -515,5 +629,126 @@ core_metric_spec_quantile_shift_index <- function() {
     references = "Hyndman & Fan (1996) quantile conventions; package metric uses a fixed p = 0.1..0.9 grid and scales the mean absolute quantile shift by IQR(obs).",
     version_added = "0.2.2",
     tags = c("phase-3", "layer-c", "batch-c4")
+  )
+}
+
+# Seasonal climatology skill convention:
+# - seasonal_skill reuses the existing monthly grouping contract from
+#   seasonal_bias/seasonal_nse and therefore only supports monthly ts input or
+#   aligned date-like indexed input with complete coverage for all 12 months
+# - the score is an NSE-style skill on the 12 monthly climatology means:
+#   1 - sum((sim_clim - obs_clim)^2) / sum((obs_clim - mean(obs_clim))^2)
+
+metric_seasonal_skill <- function(sim, obs, index = NULL) {
+  if (length(obs) < 12L) {
+    stop("seasonal_skill requires at least 12 monthly values.", call. = FALSE)
+  }
+
+  groups <- .hm_monthly_groups_for_seasonal_bias(index)
+  sim_month <- tapply(sim, groups, mean)
+  obs_month <- tapply(obs, groups, mean)
+  sim_month <- as.numeric(sim_month[as.character(1:12)])
+  obs_month <- as.numeric(obs_month[as.character(1:12)])
+
+  if (any(!is.finite(sim_month)) || any(!is.finite(obs_month))) {
+    stop("seasonal_skill is undefined because monthly climatology could not be estimated.", call. = FALSE)
+  }
+
+  denom <- sum((obs_month - mean(obs_month))^2)
+  if (denom == 0) {
+    stop("seasonal_skill is undefined because observed monthly climatology has zero variance.", call. = FALSE)
+  }
+
+  1 - sum((sim_month - obs_month)^2) / denom
+}
+
+core_metric_spec_seasonal_skill <- function() {
+  list(
+    id = "seasonal_skill",
+    fun = metric_seasonal_skill,
+    name = "Seasonal Skill",
+    description = "NSE-style skill computed on monthly climatology means inferred from monthly ts or aligned date-like indexed input.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "Nash & Sutcliffe (1970) baseline NSE with seasonal streamflow context from Gnann et al. (2020) and Berghuijs et al. (2025); the package metric is monthly-climatology skill on the 12 month-of-year means.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "seasonal")
+  )
+}
+
+# Composite validation-index convention:
+# - extended_valindex is a fixed, equal-weight extension of the package's
+#   existing valindex idea of combining multiple diagnostics
+# - it uses the stable component set nse, kge, rmse, pbias, r, mae, rsr, and ve
+# - all components are evaluated on the same aligned prepared sim/obs vectors
+# - each component is converted to a bounded higher-is-better score before
+#   aggregation; undefined component states are rejected explicitly
+
+.hm_extended_valindex_component_ids <- function() {
+  c("nse", "kge", "rmse", "pbias", "r", "mae", "rsr", "ve")
+}
+
+.hm_extended_valindex_obs_scale <- function(obs) {
+  scale <- mean(abs(obs))
+  if (!is.finite(scale) || scale <= 0) {
+    stop("extended_valindex is undefined because mean(abs(obs)) must be positive.", call. = FALSE)
+  }
+
+  as.numeric(scale)
+}
+
+.hm_extended_valindex_require_finite <- function(value, metric_id, component_id) {
+  if (!is.numeric(value) || length(value) != 1L || !is.finite(value)) {
+    stop(
+      sprintf("%s is undefined because component '%s' is not finite.", metric_id, component_id),
+      call. = FALSE
+    )
+  }
+
+  as.numeric(value)
+}
+
+.hm_extended_valindex_component_scores <- function(sim, obs, metric_id = "extended_valindex") {
+  obs_scale <- .hm_extended_valindex_obs_scale(obs)
+  values <- c(
+    nse = .hm_extended_valindex_require_finite(metric_nse(sim, obs), metric_id, "nse"),
+    kge = .hm_extended_valindex_require_finite(metric_kge(sim, obs), metric_id, "kge"),
+    rmse = .hm_extended_valindex_require_finite(metric_rmse(sim, obs), metric_id, "rmse"),
+    pbias = .hm_extended_valindex_require_finite(metric_pbias(sim, obs), metric_id, "pbias"),
+    r = .hm_extended_valindex_require_finite(metric_r(sim, obs), metric_id, "r"),
+    mae = .hm_extended_valindex_require_finite(metric_mae(sim, obs), metric_id, "mae"),
+    rsr = .hm_extended_valindex_require_finite(metric_rsr(sim, obs), metric_id, "rsr"),
+    ve = .hm_extended_valindex_require_finite(metric_ve(sim, obs), metric_id, "ve")
+  )
+
+  c(
+    nse = 1 / (1 + abs(1 - values[["nse"]])),
+    kge = 1 / (1 + abs(1 - values[["kge"]])),
+    rmse = 1 / (1 + (values[["rmse"]] / obs_scale)),
+    pbias = 1 / (1 + (abs(values[["pbias"]]) / 100)),
+    r = (values[["r"]] + 1) / 2,
+    mae = 1 / (1 + (values[["mae"]] / obs_scale)),
+    rsr = 1 / (1 + values[["rsr"]]),
+    ve = 1 / (1 + abs(1 - values[["ve"]]))
+  )
+}
+
+metric_extended_valindex <- function(sim, obs) {
+  mean(.hm_extended_valindex_component_scores(sim, obs, metric_id = "extended_valindex"))
+}
+
+core_metric_spec_extended_valindex <- function() {
+  list(
+    id = "extended_valindex",
+    fun = metric_extended_valindex,
+    name = "Extended Validation Index",
+    description = "Equal-weight composite of normalized NSE, KGE, RMSE, PBIAS, r, MAE, RSR, and VE component scores on the same aligned data.",
+    category = "agreement",
+    perfect = 1,
+    range = c(0, 1),
+    references = "Package-defined composite validation index grounded in the valindex decision context plus the NSE, KGE, correlation, bias, error, and volumetric-efficiency literature already cited in the package references; the metric uses fixed equal weights and explicit bounded normalizations.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "composite")
   )
 }

@@ -1,0 +1,213 @@
+---
+title: "Metric Reference"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Metric Reference}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r}
+library(hydroMetrics)
+```
+
+This vignette is a concise catalog of the current `hydroMetrics` metric
+surface. It is intended as a navigation guide: where metrics live, how they
+are grouped, and which entry point to use for each class of metric.
+
+For worked examples and metric-selection advice, use the dedicated workflow
+guides instead of treating this document as a full tutorial.
+
+## Overview
+
+The package exposes metrics through three main routes:
+
+- `gof(sim, obs)` for the stable default deterministic shortlist
+- `gof(sim, obs, extended = TRUE)` for the broader deterministic registry
+  surface when the current input satisfies each metric's contract
+- direct wrappers for metrics that are either convenient one-off calls or
+  require a more specialized input shape
+
+The default `gof()` behavior is intentionally conservative. It stays aligned to
+the compat-10 deterministic shortlist, while `extended = TRUE` expands to the
+broader registered deterministic metric set that can safely run on the current
+input.
+
+```{r}
+sim <- c(1.2, 1.8, 3.4, 3.9, 5.1, 6.0, 7.2, 8.1)
+obs <- c(1.0, 2.0, 3.0, 4.0, 5.0, 6.2, 7.0, 8.0)
+
+names(gof(sim, obs))
+```
+
+## Discovering Metrics
+
+For most users, the easiest discovery path is to start with `gof()` and then
+move to explicit wrappers or explicit `methods = ...` requests as needed.
+
+Internally, the package also maintains a registry listing. The internal helper
+`hydroMetrics:::list_metrics(recommended = TRUE)` returns the curated
+recommended shortlist that matches the stable default deterministic starting
+point.
+
+```{r}
+hydroMetrics:::list_metrics(recommended = TRUE)[, c("id", "name")]
+```
+
+The full internal registry is also available for audit and discovery work:
+
+```{r}
+head(hydroMetrics:::list_metrics()[, c("id", "name", "tags")], 12)
+```
+
+## Default Deterministic Metrics
+
+With no explicit `methods`, `gof(sim, obs)` evaluates the recommended
+deterministic shortlist. These are the package's most compatibility-stable
+starting metrics for everyday evaluation and calibration.
+
+They cover the main deterministic fit dimensions:
+
+- efficiency and overall agreement: `nse`, `kge`, `ve`
+- error magnitude: `rmse`, `mae`, `mse`, `nrmse`
+- bias and association: `pbias`, `r2`
+- variability-relative error: `rsr`
+
+Use these when the goal is broad deterministic model evaluation without a more
+specialized structural target.
+
+## Extended Deterministic Metrics
+
+`gof(sim, obs, extended = TRUE)` can expose many additional deterministic
+metrics when the current input context supports them.
+
+These include Layer A, Layer B, and Layer C additions such as:
+
+- robust and alternative loss metrics: `huber_loss`, `quantile_loss`,
+  `trimmed_rmse`, `winsor_rmse`
+- flow-duration and regime diagnostics: `fdc_slope_error`,
+  `fdc_highflow_bias`, `fdc_lowflow_bias`, `fdc_shape_distance`,
+  `flow_duration_entropy`
+- hydrograph and event diagnostics: `hydrograph_slope_error`,
+  `peak_timing_error`, `rising_limb_error`, `event_nse`
+- distribution and information-theory diagnostics: `entropy_diff`,
+  `mutual_information`, `normalised_mi`, `kl_divergence`, `js_divergence`
+- composite and summary diagnostics: `extended_valindex`,
+  `rank_turnover_score`, `distribution_overlap`, `quantile_shift_index`
+
+This route is broader, but not unconditional. Auto-selection remains gated by
+each metric's documented contract.
+
+```{r}
+sort(intersect(
+  c(
+    "entropy_diff",
+    "mutual_information",
+    "kl_divergence",
+    "extended_valindex",
+    "flow_duration_entropy"
+  ),
+  names(gof(sim, obs, extended = TRUE))
+))
+```
+
+## Seasonal Metrics
+
+Seasonal metrics require real monthly structure. They are not ordinary
+drop-in numeric-vector diagnostics.
+
+The current seasonal wrappers include:
+
+- `seasonal_bias()`
+- `seasonal_nse()`
+- `seasonal_skill()`
+
+These expect valid monthly inputs such as `ts` series with `frequency = 12`,
+or other monthly indexed inputs supported by the package's seasonal helpers.
+
+```{r}
+sim_ts <- ts(
+  c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11,
+    10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11),
+  frequency = 12
+)
+obs_ts <- ts(
+  c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10,
+    9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10),
+  frequency = 12
+)
+
+intersect(
+  c("seasonal_bias", "seasonal_nse", "seasonal_skill"),
+  names(gof(sim_ts, obs_ts, extended = TRUE))
+)
+```
+
+For plain numeric vectors without seasonal structure, these metrics are not
+auto-selected.
+
+## Tail, Event, and Regime-Sensitive Metrics
+
+Some metrics are deterministic but still conditional because they require
+observed structure such as qualifying tails, events, or hydrograph phases.
+
+Examples include:
+
+- `tail_dependence_score`
+- `extreme_event_ratio`
+- `event_nse`
+- `rising_limb_error`
+- `recession_constant`
+
+These metrics are available through the registry and public wrappers where
+exported, but `gof(extended = TRUE)` includes them only when the observed data
+meet their documented preconditions.
+
+```{r}
+intersect(
+  c("tail_dependence_score", "extreme_event_ratio", "event_nse"),
+  names(gof(sim, obs, extended = TRUE))
+)
+```
+
+## Wrapper-Only Probabilistic Metrics
+
+The current uncertainty-facing probabilistic metrics are not part of the
+default deterministic `gof(sim, obs)` route:
+
+- `crps()` for ensemble forecasts
+- `picp()` for interval coverage
+- `mwpi()` for interval width
+- `skill_score()` for relative improvement against a baseline score
+
+These require shaped inputs that differ from the ordinary deterministic
+single-series contract, so they are explicit-wrapper metrics and are excluded
+from deterministic `gof(sim, obs, extended = TRUE)` auto-selection.
+
+```{r}
+intersect(
+  c("crps", "picp", "mwpi", "skill_score"),
+  names(gof(sim, obs, extended = TRUE))
+)
+```
+
+For practical examples of these wrappers, see the uncertainty vignette.
+
+## Where To Go Next
+
+Use this vignette as the package map, then move to the workflow guide that
+matches your task:
+
+- `vignette("getting-started", package = "hydroMetrics")` for a minimal
+  package walkthrough
+- `vignette("calibration-guide", package = "hydroMetrics")` for deterministic
+  calibration workflows and metric selection
+- `vignette("uncertainty-eval", package = "hydroMetrics")` for interval,
+  ensemble, and probabilistic wrapper use
+
+For exact function contracts, consult `?gof`, `?ggof`, and the relevant metric
+wrapper help pages.

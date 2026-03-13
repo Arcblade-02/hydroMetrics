@@ -95,6 +95,19 @@ if (!exists("gof", mode = "function")) {
   sum(p_obs * log(p_obs / p_sim))
 }
 
+.test_c3_tail_threshold <- function(obs) {
+  as.numeric(stats::quantile(obs, probs = 0.9, type = 7, names = FALSE))
+}
+
+.test_c3_event_count <- function(x, threshold) {
+  idx <- which(x > threshold)
+  if (!length(idx)) {
+    return(0L)
+  }
+
+  length(split(idx, cumsum(c(1L, diff(idx) > 1L))))
+}
+
 test_that("layer C batch C1 registry ids are present", {
   ids <- list_metrics()$id
   target <- c("skewness_error", "kurtosis_error", "iqr_error")
@@ -105,6 +118,13 @@ test_that("layer C batch C1 registry ids are present", {
 test_that("layer C batch C2 registry ids are present", {
   ids <- list_metrics()$id
   target <- c("entropy_diff", "mutual_information_score", "kl_divergence_flow")
+
+  expect_true(all(target %in% ids))
+})
+
+test_that("layer C batch C3 registry ids are present", {
+  ids <- list_metrics()$id
+  target <- c("flow_duration_entropy", "tail_dependence_score", "extreme_event_ratio")
 
   expect_true(all(target %in% ids))
 })
@@ -194,8 +214,8 @@ test_that("iqr_error allows constant series but rejects too-short inputs", {
 })
 
 test_that("layer C wrappers integrate with gof and extended deterministic visibility", {
-  sim <- c(1, 2, 3, 4, 8, 9, 10, 11)
-  obs <- c(1, 2, 3, 4, 5, 6, 7, 8)
+  sim <- c(1, 2, 3, 4, 8, 9, 10, 11, 5, 4, 3, 2)
+  obs <- c(1, 2, 3, 4, 5, 6, 7, 10, 6, 5, 4, 3)
 
   out <- gof(
     sim,
@@ -206,7 +226,10 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "iqr_error",
       "entropy_diff",
       "mutual_information_score",
-      "kl_divergence_flow"
+      "kl_divergence_flow",
+      "flow_duration_entropy",
+      "tail_dependence_score",
+      "extreme_event_ratio"
     )
   )
   expect_true(inherits(out, "hydro_metrics"))
@@ -218,7 +241,10 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "iqr_error",
       "entropy_diff",
       "mutual_information_score",
-      "kl_divergence_flow"
+      "kl_divergence_flow",
+      "flow_duration_entropy",
+      "tail_dependence_score",
+      "extreme_event_ratio"
     )
   )
 
@@ -231,7 +257,10 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
         "iqr_error",
         "entropy_diff",
         "mutual_information_score",
-        "kl_divergence_flow"
+        "kl_divergence_flow",
+        "flow_duration_entropy",
+        "tail_dependence_score",
+        "extreme_event_ratio"
       ) %in% names(out_ext)
     )
   )
@@ -300,4 +329,89 @@ test_that("kl_divergence_flow keeps direction explicit and constant-series cases
   expect_equal(kl_divergence_flow(const, var), .test_c2_kl_obs_vs_sim(const, var, breaks))
   expect_gt(abs(kl_divergence_flow(const, var) - kl_divergence_flow(var, const)), 0)
   expect_error(kl_divergence_flow(1, 1), "requires at least 2 values")
+})
+
+test_that("flow_duration_entropy matches manual FDC-ordered entropy difference", {
+  sim <- c(1, 2, 3, 7, 8, 4, 3, 2, 6, 7, 3, 2)
+  obs <- c(1, 2, 4, 8, 7, 5, 3, 2, 5, 8, 4, 2)
+  sim_fdc <- .hm_fdc_prepare(sim)$flow
+  obs_fdc <- .hm_fdc_prepare(obs)$flow
+  breaks <- .test_c2_pooled_breaks(sim_fdc, obs_fdc)
+  expected <- abs(.test_c2_entropy(sim_fdc, breaks) - .test_c2_entropy(obs_fdc, breaks))
+
+  expect_equal(flow_duration_entropy(sim, obs), expected)
+  expect_equal(metric_flow_duration_entropy(sim, obs), expected)
+})
+
+test_that("flow_duration_entropy is deterministic for identical and constant series", {
+  const <- c(1, 1, 1, 1, 1, 1)
+  var <- c(1, 2, 3, 4, 5, 6)
+  sim_fdc <- .hm_fdc_prepare(const)$flow
+  obs_fdc <- .hm_fdc_prepare(var)$flow
+  breaks <- .test_c2_pooled_breaks(sim_fdc, obs_fdc)
+
+  expect_equal(flow_duration_entropy(var, var), 0)
+  expect_equal(flow_duration_entropy(const, const), 0)
+  expect_equal(flow_duration_entropy(const, var), abs(0 - .test_c2_entropy(obs_fdc, breaks)))
+  expect_error(flow_duration_entropy(1, 1), "requires at least 2 values")
+})
+
+test_that("tail_dependence_score matches empirical observed-threshold conditional exceedance", {
+  sim <- c(1, 2, 3, 7, 8, 4, 3, 2, 6, 7, 3, 2)
+  obs <- c(1, 2, 4, 8, 7, 5, 3, 2, 5, 8, 4, 2)
+  threshold <- .test_c3_tail_threshold(obs)
+  obs_exceed <- obs > threshold
+  expected <- mean(sim[obs_exceed] > threshold)
+
+  expect_equal(tail_dependence_score(sim, obs), expected)
+  expect_equal(metric_tail_dependence_score(sim, obs), expected)
+})
+
+test_that("tail_dependence_score handles identical, absent simulated, and no-observed-exceedance cases", {
+  paired <- c(1, 2, 3, 7, 8, 4, 3, 2, 6, 7, 3, 2)
+  const <- c(1, 1, 1, 1, 1, 1)
+  var <- c(1, 2, 3, 4, 5, 6)
+
+  expect_equal(tail_dependence_score(paired, paired), 1)
+  expect_equal(tail_dependence_score(const, var), 0)
+  expect_error(
+    tail_dependence_score(const, const),
+    "obs contains no exceedances above the observed 0.9 quantile threshold"
+  )
+})
+
+test_that("extreme_event_ratio matches observed-threshold contiguous event-count ratio", {
+  sim <- c(1, 2, 3, 7, 2, 1, 1, 6, 2, 1, 1, 7)
+  obs <- c(1, 2, 4, 8, 2, 1, 1, 5, 2, 1, 1, 8)
+  threshold <- .test_c3_tail_threshold(obs)
+  expected <- .test_c3_event_count(sim, threshold) / .test_c3_event_count(obs, threshold)
+
+  expect_equal(extreme_event_ratio(sim, obs), expected)
+  expect_equal(metric_extreme_event_ratio(sim, obs), expected)
+})
+
+test_that("extreme_event_ratio handles identical, zero-sim-event, and no-observed-event cases", {
+  obs <- c(1, 2, 4, 8, 2, 1, 1, 5, 2, 1, 1, 8)
+  threshold <- .test_c3_tail_threshold(obs)
+  sim_none <- c(1, 2, 3, 4, 2, 1, 1, 3, 2, 1, 1, 3)
+  const <- c(1, 1, 1, 1, 1, 1)
+
+  expect_equal(extreme_event_ratio(obs, obs), 1)
+  expect_equal(extreme_event_ratio(sim_none, obs), 0)
+  expect_equal(.test_c3_event_count(obs, threshold), 2L)
+  expect_error(
+    extreme_event_ratio(const, const),
+    "obs contains no events above the observed 0.9 quantile threshold"
+  )
+})
+
+test_that("gof extended excludes threshold-gated C3 metrics when observed tails are absent", {
+  sim <- c(1, 2, 2, 2, 2, 2)
+  obs <- c(1, 1, 1, 1, 2, 2)
+
+  out_ext <- gof(sim, obs, extended = TRUE)
+
+  expect_false("tail_dependence_score" %in% names(out_ext))
+  expect_false("extreme_event_ratio" %in% names(out_ext))
+  expect_true("flow_duration_entropy" %in% names(out_ext))
 })

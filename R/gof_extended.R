@@ -161,6 +161,21 @@
   }, error = function(e) FALSE)
 }
 
+.gof_can_auto_run_tail_dependence_score <- function(obs) {
+  tryCatch({
+    threshold <- .hm_c3_tail_threshold(obs, "tail_dependence_score")
+    any(as.numeric(obs) > threshold)
+  }, error = function(e) FALSE)
+}
+
+.gof_can_auto_run_extreme_event_ratio <- function(obs) {
+  tryCatch({
+    threshold <- .hm_c3_tail_threshold(obs, "extreme_event_ratio")
+    windows <- .hm_c3_event_windows_from_threshold(obs, threshold, "extreme_event_ratio", "obs")
+    length(windows) > 0L
+  }, error = function(e) FALSE)
+}
+
 .gof_auto_applicable_ids <- function(available_ids, sim = NULL, obs = NULL, index = NULL) {
   ids <- available_ids
   ids <- setdiff(ids, c("crps", "picp", "mwpi", "skill_score"))
@@ -208,6 +223,12 @@
   }
   if (!.gof_can_auto_run_event_nse(obs)) {
     ids <- setdiff(ids, "event_nse")
+  }
+  if (!.gof_can_auto_run_tail_dependence_score(obs)) {
+    ids <- setdiff(ids, "tail_dependence_score")
+  }
+  if (!.gof_can_auto_run_extreme_event_ratio(obs)) {
+    ids <- setdiff(ids, "extreme_event_ratio")
   }
   if (!.gof_can_auto_run_seasonal_bias(index)) {
     ids <- setdiff(ids, c("seasonal_bias", "seasonal_nse"))

@@ -287,3 +287,129 @@ core_metric_spec_kl_divergence_flow <- function() {
     tags = c("phase-3", "layer-c", "batch-c2")
   )
 }
+
+# Shared Batch C3 conventions:
+# - flow_duration_entropy reuses descending FDC ordering from .hm_fdc_prepare
+#   and applies the C2 pooled-support Sturges histogram entropy policy to the
+#   ordered flow values
+# - tail_dependence_score uses the observed 0.9 type-7 quantile as a strict
+#   upper-tail threshold and reports P(sim > q_obs | obs > q_obs)
+# - extreme_event_ratio uses the same observed 0.9 type-7 quantile for both
+#   series and counts contiguous runs strictly above the threshold
+# - extreme-event segmentation is deterministic and ordered; one contiguous run
+#   above threshold is one event
+
+.hm_c3_tail_threshold <- function(obs, metric_id, threshold_prob = 0.9) {
+  q <- stats::quantile(obs, probs = threshold_prob, type = 7, names = FALSE)
+  if (!is.finite(q)) {
+    stop(sprintf("%s is undefined because the observed tail threshold could not be estimated.", metric_id), call. = FALSE)
+  }
+
+  as.numeric(q)
+}
+
+.hm_c3_event_windows_from_threshold <- function(x, threshold, metric_id, name) {
+  active <- as.numeric(x) > threshold
+  idx <- which(active)
+
+  if (!length(idx)) {
+    stop(sprintf("%s is undefined because %s contains no events above the observed 0.9 quantile threshold.", metric_id, name), call. = FALSE)
+  }
+
+  split_points <- cumsum(c(1L, diff(idx) > 1L))
+  split(idx, split_points)
+}
+
+metric_flow_duration_entropy <- function(sim, obs) {
+  inputs <- .hm_c2_validate_info_pair(sim, obs, "flow_duration_entropy", min_length = 2L)
+  sim_fdc <- .hm_fdc_prepare(inputs$sim)$flow
+  obs_fdc <- .hm_fdc_prepare(inputs$obs)$flow
+  breaks <- .hm_c2_pooled_breaks(sim_fdc, obs_fdc, "flow_duration_entropy")
+  sim_entropy <- .hm_c2_entropy_from_probs(.hm_c2_hist_probs(sim_fdc, breaks, "flow_duration_entropy", "sim"))
+  obs_entropy <- .hm_c2_entropy_from_probs(.hm_c2_hist_probs(obs_fdc, breaks, "flow_duration_entropy", "obs"))
+
+  abs(sim_entropy - obs_entropy)
+}
+
+core_metric_spec_flow_duration_entropy <- function() {
+  list(
+    id = "flow_duration_entropy",
+    fun = metric_flow_duration_entropy,
+    name = "Flow-Duration Entropy",
+    description = "Absolute difference between pooled-grid Shannon entropies of descending flow-duration-curve values using Sturges histograms.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Searcy (1959) flow-duration-curve construction with Shannon (1948) entropy and Sturges (1926) histogram binning; package metric uses absolute entropy difference on descending FDC values.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "batch-c3")
+  )
+}
+
+metric_tail_dependence_score <- function(sim, obs) {
+  inputs <- .hm_c2_validate_info_pair(
+    sim,
+    obs,
+    "tail_dependence_score",
+    min_length = 3L,
+    require_equal_length = TRUE
+  )
+  threshold <- .hm_c3_tail_threshold(inputs$obs, "tail_dependence_score")
+  obs_exceed <- inputs$obs > threshold
+
+  if (!any(obs_exceed)) {
+    stop("tail_dependence_score is undefined because obs contains no exceedances above the observed 0.9 quantile threshold.", call. = FALSE)
+  }
+
+  mean(inputs$sim[obs_exceed] > threshold)
+}
+
+core_metric_spec_tail_dependence_score <- function() {
+  list(
+    id = "tail_dependence_score",
+    fun = metric_tail_dependence_score,
+    name = "Tail Dependence Score",
+    description = "Empirical upper-tail dependence proxy P(sim > q_obs,0.9 | obs > q_obs,0.9) using the observed type-7 0.9 quantile threshold.",
+    category = "agreement",
+    perfect = 1,
+    range = c(0, 1),
+    references = "Coles, Heffernan, & Tawn (1999) tail-dependence diagnostic context; package metric uses a deterministic observed-threshold conditional exceedance score rather than an asymptotic estimator.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "batch-c3")
+  )
+}
+
+metric_extreme_event_ratio <- function(sim, obs) {
+  inputs <- .hm_c2_validate_info_pair(
+    sim,
+    obs,
+    "extreme_event_ratio",
+    min_length = 3L,
+    require_equal_length = TRUE
+  )
+  .hm_b3_validate_ordered_series(inputs$sim, "sim", "extreme_event_ratio", min_length = 3L)
+  .hm_b3_validate_ordered_series(inputs$obs, "obs", "extreme_event_ratio", min_length = 3L)
+
+  threshold <- .hm_c3_tail_threshold(inputs$obs, "extreme_event_ratio")
+  obs_windows <- .hm_c3_event_windows_from_threshold(inputs$obs, threshold, "extreme_event_ratio", "obs")
+  sim_active <- as.numeric(inputs$sim) > threshold
+  sim_idx <- which(sim_active)
+  sim_count <- if (!length(sim_idx)) 0L else length(split(sim_idx, cumsum(c(1L, diff(sim_idx) > 1L))))
+
+  sim_count / length(obs_windows)
+}
+
+core_metric_spec_extreme_event_ratio <- function() {
+  list(
+    id = "extreme_event_ratio",
+    fun = metric_extreme_event_ratio,
+    name = "Extreme Event Ratio",
+    description = "Ratio of simulated to observed contiguous extreme-event counts using the observed type-7 0.9 quantile threshold for both series.",
+    category = "agreement",
+    perfect = 1,
+    range = c(0, Inf),
+    references = "Yilmaz et al. (2008) event-focused hydrograph diagnostic context with deterministic high-threshold event segmentation; package metric reports the observed-threshold event-count ratio n_sim / n_obs.",
+    version_added = "0.2.2",
+    tags = c("phase-3", "layer-c", "batch-c3")
+  )
+}

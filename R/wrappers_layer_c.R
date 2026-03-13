@@ -116,3 +116,60 @@ mutual_information_score <- function(sim, obs, na.rm = NULL, ...) {
 kl_divergence_flow <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("kl_divergence_flow", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
+
+#' Evaluate the flow-duration entropy wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"flow_duration_entropy"`. The metric reuses descending flow-duration-curve
+#' ordering and computes the absolute difference between pooled-grid Shannon
+#' entropies of Sturges-binned FDC values.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' flow_duration_entropy(c(1, 2, 3, 7, 8, 4), c(1, 2, 4, 8, 7, 5))
+#' @export
+flow_duration_entropy <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("flow_duration_entropy", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the tail dependence score wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"tail_dependence_score"`. The metric uses the observed type-7 `0.9`
+#' quantile as a strict upper-tail threshold and reports the empirical
+#' conditional exceedance score `P(sim > q_obs | obs > q_obs)`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' tail_dependence_score(c(1, 2, 3, 7, 8, 4), c(1, 2, 4, 8, 7, 5))
+#' @export
+tail_dependence_score <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("tail_dependence_score", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
+#' Evaluate the extreme event ratio wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"extreme_event_ratio"`. Extreme events are contiguous runs strictly above
+#' the observed type-7 `0.9` quantile threshold, counted separately in sim and
+#' obs using the same observed threshold; the score is `n_sim / n_obs`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' extreme_event_ratio(c(1, 2, 3, 7, 8, 4), c(1, 2, 4, 8, 7, 5))
+#' @export
+extreme_event_ratio <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("extreme_event_ratio", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}

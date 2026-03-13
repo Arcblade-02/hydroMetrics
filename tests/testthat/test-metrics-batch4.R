@@ -39,10 +39,7 @@ test_that("batch4 deterministic numeric formulas match inline computations", {
   rd_rel_err <- (sim - obs) / obs
   dr_rel_abs <- abs(sim - obs) / abs(obs)
 
-  r <- stats::cor(sim, obs)
-  sd_penalty <- min(stats::sd(sim), stats::sd(obs)) / max(stats::sd(sim), stats::sd(obs))
-  mean_penalty <- min(mean(sim), mean(obs)) / max(mean(sim), mean(obs))
-  br2_expected <- (r^2) * (sd_penalty^2) * (mean_penalty^2)
+  br2_expected <- unname(abs(stats::coef(stats::lm(sim ~ obs))[2]) * stats::cor(sim, obs)^2)
 
   out <- evaluate_metrics(sim, obs, c("me", "d", "md", "rd", "dr", "br2"))
   values <- setNames(out$value, out$metric)
@@ -80,6 +77,6 @@ test_that("d and md error on zero denominator constant-series case", {
 test_that("br2 errors when sd(obs) is zero", {
   expect_error(
     evaluate_metrics(c(1, 2, 3), c(2, 2, 2), "br2"),
-    "sd == 0"
+    "sd\\(obs\\) == 0"
   )
 })

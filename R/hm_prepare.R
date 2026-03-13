@@ -56,7 +56,7 @@
   }
 
   if (epsilon_mode == "auto_min_positive") {
-    positives <- c(sim[sim > 0], obs[obs > 0])
+    positives <- c(sim[!is.na(sim) & sim > 0], obs[!is.na(obs) & obs > 0])
     if (length(positives) == 0L) {
       stop("No positive values available for `epsilon_mode = 'auto_min_positive'`.", call. = FALSE)
     }
@@ -64,7 +64,7 @@
   }
 
   # epsilon_mode == "obs_mean_factor"
-  mean(obs) * epsilon_factor
+  mean(obs, na.rm = TRUE) * epsilon_factor
 }
 
 .hm_apply_transform <- function(sim, obs, transform, epsilon_mode, epsilon, epsilon_factor) {
@@ -72,11 +72,13 @@
     return(list(sim = sim, obs = obs))
   }
 
+  valid <- !(is.na(sim) | is.na(obs))
+
   needs_epsilon <- switch(
     transform,
-    log = any(sim <= 0 | obs <= 0),
-    sqrt = any(sim < 0 | obs < 0),
-    reciprocal = any(sim == 0 | obs == 0)
+    log = any(sim[valid] <= 0 | obs[valid] <= 0),
+    sqrt = any(sim[valid] < 0 | obs[valid] < 0),
+    reciprocal = any(sim[valid] == 0 | obs[valid] == 0)
   )
 
   sim_adj <- sim
@@ -91,23 +93,38 @@
   }
 
   if (transform == "log") {
-    if (any(sim_adj <= 0 | obs_adj <= 0)) {
+    if (any(sim_adj[valid] <= 0 | obs_adj[valid] <= 0)) {
       stop("log transform requires strictly positive values after epsilon adjustment.", call. = FALSE)
     }
     return(list(sim = log(sim_adj), obs = log(obs_adj)))
   }
 
   if (transform == "sqrt") {
-    if (any(sim_adj < 0 | obs_adj < 0)) {
+    if (any(sim_adj[valid] < 0 | obs_adj[valid] < 0)) {
       stop("sqrt transform requires non-negative values after epsilon adjustment.", call. = FALSE)
     }
     return(list(sim = sqrt(sim_adj), obs = sqrt(obs_adj)))
   }
 
-  if (any(sim_adj == 0 | obs_adj == 0)) {
+  if (any(sim_adj[valid] == 0 | obs_adj[valid] == 0)) {
     stop("reciprocal transform requires non-zero values after epsilon adjustment.", call. = FALSE)
   }
   list(sim = 1 / sim_adj, obs = 1 / obs_adj)
+}
+
+.hm_materialize_pairwise_payload <- function(payload) {
+  keep <- stats::complete.cases(payload$sim, payload$obs)
+  if (!any(keep)) {
+    stop("At least 1 valid paired value is required after pairwise NA handling.", call. = FALSE)
+  }
+
+  removed <- as.integer(sum(!keep))
+  payload$sim <- payload$sim[keep]
+  payload$obs <- payload$obs[keep]
+  payload$index <- payload$index[keep]
+  payload$meta$n_removed_na <- as.integer(payload$meta$n_removed_na + removed)
+  payload$meta$n_used <- as.integer(length(payload$sim))
+  payload
 }
 
 .hm_index_key <- function(index) {
@@ -252,7 +269,7 @@
     if (anyNA(sim_vec) || anyNA(obs_vec)) {
       stop("Missing values found; use `na_strategy = 'remove'` to drop NA pairs.", call. = FALSE)
     }
-  } else {
+  } else if (na_strategy == "remove") {
     keep <- stats::complete.cases(sim_vec, obs_vec)
     n_removed_na <- as.integer(sum(!keep))
     sim_vec <- sim_vec[keep]
@@ -278,8 +295,22 @@
   if (length(sim_out) == 0L || length(obs_out) == 0L) {
     stop("At least 1 paired value is required after transformation.", call. = FALSE)
   }
-  if (anyNA(sim_out) || anyNA(obs_out) || any(!is.finite(sim_out)) || any(!is.finite(obs_out))) {
+  invalid_non_missing <- (!is.na(sim_out) & !is.finite(sim_out)) | (!is.na(obs_out) & !is.finite(obs_out))
+  if (any(invalid_non_missing)) {
     stop("Transformation produced non-finite values.", call. = FALSE)
+  }
+
+  n_used <- if (identical(na_strategy, "pairwise")) {
+    keep <- stats::complete.cases(sim_out, obs_out)
+    if (!any(keep)) {
+      stop("At least 1 valid paired value is required after pairwise NA handling.", call. = FALSE)
+    }
+    as.integer(sum(keep))
+  } else {
+    if (anyNA(sim_out) || anyNA(obs_out)) {
+      stop("Transformation produced non-finite values.", call. = FALSE)
+    }
+    as.integer(length(sim_out))
   }
 
   list(
@@ -289,7 +320,7 @@
     meta = list(
       n_original = as.integer(n_original),
       n_aligned = as.integer(n_aligned),
-      n_used = as.integer(length(sim_out)),
+      n_used = n_used,
       n_removed_na = as.integer(n_removed_na),
       transform = transform,
       epsilon_mode = epsilon_mode

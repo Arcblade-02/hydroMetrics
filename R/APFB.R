@@ -101,11 +101,12 @@ APFB <- function(sim, obs, na.rm = NULL, ...) {
     )
   )
 
-  years <- length(unique(.extract_calendar_year(out$meta$index)))
+  meta <- attr(out, "meta", exact = TRUE)
+  years <- length(unique(.extract_calendar_year(meta$index)))
   .new_hydro_metric_scalar(
-    value = out$apfb,
+    value = as.numeric(out[["apfb"]]),
     metric = "APFB",
-    n_obs = out$n_obs,
+    n_obs = attr(out, "n_obs", exact = TRUE),
     meta = list(
       years = as.integer(years),
       aligned = isTRUE(aligned),

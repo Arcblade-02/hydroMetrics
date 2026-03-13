@@ -13,7 +13,7 @@
     "ve" = "ve",
     "rsr" = "rsr",
     "nrmse" = "nrmse",
-    "rpearson" = "rpearson",
+    "rpearson" = "r",
     "rspearman" = "rspearman",
     "rsd" = "rsd",
     "rnse" = "rnse",
@@ -30,10 +30,6 @@
     "apfb" = "apfb",
     "hfb" = "hfb"
   )
-}
-
-.gof_default_methods <- function() {
-  c("NSE", "KGE", "rmse", "pbias", "mae", "mse", "R2", "VE", "rsr", "nrmse")
 }
 
 .gof_resolve_methods <- function(requested) {
@@ -64,7 +60,7 @@
   }
 
   list(
-    ids = unname(alias[keys]),
+    ids = .hm_canonicalize_metric_ids(unname(alias[keys]), warn = TRUE),
     labels = requested
   )
 }
@@ -173,42 +169,29 @@
   })
 }
 
-.gof_hydrometric_slots <- function(metrics) {
-  if (is.matrix(metrics)) {
-    methods <- rownames(metrics)
-    out <- lapply(methods, function(m) {
-      vals <- metrics[m, , drop = TRUE]
-      if (length(vals) == 1L) {
-        as.numeric(vals[[1]])
-      } else {
-        as.numeric(vals)
-      }
-    })
-    names(out) <- methods
-    return(out)
+.new_hydro_metrics <- function(metrics, n_obs, meta, call) {
+  out <- metrics
+  attr(out, "n_obs") <- n_obs
+  attr(out, "meta") <- meta
+  attr(out, "call") <- call
+
+  base_class <- class(metrics)
+  if (length(base_class) > 0L) {
+    class(out) <- c("hydro_metrics", base_class)
+  } else {
+    class(out) <- "hydro_metrics"
   }
 
-  vals <- as.numeric(metrics)
-  names(vals) <- names(metrics)
-  as.list(vals)
-}
-
-.new_hydro_metrics <- function(metrics, n_obs, meta, call) {
-  out <- c(
-    list(
-      metrics = metrics,
-      n_obs = n_obs,
-      meta = meta,
-      call = call
-    ),
-    .gof_hydrometric_slots(metrics)
-  )
-  class(out) <- "hydro_metrics"
   out
 }
 
+.hydro_metrics_payload <- function(x) {
+  class(x) <- setdiff(class(x), "hydro_metrics")
+  x
+}
+
 .gof_preproc_call <- function(sim, obs, na_strategy, transform, epsilon_mode, epsilon, epsilon_factor) {
-  preproc(
+  payload <- preproc(
     sim = sim,
     obs = obs,
     na_strategy = na_strategy,
@@ -217,17 +200,39 @@
     epsilon = epsilon,
     epsilon_factor = epsilon_factor
   )
+
+  list(
+    sim = payload$sim,
+    obs = payload$obs,
+    index = payload$index,
+    meta = list(
+      n_original = payload$n_original,
+      n_aligned = payload$n_aligned,
+      n_used = payload$n,
+      n_removed_na = payload$n_removed_na,
+      transform = transform,
+      epsilon_mode = epsilon_mode
+    )
+  )
 }
 
 .gof_runtime_metric_calls <- function(metric_calls, payload) {
   lapply(metric_calls, function(call) {
     params <- call$params
-    if (identical(call$id, "apfb") && is.null(params$index)) {
+    if (call$id %in% c("apfb", "seasonal_bias", "seasonal_nse") && is.null(params$index)) {
       params$index <- payload$index
     }
     call$params <- params
     call
   })
+}
+
+.gof_materialize_payload <- function(payload, na_strategy) {
+  if (!identical(na_strategy, "pairwise")) {
+    return(payload)
+  }
+
+  .hm_materialize_pairwise_payload(payload)
 }
 
 .hm_resolve_epsilon_type <- function(epsilon_type, epsilon_mode, epsilon_mode_missing) {
@@ -334,7 +339,10 @@
 #'   object, or aligned `zoo`/`xts` series.
 #' @param obs Observed values with the same shape contract as `sim`.
 #' @param methods Metric names to evaluate. When omitted, the package default
-#'   metric set is used.
+#'   compat-10 set is used unless `extended = TRUE`.
+#' @param extended Whether omitted/`NULL` method selection should expand from
+#'   the compat-10 default set to all registered metrics that are applicable to
+#'   the current input context.
 #' @param na_strategy Missing-value strategy forwarded to [preproc()].
 #' @param transform Transform mode forwarded to [preproc()].
 #' @param epsilon_mode Epsilon policy forwarded to [preproc()].
@@ -355,9 +363,9 @@
 #'   `epsilon_factor` otherwise.
 #' @param ... Additional compatibility arguments, including `metric_params`.
 #'
-#' @return A structured object with class `"hydro_metrics"` containing
-#'   `metrics`, `n_obs`, `meta`, and `call`. Metric names are also exposed as
-#'   list elements for `$` access compatibility.
+#' @return A named numeric vector for single-series inputs or a named numeric
+#'   matrix for multi-series inputs, with class `"hydro_metrics"`. Additional
+#'   metadata is attached via the `n_obs`, `meta`, and `call` attributes.
 #'
 #' @examples
 #' sim <- c(1, 2, 3, 4)
@@ -369,6 +377,7 @@
 gof <- function(sim,
                 obs,
                 methods = NULL,
+                extended = FALSE,
                 na_strategy = c("fail", "remove", "pairwise"),
                 transform = c("none", "log", "sqrt", "reciprocal"),
                 epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
@@ -408,6 +417,10 @@ gof <- function(sim,
   epsilon <- compat$epsilon
   epsilon_factor <- compat$epsilon_factor
 
+  if (!is.logical(extended) || length(extended) != 1L || is.na(extended)) {
+    stop("`extended` must be TRUE or FALSE.", call. = FALSE)
+  }
+
   na_strategy <- match.arg(na_strategy)
   transform <- match.arg(transform)
   epsilon_mode <- match.arg(epsilon_mode)
@@ -415,30 +428,11 @@ gof <- function(sim,
   dots <- list(...)
   metric_params <- dots$metric_params
 
+  prepared <- .gof_prepare_inputs(sim, obs)
+  engine <- .get_engine()
   available_ids <- as.character(.get_registry()$list()$id)
   available_alias <- .gof_alias_map()
   available_alias <- available_alias[available_alias %in% available_ids]
-
-  requested <- as.character(methods)
-  if (length(requested) == 0L || all(!nzchar(requested))) {
-    defaults <- .gof_default_methods()
-    resolved_defaults <- defaults[tolower(defaults) %in% names(available_alias)]
-    requested <- resolved_defaults
-  }
-  requested <- requested[nzchar(requested)]
-  if (length(requested) == 0L) {
-    stop("No valid methods available for gof().", call. = FALSE)
-  }
-
-  resolved <- .gof_resolve_methods(requested)
-  metric_calls <- .gof_normalize_metric_calls(
-    ids = resolved$ids,
-    labels = resolved$labels,
-    metric_params = metric_params
-  )
-
-  prepared <- .gof_prepare_inputs(sim, obs)
-  engine <- .get_engine()
 
   if (identical(prepared$type, "single")) {
     payload <- .gof_preproc_call(
@@ -450,32 +444,68 @@ gof <- function(sim,
       epsilon = epsilon,
       epsilon_factor = epsilon_factor
     )
-    runtime_calls <- .gof_runtime_metric_calls(metric_calls, payload)
-    out <- engine$evaluate(payload$sim, payload$obs, runtime_calls)
+    runtime_payload <- .gof_materialize_payload(payload, na_strategy = na_strategy)
+    requested <- .gof_select_methods(
+      methods = methods,
+      available_ids = available_ids,
+      extended = extended,
+      sim = runtime_payload$sim,
+      obs = runtime_payload$obs,
+      index = runtime_payload$index
+    )
+    if (length(requested) == 0L) {
+      stop("No valid methods available for gof().", call. = FALSE)
+    }
+    resolved <- .gof_resolve_methods(requested)
+    metric_calls <- .gof_normalize_metric_calls(
+      ids = resolved$ids,
+      labels = resolved$labels,
+      metric_params = metric_params
+    )
+    runtime_calls <- .gof_runtime_metric_calls(metric_calls, runtime_payload)
+    out <- engine$evaluate(runtime_payload$sim, runtime_payload$obs, runtime_calls)
     vals <- as.numeric(out$value)
     names(vals) <- resolved$labels
 
     return(
       .new_hydro_metrics(
         metrics = vals,
-        n_obs = as.integer(length(payload$sim)),
+        n_obs = as.integer(length(runtime_payload$sim)),
         meta = list(
           transform = transform,
           na_strategy = na_strategy,
           epsilon_mode = epsilon_mode,
           components = isTRUE(components),
-          n_original = as.integer(payload$n_original),
-          n_aligned = as.integer(payload$n_aligned),
-          n_removed_na = as.integer(payload$n_removed_na),
-          aligned = isTRUE(payload$n_original == payload$n_aligned),
-          index = payload$index,
-          sim_used = payload$sim,
-          obs_used = payload$obs
+          n_original = as.integer(runtime_payload$meta$n_original),
+          n_aligned = as.integer(runtime_payload$meta$n_aligned),
+          n_removed_na = as.integer(runtime_payload$meta$n_removed_na),
+          aligned = isTRUE(runtime_payload$meta$n_original == runtime_payload$meta$n_aligned),
+          index = runtime_payload$index,
+          sim_used = runtime_payload$sim,
+          obs_used = runtime_payload$obs
         ),
         call = match.call()
       )
     )
   }
+
+  requested <- .gof_select_methods(
+    methods = methods,
+    available_ids = available_ids,
+    extended = extended,
+    sim = NULL,
+    obs = NULL,
+    index = NULL
+  )
+  if (length(requested) == 0L) {
+    stop("No valid methods available for gof().", call. = FALSE)
+  }
+  resolved <- .gof_resolve_methods(requested)
+  metric_calls <- .gof_normalize_metric_calls(
+    ids = resolved$ids,
+    labels = resolved$labels,
+    metric_params = metric_params
+  )
 
   metrics_mat <- matrix(
     NA_real_,
@@ -496,10 +526,11 @@ gof <- function(sim,
       epsilon = epsilon,
       epsilon_factor = epsilon_factor
     )
-    runtime_calls <- .gof_runtime_metric_calls(metric_calls, payload)
-    out <- engine$evaluate(payload$sim, payload$obs, runtime_calls)
+    runtime_payload <- .gof_materialize_payload(payload, na_strategy = na_strategy)
+    runtime_calls <- .gof_runtime_metric_calls(metric_calls, runtime_payload)
+    out <- engine$evaluate(runtime_payload$sim, runtime_payload$obs, runtime_calls)
     metrics_mat[, j] <- as.numeric(out$value)
-    n_obs[[j]] <- as.integer(length(payload$sim))
+    n_obs[[j]] <- as.integer(length(runtime_payload$sim))
   }
 
   .new_hydro_metrics(
@@ -524,7 +555,7 @@ gof <- function(sim,
 #' @rdname hydro-orchestration-methods
 #' @export
 as.numeric.hydro_metrics <- function(x, ...) {
-  as.numeric(x$metrics)
+  as.numeric(.hydro_metrics_payload(x))
 }
 
 #' Double coercion for hydro_metrics
@@ -536,7 +567,7 @@ as.numeric.hydro_metrics <- function(x, ...) {
 #' @rdname hydro-orchestration-methods
 #' @export
 as.double.hydro_metrics <- function(x, ...) {
-  as.numeric(x$metrics)
+  as.double(.hydro_metrics_payload(x))
 }
 
 #' Print a hydro_metrics object
@@ -548,6 +579,6 @@ as.double.hydro_metrics <- function(x, ...) {
 #' @rdname hydro-orchestration-methods
 #' @export
 print.hydro_metrics <- function(x, ...) {
-  print(x$metrics, ...)
+  print(.hydro_metrics_payload(x), ...)
   invisible(x)
 }

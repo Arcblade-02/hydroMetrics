@@ -135,9 +135,10 @@ test_that("hm_prepare NA strategies behave as specified", {
   expect_identical(removed$meta$n_removed_na, 2L)
   expect_identical(removed$meta$n_used, 2L)
 
-  expect_identical(pairwise$sim, removed$sim)
-  expect_identical(pairwise$obs, removed$obs)
-  expect_identical(pairwise$meta$n_removed_na, removed$meta$n_removed_na)
+  expect_identical(pairwise$sim, sim)
+  expect_identical(pairwise$obs, obs)
+  expect_identical(pairwise$meta$n_removed_na, 0L)
+  expect_identical(pairwise$meta$n_used, 2L)
 })
 
 test_that("hm_prepare supports transform and epsilon modes", {

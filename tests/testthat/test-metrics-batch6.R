@@ -87,11 +87,12 @@ test_that("skge works for monthly ts input", {
   expect_equal(out$value[[1]], 1)
 })
 
-test_that("skge errors for plain numeric vectors without time index", {
-  expect_error(
-    evaluate_metrics(c(1, 2, 3), c(1, 2, 3), "skge"),
-    "requires ts inputs"
-  )
+test_that("skge falls back to KGE for plain numeric vectors", {
+  sim <- c(1, 2, 3, 4)
+  obs <- c(1, 2, 3, 4)
+
+  out <- evaluate_metrics(sim, obs, "skge")
+  expect_equal(out$value[[1]], 1)
 })
 
 test_that("kgelf errors on negative flows", {

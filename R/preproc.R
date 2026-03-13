@@ -64,6 +64,26 @@
   )
 }
 
+hm_prepare <- function(sim,
+                       obs,
+                       na_strategy = c("fail", "remove", "pairwise"),
+                       transform = c("none", "log", "sqrt", "reciprocal"),
+                       epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
+                       epsilon = NULL,
+                       epsilon_factor = 1,
+                       ...) {
+  preproc(
+    sim = sim,
+    obs = obs,
+    na_strategy = na_strategy,
+    transform = transform,
+    epsilon_mode = epsilon_mode,
+    epsilon = epsilon,
+    epsilon_factor = epsilon_factor,
+    ...
+  )
+}
+
 #' Preprocess hydrological series
 #'
 #' Public clean-room preprocessing wrapper used by the orchestration layer. The

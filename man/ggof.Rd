@@ -8,6 +8,7 @@ ggof(
   sim,
   obs,
   methods = NULL,
+  extended = FALSE,
   na_strategy = c("fail", "remove", "pairwise"),
   transform = c("none", "log", "sqrt", "reciprocal"),
   epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
@@ -29,7 +30,11 @@ object, or aligned \code{zoo}/\code{xts} series.}
 \item{obs}{Observed values with the same shape contract as \code{sim}.}
 
 \item{methods}{Metric names to evaluate. When omitted, the package default
-metric set is used.}
+compat-10 set is used unless \code{extended = TRUE}.}
+
+\item{extended}{Whether omitted/\code{NULL} method selection should expand from
+the compat-10 default set to all registered metrics that are applicable to
+the current input context.}
 
 \item{na_strategy}{Missing-value strategy forwarded to \code{\link[=preproc]{preproc()}}.}
 

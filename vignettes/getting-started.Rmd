@@ -33,7 +33,7 @@ sim <- c(1, 2, 3, 4)
 obs <- c(1, 2, 2, 4)
 
 gof_out <- gof(sim, obs, methods = c("NSE", "rmse", "pbias"))
-gof_out$metrics
+gof_out
 ```
 
 ## Batch summaries with `ggof()`

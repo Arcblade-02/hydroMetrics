@@ -11,9 +11,5 @@
 #' mae(c(1, 2, 3), c(1, 3, 2))
 #' @export
 mae <- function(sim, obs, na.rm = NULL, ...) {
-  out <- gof(sim = sim, obs = obs, methods = "mae", na.rm = na.rm, ...)
-  if (is.matrix(out)) {
-    return(out)
-  }
-  as.numeric(out[[1]])
+  .hm_run_single_metric_wrapper("mae", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }

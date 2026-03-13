@@ -9,8 +9,9 @@
   applicability-gated deterministic route; wrapper-only probabilistic metrics
   and other special-interface metrics remain outside default deterministic
   auto-selection; `pareto_skill` remains deferred pending stronger direct
-  metric literature; and no genuine packaged real-dataset validation outputs
-  are currently shipped in the repository.
+  metric literature; and `inst/validation/` now includes a compact USGS NWIS
+  daily-streamflow validation subset with reproducible derived manifest,
+  provenance, observed-summary, and benchmark metric-summary artifacts.
 - Closed Phase 3 Layer C on `dev`: all 12 Layer C metrics are implemented,
   registered, exported, documented, and covered by the current validation
   gate. The information-theory and tail-sensitive metrics keep the narrow

@@ -9,6 +9,14 @@ intermediate audit artifact generated during development.
 
 - `phase3-pre1.0-validation-summary.md`: current registry, vignette, test, and
   package-check status for the Phase 3 / pre-1.0 stabilization line.
+- `usgs_nwis_manifest.csv`: fixed NWIS station manifest for the Stage 6
+  real-data validation subset.
+- `usgs_nwis_provenance.md`: retrieval, provenance, and benchmark-scenario
+  documentation for the NWIS subset.
+- `usgs_nwis_observed_subset_summary.csv`: compact observed-series summary
+  statistics for the selected NWIS stations and date window.
+- `usgs_nwis_metric_validation_summary.csv`: representative metric outputs for
+  deterministic benchmark scenarios derived from the observed NWIS series.
 
 ## Scope
 
@@ -24,13 +32,18 @@ truthfully from the shipped repository contents:
 
 ## Real-Dataset Validation
 
-No genuine real-dataset validation outputs are currently bundled in the
-repository under `data/`, `inst/extdata/`, or `inst/validation/`.
+This directory now includes a compact real-data validation layer based on a
+fixed subset of USGS NWIS daily streamflow observations.
 
-Accordingly, this directory does not claim packaged real-dataset validation
-results. If such validation is performed later from an external or newly added
-dataset, the resulting artifacts should be added here only if they are fully
-reproducible from repository contents and can be documented without ambiguity.
+The packaged artifacts remain intentionally lightweight:
+
+- no large raw NWIS data dumps are committed
+- the real-data layer uses a fixed retrieval design and derived summaries
+- metric tables are computed from clearly labeled benchmark simulation
+  scenarios derived from the observed NWIS series
+
+These artifacts are useful as reproducible validation anchors, but they should
+not be interpreted as external real-model benchmark outputs.
 
 ## Related Evidence
 
@@ -40,3 +53,9 @@ Broader historical or workflow-specific validation evidence remains in:
 - `notes/release-readiness/`
 - `notes/final-cran-evidence/`
 - other `notes/` subdirectories created during earlier stabilization work
+
+The NWIS validation artifacts can be regenerated from the repository root with:
+
+```r
+source("tools/generate_usgs_nwis_validation_artifacts.R")
+```

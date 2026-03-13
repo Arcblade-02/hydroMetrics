@@ -58,16 +58,29 @@ safe addition.
 
 ## Real-Dataset Validation Status
 
-No genuine packaged real-dataset validation outputs are currently present in
-the repository. During the Stage 6 audit:
+The repository now includes a compact real-data validation layer under
+`inst/validation/` based on a fixed USGS NWIS subset of daily mean discharge
+observations.
 
-- `data/` was not present
-- `inst/extdata/` was not present
-- `inst/validation/` did not previously contain real-dataset outputs
+Current scope:
 
-This means the current repository is validated at the package, registry,
-documentation, and test/check level, but it does not yet ship reproducible
-real-dataset validation outputs.
+- three fixed NWIS gauges
+- parameter `00060` daily mean discharge (`statCd = 00003`)
+- a fixed date window from `2016-01-01` to `2020-12-31`
+- derived manifest, provenance, observed-summary, and metric-summary artifacts
+- deterministic benchmark comparison scenarios derived from the observed NWIS
+  series
+
+This is a truthful real-data validation layer because the observed series are
+retrieved from a real external hydrologic data source and the derived metric
+tables are reproducible from those observations.
+
+It is still narrower than a full external model-validation archive:
+
+- no packaged raw NWIS dump is shipped
+- no external model simulation archive is bundled
+- the metric tables are benchmark scenarios derived from observed data, not
+  third-party model outputs
 
 ## Additional Release-Facing Evidence
 

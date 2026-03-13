@@ -140,3 +140,20 @@ test_that("every registered metric has a callable implementation", {
     expect_true(is.finite(as.numeric(value)), info = sprintf("metric '%s' returned non-finite", id))
   }
 })
+
+test_that("list_metrics recommended filter is backward compatible and deterministic", {
+  ns <- .struct_namespace()
+  list_metrics_fn <- get("list_metrics", envir = ns)
+
+  full <- list_metrics_fn()
+  rec <- list_metrics_fn(recommended = TRUE)
+  rec_false <- list_metrics_fn(recommended = FALSE)
+  expected_ids <- c("kge", "mae", "mse", "nrmse", "nse", "pbias", "r2", "rmse", "rsr", "ve")
+
+  expect_identical(rec_false, full)
+  expect_gt(nrow(rec), 0L)
+  expect_lt(nrow(rec), nrow(full))
+  expect_true(all(rec$id %in% full$id))
+  expect_identical(length(rec$id), length(unique(rec$id)))
+  expect_identical(rec$id, expected_ids)
+})

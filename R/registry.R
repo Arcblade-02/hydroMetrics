@@ -156,8 +156,22 @@ register_metric <- function(id, fun, name, description, references = NULL, tags 
   .get_registry()$register(spec)
 }
 
-list_metrics <- function() {
-  .get_registry()$list()
+.hm_recommended_metric_ids <- function() {
+  # Stable curated shortlist aligned to the existing compat-10 defaults.
+  c("nse", "kge", "rmse", "pbias", "mae", "mse", "r2", "ve", "rsr", "nrmse")
+}
+
+list_metrics <- function(recommended = FALSE) {
+  if (!is.logical(recommended) || length(recommended) != 1L || is.na(recommended)) {
+    stop("`recommended` must be TRUE or FALSE.", call. = FALSE)
+  }
+
+  metrics <- .get_registry()$list()
+  if (!isTRUE(recommended)) {
+    return(metrics)
+  }
+
+  metrics[metrics$id %in% .hm_recommended_metric_ids(), , drop = FALSE]
 }
 
 get_metric <- function(id) {

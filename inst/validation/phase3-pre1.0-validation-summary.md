@@ -24,10 +24,10 @@ Explicit deferment:
 
 ## Maintainer Readiness Note
 
-- Current package version: `0.3.0`
+- Current package version: `0.3.1`
 - Repository status: milestone-ready post-Phase-3 state with aligned release
   docs, validation summaries, and merged completion work
-- Suggested future tag label: `v0.3.0` (recommendation only; not created here)
+- Suggested future tag label: `v0.3.1` (recommendation only; not created here)
 - Suggested next track: post-1.0 utility design such as `pareto_evaluate()`
 
 ## Current Registry State

@@ -31,6 +31,28 @@ and release-facing validation artifacts for reproducible package checks.
   `skill_score()` remain wrapper-only special-interface workflows rather than
   part of default deterministic `gof(sim, obs)` auto-selection
 
+## Lifecycle Policy
+
+- `stable`: exported orchestration entry points, `hm_result()`, and documented
+  exported metric wrappers other than the explicit compatibility exports below
+- `compatibility`: `APFB()`, `HFB()`, `NSeff()`, `mNSeff()`, `rNSeff()`,
+  `wsNSeff()`, `mutual_information_score()`, and `kl_divergence_flow()`
+- `deprecated`: no exported functions at the `0.3.1` baseline
+- `experimental`: no exported functions at the `0.3.1` baseline
+
+## Alias Policy
+
+- Exported compatibility wrappers retained for historical continuity route to
+  canonical registry metrics or canonical exported wrappers:
+  `NSeff() -> nse`, `mNSeff() -> mnse`, `rNSeff() -> rnse`,
+  `wsNSeff() -> wsnse`, `APFB() -> apfb`, `HFB() -> hfb`,
+  `mutual_information_score() -> mutual_information()`, and
+  `kl_divergence_flow() -> kl_divergence()`
+- Uppercase hydroGOF-style names accepted by `gof()` / `ggof()` are
+  orchestration-only method labels and are not exported standalone functions
+- Deprecated `rPearson` requests are resolved to canonical `r` during
+  orchestration-level method selection
+
 ## Install
 
 For local release validation, build the source bundle with `R CMD build .` and

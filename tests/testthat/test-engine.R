@@ -87,3 +87,31 @@ test_that("core metrics return expected values on simple vectors", {
   expect_equal(values[["rmse"]], sqrt(4 / 3))
   expect_equal(values[["pbias"]], 50)
 })
+
+test_that("engine canonicalizes deprecated metric aliases during evaluation", {
+  expect_warning(
+    out <- evaluate_metrics(
+      sim = c(1, 2, 3),
+      obs = c(1, 2, 1),
+      metrics = "rpearson"
+    ),
+    "deprecated"
+  )
+
+  expect_identical(out$metric, "r")
+  expect_equal(out$value[[1]], stats::cor(c(1, 2, 3), c(1, 2, 1)))
+})
+
+test_that("engine forwards metric-call parameters to registered metrics", {
+  sim <- c(1.0, 2.2, 2.7, 4.0)
+  obs <- c(1.0, 2.0, 3.0, 4.0)
+
+  out <- evaluate_metrics(
+    sim = sim,
+    obs = obs,
+    metrics = list(list(id = "pfactor", params = list(tol = 0.05)))
+  )
+
+  expect_identical(out$metric, "pfactor")
+  expect_equal(out$value[[1]], hydroMetrics:::metric_pfactor(sim, obs, tol = 0.05))
+})

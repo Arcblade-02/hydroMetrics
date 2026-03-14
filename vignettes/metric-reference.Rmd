@@ -64,6 +64,28 @@ The full internal registry is also available for audit and discovery work:
 head(hydroMetrics:::list_metrics()[, c("id", "name", "tags")], 12)
 ```
 
+## Exported Wrapper Naming
+
+The current compatibility-oriented wrapper names exported from the package
+namespace are:
+
+- `APFB()`
+- `HFB()`
+- `NSeff()`
+- `alpha()`
+- `beta()`
+- `mae()`
+- `mNSeff()`
+- `pbias()`
+- `r()`
+- `rNSeff()`
+- `rsr()`
+- `wsNSeff()`
+
+Uppercase hydroGOF names such as `NSE`, `KGE`, `RMSE`, `R2`, `NRMSE`, and
+`PBIAS` remain available as `gof()` / `ggof()` method labels, not as exported
+standalone functions.
+
 ## Default Deterministic Metrics
 
 With no explicit `methods`, `gof(sim, obs)` evaluates the recommended

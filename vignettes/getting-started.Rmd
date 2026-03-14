@@ -18,7 +18,7 @@ For local release validation, build the source tarball from the package root
 with `R CMD build .` and install the generated bundle:
 
 ```r
-install.packages("hydroMetrics_0.2.0.tar.gz", repos = NULL, type = "source")
+install.packages("hydroMetrics_0.3.0.tar.gz", repos = NULL, type = "source")
 ```
 
 ## Core usage
@@ -58,6 +58,9 @@ pbias(sim, obs)
 
 ## Compatibility notes
 
+- Uppercase hydroGOF names such as `NSE`, `KGE`, `RMSE`, `R2`, `NRMSE`, and
+  `PBIAS` are accepted in `gof()` / `ggof()` `methods`, but they are not
+  exported standalone functions in the package namespace.
 - `ggof()` is tabular output only; it does not create plots.
 - `APFB()` requires indexed `zoo` or `xts` inputs.
 - `preproc()` currently supports single-series vector or indexed inputs only.

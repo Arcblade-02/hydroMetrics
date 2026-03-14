@@ -7,8 +7,10 @@ hydroGOF-style wrapper surface. It is not the full post-Phase-3 metric
 catalog; use the metric-reference, calibration-guide, and uncertainty-eval
 vignettes for the broader current package surface.
 
-## Exported wrappers and core entry points
+## Phase 2 exported wrappers and core entry points tracked here
 - [x] APFB
+- [x] alpha
+- [x] beta
 - [x] ggof
 - [x] gof
 - [x] HFB
@@ -22,7 +24,11 @@ vignettes for the broader current package surface.
 - [x] valindex
 - [x] wsNSeff
 
-## Implemented metric ids via `gof()` / registry (not standalone exports)
+Uppercase hydroGOF names such as `NSE`, `KGE`, `RMSE`, `R2`, `NRMSE`, and
+`PBIAS` are accepted metric labels through `gof()` / `ggof()` compatibility
+handling; they are not exported standalone functions.
+
+## Implemented metric ids / accepted `gof()` labels (not standalone exports)
 - [x] br2
 - [x] cp
 - [x] d

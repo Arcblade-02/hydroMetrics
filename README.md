@@ -11,12 +11,11 @@ and release-facing validation artifacts for reproducible package checks.
 ## Scope
 
 - Public orchestration entry points: `gof()`, `ggof()`, `preproc()`, and `valindex()`
-- Legacy hydroGOF-style public wrappers: `NSE()`, `KGE()`, `MAE()`, `RMSE()`,
-  `PBIAS()`, `R2()`, `NRMSE()`, `NSeff()`, `mNSeff()`, `rNSeff()`, and
-  `wsNSeff()`
-- Additional exported compatibility wrappers retained alongside the legacy
-  names: `APFB()`, `HFB()`, `alpha()`, `beta()`, `mae()`, `pbias()`, `r()`,
-  and `rsr()`
+- Legacy hydroGOF-style metric labels accepted by `gof()`/`ggof()`: `NSE`,
+  `KGE`, `MAE`, `RMSE`, `PBIAS`, `R2`, `NRMSE`, `mNSE`, `rNSE`, and `wsNSE`
+- Exported compatibility/public wrappers currently available in the package
+  namespace: `APFB()`, `HFB()`, `NSeff()`, `alpha()`, `beta()`, `mae()`,
+  `mNSeff()`, `pbias()`, `r()`, `rNSeff()`, `rsr()`, and `wsNSeff()`
 - Default `gof()` remains compat-oriented, while `gof(extended = TRUE)`
   exposes the broader automatically applicable deterministic surface
 - Seasonal, regime-sensitive, information-theory, and tail-sensitive metrics
@@ -52,7 +51,7 @@ obs <- c(1, 2, 2, 4)
 
 gof(sim, obs, methods = c("nse", "rmse", "pbias"))
 ggof(sim, obs, methods = c("nse", "rmse"))
-NSE(sim, obs)
+NSeff(sim, obs)
 mae(sim, obs)
 ```
 

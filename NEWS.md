@@ -114,9 +114,10 @@
   non-trivial cases.
 ## 0.2.1
 
-- Correct the exported hydroGOF-style wrapper surface so `NSE()`, `KGE()`,
-  `RMSE()`, `R2()`, `NRMSE()`, and `PBIAS()` are part of the validated Phase 2
-  public release contract.
+- Correct the hydroGOF-style compatibility surface so method labels such as
+  `NSE`, `KGE`, `RMSE`, `R2`, `NRMSE`, and `PBIAS` are part of the validated
+  Phase 2 public contract via orchestration entry points rather than as
+  standalone exported wrapper functions.
 - Add direct clean-namespace and clean installed-session wrapper verification
   for the corrected compatibility surface.
 - Complete the Phase 2 compatibility/export closure and carry that state into

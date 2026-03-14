@@ -10,8 +10,11 @@ hm_result(x)
 \item{x}{A data frame of metric results.}
 }
 \value{
-An object with class \code{hm_result}.
+A base \code{data.frame} with class \code{c("hm_result", "data.frame")}.
 }
 \description{
-Create an \code{hm_result} object
+Stable low-level utility constructor for \code{hm_result} S3 objects. This is
+primarily used by the metric engine, but it remains part of the documented
+exported API for callers that need to build or validate \code{hm_result} payloads
+explicitly.
 }

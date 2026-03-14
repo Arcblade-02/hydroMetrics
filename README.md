@@ -12,8 +12,9 @@ and release-facing validation artifacts for reproducible package checks.
 
 - Stable orchestration entry points: `gof()`, `ggof()`, `preproc()`, and
   `valindex()`
-- Stable exported metric surface: documented exported metric wrappers and the
-  `hm_result()` utility constructor present in the `0.3.1` namespace
+- Stable exported metric surface: documented exported metric wrappers
+- Stable exported utility: `hm_result()` as the low-level constructor for
+  `hm_result` S3 objects
 - Compatibility exports retained at the `0.3.1` baseline: `APFB()`, `HFB()`,
   `NSeff()`, `mNSeff()`, `rNSeff()`, and `wsNSeff()`
 - Uppercase hydroGOF-style labels accepted by `gof()`/`ggof()` are
@@ -70,7 +71,7 @@ mae(sim, obs)
   selection in calibration workflows
 - `vignette("uncertainty-eval", package = "hydroMetrics")` for probabilistic
   and interval-evaluation workflows
-- `?gof`, `?ggof`, and `?preproc` for API details
+- `?gof`, `?ggof`, `?preproc`, and `?hm_result` for API details
 
 ## Validation Notes
 
@@ -81,6 +82,8 @@ mae(sim, obs)
   `hydro_metrics_batch` object, `preproc()` returns `hydro_preproc`, and
   scalar wrappers return numeric results with documented classes where
   applicable.
+- `hm_result()` is a stable low-level constructor for `hm_result`
+  `data.frame` objects used by the engine-facing result path.
 - `gof(extended = TRUE)` expands to the broader deterministic registry
   surface, but only when each metric's documented applicability conditions are
   satisfied.

@@ -35,6 +35,84 @@ test_that("no duplicate metric function definitions remain", {
   expect_identical(length(metric_names), length(unique(metric_names)))
 })
 
+.struct_top_level_function_defs <- function() {
+  pkg_root <- dirname(dirname(testthat::test_path()))
+  r_dir <- file.path(pkg_root, "R")
+  if (!dir.exists(r_dir)) {
+    return(data.frame(
+      name = character(0),
+      file = character(0),
+      line = integer(0),
+      stringsAsFactors = FALSE
+    ))
+  }
+
+  r_files <- sort(list.files(r_dir, pattern = "[.][Rr]$", full.names = TRUE))
+  if (length(r_files) == 0L) {
+    return(data.frame(
+      name = character(0),
+      file = character(0),
+      line = integer(0),
+      stringsAsFactors = FALSE
+    ))
+  }
+
+  rows <- lapply(r_files, function(path) {
+      lines <- readLines(path, warn = FALSE)
+      hits <- regexec("^([A-Za-z0-9._]+)\\s*<-\\s*function\\s*\\(", lines, perl = TRUE)
+      captures <- regmatches(lines, hits)
+      keep <- lengths(captures) > 1L
+      if (!any(keep)) {
+        return(NULL)
+      }
+
+      data.frame(
+        name = vapply(captures[keep], `[`, character(1), 2L),
+        file = basename(path),
+        line = which(keep),
+        stringsAsFactors = FALSE
+      )
+    })
+
+  rows <- Filter(Negate(is.null), rows)
+  if (length(rows) == 0L) {
+    return(data.frame(
+      name = character(0),
+      file = character(0),
+      line = integer(0),
+      stringsAsFactors = FALSE
+    ))
+  }
+
+  do.call(rbind, rows)
+}
+
+test_that("no duplicate top-level function definitions remain across source files", {
+  defs <- .struct_top_level_function_defs()
+  if (nrow(defs) == 0L) {
+    skip("Source-tree function-definition scan is unavailable in this test context.")
+  }
+
+  dup_rows <- defs[duplicated(defs$name) | duplicated(defs$name, fromLast = TRUE), , drop = FALSE]
+  dup_info <- NULL
+
+  if (nrow(dup_rows) > 0L) {
+    ordered <- dup_rows[order(dup_rows$name, dup_rows$file, dup_rows$line), , drop = FALSE]
+    dup_info <- paste(
+      apply(ordered, 1, function(row) {
+        sprintf("%s %s:%s", row[["name"]], row[["file"]], row[["line"]])
+      }),
+      collapse = "\n"
+    )
+  }
+
+  expect_identical(
+    nrow(dup_rows),
+    0L,
+    info = dup_info
+  )
+})
+
 test_that("canonical metric tree contains no NA-handling logic tokens", {
   ns <- .struct_namespace()
   metric_names <- ls(envir = ns, pattern = "^metric_[A-Za-z0-9_]+$")

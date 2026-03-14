@@ -77,6 +77,8 @@ the stable public contract.
 \code{ggof()} is a stable orchestration entry point for tabular metric summaries.
 It returns a tidy \code{data.frame} with class \code{"hydro_metrics_batch"} and does
 not open or mutate graphics devices.
+The warning and error contract is inherited from \code{\link[=gof]{gof()}}; \code{ggof()} does not
+suppress unknown-method, preprocessing, or metric-domain failures.
 }
 \examples{
 sim <- c(1, 2, 3, 4)

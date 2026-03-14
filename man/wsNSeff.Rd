@@ -25,6 +25,8 @@ preserved as part of the compatibility contract.
 \description{
 Compatibility export retained for legacy hydroGOF-style wrapper continuity.
 This thin wrapper delegates to \code{\link[=gof]{gof()}} for the registry metric \code{"wsnse"}.
+It inherits NA handling, input-shape checks, and the canonical \code{"wsnse"}
+domain and denominator guards from \code{\link[=gof]{gof()}}.
 }
 \examples{
 wsNSeff(c(1, 2, 3), c(1, 2, 2))

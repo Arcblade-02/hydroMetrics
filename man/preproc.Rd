@@ -61,6 +61,11 @@ return fields and error behavior are part of the stable public contract.
 Stable orchestration entry point for input preprocessing. The current
 exported contract supports single-series numeric, \code{ts}, \code{zoo}, and \code{xts}
 inputs and intentionally rejects matrix/data.frame inputs.
+Stable condition contract: \code{preproc()} errors on unsupported public input
+types, unequal lengths after required non-indexed validation, invalid
+\code{na_strategy}/compatibility alias values, conflicting epsilon aliases, and
+missing values when \code{na_strategy = "fail"}. Indexed \code{zoo}/\code{xts} inputs are
+deterministically aligned on their common index before NA handling.
 }
 \examples{
 preproc(c(1, NA, 3), c(1, 2, 3), na.rm = TRUE)

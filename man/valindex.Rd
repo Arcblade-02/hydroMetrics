@@ -27,6 +27,9 @@ return class, output shape, and warning/error behavior are inherited from
 \description{
 Stable orchestration entry point retained under historical naming. It
 forwards \code{fun} to \code{\link[=gof]{gof()}} as \code{methods}.
+Stable condition contract: \code{valindex()} errors when \code{fun} is missing or
+invalid and otherwise inherits preprocessing, warning, and metric-domain
+behavior directly from \code{\link[=gof]{gof()}}.
 }
 \examples{
 valindex(c(1, 2, 3), c(1, 2, 2), fun = c("NSE", "rmse"))

@@ -17,4 +17,7 @@ Stable low-level utility constructor for \code{hm_result} S3 objects. This is
 primarily used by the metric engine, but it remains part of the documented
 exported API for callers that need to build or validate \code{hm_result} payloads
 explicitly.
+Stable condition contract: \code{hm_result()} errors when \code{x} is not a
+\code{data.frame} and otherwise returns the payload unchanged apart from the
+\code{hm_result} S3 class decoration.
 }

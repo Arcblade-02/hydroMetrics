@@ -2,6 +2,8 @@
 #'
 #' Compatibility export retained for legacy hydroGOF-style wrapper continuity.
 #' This thin wrapper delegates to [gof()] for the registry metric `"rnse"`.
+#' It inherits NA handling, input-shape checks, and the canonical `"rnse"`
+#' zero-observation and denominator guards from [gof()].
 #'
 #' @inheritParams gof
 #'

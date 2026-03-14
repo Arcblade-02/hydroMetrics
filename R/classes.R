@@ -4,6 +4,9 @@
 #' primarily used by the metric engine, but it remains part of the documented
 #' exported API for callers that need to build or validate `hm_result` payloads
 #' explicitly.
+#' Stable condition contract: `hm_result()` errors when `x` is not a
+#' `data.frame` and otherwise returns the payload unchanged apart from the
+#' `hm_result` S3 class decoration.
 #'
 #' @param x A data frame of metric results.
 #'

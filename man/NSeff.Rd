@@ -25,6 +25,8 @@ preserved as part of the compatibility contract.
 \description{
 Compatibility export retained for legacy hydroGOF-style wrapper continuity.
 This thin wrapper delegates to \code{\link[=gof]{gof()}} for the registry metric \code{"nse"}.
+It inherits NA handling, input-shape checks, and undefined-domain failures
+from \code{\link[=gof]{gof()}} and the canonical \code{"nse"} metric.
 }
 \examples{
 NSeff(c(1, 2, 3), c(1, 2, 2))

@@ -82,6 +82,16 @@ such as \code{"NSE"} and \code{"KGE"} are accepted as orchestration labels only 
 are not exported standalone functions. Deprecated labels such as
 \code{"rPearson"} resolve to canonical metric ids during method selection.
 }
+\details{
+Stable condition contract: \code{gof()} errors on invalid \code{extended} values,
+unknown metric labels, incompatible single-series versus matrix-like input
+shapes, multi-series dimension mismatch, invalid compatibility alias values,
+and preprocessing or metric-domain failures inherited from \code{\link[=preproc]{preproc()}} and
+the selected metrics. Missing-data handling follows \code{na_strategy}; plain
+\code{"fail"} preserves missing-value errors, \code{"remove"} drops incomplete pairs,
+and \code{"pairwise"} keeps aligned vectors for downstream pairwise-capable
+metrics.
+}
 \examples{
 sim <- c(1, 2, 3, 4)
 obs <- c(1, 2, 2, 4)

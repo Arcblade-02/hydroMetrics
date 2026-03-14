@@ -106,6 +106,11 @@ mae(sim, obs)
   applicable.
 - `hm_result()` is a stable low-level constructor for `hm_result`
   `data.frame` objects used by the engine-facing result path.
+- Stable condition contracts are also part of the public API: orchestration
+  entry points document when they error on invalid inputs, unknown methods,
+  incompatible shapes, missing-data mode conflicts, or inherited metric-domain
+  failures, and compatibility wrappers document when they error versus warn and
+  return `NA`.
 - `gof(extended = TRUE)` expands to the broader deterministic registry
   surface, but only when each metric's documented applicability conditions are
   satisfied.

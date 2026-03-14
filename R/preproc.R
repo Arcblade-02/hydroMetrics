@@ -89,6 +89,11 @@ hm_prepare <- function(sim,
 #' Stable orchestration entry point for input preprocessing. The current
 #' exported contract supports single-series numeric, `ts`, `zoo`, and `xts`
 #' inputs and intentionally rejects matrix/data.frame inputs.
+#' Stable condition contract: `preproc()` errors on unsupported public input
+#' types, unequal lengths after required non-indexed validation, invalid
+#' `na_strategy`/compatibility alias values, conflicting epsilon aliases, and
+#' missing values when `na_strategy = "fail"`. Indexed `zoo`/`xts` inputs are
+#' deterministically aligned on their common index before NA handling.
 #'
 #' @param sim Simulated values as a numeric vector or supported indexed
 #'   single-series object.

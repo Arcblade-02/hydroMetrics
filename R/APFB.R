@@ -58,6 +58,10 @@
 #' `APFB()` is a compatibility export over [gof()] for the registry metric
 #' `"apfb"`. It requires univariate `zoo` or `xts` inputs with a time index so
 #' yearly maxima can be derived deterministically.
+#' Stable compatibility condition contract: it errors on unsupported or
+#' non-univariate indexed inputs, when fewer than two years remain after
+#' deterministic alignment/preprocessing, and on downstream preprocessing or
+#' metric-domain failures from [gof()].
 #'
 #' @inheritParams gof
 #'

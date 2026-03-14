@@ -2,6 +2,9 @@
 #'
 #' Stable orchestration entry point retained under historical naming. It
 #' forwards `fun` to [gof()] as `methods`.
+#' Stable condition contract: `valindex()` errors when `fun` is missing or
+#' invalid and otherwise inherits preprocessing, warning, and metric-domain
+#' behavior directly from [gof()].
 #'
 #' @inheritParams gof
 #' @param fun Character vector of metric names to evaluate.

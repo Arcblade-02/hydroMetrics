@@ -338,6 +338,15 @@
 #' are not exported standalone functions. Deprecated labels such as
 #' `"rPearson"` resolve to canonical metric ids during method selection.
 #'
+#' Stable condition contract: `gof()` errors on invalid `extended` values,
+#' unknown metric labels, incompatible single-series versus matrix-like input
+#' shapes, multi-series dimension mismatch, invalid compatibility alias values,
+#' and preprocessing or metric-domain failures inherited from [preproc()] and
+#' the selected metrics. Missing-data handling follows `na_strategy`; plain
+#' `"fail"` preserves missing-value errors, `"remove"` drops incomplete pairs,
+#' and `"pairwise"` keeps aligned vectors for downstream pairwise-capable
+#' metrics.
+#'
 #' @param sim Simulated values supplied as a numeric vector, `ts`, matrix-like
 #'   object, or aligned `zoo`/`xts` series.
 #' @param obs Observed values with the same shape contract as `sim`.

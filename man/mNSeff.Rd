@@ -25,6 +25,8 @@ preserved as part of the compatibility contract.
 \description{
 Compatibility export retained for legacy hydroGOF-style wrapper continuity.
 This thin wrapper delegates to \code{\link[=gof]{gof()}} for the registry metric \code{"mnse"}.
+It inherits NA handling, input-shape checks, and denominator/domain
+failures from \code{\link[=gof]{gof()}} and the canonical \code{"mnse"} metric.
 }
 \examples{
 mNSeff(c(1, 2, 3), c(1, 2, 2))

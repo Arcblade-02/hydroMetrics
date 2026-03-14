@@ -16,7 +16,8 @@ and release-facing validation artifacts for reproducible package checks.
 - Stable exported utility: `hm_result()` as the low-level constructor for
   `hm_result` S3 objects
 - Compatibility exports retained at the `0.3.1` baseline: `APFB()`, `HFB()`,
-  `NSeff()`, `mNSeff()`, `rNSeff()`, and `wsNSeff()`
+  `NSeff()`, `mNSeff()`, `rNSeff()`, `wsNSeff()`,
+  `mutual_information_score()`, and `kl_divergence_flow()`
 - Uppercase hydroGOF-style labels accepted by `gof()`/`ggof()` are
   orchestration method labels, not exported standalone functions: `NSE`,
   `KGE`, `MAE`, `RMSE`, `PBIAS`, `R2`, `NRMSE`, `mNSE`, `rNSE`, and `wsNSE`

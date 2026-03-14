@@ -133,7 +133,7 @@ be extended.
 #### D-026: Canonical Metric ID and Alias Policy
 - Decision: Phase 3 metric IDs are unique canonical registry identifiers. Compatibility aliases or deprecated names may remain only as wrappers or resolution aliases and must not persist as duplicate canonical registry entries.
 - Status: Accepted
-- Notes: Canonical Pearson correlation id is `r`. Deprecated `rpearson` requests resolve to `r` with a warning and no longer persist as an independent registry entry.
+- Notes: Canonical Pearson correlation id is `r`. Deprecated `rpearson` metric-id requests resolve to `r` and no longer persist as an independent registry entry. Engine-level metric-id evaluation currently warns on that deprecated alias, while orchestration-level method selection preserves the requested label and does not currently emit a warning.
 
 #### D-027: gof() Default and Extended Metric-Set Contract
 - Decision: `gof()` and `gof(extended = FALSE)` default to the compat-10 baseline set (`nse`, `kge`, `rmse`, `pbias`, `mae`, `mse`, `r2`, `ve`, `rsr`, `nrmse`), while `gof(extended = TRUE)` expands omitted or `NULL` selection to the full registered metric set supported by the current input context.

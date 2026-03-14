@@ -32,10 +32,10 @@
 | ubRMSE | Unbiased RMSE | Standard anomaly-based RMSE definition in model evaluation. | Implemented from mathematical definition (clean-room). |
 | ssq | Sum of squared errors | Standard least-squares objective definition. | Implemented from mathematical definition (clean-room). |
 | KGEkm | KGE variant with CV ratio | Kling, H., Fuchs, M., & Paulin, M. (2012). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. | Implemented from the cited literature definition, no source code copied. |
-| KGElf | Low-flow transformed KGE | Package-defined hydroMetrics KGE low-flow variant documented in Architecture Decisions D-018 and D-019; grounded in Gupta et al. (2009). | Implemented from the package decision record and KGE literature context, no source code copied. |
+| KGElf | Low-flow transformed KGE | Based on Gupta et al. (2009) KGE, with low-flow log-transformed objective-function context from Krause et al. (2005). | Implemented from the cited literature context and package decisions, no source code copied. |
 | KGEnp | Nonparametric KGE | Pool, S., Vis, M., & Seibert, J. (2018). Evaluating model performance: towards a non-parametric variant of the Kling-Gupta efficiency. | Implemented from the cited literature definition, no source code copied. |
-| sKGE | Seasonal KGE | Seasonal KGE averaging over monthly groups (project-defined implementation). | Implemented from formula derivation only, no source code copied. |
-| pbiasfdc | FDC percent bias | Flow duration curve bias over fixed quantile grid (project-defined deterministic formulation). | Implemented from formula derivation only, no source code copied. |
+| sKGE | Seasonal KGE | Based on Gupta et al. (2009) KGE with monthly streamflow seasonality context from Gnann et al. (2020) and Berghuijs et al. (2025). | Implemented from the cited literature context and package decisions, no source code copied. |
+| pbiasfdc | FDC percent bias | Based on Moriasi et al. (2007) percent bias interpretation applied to a flow-duration-curve quantile grid in the Searcy (1959) convention. | Implemented from the cited literature context and package decisions, no source code copied. |
 | rPearson | Statistical correlation definition | Pearson correlation coefficient (standard statistical definition). | Implemented from statistical definition only, no source code copied. |
 | rSpearman | Statistical rank-correlation definition | Spearman rank correlation (standard statistical definition). | Implemented from statistical definition only, no source code copied. |
 | rSD | Scale-ratio definition | Project-defined ratio `sd(sim)/sd(obs)` for compatibility. | Implemented from explicit formula definition, no source code copied. |

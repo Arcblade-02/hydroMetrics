@@ -706,7 +706,7 @@ core_metric_spec_wnse <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "Package-defined hydroMetrics NSE-family variant. Exact package formula documented in hydroMetrics Architecture Decisions D-016 and D-026; grounded in Nash & Sutcliffe (1970).",
+    references = "Based on Nash & Sutcliffe (1970) NSE, using observation weights w = obs in the numerator and denominator.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -735,7 +735,7 @@ core_metric_spec_wsnse <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "Package-defined hydroMetrics NSE-family variant. Exact package formula documented in hydroMetrics Architecture Decisions D-016 and D-026; grounded in Nash & Sutcliffe (1970).",
+    references = "Based on Nash & Sutcliffe (1970) NSE, using squared observation weights w = obs^2 in the numerator and denominator.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -762,7 +762,7 @@ core_metric_spec_rnse <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "Package-defined hydroMetrics NSE-family variant. Exact package formula documented in hydroMetrics Architecture Decisions D-016 and D-026; grounded in Nash & Sutcliffe (1970).",
+    references = "Based on Nash & Sutcliffe (1970) NSE, using observation-scaled relative errors.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -786,7 +786,7 @@ core_metric_spec_mnse <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "Package-defined hydroMetrics NSE-family variant. Exact package formula documented in hydroMetrics Architecture Decisions D-016 and D-026; grounded in Nash & Sutcliffe (1970).",
+    references = "Based on Nash & Sutcliffe (1970) NSE, using absolute-error numerator and denominator terms.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -855,7 +855,7 @@ core_metric_spec_kgelf <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "Package-defined hydroMetrics KGE low-flow variant. Exact package definition documented in hydroMetrics Architecture Decisions D-018 and D-019; grounded in Gupta et al. (2009).",
+    references = "Based on Gupta et al. (2009) KGE, with low-flow log-transformed objective-function context from Krause et al. (2005).",
     version_added = "0.1.0",
     tags = character()
   )
@@ -990,7 +990,7 @@ core_metric_spec_skge <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "Package-defined hydroMetrics seasonal KGE variant. Exact package definition documented in hydroMetrics Architecture Decisions D-018 and D-019.",
+    references = "Based on Gupta et al. (2009) KGE with monthly streamflow seasonality context from Gnann et al. (2020) and Berghuijs et al. (2025).",
     version_added = "0.1.0",
     tags = character()
   )
@@ -1034,7 +1034,7 @@ core_metric_spec_pbiasfdc <- function() {
     category = "bias",
     perfect = 0,
     range = NULL,
-    references = "Package-defined hydroMetrics flow-duration-curve percent-bias variant. Exact package definition documented in hydroMetrics Architecture Decisions D-018 and D-019.",
+    references = "Based on Moriasi et al. (2007) percent bias interpretation applied to a flow-duration-curve quantile grid in the Searcy (1959) convention.",
     version_added = "0.1.0",
     tags = character()
   )

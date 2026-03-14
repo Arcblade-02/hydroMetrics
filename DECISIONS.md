@@ -88,7 +88,7 @@
 ## D-018: KGE Variant Definitions
 - Decision: `kgekm` uses `gamma = CV(sim)/CV(obs)` with standard KGE distance, `kgelf` applies KGE to `log1p`-transformed nonnegative flows, and `kgenp` uses Spearman/IQR/median components.
 - Status: Accepted
-- Notes: Literature-backed and package-defined reference metadata for these variants is recorded in `inst/REFERENCES.md`; `kgelf` remains explicitly package-defined.
+- Notes: Literature-backed reference metadata for these variants is recorded in `inst/REFERENCES.md`; package decisions still document the exact implementation choices.
 
 ## D-019: Seasonal KGE and FDC Bias Choices
 - Decision: `skge` is defined as mean monthly KGE over `ts` inputs with frequency 12, and `pbiasfdc` uses exceedance quantile grid `p = 0.01..0.99`.

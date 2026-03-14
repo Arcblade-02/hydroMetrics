@@ -14,3 +14,12 @@ test_that("registry references contain no placeholder citation text", {
 
   expect_false(any(grepl(placeholder_pattern, refs, ignore.case = TRUE)))
 })
+
+test_that("seven target metrics no longer use package-defined reference wording", {
+  refs <- hydroMetrics:::list_metrics()
+  target_ids <- c("mnse", "rnse", "wnse", "wsnse", "kgelf", "skge", "pbiasfdc")
+  target_refs <- refs[match(target_ids, refs$id), c("id", "references")]
+
+  expect_false(any(is.na(target_refs$references)))
+  expect_false(any(grepl("package-defined|project-defined", target_refs$references, ignore.case = TRUE)))
+})

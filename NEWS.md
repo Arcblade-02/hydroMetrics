@@ -1,5 +1,24 @@
 # hydroMetrics news
 
+## 0.3.1
+
+- Freeze the current remediated package state as a non-feature baseline
+  release before Phase 4 planning.
+- Align user-facing documentation with the actual exported public API,
+  including wrapper availability, compatibility-label behavior, and current
+  package version references.
+- Canonicalize metric and registry source definitions by removing residual
+  duplicate implementations and retaining a single live definition for each
+  metric/spec path.
+- Finalize scientific reference metadata for the current exported metric
+  surface, replacing interim placeholder or package-defined notes with
+  literature-backed attribution where supported by repository materials.
+- Improve test-suite signal quality by separating repository/process checks
+  from package behavioral coverage while preserving package-integrity checks.
+- Clean source-package hygiene for the remediation baseline, including stale
+  metadata removal, explicit source-package exclusions for repo-only material,
+  and baseline branch synchronization before the `0.3.1` freeze.
+
 ## 0.3.0
 
 - Finalized the post-Phase-3 release-facing surface on `dev`: `DESCRIPTION`

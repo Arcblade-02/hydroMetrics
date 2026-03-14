@@ -47,14 +47,16 @@ not be interpreted as external real-model benchmark outputs.
 
 ## Related Evidence
 
-Broader historical or workflow-specific validation evidence remains in:
+Broader historical or workflow-specific validation evidence remains in the
+development repository rather than the shipped source package, including:
 
 - `inst/benchmarks/`
 - `notes/release-readiness/`
 - `notes/final-cran-evidence/`
 - other `notes/` subdirectories created during earlier stabilization work
 
-The NWIS validation artifacts can be regenerated from the repository root with:
+The NWIS validation artifacts can be regenerated from a repository checkout
+root with:
 
 ```r
 source("tools/generate_usgs_nwis_validation_artifacts.R")

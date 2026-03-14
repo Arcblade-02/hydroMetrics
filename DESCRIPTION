@@ -11,7 +11,6 @@ Description: Clean-room MIT implementation of hydrological model
     and uncertainty guidance for hydrological time series evaluation.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 URL: https://github.com/Arcblade-02/hydroMetrics
 BugReports: https://github.com/Arcblade-02/hydroMetrics/issues
 Imports:

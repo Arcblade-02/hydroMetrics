@@ -1,11 +1,13 @@
 #' Evaluate the legacy modified NSE wrapper
 #'
-#' Thin exported wrapper over [gof()] for the registry metric `"mnse"`.
+#' Compatibility export retained for legacy hydroGOF-style wrapper continuity.
+#' This thin wrapper delegates to [gof()] for the registry metric `"mnse"`.
 #'
 #' @inheritParams gof
 #'
 #' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
+#'   multi-series inputs. The documented return shape and failure behavior are
+#'   preserved as part of the compatibility contract.
 #'
 #' @examples
 #' mNSeff(c(1, 2, 3), c(1, 2, 2))

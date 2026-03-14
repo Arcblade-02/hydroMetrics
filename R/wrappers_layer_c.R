@@ -75,7 +75,8 @@ entropy_diff <- function(sim, obs, na.rm = NULL, ...) {
 
 #' Evaluate the mutual information score wrapper
 #'
-#' Thin exported wrapper over [gof()] for the registry metric
+#' Compatibility export retained alongside canonical [mutual_information()].
+#' This thin wrapper delegates to [gof()] for the registry metric
 #' `"mutual_information_score"`. The metric computes raw mutual information in
 #' natural-log units from the paired Sturges-binned joint empirical
 #' distribution on the pooled support grid.
@@ -144,7 +145,8 @@ normalised_mi <- function(sim, obs, na.rm = NULL, ...) {
 
 #' Evaluate the flow KL divergence wrapper
 #'
-#' Thin exported wrapper over [gof()] for the registry metric
+#' Compatibility export retained alongside canonical [kl_divergence()]. This
+#' thin wrapper delegates to [gof()] for the registry metric
 #' `"kl_divergence_flow"`. The metric reports directed `KL(P_obs || P_sim)` on
 #' pooled-support Sturges histograms after fixed epsilon smoothing with
 #' `epsilon = 1e-12`.

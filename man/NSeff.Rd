@@ -19,10 +19,12 @@ object, or aligned \code{zoo}/\code{xts} series.}
 }
 \value{
 A numeric scalar for single-series inputs or a numeric vector for
-multi-series inputs.
+multi-series inputs. The documented return shape and failure behavior are
+preserved as part of the compatibility contract.
 }
 \description{
-Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric \code{"nse"}.
+Compatibility export retained for legacy hydroGOF-style wrapper continuity.
+This thin wrapper delegates to \code{\link[=gof]{gof()}} for the registry metric \code{"nse"}.
 }
 \examples{
 NSeff(c(1, 2, 3), c(1, 2, 2))

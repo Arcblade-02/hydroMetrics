@@ -3,24 +3,29 @@
 ![R-CMD-check](https://github.com/Arcblade-02/hydroMetrics/actions/workflows/R-CMD-check.yml/badge.svg)
 
 `hydroMetrics` is a clean-room MIT-licensed R package for hydrological model
-evaluation. The current `0.3.0` release line combines a compat-oriented
+evaluation. The current `0.3.1` release line combines a compat-oriented
 default metric surface with broader gated deterministic diagnostics,
 seasonal/regime-sensitive evaluation, wrapper-only probabilistic workflows,
 and release-facing validation artifacts for reproducible package checks.
 
 ## Scope
 
-- Public orchestration entry points: `gof()`, `ggof()`, `preproc()`, and `valindex()`
-- Legacy hydroGOF-style metric labels accepted by `gof()`/`ggof()`: `NSE`,
+- Stable orchestration entry points: `gof()`, `ggof()`, `preproc()`, and
+  `valindex()`
+- Stable exported metric surface: documented exported metric wrappers and the
+  `hm_result()` utility constructor present in the `0.3.1` namespace
+- Compatibility exports retained at the `0.3.1` baseline: `APFB()`, `HFB()`,
+  `NSeff()`, `mNSeff()`, `rNSeff()`, and `wsNSeff()`
+- Uppercase hydroGOF-style labels accepted by `gof()`/`ggof()` are
+  orchestration method labels, not exported standalone functions: `NSE`,
   `KGE`, `MAE`, `RMSE`, `PBIAS`, `R2`, `NRMSE`, `mNSE`, `rNSE`, and `wsNSE`
-- Exported compatibility/public wrappers currently available in the package
-  namespace: `APFB()`, `HFB()`, `NSeff()`, `alpha()`, `beta()`, `mae()`,
-  `mNSeff()`, `pbias()`, `r()`, `rNSeff()`, `rsr()`, and `wsNSeff()`
+- Deprecated orchestration alias: `rPearson` resolves to canonical `r` during
+  method selection
 - Default `gof()` remains compat-oriented, while `gof(extended = TRUE)`
   exposes the broader automatically applicable deterministic surface
 - Seasonal, regime-sensitive, information-theory, and tail-sensitive metrics
-  are available through exported wrappers and the registered metric surface
-  when their documented input contracts hold
+  are available through documented exported wrappers and documented `gof()`
+  method selection when their input contracts hold
 - Probabilistic metrics such as `crps()`, `picp()`, `mwpi()`, and
   `skill_score()` remain wrapper-only special-interface workflows rather than
   part of default deterministic `gof(sim, obs)` auto-selection
@@ -31,7 +36,7 @@ For local release validation, build the source bundle with `R CMD build .` and
 install the generated tarball:
 
 ```r
-install.packages("hydroMetrics_0.3.0.tar.gz", repos = NULL, type = "source")
+install.packages("hydroMetrics_0.3.1.tar.gz", repos = NULL, type = "source")
 ```
 
 If you want the latest repository snapshot instead:
@@ -70,7 +75,12 @@ mae(sim, obs)
 ## Validation Notes
 
 - The default public baseline is the compat-10 `gof()` surface together with
-  the exported legacy hydroGOF-style wrappers.
+  the exported compatibility wrappers and documented exported metric wrappers.
+- Stable return contracts are part of the public API: `gof()` returns a
+  `hydro_metrics` numeric vector or matrix, `ggof()` returns a tabular
+  `hydro_metrics_batch` object, `preproc()` returns `hydro_preproc`, and
+  scalar wrappers return numeric results with documented classes where
+  applicable.
 - `gof(extended = TRUE)` expands to the broader deterministic registry
   surface, but only when each metric's documented applicability conditions are
   satisfied.

@@ -70,12 +70,17 @@ value. It maps to \code{epsilon} when \code{epsilon_mode = "constant"} and to
 \value{
 A named numeric vector for single-series inputs or a named numeric
 matrix for multi-series inputs, with class \code{"hydro_metrics"}. Additional
-metadata is attached via the \code{n_obs}, \code{meta}, and \code{call} attributes.
+metadata is attached via the \code{n_obs}, \code{meta}, and \code{call} attributes. The
+documented return class, output shape, names, and warning/error behavior
+are part of the stable public contract.
 }
 \description{
-Clean-room orchestration wrapper that preprocesses aligned series and
+Stable orchestration entry point that preprocesses aligned series and
 dispatches registered metric implementations without embedding metric
-formulas in the public API layer.
+formulas in the public API layer. Uppercase hydroGOF-style method labels
+such as \code{"NSE"} and \code{"KGE"} are accepted as orchestration labels only and
+are not exported standalone functions. Deprecated labels such as
+\code{"rPearson"} resolve to canonical metric ids during method selection.
 }
 \examples{
 sim <- c(1, 2, 3, 4)

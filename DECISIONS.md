@@ -121,7 +121,7 @@ two duplicated historical `D-030` headings.
 ### Canonical Phase 3 and Pre-Phase 4 Governance IDs
 
 The entries below are the canonical active meanings of `D-025` through
-`D-031`. Earlier Phase 2B/2C and Phase 2-exit uses of those numbers are
+`D-035`. Earlier Phase 2B/2C and Phase 2-exit uses of reused numbers are
 preserved later in this file as retained or historical records and should not
 be extended.
 
@@ -160,6 +160,16 @@ be extended.
 - Status: Accepted
 - Notes: Project-defined compatibility behavior remains allowed only when explicitly documented as package-defined and backed by a stable decision record.
 
+#### D-034: Public API Boundary
+- Decision: The stable public API of `hydroMetrics` consists of the exported orchestration functions (`gof`, `ggof`, `preproc`, `valindex`) plus the documented exported metric wrappers present at the `0.3.1` baseline; uppercase hydroGOF-style names used as method labels inside `gof()` / `ggof()` are orchestration labels, not exported standalone functions, unless explicitly exported in a future release.
+- Status: Accepted
+- Notes: Internal registries, engine internals, helper functions, and implementation-location details are not part of the stable public API unless explicitly promoted later. Public aliases are allowed only for compatibility continuity, transition support, or clear usability value, and every exported alias must have a canonical target and lifecycle status (`stable`, `compatibility`, `deprecated`, or explicitly documented `experimental`). No stable exported function may be removed or renamed without an explicit deprecation path, NEWS entry, and migration guidance where relevant.
+
+#### D-035: Return Object Contract
+- Decision: API stability in `hydroMetrics` includes return type, output shape, naming/schema, and warning/error behavior in addition to function signatures. Scalar metric wrappers are expected to return successful length-1 numeric results unless explicitly documented otherwise; `gof`, `ggof`, `preproc`, and `valindex` must preserve their documented return classes, output structure, and interpretation rules; and changes in warning/error behavior for stable functions are treated as public-contract changes unless clearly documented as bug fixes.
+- Status: Accepted
+- Notes: Output names, row/column interpretation, and single-series vs multi-series shape rules are part of the stable contract where documented. Missing-data handling, undefined-domain handling, and edge-case behavior are part of the return contract because they determine whether users receive a value, `NA`, warning, or error. Stable functions must not silently switch default output mode from numeric/vector/matrix/data.frame/S3 structure to a materially different default structure without deliberate versioned API change.
+
 ### Stage 6 Pareto Disposition
 - Decision: Phase 3 is complete, `pareto_skill` remains deferred, and any future Pareto-based calibration support should be implemented as a helper/evaluation utility rather than as a registry metric.
 - Status: Accepted
@@ -169,8 +179,8 @@ be extended.
 
 These records preserve decisions whose numbering was later reused but whose
 substance still helps explain the current package structure. They are retained
-for traceability and should not be extended as the active `D-025` through
-`D-031` sequence.
+for traceability and should not be extended as the active canonical decision
+sequence.
 
 #### Former D-025: Phase 2B Batch 2 KGE Component Metrics (beta/alpha/r)
 - Decision: Add clean-room parity metrics `beta`, `alpha`, and `r` as explicit KGE components, with wrappers routed through the Phase 2A preprocessing pipeline.

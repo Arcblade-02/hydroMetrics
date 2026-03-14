@@ -3,10 +3,10 @@
 ![R-CMD-check](https://github.com/Arcblade-02/hydroMetrics/actions/workflows/R-CMD-check.yml/badge.svg)
 
 `hydroMetrics` is a clean-room MIT-licensed R package for hydrological model
-evaluation metrics. The current post-Phase-3 release-hardening line covers
-compatibility/default metrics, extended deterministic diagnostics, seasonal
-and regime-sensitive evaluation, wrapper-only probabilistic workflows, and
-release-facing validation artifacts for reproducible package checks.
+evaluation. The current `0.3.0` release line combines a compat-oriented
+default metric surface with broader gated deterministic diagnostics,
+seasonal/regime-sensitive evaluation, wrapper-only probabilistic workflows,
+and release-facing validation artifacts for reproducible package checks.
 
 ## Scope
 
@@ -50,8 +50,8 @@ library(hydroMetrics)
 sim <- c(1, 2, 3, 4)
 obs <- c(1, 2, 2, 4)
 
-gof(sim, obs, methods = c("NSE", "rmse", "pbias"))
-ggof(sim, obs, methods = c("NSE", "rmse"))
+gof(sim, obs, methods = c("nse", "rmse", "pbias"))
+ggof(sim, obs, methods = c("nse", "rmse"))
 NSE(sim, obs)
 mae(sim, obs)
 ```
@@ -70,14 +70,15 @@ mae(sim, obs)
 
 ## Validation Notes
 
-- The default public baseline remains the compat-10 `gof()` surface together
-  with the exported legacy hydroGOF-style wrappers.
-- `gof(extended = TRUE)` expands to the broader deterministic registry surface
-  only when each metric's documented applicability conditions are satisfied.
+- The default public baseline is the compat-10 `gof()` surface together with
+  the exported legacy hydroGOF-style wrappers.
+- `gof(extended = TRUE)` expands to the broader deterministic registry
+  surface, but only when each metric's documented applicability conditions are
+  satisfied.
 - Seasonal and event/tail metrics are intentionally gated and are not exposed
   for unsupported plain deterministic inputs.
 - Release-facing validation summaries and the compact USGS NWIS real-data
-  subset artifacts live under `inst/validation/`.
+  subset artifacts are available under `inst/validation/`.
 - `ggof()` returns a tabular `hydro_metrics_batch` object and does not open a
   graphics device.
 - `APFB()` requires indexed `zoo` or `xts` inputs.

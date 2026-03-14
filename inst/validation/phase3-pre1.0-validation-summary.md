@@ -3,6 +3,33 @@
 This summary records the current repository-level validation state for the
 Phase 3 / pre-1.0 stabilization line.
 
+## Phase 3 Completion
+
+Phase 3 is fully closed for the current milestone-ready repository state.
+
+Completed areas include:
+
+- Layer A, Layer B, and Layer C implementation and closure
+- original-plan recovery items including `gof(extended = TRUE)`, canonical
+  information-theory reconciliation, `seasonal_skill`, `extended_valindex`,
+  and the completed vignette set
+- Stage 6 validation artifacts and the compact NWIS-backed real-data
+  validation layer under `inst/validation/`
+
+Explicit deferment:
+
+- `pareto_skill` remains deferred on citation and architecture grounds
+- any future Pareto-based support should be delivered as a helper/utility
+  outside the metric registry
+
+## Maintainer Readiness Note
+
+- Current package version: `0.3.0`
+- Repository status: milestone-ready post-Phase-3 state with aligned release
+  docs, validation summaries, and merged completion work
+- Suggested future tag label: `v0.3.0` (recommendation only; not created here)
+- Suggested next track: post-1.0 utility design such as `pareto_evaluate()`
+
 ## Current Registry State
 
 - Registered metric ids: `102`

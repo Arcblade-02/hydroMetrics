@@ -640,7 +640,7 @@ core_metric_spec_br2 <- function() {
     category = "correlation",
     perfect = 1,
     range = c(0, Inf),
-    references = "Krause, P., Boyle, D. P., & Base, F. (2005). Comparison of different efficiency criteria for hydrological model assessment.",
+    references = "Krause, P., Boyle, D. P., & Baese, F. (2005). Comparison of different efficiency criteria for hydrological model assessment.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -706,7 +706,7 @@ core_metric_spec_wnse <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "NSE weighted variants in hydrology literature; exact citation to be refined.",
+    references = "Package-defined hydroMetrics NSE-family variant. Exact package formula documented in hydroMetrics Architecture Decisions D-016 and D-026; grounded in Nash & Sutcliffe (1970).",
     version_added = "0.1.0",
     tags = character()
   )
@@ -735,7 +735,7 @@ core_metric_spec_wsnse <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "NSE weighted variants in hydrology literature; exact citation to be refined.",
+    references = "Package-defined hydroMetrics NSE-family variant. Exact package formula documented in hydroMetrics Architecture Decisions D-016 and D-026; grounded in Nash & Sutcliffe (1970).",
     version_added = "0.1.0",
     tags = character()
   )
@@ -762,7 +762,7 @@ core_metric_spec_rnse <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "NSE relative variants in hydrology literature; exact citation to be refined.",
+    references = "Package-defined hydroMetrics NSE-family variant. Exact package formula documented in hydroMetrics Architecture Decisions D-016 and D-026; grounded in Nash & Sutcliffe (1970).",
     version_added = "0.1.0",
     tags = character()
   )
@@ -786,7 +786,7 @@ core_metric_spec_mnse <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "NSE modified variants in hydrology literature; exact citation to be refined.",
+    references = "Package-defined hydroMetrics NSE-family variant. Exact package formula documented in hydroMetrics Architecture Decisions D-016 and D-026; grounded in Nash & Sutcliffe (1970).",
     version_added = "0.1.0",
     tags = character()
   )
@@ -826,7 +826,7 @@ core_metric_spec_kgekm <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "KGE variant definitions in hydrology practice using coefficient-of-variation ratio; citation to be refined.",
+    references = "Kling, H., Fuchs, M., & Paulin, M. (2012). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -855,7 +855,7 @@ core_metric_spec_kgelf <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "KGE low-flow emphasis variants in hydrology practice; exact citation to be refined.",
+    references = "Package-defined hydroMetrics KGE low-flow variant. Exact package definition documented in hydroMetrics Architecture Decisions D-018 and D-019; grounded in Gupta et al. (2009).",
     version_added = "0.1.0",
     tags = character()
   )
@@ -892,7 +892,7 @@ core_metric_spec_kgenp <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "Nonparametric KGE formulations in hydrology practice; exact citation to be refined.",
+    references = "Pool, S., Vis, M., & Seibert, J. (2018). Evaluating model performance: towards a non-parametric variant of the Kling-Gupta efficiency.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -990,7 +990,7 @@ core_metric_spec_skge <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "Seasonal KGE variant definition implemented per project decision pending definitive citation.",
+    references = "Package-defined hydroMetrics seasonal KGE variant. Exact package definition documented in hydroMetrics Architecture Decisions D-018 and D-019.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -1034,7 +1034,7 @@ core_metric_spec_pbiasfdc <- function() {
     category = "bias",
     perfect = 0,
     range = NULL,
-    references = "Flow duration curve bias formulation implemented per project decision pending definitive citation.",
+    references = "Package-defined hydroMetrics flow-duration-curve percent-bias variant. Exact package definition documented in hydroMetrics Architecture Decisions D-018 and D-019.",
     version_added = "0.1.0",
     tags = character()
   )

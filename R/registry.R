@@ -140,7 +140,7 @@ register_core_metrics <- function(registry) {
 
 register_metric <- function(id, fun, name, description, references = NULL, tags = NULL) {
   if (is.null(references)) {
-    references <- "User-defined metric (reference not provided)."
+    references <- "User-defined metric registered at runtime; no external reference supplied."
   }
   if (is.null(tags)) {
     tags <- character()

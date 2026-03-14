@@ -24,22 +24,22 @@
 | md | Mathematical definition from modified agreement-index literature | Willmott, C.J., Robeson, S.M., & Matsuura, K. (2012). A refined index of model performance. | Implemented from published formula definition, no code copied. |
 | rd | Relative agreement formula variant | Willmott agreement-index family with relative normalization by observations. | Implemented from explicit formula definition selected for compatibility tracking. |
 | dr | Relative absolute-agreement formula variant | Willmott agreement-index family with relative absolute-error normalization. | Implemented from explicit formula definition selected for compatibility tracking. |
-| br2 | Bias-penalized correlation formulation | Project-defined bias-corrected R2 variant pending dedicated paper citation. | Implemented from mathematical formula definition, no code copied. |
+| br2 | Bias-corrected correlation formulation | Krause, P., Boyle, D. P., & Baese, F. (2005). Comparison of different efficiency criteria for hydrological model assessment; package interpretation fixed by Architecture Decision D-029. | Implemented from the selected formula interpretation, no code copied. |
 | rNSE | Relative NSE variant | NSE family variant per hydrology literature (relative scaling by observations). | Implemented from explicit formula definition, no code copied. |
 | mNSE | Modified NSE variant | NSE family variant using absolute-error formulation in hydrology literature. | Implemented from explicit formula definition, no code copied. |
 | wNSE | Weighted NSE variant | NSE family weighted variant using observation-derived weights. | Implemented from explicit formula definition, no code copied. |
 | wsNSE | Weighted-squared NSE variant | NSE family weighted variant using squared observation weights. | Implemented from explicit formula definition, no code copied. |
 | ubRMSE | Unbiased RMSE | Standard anomaly-based RMSE definition in model evaluation. | Implemented from mathematical definition (clean-room). |
 | ssq | Sum of squared errors | Standard least-squares objective definition. | Implemented from mathematical definition (clean-room). |
-| KGEkm | KGE variant with CV ratio | KGE-variant practice using gamma = CV(sim)/CV(obs); citation to refine. | Implemented from formula derivation only, no source code copied. |
-| KGElf | Low-flow transformed KGE | KGE low-flow variant using log-transformed nonnegative flows; citation to refine. | Implemented from formula derivation only, no source code copied. |
-| KGEnp | Nonparametric KGE | Nonparametric KGE variant using Spearman/IQR/median components; citation to refine. | Implemented from formula derivation only, no source code copied. |
+| KGEkm | KGE variant with CV ratio | Kling, H., Fuchs, M., & Paulin, M. (2012). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. | Implemented from the cited literature definition, no source code copied. |
+| KGElf | Low-flow transformed KGE | Package-defined hydroMetrics KGE low-flow variant documented in Architecture Decisions D-018 and D-019; grounded in Gupta et al. (2009). | Implemented from the package decision record and KGE literature context, no source code copied. |
+| KGEnp | Nonparametric KGE | Pool, S., Vis, M., & Seibert, J. (2018). Evaluating model performance: towards a non-parametric variant of the Kling-Gupta efficiency. | Implemented from the cited literature definition, no source code copied. |
 | sKGE | Seasonal KGE | Seasonal KGE averaging over monthly groups (project-defined implementation). | Implemented from formula derivation only, no source code copied. |
 | pbiasfdc | FDC percent bias | Flow duration curve bias over fixed quantile grid (project-defined deterministic formulation). | Implemented from formula derivation only, no source code copied. |
 | rPearson | Statistical correlation definition | Pearson correlation coefficient (standard statistical definition). | Implemented from statistical definition only, no source code copied. |
 | rSpearman | Statistical rank-correlation definition | Spearman rank correlation (standard statistical definition). | Implemented from statistical definition only, no source code copied. |
 | rSD | Scale-ratio definition | Project-defined ratio `sd(sim)/sd(obs)` for compatibility. | Implemented from explicit formula definition, no source code copied. |
-| cp | Persistence skill-score formula | Persistence-skill definition from hydrology model-evaluation literature (citation to refine). | Implemented from explicit mathematical definition, no upstream code copied. |
+| cp | Persistence skill-score formula | Kitanidis, P. K., & Bras, R. L. (1980). Real-time forecasting with a conceptual hydrologic model. Part II: Applications and results. | Implemented from the cited mathematical definition, no upstream code copied. |
 | preproc | Deterministic preprocessing policy | Project-defined preprocessing helper behavior for aligned NA filtering and coercion. | Implemented from project specification, no upstream code copied. |
 | valindex | Project-defined aggregation formula | Project-defined normalized weighted aggregate over selected metrics (`NSE`, `KGE`, `rmse`, `pbias`, `rPearson`). | Implemented from transparent mathematical transforms, no upstream code copied. |
 | pfactor | Tolerance-band hit proportion | Project-defined compatibility pfactor with clean-room tolerance policy (`tol * abs(obs)`; absolute `tol` when `obs == 0`). | Implemented from explicit mathematical definition, no upstream code copied. |

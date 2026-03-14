@@ -56,10 +56,10 @@
 ## Package-defined and decision-backed references
 - hydroMetrics Architecture Decisions, D-009 and D-012. Exact pre-Layer-A package definitions for `nrmse` and `nrmse_sd`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
 - hydroMetrics Architecture Decisions, D-014. Exact package formulations for `rd` and `dr`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
-- hydroMetrics Architecture Decisions, D-015. Current pre-Layer-A package definition for `br2`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
+- hydroMetrics Architecture Decision D-029. Exact package interpretation for `br2`, aligned to the selected Krause et al. (2005) `bR2` formulation. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
 - hydroMetrics Architecture Decisions, D-016 and D-026. Exact package formulas and export mapping for `mnse`, `rnse`, `wnse`, `wsnse`, `NSeff`, `mNSeff`, `rNSeff`, and `wsNSeff`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
 - hydroMetrics Architecture Decisions, D-017. Exact package definitions for `ubrmse` and `ssq`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
-- hydroMetrics Architecture Decisions, D-018 and D-019. Exact package definitions for `kgelf`, `skge`, and `pbiasfdc`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
+- hydroMetrics Architecture Decisions, D-018 and D-019. Exact package-defined hydroMetrics definitions for `kgelf`, `skge`, and `pbiasfdc`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
 - hydroMetrics Architecture Decisions, D-020 and D-023. Exact package definitions for `rsd`, `pfactor`, and `rfactor`; the external SWAT literature above covers terminology only. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
 - hydroMetrics Architecture Decisions, D-022 and D-028. Project definition and public wrapper contract for `valindex`, `preproc`, `gof`, and `ggof`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md
 - hydroMetrics Architecture Decisions, D-027. Exact package definitions for `APFB` and `HFB`. DOI unavailable. Stable URL: https://github.com/Arcblade-02/hydroMetrics/blob/dev/DECISIONS.md

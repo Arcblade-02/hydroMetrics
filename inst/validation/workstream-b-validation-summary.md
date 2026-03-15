@@ -15,6 +15,10 @@ Equivalent on the committed comparison cases:
 - `nse` / `NSeff`
 - `mnse` / `mNSeff`
 - `mae`
+- `rmse`
+- `mse`
+- `ve`
+- `kge` against `hydroGOF::KGE(method = "2009")`
 - `rsr`
 
 Intentionally divergent, with explicit comparison tests and formula/policy
@@ -23,6 +27,8 @@ notes recorded in `workstream-b-validation-inventory.md`:
 - `rnse` / `rNSeff`
 - `wsnse` / `wsNSeff`
 - `pbias`
+- `nrmse`
+- `r2`
 - `apfb` / `APFB`
 - `hfb` / `HFB`
 
@@ -47,14 +53,16 @@ Currently validated through literature/example-based or base-statistics checks:
 - `anderson_darling_stat`
 - `wasserstein_distance`
 
-Currently only partially validated:
-
 ## Current Evidence Reading
 
 - Workstream B now has explicit committed evidence for a small but meaningful
   hydroGOF-overlap subset, rather than generic compatibility language.
 - The package now distinguishes true equivalence from intentional divergence
   on the tested hydroGOF-overlap metrics.
+- The next deterministic overlap tranche tightened that distinction further:
+  `rmse`, `mse`, `ve`, and `kge` now have explicit equivalence evidence, while
+  `nrmse` and `r2` now have explicit divergence classification rather than
+  remaining in the unresolved backlog.
 - The probabilistic/distributional surface now has a clearer validation map:
   the currently audited metrics are supported by direct literature/example-
   based checks, and `crps` now also has an exercised `scoringRules`

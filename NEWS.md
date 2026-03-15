@@ -1,5 +1,25 @@
 # hydroMetrics news
 
+## 0.4.0
+
+- Frame the current `dev` branch state as a Phase 4 baseline-establishment
+  milestone rather than as Phase 4 completion.
+- Carry forward the closed Workstream A API-governance state, including the
+  stabilized public API boundary, return-object contract, lifecycle policy,
+  alias policy, and documented stable warning/error behavior.
+- Record Workstream B as materially mature for this phase, with a stronger
+  validation narrative, exercised CRPS external-reference tolerance evidence,
+  a reproducible benchmark baseline, and completed hydroGOF-overlap
+  classification across the current overlap surface.
+- Carry forward the established Workstream C discovery/usability baseline,
+  including `metric_search()`, documented preset groups, and the guided
+  workflow vignette.
+- Carry forward the first Workstream D static plotting baseline under the
+  accepted optional-dependency strategy, with `plot_hydrograph()` kept
+  separate from `ggof()`.
+- Carry forward the first Workstream E contributor/governance baseline via
+  published contributor guidance and package governance policy documents.
+
 ## 0.3.1
 
 - Freeze the current remediated package state as a non-feature baseline

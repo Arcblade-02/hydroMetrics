@@ -3,7 +3,7 @@
 ![R-CMD-check](https://github.com/Arcblade-02/hydroMetrics/actions/workflows/R-CMD-check.yml/badge.svg)
 
 `hydroMetrics` is a clean-room MIT-licensed R package for hydrological model
-evaluation. The current `0.3.1` release line combines a compat-oriented
+evaluation. The current `0.4.0` release line combines a compat-oriented
 default metric surface with broader gated deterministic diagnostics,
 seasonal/regime-sensitive evaluation, wrapper-only probabilistic workflows,
 and release-facing validation artifacts for reproducible package checks.
@@ -17,7 +17,7 @@ and release-facing validation artifacts for reproducible package checks.
 - Stable exported metric surface: documented exported metric wrappers
 - Stable exported utility: `hm_result()` as the low-level constructor for
   `hm_result` S3 objects
-- Compatibility exports retained at the `0.3.1` baseline: `APFB()`, `HFB()`,
+- Compatibility exports retained at the `0.4.0` baseline: `APFB()`, `HFB()`,
   `NSeff()`, `mNSeff()`, `rNSeff()`, `wsNSeff()`,
   `mutual_information_score()`, and `kl_divergence_flow()`
 - Uppercase hydroGOF-style labels accepted by `gof()`/`ggof()` are
@@ -42,8 +42,8 @@ and release-facing validation artifacts for reproducible package checks.
   exports below
 - `compatibility`: `APFB()`, `HFB()`, `NSeff()`, `mNSeff()`, `rNSeff()`,
   `wsNSeff()`, `mutual_information_score()`, and `kl_divergence_flow()`
-- `deprecated`: no exported functions at the `0.3.1` baseline
-- `experimental`: no exported functions at the `0.3.1` baseline
+- `deprecated`: no exported functions at the `0.4.0` baseline
+- `experimental`: no exported functions at the `0.4.0` baseline
 
 ## Alias Policy
 
@@ -64,7 +64,7 @@ For local release validation, build the source bundle with `R CMD build .` and
 install the generated tarball:
 
 ```r
-install.packages("hydroMetrics_0.3.1.tar.gz", repos = NULL, type = "source")
+install.packages("hydroMetrics_0.4.0.tar.gz", repos = NULL, type = "source")
 ```
 
 If you want the latest repository snapshot instead:

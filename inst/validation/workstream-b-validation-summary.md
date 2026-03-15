@@ -38,6 +38,10 @@ notes recorded in `workstream-b-validation-inventory.md`:
 - `r2`
 - `dr`
 - `rd`
+- `kgekm`
+- `kgelf`
+- `kgenp`
+- `skge`
 - `apfb` / `APFB`
 - `hfb` / `HFB`
 
@@ -79,6 +83,9 @@ Currently validated through literature/example-based or base-statistics checks:
 - The small direct-comparator tranche now records `wnse` as equivalent on the
   committed comparable cases, while `dr` and `rd` are now explicitly treated
   as intentional divergence rather than unresolved backlog items.
+- The specialized KGE-family / seasonal tranche now classifies `kgekm`,
+  `kgelf`, `kgenp`, and `skge` as intentional divergence rather than leaving
+  them in the unresolved backlog.
 - The probabilistic/distributional surface now has a clearer validation map:
   the currently audited metrics are supported by direct literature/example-
   based checks, and `crps` now also has an exercised `scoringRules`

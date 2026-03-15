@@ -13,6 +13,7 @@ and release-facing validation artifacts for reproducible package checks.
 - Stable orchestration entry points: `gof()`, `ggof()`, `preproc()`, and
   `valindex()`
 - Stable discovery helper: `metric_search()`
+- Stable plotting helper: `plot_hydrograph()`
 - Stable exported metric surface: documented exported metric wrappers
 - Stable exported utility: `hm_result()` as the low-level constructor for
   `hm_result` S3 objects
@@ -35,8 +36,10 @@ and release-facing validation artifacts for reproducible package checks.
 
 ## Lifecycle Policy
 
-- `stable`: exported orchestration entry points, `hm_result()`, and documented
-  exported metric wrappers other than the explicit compatibility exports below
+- `stable`: exported orchestration entry points, documented exported helpers
+  such as `metric_search()`, `plot_hydrograph()`, and `hm_result()`, and
+  documented exported metric wrappers other than the explicit compatibility
+  exports below
 - `compatibility`: `APFB()`, `HFB()`, `NSeff()`, `mNSeff()`, `rNSeff()`,
   `wsNSeff()`, `mutual_information_score()`, and `kl_divergence_flow()`
 - `deprecated`: no exported functions at the `0.3.1` baseline
@@ -165,6 +168,8 @@ does not replace the detailed metric reference vignette.
 
 ## Development Notes
 
+- Contributor guidance: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Published governance summary: [GOVERNANCE.md](GOVERNANCE.md)
 - Clean-room implementation policy: [CLEAN_ROOM_POLICY.md](CLEAN_ROOM_POLICY.md)
 - Formula/reference scaffold: [inst/REFERENCES.md](inst/REFERENCES.md)
 - Compatibility tracker: [COMPATIBILITY_TRACKER.md](COMPATIBILITY_TRACKER.md)

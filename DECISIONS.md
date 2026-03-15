@@ -118,6 +118,11 @@ two duplicated historical `D-030` headings.
 - Status: Accepted
 - Notes: `gof()` returns class `"hydro_metrics"`, `ggof()` returns class `"hydro_metrics_batch"`, and scalar wrappers return numeric outputs. Any earlier tibble-first plan claim is formally downgraded and tracked in the Phase 2 deviation register.
 
+#### D-033: Plotting Dependency Strategy
+- Decision: Keep `ggplot2` in `Suggests` rather than `Imports`. Phase 4 plotting may remain in the main package only if it stays lightweight, static, and directly tied to the current evaluation outputs; any heavier visualization layer should be deferred or delivered through a future companion package rather than broadening the core package contract.
+- Status: Accepted
+- Notes: The minimum supported plotting API for Phase 4 is modest: optional static plot helpers over documented package outputs, with graceful failure when plotting dependencies are unavailable. Phase 4 does not commit to interactive dashboards, htmlwidgets/Shiny layers, report-generation frameworks, or broad plotting coverage for every metric family. The current `ggof()` export keeps its existing non-plotting tabular behavior in this phase; any future plotting work must respect that current contract rather than silently changing `ggof()` behavior.
+
 ### Canonical Phase 3 and Pre-Phase 4 Governance IDs
 
 The entries below are the canonical active meanings of `D-025` through

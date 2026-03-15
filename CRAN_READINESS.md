@@ -81,6 +81,8 @@ serious CRAN submission push.
   separated from historical records.
 - Contributor expectations for scope, validation, and policy discipline are now
   published.
+- A lightweight maintainer-facing release-review checklist now exists in
+  [RELEASE_REVIEW.md](RELEASE_REVIEW.md).
 - Compatibility and lifecycle policy are explicit enough to support release
   review discussions without reopening basic API-boundary ambiguity.
 
@@ -98,5 +100,6 @@ serious CRAN submission push.
 
 The next narrow readiness step should be a `0.4.x`-specific CRAN preflight
 pass: rerun a deliberate CRAN-style check workflow against the current branch,
-review submission-facing metadata and prose, and record any remaining
-submission blockers explicitly.
+review submission-facing metadata and prose, use
+[RELEASE_REVIEW.md](RELEASE_REVIEW.md) as the maintainer checklist, and record
+any remaining submission blockers explicitly.

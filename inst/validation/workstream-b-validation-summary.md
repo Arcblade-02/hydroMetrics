@@ -19,6 +19,12 @@ Equivalent on the committed comparison cases:
 - `mse`
 - `ve`
 - `kge` against `hydroGOF::KGE(method = "2009")`
+- `me`
+- `d`
+- `md`
+- `ubrmse`
+- `rspearman`
+- `cp`
 - `rsr`
 
 Intentionally divergent, with explicit comparison tests and formula/policy
@@ -63,6 +69,10 @@ Currently validated through literature/example-based or base-statistics checks:
   `rmse`, `mse`, `ve`, and `kge` now have explicit equivalence evidence, while
   `nrmse` and `r2` now have explicit divergence classification rather than
   remaining in the unresolved backlog.
+- The current moderate-complexity tranche adds explicit equivalence evidence
+  for `me`, `d`, `md`, `ubrmse`, `rspearman`, and `cp`; `rsd` remains outside
+  this tranche because `hydroGOF` does not expose a direct like-for-like
+  `RSD` / `rsd` comparator.
 - The probabilistic/distributional surface now has a clearer validation map:
   the currently audited metrics are supported by direct literature/example-
   based checks, and `crps` now also has an exercised `scoringRules`

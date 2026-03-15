@@ -114,3 +114,34 @@ test_that("next hydroGOF-overlap tranche records intentional nrmse and r2 diverg
     expect_gt(abs(out[["r2"]] - hydroGOF::R2(case$sim, case$obs)), tol)
   }
 })
+
+test_that("moderate hydroGOF-overlap tranche matches on intended comparable cases", {
+  skip_if_not_installed("hydroGOF")
+
+  tol <- sqrt(.Machine$double.eps)
+  cases <- list(
+    list(
+      sim = c(1.1, 2.2, 2.8, 4.1, 5.2),
+      obs = c(1.0, 2.0, 3.0, 4.0, 5.0)
+    ),
+    list(
+      sim = c(2, 4, 6, 8, 10),
+      obs = c(1, 3, 5, 7, 9)
+    ),
+    list(
+      sim = c(0.5, 1.5, 2.0, 3.5, 5.0),
+      obs = c(1.0, 1.0, 2.5, 3.0, 4.5)
+    )
+  )
+
+  for (case in cases) {
+    out <- gof(case$sim, case$obs, methods = c("me", "d", "md", "ubrmse", "rspearman", "cp"))
+
+    expect_equal(out[["me"]], hydroGOF::me(case$sim, case$obs), tolerance = tol)
+    expect_equal(out[["d"]], hydroGOF::d(case$sim, case$obs), tolerance = tol)
+    expect_equal(out[["md"]], hydroGOF::md(case$sim, case$obs), tolerance = tol)
+    expect_equal(out[["ubrmse"]], hydroGOF::ubRMSE(case$sim, case$obs), tolerance = tol)
+    expect_equal(out[["rspearman"]], hydroGOF::rSpearman(case$sim, case$obs), tolerance = tol)
+    expect_equal(out[["cp"]], hydroGOF::cp(case$sim, case$obs), tolerance = tol)
+  }
+})

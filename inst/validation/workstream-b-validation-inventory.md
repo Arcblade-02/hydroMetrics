@@ -22,6 +22,12 @@ reconciliation outcome: `equivalent`, `intentionally divergent`, or
 | `mse` | compatibility overlap | `hydroGOF::mse` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Public `gof(methods = "mse")` path matches hydroGOF on committed deterministic cases |
 | `ve` | compatibility overlap | `hydroGOF::VE` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Public `gof(methods = "ve")` path matches hydroGOF on committed deterministic cases |
 | `kge` | compatibility overlap | `hydroGOF::KGE(method = "2009")` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Current package KGE matches the comparable hydroGOF 2009 variant on committed deterministic cases |
+| `me` | compatibility overlap | `hydroGOF::me` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Public `gof(methods = "me")` path matches hydroGOF on committed deterministic cases |
+| `d` | compatibility overlap | `hydroGOF::d` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Public `gof(methods = "d")` path matches hydroGOF on committed deterministic cases |
+| `md` | compatibility overlap | `hydroGOF::md` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Public `gof(methods = "md")` path matches hydroGOF on committed deterministic cases |
+| `ubrmse` | compatibility overlap | `hydroGOF::ubRMSE` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Public `gof(methods = "ubrmse")` path matches hydroGOF on committed deterministic cases |
+| `rspearman` | compatibility overlap | `hydroGOF::rSpearman` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Public `gof(methods = "rspearman")` path matches hydroGOF on committed deterministic cases |
+| `cp` | compatibility overlap | `hydroGOF::cp` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Added in this tranche as a moderate replacement for `rsd`, because `hydroGOF` does not expose a direct `RSD` / `rsd` comparator |
 | `pbias` | compatibility overlap | `hydroGOF::pbias` | explicit divergence test in `test-compat-hydrogof.R`, plus formula inspection | intentionally divergent | Core formula aligns before presentation, but `hydroGOF` rounds to `dec = 1` by default while `hydroMetrics` returns the unrounded scalar |
 | `nrmse` | compatibility overlap | `hydroGOF::nrmse` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` uses RMSE / mean(obs); `hydroGOF::nrmse` defaults to rounded `100 * RMSE / sd(obs)` with `norm = "sd"` |
 | `r2` | compatibility overlap | `hydroGOF::R2` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` uses Pearson correlation squared; `hydroGOF::R2` computes `1 - SSres / SStot` |
@@ -34,22 +40,16 @@ reconciliation outcome: `equivalent`, `intentionally divergent`, or
 These metrics overlap materially with `hydroGOF`, but the repository does not
 yet carry explicit reference-package comparison tests for them:
 
-- `cp`
-- `d`
 - `dr`
 - `kgekm`
 - `kgelf`
 - `kgenp`
-- `md`
-- `me`
 - `pbiasfdc`
 - `pfactor`
 - `rd`
 - `rfactor`
 - `rsd`
-- `rspearman`
 - `skge`
-- `ubrmse`
 - `wnse`
 
 Current status for this broader overlap set: not yet validated through
@@ -85,6 +85,10 @@ explicit committed `hydroGOF` comparison tests in the package repository.
   `rmse`, `mse`, `ve`, and `kge` are evidenced as equivalent on the committed
   comparison cases, while `nrmse` and `r2` are now classified as intentionally
   divergent.
+- The current moderate-complexity overlap tranche adds explicit equivalence
+  evidence for `me`, `d`, `md`, `ubrmse`, `rspearman`, and `cp`; `rsd`
+  remains in the backlog because `hydroGOF` does not expose a direct
+  like-for-like `RSD` / `rsd` comparator.
 - The repository does not yet have a broader explicit comparison matrix for
   the full hydroGOF-overlap surface.
 - Probabilistic and distributional metrics now have an explicit validation map

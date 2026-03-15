@@ -59,7 +59,7 @@ explicit committed `hydroGOF` comparison tests in the package repository.
 
 | Metric | Category | Intended validation source type | Current evidence | Status | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `crps` | probabilistic / ensemble scoring | external reference package plus literature/example-based validation | independent empirical-CRPS formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md`; no committed `scoringRules` comparison artifact | partially validated | Strongest future path is `scoringRules` or equivalent external sample-CRPS comparison; current repo evidence is formula-based only |
+| `crps` | probabilistic / ensemble scoring | external reference package plus literature/example-based validation | independent empirical-CRPS formula test in `test-metrics-layer-a.R`; conditional `scoringRules::crps_sample(..., method = "edf")` comparison in `test-probabilistic-validation.R`; literature references in `inst/REFERENCES.md` | partially validated | External comparison path is now committed conditionally through `Suggests`, but local validation remains conditional on `scoringRules` availability |
 | `picp` | probabilistic / interval coverage | literature/example-based validation | explicit inclusive-coverage formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | validated | Straightforward deterministic coverage proportion with direct independent test |
 | `mwpi` | probabilistic / interval width | literature/example-based validation | explicit interval-width formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | validated | Straightforward deterministic width diagnostic with direct independent test |
 | `skill_score` | probabilistic / verification | literature/example-based validation | explicit normalization-formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | validated | Current package variant is directly tested against the lower-is-better skill-score normalization |
@@ -86,6 +86,8 @@ explicit committed `hydroGOF` comparison tests in the package repository.
 - Probabilistic and distributional metrics now have an explicit validation map
   that distinguishes literature/example-based evidence from future
   external-package comparison paths.
-- External reference-package validation remains the main gap for `crps`, and
-  no comparable external-package baseline is yet wired for the broader
+- `crps` now has a committed conditional external reference-package path via
+  `scoringRules`, but local evidence remains conditional until that package is
+  present in the test environment.
+- No comparable external-package baseline is yet wired for the broader
   probabilistic surface.

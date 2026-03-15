@@ -25,6 +25,7 @@ Suggests:
     markdown,
     microbenchmark,
     rmarkdown,
+    scoringRules,
     xts,
     zoo
 VignetteBuilder: knitr

@@ -16,3 +16,22 @@ test_that("quantile_loss at tau = 0.5 equals half the mean absolute error", {
 
   expect_equal(quantile_loss(sim, obs, tau = 0.5), expected)
 })
+
+test_that("crps matches scoringRules::crps_sample when available", {
+  skip_if_not_installed("scoringRules")
+
+  ens <- matrix(
+    c(
+      1.0, 1.2, 0.8,
+      2.0, 2.2, 1.8,
+      3.0, 3.2, 2.8
+    ),
+    nrow = 3,
+    byrow = TRUE
+  )
+  obs <- c(1.1, 2.1, 3.1)
+
+  expected <- mean(scoringRules::crps_sample(y = obs, dat = ens, method = "edf"))
+
+  expect_equal(crps(ens, obs), expected, tolerance = sqrt(.Machine$double.eps))
+})

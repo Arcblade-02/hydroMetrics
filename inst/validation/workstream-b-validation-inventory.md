@@ -5,19 +5,23 @@ It is intentionally narrow: the goal is to state what validation evidence is
 already present in the repository, what now has an explicit baseline check,
 and where further validation work is still needed.
 
+For the hydroGOF-overlap section below, the status column records the current
+reconciliation outcome: `equivalent`, `intentionally divergent`, or
+`unresolved`.
+
 ## Priority HydroGOF-Overlap Metrics
 
 | Metric | Category | Intended validation source | Current evidence | Status | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `nse` / `NSeff` | compatibility overlap | `hydroGOF::NSE` | explicit comparison test in `test-compat-hydrogof.R` | validated | Baseline scalar compatibility check present |
-| `mnse` / `mNSeff` | compatibility overlap | `hydroGOF::mNSE` | explicit comparison test in `test-compat-hydrogof.R` | validated | Exported compatibility wrapper covered |
-| `rnse` / `rNSeff` | compatibility overlap | `hydroGOF::rNSE` | no committed equivalence test; local spot check showed a numeric mismatch on a simple vector | not yet validated | Needs explicit reconciliation before any equivalence claim |
-| `wsnse` / `wsNSeff` | compatibility overlap | `hydroGOF::wsNSE` | no committed equivalence test; local spot check showed numeric mismatch on a simple vector | not yet validated | Needs explicit reconciliation before any equivalence claim |
-| `mae` | compatibility overlap | `hydroGOF::mae` | explicit comparison test in `test-compat-hydrogof.R` | validated | Exported wrapper covered |
-| `pbias` | compatibility overlap | `hydroGOF::pbias` | no committed equivalence test; local spot check showed a small but real numeric mismatch on a simple vector | not yet validated | Needs explicit reconciliation before any equivalence claim |
-| `rsr` | compatibility overlap | `hydroGOF::rsr` | explicit comparison test in `test-compat-hydrogof.R` | validated | Exported wrapper covered |
-| `apfb` / `APFB` | compatibility overlap | `hydroGOF::APFB` | no committed equivalence test; local indexed spot check showed a material numeric mismatch | not yet validated | Needs explicit reconciliation before any equivalence claim |
-| `hfb` / `HFB` | compatibility overlap | `hydroGOF::HFB` | no committed equivalence test; local indexed spot check showed a material numeric mismatch | not yet validated | Needs explicit reconciliation before any equivalence claim |
+| `nse` / `NSeff` | compatibility overlap | `hydroGOF::NSE` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Baseline scalar compatibility check present |
+| `mnse` / `mNSeff` | compatibility overlap | `hydroGOF::mNSE` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Exported compatibility wrapper covered |
+| `rnse` / `rNSeff` | compatibility overlap | `hydroGOF::rNSE` | explicit divergence test in `test-compat-hydrogof.R`, plus formula inspection | intentionally divergent | `hydroMetrics` uses observation-scaled denominator terms `((obs - mean(obs)) / obs)^2`; `hydroGOF` uses `((obs - mean(obs)) / mean(obs))^2` and warning-based zero handling |
+| `wsnse` / `wsNSeff` | compatibility overlap | `hydroGOF::wsNSE` | explicit divergence test in `test-compat-hydrogof.R`, plus formula inspection | intentionally divergent | `hydroMetrics` fixes weights at `obs^2`; `hydroGOF` uses quantile-based weights with `lambda`, `j`, and threshold parameters |
+| `mae` | compatibility overlap | `hydroGOF::mae` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Exported wrapper covered |
+| `pbias` | compatibility overlap | `hydroGOF::pbias` | explicit divergence test in `test-compat-hydrogof.R`, plus formula inspection | intentionally divergent | Core formula aligns before presentation, but `hydroGOF` rounds to `dec = 1` by default while `hydroMetrics` returns the unrounded scalar |
+| `rsr` | compatibility overlap | `hydroGOF::rsr` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Exported wrapper covered |
+| `apfb` / `APFB` | compatibility overlap | `hydroGOF::APFB` | explicit divergence test in `test-compat-hydrogof.R`, plus formula inspection | intentionally divergent | `hydroMetrics` returns signed mean percent bias over annual peaks; `hydroGOF` returns mean absolute relative annual-peak error on `zoo` inputs |
+| `hfb` / `HFB` | compatibility overlap | `hydroGOF::HFB` | explicit divergence test in `test-compat-hydrogof.R`, plus formula inspection | intentionally divergent | `hydroMetrics` computes percent bias over observations above a global threshold; `hydroGOF` computes a per-year median absolute relative high-flow bias on `zoo` inputs |
 
 ## Additional HydroGOF-Overlap Metrics Still Needing Explicit Comparison Evidence
 
@@ -48,10 +52,6 @@ yet carry explicit reference-package comparison tests for them:
 - `ve`
 - `wnse`
 
-`rnse`, `pbias`, `apfb`, and `hfb` are also still open validation items
-despite their hydroGOF overlap, because local spot checks showed behavior
-that does not yet support an equivalence claim.
-
 Current status for this broader overlap set: not yet validated through
 explicit committed `hydroGOF` comparison tests in the package repository.
 
@@ -69,6 +69,9 @@ explicit committed `hydroGOF` comparison tests in the package repository.
 - The repository now has a truthful initial validation baseline for a narrow
   set of exported hydroGOF-overlap wrappers whose behavior matches committed
   `hydroGOF` comparison examples.
+- The previously unresolved overlap metrics targeted in this pass now have
+  explicit reconciliation outcomes: `rnse`, `wsnse`, `pbias`, `apfb`, and
+  `hfb` are intentionally divergent rather than unresolved.
 - The repository does not yet have a broader explicit comparison matrix for
   the full hydroGOF-overlap surface.
 - Probabilistic metrics have formula and contract tests, but external

@@ -10,10 +10,10 @@
   x
 }
 
-.hm_plot_require_ggplot2 <- function() {
+.hm_plot_require_ggplot2 <- function(helper_name = "plot_hydrograph") {
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     stop(
-      "plot_hydrograph() requires the 'ggplot2' package. Install it to use plotting helpers.",
+      sprintf("%s() requires the 'ggplot2' package. Install it to use plotting helpers.", helper_name),
       call. = FALSE
     )
   }
@@ -59,7 +59,7 @@ plot_hydrograph <- function(sim,
                             title = NULL,
                             x_lab = "Index",
                             y_lab = "Value") {
-  .hm_plot_require_ggplot2()
+  .hm_plot_require_ggplot2("plot_hydrograph")
 
   sim_label <- .hm_validate_plot_label(sim_label, "sim_label")
   obs_label <- .hm_validate_plot_label(obs_label, "obs_label")

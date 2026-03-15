@@ -1,8 +1,8 @@
 test_that("plot_hydrograph errors cleanly when ggplot2 is unavailable", {
   testthat::local_mocked_bindings(
-    .hm_plot_require_ggplot2 = function() {
+    .hm_plot_require_ggplot2 = function(helper_name = "plot_hydrograph") {
       stop(
-        "plot_hydrograph() requires the 'ggplot2' package. Install it to use plotting helpers.",
+        sprintf("%s() requires the 'ggplot2' package. Install it to use plotting helpers.", helper_name),
         call. = FALSE
       )
     },

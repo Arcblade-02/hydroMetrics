@@ -13,7 +13,7 @@ and release-facing validation artifacts for reproducible package checks.
 - Stable orchestration entry points: `gof()`, `ggof()`, `preproc()`, and
   `valindex()`
 - Stable discovery helper: `metric_search()`
-- Stable plotting helper: `plot_hydrograph()`
+- Stable plotting helpers: `plot_hydrograph()` and `plot_fdc()`
 - Stable exported metric surface: documented exported metric wrappers
 - Stable exported utility: `hm_result()` as the low-level constructor for
   `hm_result` S3 objects
@@ -37,7 +37,8 @@ and release-facing validation artifacts for reproducible package checks.
 ## Lifecycle Policy
 
 - `stable`: exported orchestration entry points, documented exported helpers
-  such as `metric_search()`, `plot_hydrograph()`, and `hm_result()`, and
+  such as `metric_search()`, `plot_hydrograph()`, `plot_fdc()`, and
+  `hm_result()`, and
   documented exported metric wrappers other than the explicit compatibility
   exports below
 - `compatibility`: `APFB()`, `HFB()`, `NSeff()`, `mNSeff()`, `rNSeff()`,
@@ -101,8 +102,8 @@ mae(sim, obs)
   and interval-evaluation workflows
 - `?gof`, `?ggof`, `?preproc`, and `?hm_result` for API details
 - `?metric_search` for the first metric-discovery baseline
-- `?plot_hydrograph` for the first lightweight static hydrograph comparison
-  helper
+- `?plot_hydrograph` and `?plot_fdc` for the lightweight static plotting
+  helpers
 
 ## Metric Discovery
 

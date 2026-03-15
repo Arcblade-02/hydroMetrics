@@ -15,7 +15,7 @@ Current stable boundary:
 - exported orchestration entry points such as `gof()`, `ggof()`, `preproc()`,
   and `valindex()`
 - documented exported helpers such as `metric_search()`,
-  `plot_hydrograph()`, and `hm_result()`
+  `metric_preset()`, `plot_hydrograph()`, `plot_fdc()`, and `hm_result()`
 - documented exported metric wrappers other than the explicitly marked
   compatibility exports
 

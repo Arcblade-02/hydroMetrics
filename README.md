@@ -98,6 +98,8 @@ mae(sim, obs)
   and interval-evaluation workflows
 - `?gof`, `?ggof`, `?preproc`, and `?hm_result` for API details
 - `?metric_search` for the first metric-discovery baseline
+- `?plot_hydrograph` for the first lightweight static hydrograph comparison
+  helper
 
 ## Metric Discovery
 

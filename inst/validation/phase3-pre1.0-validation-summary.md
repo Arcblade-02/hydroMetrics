@@ -59,6 +59,11 @@ The current hardening pass validated:
 
 The placeholder audit was clean at the time of the Stage 6 pass.
 
+Workstream B scientific-validation evidence is now summarized separately in
+`inst/validation/workstream-b-validation-summary.md`, with the detailed metric
+inventory and reconciliation status retained in
+`inst/validation/workstream-b-validation-inventory.md`.
+
 ## API Stability Declaration
 
 The current package state is still pre-1.0, but the following surface is being

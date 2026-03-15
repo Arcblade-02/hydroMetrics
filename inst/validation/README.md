@@ -11,6 +11,8 @@ intermediate audit artifact generated during development.
   package-check status for the Phase 3 / pre-1.0 stabilization line.
 - `workstream-b-validation-inventory.md`: initial Workstream B inventory for
   hydroGOF-overlap and probabilistic-metric validation coverage.
+- `workstream-b-validation-summary.md`: concise consolidated summary of the
+  current Workstream B scientific-validation evidence baseline.
 - `usgs_nwis_manifest.csv`: fixed NWIS station manifest for the Stage 6
   real-data validation subset.
 - `usgs_nwis_provenance.md`: retrieval, provenance, and benchmark-scenario
@@ -33,6 +35,8 @@ truthfully from the shipped repository contents:
 - current API-stability scope for the pre-1.0 milestone
 - initial Workstream B empirical-validation inventory for hydroGOF-overlap and
   probabilistic metrics
+- a concise Workstream B evidence summary covering validated, intentionally
+  divergent, partially validated, and backlog areas
 
 ## Real-Dataset Validation
 

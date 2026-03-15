@@ -33,6 +33,7 @@ as unresolved compatibility failures.
 
 Currently validated through literature/example-based or base-statistics checks:
 
+- `crps`
 - `picp`
 - `mwpi`
 - `skill_score`
@@ -48,19 +49,6 @@ Currently validated through literature/example-based or base-statistics checks:
 
 Currently only partially validated:
 
-- `crps`
-
-`crps` has:
-
-- an explicit empirical-ensemble formula test
-- a degenerate-ensemble identity check
-- a committed conditional external comparison path against
-  `scoringRules::crps_sample(..., method = "edf")`
-
-It remains only partially validated in the shipped evidence summary because
-the external-package comparison is conditional on `scoringRules` being present
-in the test environment.
-
 ## Current Evidence Reading
 
 - Workstream B now has explicit committed evidence for a small but meaningful
@@ -68,9 +56,15 @@ in the test environment.
 - The package now distinguishes true equivalence from intentional divergence
   on the tested hydroGOF-overlap metrics.
 - The probabilistic/distributional surface now has a clearer validation map:
-  most currently audited metrics are supported by direct literature/example-
-  based checks, while `crps` is the main remaining conditional external-
-  reference item.
+  the currently audited metrics are supported by direct literature/example-
+  based checks, and `crps` now also has an exercised `scoringRules`
+  comparison path on a small deterministic reference set.
+
+For `crps`, the current recorded tolerance rule is absolute agreement within
+`sqrt(.Machine$double.eps)` against
+`scoringRules::crps_sample(..., method = "edf")`. The exercised baseline run
+observed a maximum absolute difference of `1.39e-17` across the committed
+reference cases.
 
 ## Backlog
 
@@ -78,8 +72,6 @@ The main remaining Workstream B backlog items are:
 
 - broader hydroGOF-overlap reconciliation for the additional overlap metrics
   listed in `workstream-b-validation-inventory.md`
-- execution of the committed conditional `scoringRules` comparison path for
-  `crps` in an environment where that package is available
 - any further external-package cross-checks judged worthwhile for the broader
   probabilistic/distributional surface
 

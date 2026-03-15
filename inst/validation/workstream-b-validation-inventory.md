@@ -59,7 +59,7 @@ explicit committed `hydroGOF` comparison tests in the package repository.
 
 | Metric | Category | Intended validation source type | Current evidence | Status | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `crps` | probabilistic / ensemble scoring | external reference package plus literature/example-based validation | independent empirical-CRPS formula test in `test-metrics-layer-a.R`; conditional `scoringRules::crps_sample(..., method = "edf")` comparison in `test-probabilistic-validation.R`; literature references in `inst/REFERENCES.md` | partially validated | External comparison path is now committed conditionally through `Suggests`, but local validation remains conditional on `scoringRules` availability |
+| `crps` | probabilistic / ensemble scoring | external reference package plus literature/example-based validation | independent empirical-CRPS formula test in `test-metrics-layer-a.R`; exercised `scoringRules::crps_sample(..., method = "edf")` comparison on three deterministic ensemble cases in `test-probabilistic-validation.R`; literature references in `inst/REFERENCES.md` | validated | Current practical tolerance rule is absolute agreement within `sqrt(.Machine$double.eps)`; the exercised baseline run observed max absolute difference `1.39e-17` across the committed cases |
 | `picp` | probabilistic / interval coverage | literature/example-based validation | explicit inclusive-coverage formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | validated | Straightforward deterministic coverage proportion with direct independent test |
 | `mwpi` | probabilistic / interval width | literature/example-based validation | explicit interval-width formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | validated | Straightforward deterministic width diagnostic with direct independent test |
 | `skill_score` | probabilistic / verification | literature/example-based validation | explicit normalization-formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | validated | Current package variant is directly tested against the lower-is-better skill-score normalization |
@@ -86,8 +86,8 @@ explicit committed `hydroGOF` comparison tests in the package repository.
 - Probabilistic and distributional metrics now have an explicit validation map
   that distinguishes literature/example-based evidence from future
   external-package comparison paths.
-- `crps` now has a committed conditional external reference-package path via
-  `scoringRules`, but local evidence remains conditional until that package is
-  present in the test environment.
+- `crps` now has both a committed conditional external reference-package path
+  via `scoringRules` and an exercised baseline comparison result recorded for
+  the current deterministic case set.
 - No comparable external-package baseline is yet wired for the broader
   probabilistic surface.

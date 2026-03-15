@@ -25,6 +25,7 @@ Equivalent on the committed comparison cases:
 - `ubrmse`
 - `rspearman`
 - `cp`
+- `wnse`
 - `rsr`
 
 Intentionally divergent, with explicit comparison tests and formula/policy
@@ -35,6 +36,8 @@ notes recorded in `workstream-b-validation-inventory.md`:
 - `pbias`
 - `nrmse`
 - `r2`
+- `dr`
+- `rd`
 - `apfb` / `APFB`
 - `hfb` / `HFB`
 
@@ -73,6 +76,9 @@ Currently validated through literature/example-based or base-statistics checks:
   for `me`, `d`, `md`, `ubrmse`, `rspearman`, and `cp`; `rsd` remains outside
   this tranche because `hydroGOF` does not expose a direct like-for-like
   `RSD` / `rsd` comparator.
+- The small direct-comparator tranche now records `wnse` as equivalent on the
+  committed comparable cases, while `dr` and `rd` are now explicitly treated
+  as intentional divergence rather than unresolved backlog items.
 - The probabilistic/distributional surface now has a clearer validation map:
   the currently audited metrics are supported by direct literature/example-
   based checks, and `crps` now also has an exercised `scoringRules`

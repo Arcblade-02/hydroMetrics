@@ -28,10 +28,13 @@ reconciliation outcome: `equivalent`, `intentionally divergent`, or
 | `ubrmse` | compatibility overlap | `hydroGOF::ubRMSE` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Public `gof(methods = "ubrmse")` path matches hydroGOF on committed deterministic cases |
 | `rspearman` | compatibility overlap | `hydroGOF::rSpearman` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Public `gof(methods = "rspearman")` path matches hydroGOF on committed deterministic cases |
 | `cp` | compatibility overlap | `hydroGOF::cp` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Added in this tranche as a moderate replacement for `rsd`, because `hydroGOF` does not expose a direct `RSD` / `rsd` comparator |
+| `wnse` | compatibility overlap | `hydroGOF::wNSE` | explicit comparison test in `test-compat-hydrogof.R`, plus formula inspection | equivalent | Current package weighted NSE matches hydroGOF on intended comparable positive-observation cases |
 | `pbias` | compatibility overlap | `hydroGOF::pbias` | explicit divergence test in `test-compat-hydrogof.R`, plus formula inspection | intentionally divergent | Core formula aligns before presentation, but `hydroGOF` rounds to `dec = 1` by default while `hydroMetrics` returns the unrounded scalar |
 | `nrmse` | compatibility overlap | `hydroGOF::nrmse` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` uses RMSE / mean(obs); `hydroGOF::nrmse` defaults to rounded `100 * RMSE / sd(obs)` with `norm = "sd"` |
 | `r2` | compatibility overlap | `hydroGOF::R2` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` uses Pearson correlation squared; `hydroGOF::R2` computes `1 - SSres / SStot` |
 | `rsr` | compatibility overlap | `hydroGOF::rsr` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Exported wrapper covered |
+| `dr` | compatibility overlap | `hydroGOF::dr` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` uses an observation-normalized relative absolute agreement formula; `hydroGOF::dr` uses the Willmott et al. (2012) refined index with piecewise `1 - A/B` or `1 - B/A` scaling |
+| `rd` | compatibility overlap | `hydroGOF::rd` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` uses obs-normalized relative terms in both numerator and denominator; `hydroGOF::rd` normalizes the denominator by `mean(obs)` and warns rather than failing on zero observations |
 | `apfb` / `APFB` | compatibility overlap | `hydroGOF::APFB` | explicit divergence test in `test-compat-hydrogof.R`, plus formula inspection | intentionally divergent | `hydroMetrics` returns signed mean percent bias over annual peaks; `hydroGOF` returns mean absolute relative annual-peak error on `zoo` inputs |
 | `hfb` / `HFB` | compatibility overlap | `hydroGOF::HFB` | explicit divergence test in `test-compat-hydrogof.R`, plus formula inspection | intentionally divergent | `hydroMetrics` computes percent bias over observations above a global threshold; `hydroGOF` computes a per-year median absolute relative high-flow bias on `zoo` inputs |
 
@@ -40,17 +43,14 @@ reconciliation outcome: `equivalent`, `intentionally divergent`, or
 These metrics overlap materially with `hydroGOF`, but the repository does not
 yet carry explicit reference-package comparison tests for them:
 
-- `dr`
 - `kgekm`
 - `kgelf`
 - `kgenp`
 - `pbiasfdc`
 - `pfactor`
-- `rd`
 - `rfactor`
 - `rsd`
 - `skge`
-- `wnse`
 
 Current status for this broader overlap set: not yet validated through
 explicit committed `hydroGOF` comparison tests in the package repository.
@@ -89,6 +89,10 @@ explicit committed `hydroGOF` comparison tests in the package repository.
   evidence for `me`, `d`, `md`, `ubrmse`, `rspearman`, and `cp`; `rsd`
   remains in the backlog because `hydroGOF` does not expose a direct
   like-for-like `RSD` / `rsd` comparator.
+- The small direct-comparator tranche now records `wnse` as equivalent on
+  intended comparable cases, while `dr` and `rd` are explicitly classified as
+  intentionally divergent based on both comparison tests and formula
+  inspection.
 - The repository does not yet have a broader explicit comparison matrix for
   the full hydroGOF-overlap surface.
 - Probabilistic and distributional metrics now have an explicit validation map

@@ -105,4 +105,6 @@ Before cutting the release or milestone tag, record at least:
 - any explicitly accepted remaining gaps
 
 This record can live in the pull request, release notes, or a short maintainer
-note. It does not require a new automation layer.
+note. Use [RELEASE_EVIDENCE_TEMPLATE.md](RELEASE_EVIDENCE_TEMPLATE.md) if you
+want a consistent repo-level record. It does not require a new automation
+layer.

@@ -29,8 +29,11 @@ test_that("plot_hydrograph returns a ggplot object for aligned numeric input", {
   expect_s3_class(out, "ggplot")
   expect_true(is.data.frame(out$data))
   expect_identical(sort(unique(as.character(out$data$series))), c("Model", "Observed"))
+  expect_identical(levels(out$data$series), c("Observed", "Model"))
   expect_identical(nrow(out$data), 6L)
   expect_identical(sort(unique(out$data$x)), c(1L, 3L, 4L))
+  expect_identical(out$labels$colour, NULL)
+  expect_identical(out$theme$legend.position, "top")
 })
 
 test_that("plot_hydrograph respects indexed alignment through preproc", {

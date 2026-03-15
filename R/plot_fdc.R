@@ -78,21 +78,21 @@ plot_fdc <- function(sim,
     .hm_fdc_plot_data(prep$obs, obs_label),
     .hm_fdc_plot_data(prep$sim, sim_label)
   )
-  plot_data$series <- factor(plot_data$series, levels = c(obs_label, sim_label))
+  conventions <- .hm_plot_series_conventions(obs_label, sim_label)
+  plot_data <- .hm_plot_apply_series_conventions(plot_data, conventions)
   exceedance <- NULL
-
-  palette <- c("#1f78b4", "#d95f02")
-  names(palette) <- c(obs_label, sim_label)
 
   p <- ggplot2::ggplot(
     plot_data,
     ggplot2::aes(x = exceedance, y = value, color = series)
   ) +
     ggplot2::geom_line(linewidth = 0.6, na.rm = TRUE) +
-    ggplot2::scale_color_manual(values = palette) +
-    ggplot2::labs(title = title, x = x_lab, y = y_lab, color = NULL) +
-    ggplot2::theme_minimal(base_size = 11) +
-    ggplot2::theme(legend.position = "top")
+    .hm_plot_common_layers(
+      title = title,
+      x_lab = x_lab,
+      y_lab = y_lab,
+      conventions = conventions
+    )
 
   if (isTRUE(log_scale)) {
     p <- p + ggplot2::scale_y_log10()

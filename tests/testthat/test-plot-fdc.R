@@ -29,8 +29,11 @@ test_that("plot_fdc returns a ggplot object for aligned numeric input", {
   expect_s3_class(out, "ggplot")
   expect_true(is.data.frame(out$data))
   expect_identical(sort(unique(as.character(out$data$series))), c("Model", "Observed"))
+  expect_identical(levels(out$data$series), c("Observed", "Model"))
   expect_identical(nrow(out$data), 6L)
   expect_equal(sort(unique(out$data$exceedance)), c(25, 50, 75))
+  expect_identical(out$labels$colour, NULL)
+  expect_identical(out$theme$legend.position, "top")
 })
 
 test_that("plot_fdc respects indexed alignment through preproc", {

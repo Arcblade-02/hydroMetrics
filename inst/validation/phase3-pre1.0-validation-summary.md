@@ -119,6 +119,7 @@ It is still narrower than a full external model-validation archive:
 Related evidence already present in the repository includes:
 
 - `inst/benchmarks/benchmark_summary.md`
+- `inst/benchmarks/workstream_b_benchmark_summary.md`
 - `notes/release-readiness/`
 - `notes/final-cran-evidence/`
 

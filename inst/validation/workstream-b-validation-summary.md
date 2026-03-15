@@ -84,5 +84,5 @@ The main remaining Workstream B backlog items are:
   probabilistic/distributional surface
 
 This summary is not a benchmarking report and does not claim that Workstream B
-is complete. It is the current evidence baseline immediately before the
-benchmarking phase.
+is complete. It remains the validation evidence baseline before any broader
+benchmark expansion or optimization work.

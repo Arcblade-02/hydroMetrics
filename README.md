@@ -87,8 +87,9 @@ mae(sim, obs)
 
 ## Documentation
 
-- `vignette("getting-started", package = "hydroMetrics")` for a minimal
-  end-to-end walkthrough
+- `vignette("getting-started", package = "hydroMetrics")` for a concise
+  discovery-and-evaluation workflow using `preproc()`, `metric_search()`, and
+  `gof()`
 - `vignette("metric-reference", package = "hydroMetrics")` for a concise
   metric catalog and navigation guide
 - `vignette("calibration-guide", package = "hydroMetrics")` for metric

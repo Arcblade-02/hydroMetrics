@@ -171,6 +171,7 @@ does not replace the detailed metric reference vignette.
 
 - Contributor guidance: [CONTRIBUTING.md](CONTRIBUTING.md)
 - Published governance summary: [GOVERNANCE.md](GOVERNANCE.md)
+- `0.4.x` CRAN/readiness baseline: [CRAN_READINESS.md](CRAN_READINESS.md)
 - Clean-room implementation policy: [CLEAN_ROOM_POLICY.md](CLEAN_ROOM_POLICY.md)
 - Formula/reference scaffold: [inst/REFERENCES.md](inst/REFERENCES.md)
 - Compatibility tracker: [COMPATIBILITY_TRACKER.md](COMPATIBILITY_TRACKER.md)

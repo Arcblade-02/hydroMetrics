@@ -55,14 +55,23 @@ yet carry explicit reference-package comparison tests for them:
 Current status for this broader overlap set: not yet validated through
 explicit committed `hydroGOF` comparison tests in the package repository.
 
-## Probabilistic Metrics
+## Probabilistic and Distributional Metrics
 
-| Metric | Category | Intended validation source | Current evidence | Status | Notes |
+| Metric | Category | Intended validation source type | Current evidence | Status | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `crps` | probabilistic | reference package such as `scoringRules`, plus literature-backed formula checks | internal formula/contract tests in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md`; no reference-package comparison artifact in repo | partially validated | No external scoring reference package is currently used in committed validation |
-| `picp` | probabilistic | literature-backed manual interval-coverage calculation | internal formula/contract tests in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | partially validated | Straightforward deterministic formula, but no separate external validation artifact yet |
-| `mwpi` | probabilistic | literature-backed manual interval-width calculation | internal formula/contract tests in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | partially validated | No reference-package comparison artifact yet |
-| `skill_score` | probabilistic / verification | literature-backed manual normalization and, where feasible, verification-package cross-check | internal formula/contract tests in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | partially validated | No external verification-package comparison artifact yet |
+| `crps` | probabilistic / ensemble scoring | external reference package plus literature/example-based validation | independent empirical-CRPS formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md`; no committed `scoringRules` comparison artifact | partially validated | Strongest future path is `scoringRules` or equivalent external sample-CRPS comparison; current repo evidence is formula-based only |
+| `picp` | probabilistic / interval coverage | literature/example-based validation | explicit inclusive-coverage formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | validated | Straightforward deterministic coverage proportion with direct independent test |
+| `mwpi` | probabilistic / interval width | literature/example-based validation | explicit interval-width formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | validated | Straightforward deterministic width diagnostic with direct independent test |
+| `skill_score` | probabilistic / verification | literature/example-based validation | explicit normalization-formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | validated | Current package variant is directly tested against the lower-is-better skill-score normalization |
+| `quantile_loss` | probabilistic / quantile scoring | literature/example-based validation | explicit pinball-loss formula test in `test-metrics-layer-a.R`; additional identity check in `test-probabilistic-validation.R`; literature references in `inst/REFERENCES.md` | validated | Grounded in Koenker & Bassett (1978) |
+| `cdf_rmse` | distributional / empirical CDF | literature/example-based validation | explicit pooled-support ECDF RMSE test in `test-metrics-layer-b.R`; reference note in `inst/REFERENCES.md` | validated | Strongest practical path is independent base-`stats` ECDF calculation rather than external package comparison |
+| `quantile_deviation` | distributional / quantile summary | literature/example-based validation | explicit type-7 fixed-grid quantile RMSE test in `test-metrics-layer-b.R`; literature references in `inst/REFERENCES.md` | validated | Grounded in Hyndman & Fan (1996) quantile conventions |
+| `quantile_kge` | probabilistic / quantile summary efficiency | literature/example-based validation | explicit KGE-on-fixed-quantile-grid test in `test-metrics-layer-b.R`; literature references in `inst/REFERENCES.md` | validated | Package-defined KGE variant, but tested against an independent quantile-summary reconstruction |
+| `quantile_shift_index` | distributional / quantile shift | literature/example-based validation | explicit fixed-grid type-7 quantile-shift scaling test in `test-metrics-layer-c.R`; literature references in `inst/REFERENCES.md` | validated | Package-defined diagnostic grounded in Hyndman & Fan (1996) fixed-grid quantiles and IQR scaling |
+| `distribution_overlap` | distributional / histogram overlap | literature/example-based validation | explicit pooled-support overlap-coefficient test in `test-metrics-layer-c.R`; literature references in `inst/REFERENCES.md` | validated | Package-defined overlap diagnostic grounded in deterministic Sturges histogram conventions |
+| `ks_statistic` | distributional / EDF distance | literature/example-based validation | explicit ECDF-gap test plus `stats::ks.test()` comparison in `test-metrics-layer-b.R` | validated | External base-R comparison already present |
+| `anderson_darling_stat` | distributional / EDF distance | literature/example-based validation | explicit pooled-grid AD-style distance reconstruction in `test-metrics-layer-b.R`; literature references in `inst/REFERENCES.md` | validated | Current package metric is the documented EDF-distance form, not a p-value wrapper |
+| `wasserstein_distance` | distributional / transport distance | literature/example-based validation | explicit equal-weight quantile-coupling test in `test-metrics-layer-b.R` | validated | Current implementation is directly validated on the one-dimensional equal-weight sample coupling |
 
 ## Current Baseline Reading
 
@@ -74,6 +83,9 @@ explicit committed `hydroGOF` comparison tests in the package repository.
   `hfb` are intentionally divergent rather than unresolved.
 - The repository does not yet have a broader explicit comparison matrix for
   the full hydroGOF-overlap surface.
-- Probabilistic metrics have formula and contract tests, but external
-  reference-package validation remains largely absent and should be treated as
-  the next major empirical-validation gap in Workstream B.
+- Probabilistic and distributional metrics now have an explicit validation map
+  that distinguishes literature/example-based evidence from future
+  external-package comparison paths.
+- External reference-package validation remains the main gap for `crps`, and
+  no comparable external-package baseline is yet wired for the broader
+  probabilistic surface.

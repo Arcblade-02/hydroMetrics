@@ -8,7 +8,7 @@ belongs to the backlog before broader benchmarking claims are made.
 
 ## HydroGOF Overlap
 
-The current committed hydroGOF-overlap evidence falls into two categories.
+The current committed hydroGOF-overlap evidence falls into three categories.
 
 Equivalent on the committed comparison cases:
 
@@ -48,6 +48,12 @@ notes recorded in `workstream-b-validation-inventory.md`:
 These divergences are treated as evidence-backed classification outcomes, not
 as unresolved compatibility failures.
 
+Not directly comparable on the current public package surfaces:
+
+- `pfactor`
+- `rfactor`
+- `rsd`
+
 ## Probabilistic and Distributional Metrics
 
 Currently validated through literature/example-based or base-statistics checks:
@@ -86,6 +92,10 @@ Currently validated through literature/example-based or base-statistics checks:
 - The specialized KGE-family / seasonal tranche now classifies `kgekm`,
   `kgelf`, `kgenp`, and `skge` as intentional divergence rather than leaving
   them in the unresolved backlog.
+- The final backlog pass now records `pbiasfdc` as intentionally divergent and
+  `pfactor`, `rfactor`, and `rsd` as not directly comparable on the current
+  public surfaces, so the hydroGOF-overlap backlog is now cleared at the
+  classification level.
 - The probabilistic/distributional surface now has a clearer validation map:
   the currently audited metrics are supported by direct literature/example-
   based checks, and `crps` now also has an exercised `scoringRules`
@@ -101,8 +111,8 @@ reference cases.
 
 The main remaining Workstream B backlog items are:
 
-- broader hydroGOF-overlap reconciliation for the additional overlap metrics
-  listed in `workstream-b-validation-inventory.md`
+- any deeper empirical follow-up the project may still want for already
+  classified intentional-divergence cases
 - any further external-package cross-checks judged worthwhile for the broader
   probabilistic/distributional surface
 

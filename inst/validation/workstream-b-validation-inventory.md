@@ -6,8 +6,8 @@ already present in the repository, what now has an explicit baseline check,
 and where further validation work is still needed.
 
 For the hydroGOF-overlap section below, the status column records the current
-reconciliation outcome: `equivalent`, `intentionally divergent`, or
-`unresolved`.
+reconciliation outcome: `equivalent`, `intentionally divergent`,
+`not directly comparable`, or `unresolved`.
 
 ## Priority HydroGOF-Overlap Metrics
 
@@ -39,6 +39,10 @@ reconciliation outcome: `equivalent`, `intentionally divergent`, or
 | `dr` | compatibility overlap | `hydroGOF::dr` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` uses an observation-normalized relative absolute agreement formula; `hydroGOF::dr` uses the Willmott et al. (2012) refined index with piecewise `1 - A/B` or `1 - B/A` scaling |
 | `rd` | compatibility overlap | `hydroGOF::rd` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` uses obs-normalized relative terms in both numerator and denominator; `hydroGOF::rd` normalizes the denominator by `mean(obs)` and warns rather than failing on zero observations |
 | `skge` | compatibility overlap | `hydroGOF::sKGE` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` computes mean monthly-group KGE when monthly context is available and otherwise falls back to KGE; `hydroGOF::sKGE` requires `zoo` inputs and averages per-year KGE values |
+| `pbiasfdc` | compatibility overlap | `hydroGOF::pbiasfdc` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` computes percent bias over a fixed exceedance-quantile grid, while `hydroGOF::pbiasfdc` compares the log-slope between two selected FDC threshold points |
+| `pfactor` | compatibility overlap | `hydroGOF::pfactor` | interface/signature inspection in `test-compat-hydrogof.R` | not directly comparable | `hydroMetrics` defines `pfactor(sim, obs, tol)` as a tolerance-band hit proportion on paired series; `hydroGOF::pfactor(x, lband, uband)` is an uncertainty-band coverage diagnostic with different required inputs |
+| `rfactor` | compatibility overlap | `hydroGOF::rfactor` | interface/signature inspection in `test-compat-hydrogof.R` | not directly comparable | `hydroMetrics` defines `rfactor(sim, obs)` as mean absolute error normalized by mean absolute observations; `hydroGOF::rfactor(x, lband, uband)` is an interval-width diagnostic normalized by `sd(x)` |
+| `rsd` | compatibility overlap | no direct `hydroGOF` export | namespace inspection in `test-compat-hydrogof.R` | not directly comparable | `hydroMetrics::rsd` is a standard-deviation ratio metric, but `hydroGOF` does not expose a direct `RSD` / `rsd` comparator on the current public surface |
 | `apfb` / `APFB` | compatibility overlap | `hydroGOF::APFB` | explicit divergence test in `test-compat-hydrogof.R`, plus formula inspection | intentionally divergent | `hydroMetrics` returns signed mean percent bias over annual peaks; `hydroGOF` returns mean absolute relative annual-peak error on `zoo` inputs |
 | `hfb` / `HFB` | compatibility overlap | `hydroGOF::HFB` | explicit divergence test in `test-compat-hydrogof.R`, plus formula inspection | intentionally divergent | `hydroMetrics` computes percent bias over observations above a global threshold; `hydroGOF` computes a per-year median absolute relative high-flow bias on `zoo` inputs |
 
@@ -47,13 +51,11 @@ reconciliation outcome: `equivalent`, `intentionally divergent`, or
 These metrics overlap materially with `hydroGOF`, but the repository does not
 yet carry explicit reference-package comparison tests for them:
 
-- `pbiasfdc`
-- `pfactor`
-- `rfactor`
-- `rsd`
+- none
 
-Current status for this broader overlap set: not yet validated through
-explicit committed `hydroGOF` comparison tests in the package repository.
+Current status for this broader overlap set: the current hydroGOF-overlap
+backlog is cleared at the classification level, even where the truthful
+outcome is intentional divergence or non-comparability rather than equivalence.
 
 ## Probabilistic and Distributional Metrics
 
@@ -97,8 +99,10 @@ explicit committed `hydroGOF` comparison tests in the package repository.
   `kgelf`, `kgenp`, and `skge` as intentionally divergent rather than
   unresolved, based on direct comparison tests plus definition-level
   inspection of how each package constructs the corresponding score.
-- The repository does not yet have a broader explicit comparison matrix for
-  the full hydroGOF-overlap surface.
+- The final backlog pass now records `pbiasfdc` as intentionally divergent and
+  `pfactor`, `rfactor`, and `rsd` as not directly comparable on the current
+  public surfaces, closing the remaining hydroGOF-overlap classification
+  backlog.
 - Probabilistic and distributional metrics now have an explicit validation map
   that distinguishes literature/example-based evidence from future
   external-package comparison paths.

@@ -12,7 +12,7 @@ and release-facing validation artifacts for reproducible package checks.
 
 - Stable orchestration entry points: `gof()`, `ggof()`, `preproc()`, and
   `valindex()`
-- Stable discovery helper: `metric_search()`
+- Stable discovery helpers: `metric_search()` and `metric_preset()`
 - Stable plotting helpers: `plot_hydrograph()` and `plot_fdc()`
 - Stable exported metric surface: documented exported metric wrappers
 - Stable exported utility: `hm_result()` as the low-level constructor for
@@ -37,8 +37,8 @@ and release-facing validation artifacts for reproducible package checks.
 ## Lifecycle Policy
 
 - `stable`: exported orchestration entry points, documented exported helpers
-  such as `metric_search()`, `plot_hydrograph()`, `plot_fdc()`, and
-  `hm_result()`, and
+  such as `metric_search()`, `metric_preset()`, `plot_hydrograph()`,
+  `plot_fdc()`, and `hm_result()`, and
   documented exported metric wrappers other than the explicit compatibility
   exports below
 - `compatibility`: `APFB()`, `HFB()`, `NSeff()`, `mNSeff()`, `rNSeff()`,

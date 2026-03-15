@@ -12,6 +12,7 @@ and release-facing validation artifacts for reproducible package checks.
 
 - Stable orchestration entry points: `gof()`, `ggof()`, `preproc()`, and
   `valindex()`
+- Stable discovery helper: `metric_search()`
 - Stable exported metric surface: documented exported metric wrappers
 - Stable exported utility: `hm_result()` as the low-level constructor for
   `hm_result` S3 objects
@@ -95,6 +96,41 @@ mae(sim, obs)
 - `vignette("uncertainty-eval", package = "hydroMetrics")` for probabilistic
   and interval-evaluation workflows
 - `?gof`, `?ggof`, `?preproc`, and `?hm_result` for API details
+- `?metric_search` for the first metric-discovery baseline
+
+## Metric Discovery
+
+`metric_search()` provides a small discovery-oriented view over the current
+registry metadata. The first baseline can filter by:
+
+- text across metric id, name, description, exported wrapper names, and preset
+  labels
+- category
+- tags
+- curated preset groups
+- whether a metric has an exported wrapper path
+- whether a metric is reached by a documented compatibility export
+
+Current preset groups are:
+
+- `recommended`
+- `compatibility_core`
+- `deterministic_error`
+- `correlation_agreement`
+- `flow_duration_distribution`
+- `probabilistic_uncertainty`
+- `seasonal_regime`
+
+Examples:
+
+```r
+metric_search(text = "bias")
+metric_search(preset = "probabilistic_uncertainty")
+metric_search(category = "correlation", exported = TRUE)
+```
+
+This first baseline does not search formulas or applicability guards, and it
+does not replace the detailed metric reference vignette.
 
 ## Validation Notes
 

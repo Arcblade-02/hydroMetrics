@@ -102,6 +102,8 @@ mae(sim, obs)
   and interval-evaluation workflows
 - `?gof`, `?ggof`, `?preproc`, and `?hm_result` for API details
 - `?metric_search` for the first metric-discovery baseline
+- `?metric_preset` for resolving documented preset groups to
+  `gof(methods = ...)` ids
 - `?plot_hydrograph` and `?plot_fdc` for the lightweight static plotting
   helpers
 
@@ -134,6 +136,8 @@ Examples:
 metric_search(text = "bias")
 metric_search(preset = "probabilistic_uncertainty")
 metric_search(category = "correlation", exported = TRUE)
+metric_preset("recommended")
+gof(sim, obs, methods = metric_preset("recommended"))
 ```
 
 This first baseline does not search formulas or applicability guards, and it

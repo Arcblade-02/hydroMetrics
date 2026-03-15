@@ -18,6 +18,36 @@
   x
 }
 
+.hm_metric_search_available_presets <- function() {
+  c(
+    "recommended",
+    "compatibility_core",
+    "deterministic_error",
+    "correlation_agreement",
+    "flow_duration_distribution",
+    "probabilistic_uncertainty",
+    "seasonal_regime"
+  )
+}
+
+.hm_metric_search_validate_presets <- function(preset, name = "preset") {
+  preset <- .hm_metric_search_validate_char_filter(preset, name)
+  unknown <- setdiff(preset, .hm_metric_search_available_presets())
+  if (length(unknown) > 0L) {
+    stop(
+      sprintf(
+        "Unknown `%s` value(s): %s. Available presets: %s.",
+        name,
+        paste(unknown, collapse = ", "),
+        paste(.hm_metric_search_available_presets(), collapse = ", ")
+      ),
+      call. = FALSE
+    )
+  }
+
+  preset
+}
+
 .hm_metric_search_export_map <- function(metric_ids) {
   ns_exports <- getNamespaceExports("hydroMetrics")
   direct_ids <- intersect(metric_ids, ns_exports)
@@ -178,6 +208,14 @@
   metrics[order(metrics$id), , drop = FALSE]
 }
 
+.hm_metric_search_match_preset <- function(group_text, preset) {
+  if (!nzchar(group_text)) {
+    return(FALSE)
+  }
+  groups <- trimws(strsplit(tolower(group_text), ";", fixed = TRUE)[[1L]])
+  any(groups %in% preset)
+}
+
 #' Search registered metrics by simple discovery metadata
 #'
 #' `metric_search()` provides a small discovery-oriented view over the current
@@ -238,7 +276,9 @@ metric_search <- function(text = NULL,
   text <- .hm_metric_search_validate_char_filter(text, "text")
   category <- .hm_metric_search_validate_char_filter(category, "category")
   tags <- .hm_metric_search_validate_char_filter(tags, "tags")
-  preset <- .hm_metric_search_validate_char_filter(preset, "preset")
+  if (!is.null(preset)) {
+    preset <- .hm_metric_search_validate_presets(preset, "preset")
+  }
   exported <- .hm_metric_search_validate_flag(exported, "exported")
   compatibility <- .hm_metric_search_validate_flag(compatibility, "compatibility")
 
@@ -274,33 +314,8 @@ metric_search <- function(text = NULL,
   }
 
   if (!is.null(preset)) {
-    available_presets <- c(
-      "recommended",
-      "compatibility_core",
-      "deterministic_error",
-      "correlation_agreement",
-      "flow_duration_distribution",
-      "probabilistic_uncertainty",
-      "seasonal_regime"
-    )
-    unknown <- setdiff(preset, available_presets)
-    if (length(unknown) > 0L) {
-      stop(
-        sprintf(
-          "Unknown `preset` value(s): %s. Available presets: %s.",
-          paste(unknown, collapse = ", "),
-          paste(available_presets, collapse = ", ")
-        ),
-        call. = FALSE
-      )
-    }
-
     preset_match <- vapply(out$presets, function(group_text) {
-      if (!nzchar(group_text)) {
-        return(FALSE)
-      }
-      groups <- trimws(strsplit(tolower(group_text), ";", fixed = TRUE)[[1L]])
-      any(groups %in% preset)
+      .hm_metric_search_match_preset(group_text, preset)
     }, logical(1))
     out <- out[preset_match, , drop = FALSE]
   }

@@ -93,8 +93,8 @@ serious CRAN submission push.
   or direct `R CMD check --as-cran` campaign for the `0.4.x` line.
 - It does not claim pkgdown/site readiness, reverse-dependency assessment, or
   release-process automation completeness.
-- It does not treat Phase 4 as complete; it only defines the current readiness
-  baseline for the `0.4.x` line.
+- - It does not itself constitute publication approval or CRAN submission
+  readiness for the `0.4.x` line.
 
 ## Next Logical Readiness Step
 

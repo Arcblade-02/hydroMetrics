@@ -1,6 +1,6 @@
 # Contributing to hydroMetrics
 
-`hydroMetrics` is in an explicit Phase 4 stabilization and maturity pass.
+`hydroMetrics` has completed its intended Phase 4 baseline-establishment work.
 Contributions should preserve package-boundary discipline, scientific
 traceability, and small-scope reviewability.
 

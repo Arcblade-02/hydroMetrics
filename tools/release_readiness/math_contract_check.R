@@ -104,7 +104,7 @@ run_math_contract_check <- function(context) {
         "- `NRMSE` did not match the documented mean-normalized calculation on the probe series."
       },
       if (br2_present) {
-        "- `br2` is present in the internal metric registry and should be treated as project-defined until a definitive literature citation is added."
+        "- `br2` is present in the internal metric registry and follows the package's Krause et al. (2005)-based `bR2` interpretation."
       } else {
         "- `br2` is not available on this source snapshot."
       },

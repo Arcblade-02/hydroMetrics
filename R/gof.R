@@ -331,9 +331,21 @@
 
 #' Evaluate hydrological metrics
 #'
-#' Clean-room orchestration wrapper that preprocesses aligned series and
+#' Stable orchestration entry point that preprocesses aligned series and
 #' dispatches registered metric implementations without embedding metric
-#' formulas in the public API layer.
+#' formulas in the public API layer. Uppercase hydroGOF-style method labels
+#' such as `"NSE"` and `"KGE"` are accepted as orchestration labels only and
+#' are not exported standalone functions. Deprecated labels such as
+#' `"rPearson"` resolve to canonical metric ids during method selection.
+#'
+#' Stable condition contract: `gof()` errors on invalid `extended` values,
+#' unknown metric labels, incompatible single-series versus matrix-like input
+#' shapes, multi-series dimension mismatch, invalid compatibility alias values,
+#' and preprocessing or metric-domain failures inherited from [preproc()] and
+#' the selected metrics. Missing-data handling follows `na_strategy`; plain
+#' `"fail"` preserves missing-value errors, `"remove"` drops incomplete pairs,
+#' and `"pairwise"` keeps aligned vectors for downstream pairwise-capable
+#' metrics.
 #'
 #' @param sim Simulated values supplied as a numeric vector, `ts`, matrix-like
 #'   object, or aligned `zoo`/`xts` series.
@@ -365,7 +377,9 @@
 #'
 #' @return A named numeric vector for single-series inputs or a named numeric
 #'   matrix for multi-series inputs, with class `"hydro_metrics"`. Additional
-#'   metadata is attached via the `n_obs`, `meta`, and `call` attributes.
+#'   metadata is attached via the `n_obs`, `meta`, and `call` attributes. The
+#'   documented return class, output shape, names, and warning/error behavior
+#'   are part of the stable public contract.
 #'
 #' @examples
 #' sim <- c(1, 2, 3, 4)

@@ -1,11 +1,17 @@
 #' Evaluate selected metrics through valindex
 #'
-#' Thin exported wrapper that forwards `fun` to [gof()] as `methods`.
+#' Stable orchestration entry point retained under historical naming. It
+#' forwards `fun` to [gof()] as `methods`.
+#' Stable condition contract: `valindex()` errors when `fun` is missing or
+#' invalid and otherwise inherits preprocessing, warning, and metric-domain
+#' behavior directly from [gof()].
 #'
 #' @inheritParams gof
 #' @param fun Character vector of metric names to evaluate.
 #'
-#' @return A `"hydro_metrics"` object returned by [gof()].
+#' @return A `"hydro_metrics"` object returned by [gof()]. The documented
+#'   return class, output shape, and warning/error behavior are inherited from
+#'   [gof()] as part of the stable public contract.
 #'
 #' @examples
 #' valindex(c(1, 2, 3), c(1, 2, 2), fun = c("NSE", "rmse"))

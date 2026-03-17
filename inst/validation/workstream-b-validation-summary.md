@@ -1,0 +1,121 @@
+# Workstream B Validation Evidence Summary
+
+This summary consolidates the current scientific-validation evidence added
+during Workstream B. It is intentionally concise and review-oriented: the goal
+is to state what has explicit evidence, what is intentionally divergent from
+comparison packages, what remains only partially validated, and what still
+belongs to the backlog before broader benchmarking claims are made.
+
+## HydroGOF Overlap
+
+The current committed hydroGOF-overlap evidence falls into three categories.
+
+Equivalent on the committed comparison cases:
+
+- `nse` / `NSeff`
+- `mnse` / `mNSeff`
+- `mae`
+- `rmse`
+- `mse`
+- `ve`
+- `kge` against `hydroGOF::KGE(method = "2009")`
+- `me`
+- `d`
+- `md`
+- `ubrmse`
+- `rspearman`
+- `cp`
+- `wnse`
+- `rsr`
+
+Intentionally divergent, with explicit comparison tests and formula/policy
+notes recorded in `workstream-b-validation-inventory.md`:
+
+- `rnse` / `rNSeff`
+- `wsnse` / `wsNSeff`
+- `pbias`
+- `nrmse`
+- `r2`
+- `dr`
+- `rd`
+- `kgekm`
+- `kgelf`
+- `kgenp`
+- `skge`
+- `apfb` / `APFB`
+- `hfb` / `HFB`
+
+These divergences are treated as evidence-backed classification outcomes, not
+as unresolved compatibility failures.
+
+Not directly comparable on the current public package surfaces:
+
+- `pfactor`
+- `rfactor`
+- `rsd`
+
+## Probabilistic and Distributional Metrics
+
+Currently validated through literature/example-based or base-statistics checks:
+
+- `crps`
+- `picp`
+- `mwpi`
+- `skill_score`
+- `quantile_loss`
+- `cdf_rmse`
+- `quantile_deviation`
+- `quantile_kge`
+- `quantile_shift_index`
+- `distribution_overlap`
+- `ks_statistic`
+- `anderson_darling_stat`
+- `wasserstein_distance`
+
+## Current Evidence Reading
+
+- Workstream B now has explicit committed evidence for a small but meaningful
+  hydroGOF-overlap subset, rather than generic compatibility language.
+- The package now distinguishes true equivalence from intentional divergence
+  on the tested hydroGOF-overlap metrics.
+- The next deterministic overlap tranche tightened that distinction further:
+  `rmse`, `mse`, `ve`, and `kge` now have explicit equivalence evidence, while
+  `nrmse` and `r2` now have explicit divergence classification rather than
+  remaining in the unresolved backlog.
+- The current moderate-complexity tranche adds explicit equivalence evidence
+  for `me`, `d`, `md`, `ubrmse`, `rspearman`, and `cp`; `rsd` remains outside
+  this tranche because `hydroGOF` does not expose a direct like-for-like
+  `RSD` / `rsd` comparator.
+- The small direct-comparator tranche now records `wnse` as equivalent on the
+  committed comparable cases, while `dr` and `rd` are now explicitly treated
+  as intentional divergence rather than unresolved backlog items.
+- The specialized KGE-family / seasonal tranche now classifies `kgekm`,
+  `kgelf`, `kgenp`, and `skge` as intentional divergence rather than leaving
+  them in the unresolved backlog.
+- The final backlog pass now records `pbiasfdc` as intentionally divergent and
+  `pfactor`, `rfactor`, and `rsd` as not directly comparable on the current
+  public surfaces, so the hydroGOF-overlap backlog is now cleared at the
+  classification level.
+- The probabilistic/distributional surface now has a clearer validation map:
+  the currently audited metrics are supported by direct literature/example-
+  based checks, and `crps` now also has an exercised `scoringRules`
+  comparison path on a small deterministic reference set.
+
+For `crps`, the current recorded tolerance rule is absolute agreement within
+`sqrt(.Machine$double.eps)` against
+`scoringRules::crps_sample(..., method = "edf")`. The exercised baseline run
+observed a maximum absolute difference of `1.39e-17` across the committed
+reference cases.
+
+## Backlog
+
+The main remaining Workstream B backlog items are:
+
+- any deeper empirical follow-up the project may still want for already
+  classified intentional-divergence cases
+- any further external-package cross-checks judged worthwhile for the broader
+  probabilistic/distributional surface
+
+This summary is not a benchmarking report and does not claim that Workstream B
+is complete. It remains the validation evidence baseline before any broader
+benchmark expansion or optimization work.

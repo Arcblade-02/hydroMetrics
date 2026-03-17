@@ -1,11 +1,15 @@
 #' Evaluate the legacy weighted-squared NSE wrapper
 #'
-#' Thin exported wrapper over [gof()] for the registry metric `"wsnse"`.
+#' Compatibility export retained for legacy hydroGOF-style wrapper continuity.
+#' This thin wrapper delegates to [gof()] for the registry metric `"wsnse"`.
+#' It inherits NA handling, input-shape checks, and the canonical `"wsnse"`
+#' domain and denominator guards from [gof()].
 #'
 #' @inheritParams gof
 #'
 #' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
+#'   multi-series inputs. The documented return shape and failure behavior are
+#'   preserved as part of the compatibility contract.
 #'
 #' @examples
 #' wsNSeff(c(1, 2, 3), c(1, 2, 2))

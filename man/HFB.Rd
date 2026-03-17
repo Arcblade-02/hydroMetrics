@@ -21,12 +21,18 @@ subset from \code{obs}.}
 \item{...}{Additional compatibility arguments, including \code{metric_params}.}
 }
 \value{
-A numeric scalar with class \code{"hydro_metric_scalar"}.
+A numeric scalar with class \code{"hydro_metric_scalar"}. The documented
+class, threshold handling, and warning/error behavior are part of the
+compatibility contract.
 }
 \description{
-\code{HFB()} is a deterministic exported wrapper over \code{\link[=gof]{gof()}} for the registry
-metric \code{"hfb"}. The exact failure mode for sparse high-flow support is
-preserved as part of the public compatibility contract.
+\code{HFB()} is a compatibility export over \code{\link[=gof]{gof()}} for the registry metric
+\code{"hfb"}. The exact failure mode for sparse high-flow support is preserved
+as part of the public compatibility contract.
+Stable compatibility condition contract: it errors on invalid
+\code{threshold_prob}, on downstream preprocessing failures, and when fewer than
+three high-flow points remain; it warns and returns \code{NA} when the high-flow
+denominator is zero.
 }
 \examples{
 HFB(1:30 + 1, 1:30)

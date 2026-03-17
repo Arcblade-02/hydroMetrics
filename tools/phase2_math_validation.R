@@ -295,14 +295,13 @@ classify_reference <- function(metric_id, reference, duplicate_ids) {
   if (!nzchar(ref)) {
     return(list(literature_backed = FALSE, classification = "unverified"))
   }
-  if (grepl("project-defined|project definition|project decision|clean-room", ref_lower)) {
+  if (grepl("package-defined|project-defined|project definition|project decision|architecture decision|clean-room", ref_lower)) {
     return(list(literature_backed = FALSE, classification = "project-defined"))
   }
-  if (grepl("(19|20)[0-9]{2}", ref) &&
-      !grepl("citation to be refined|exact citation to be refined|pending definitive citation|pending dedicated paper citation", ref_lower)) {
+  if (grepl("(19|20)[0-9]{2}", ref)) {
     return(list(literature_backed = TRUE, classification = "literature-backed"))
   }
-  if (grepl("citation to be refined|exact citation to be refined|pending definitive citation|pending dedicated paper citation|standard |common |literature", ref_lower)) {
+  if (grepl("standard |common |literature", ref_lower)) {
     return(list(literature_backed = FALSE, classification = "ambiguous"))
   }
   list(literature_backed = FALSE, classification = "unverified")

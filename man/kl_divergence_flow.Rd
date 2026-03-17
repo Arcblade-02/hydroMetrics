@@ -22,7 +22,8 @@ A numeric scalar for single-series inputs or a numeric vector for
 multi-series inputs.
 }
 \description{
-Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric
+Compatibility export retained alongside canonical \code{\link[=kl_divergence]{kl_divergence()}}. This
+thin wrapper delegates to \code{\link[=gof]{gof()}} for the registry metric
 \code{"kl_divergence_flow"}. The metric reports directed \code{KL(P_obs || P_sim)} on
 pooled-support Sturges histograms after fixed epsilon smoothing with
 \code{epsilon = 1e-12}.

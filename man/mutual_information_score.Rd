@@ -22,7 +22,8 @@ A numeric scalar for single-series inputs or a numeric vector for
 multi-series inputs.
 }
 \description{
-Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric
+Compatibility export retained alongside canonical \code{\link[=mutual_information]{mutual_information()}}.
+This thin wrapper delegates to \code{\link[=gof]{gof()}} for the registry metric
 \code{"mutual_information_score"}. The metric computes raw mutual information in
 natural-log units from the paired Sturges-binned joint empirical
 distribution on the pooled support grid.

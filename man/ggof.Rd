@@ -69,12 +69,16 @@ value. It maps to \code{epsilon} when \code{epsilon_mode = "constant"} and to
 }
 \value{
 A \code{data.frame} with class \code{c("hydro_metrics_batch", "data.frame")}
-containing \code{model}, \code{metric}, \code{value}, and \code{n_obs} columns.
+containing \code{model}, \code{metric}, \code{value}, and \code{n_obs} columns. The
+documented return class, columns, and non-plotting behavior are part of
+the stable public contract.
 }
 \description{
-\code{ggof()} is a non-plotting compatibility helper. It returns a tidy
-\code{data.frame} with class \code{"hydro_metrics_batch"} and does not open or mutate
-graphics devices.
+\code{ggof()} is a stable orchestration entry point for tabular metric summaries.
+It returns a tidy \code{data.frame} with class \code{"hydro_metrics_batch"} and does
+not open or mutate graphics devices.
+The warning and error contract is inherited from \code{\link[=gof]{gof()}}; \code{ggof()} does not
+suppress unknown-method, preprocessing, or metric-domain failures.
 }
 \examples{
 sim <- c(1, 2, 3, 4)

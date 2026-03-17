@@ -1,17 +1,17 @@
 Package: hydroMetrics
 Title: Hydrological Model Evaluation Metrics
-Version: 0.3.0
+Version: 0.4.0
 Authors@R:
     person("Arcblade-02", email = "pritamparida432@gmail.com", role = c("aut", "cre"))
 Maintainer: Arcblade-02 <pritamparida432@gmail.com>
-Description: Clean-room MIT implementation of hydrological model
-    evaluation metrics, covering compatibility/default metrics,
-    extended deterministic diagnostics, seasonal and regime-sensitive
-    metrics, and selected probabilistic workflows, with calibration
-    and uncertainty guidance for hydrological time series evaluation.
+Description: Hydrological model evaluation metrics for
+    compatibility-oriented default workflows, extended deterministic
+    diagnostics, seasonal and regime-sensitive analysis, and selected
+    probabilistic evaluation tasks. The package also provides tools for
+    calibration-oriented metric selection and uncertainty assessment of
+    hydrological time series.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 URL: https://github.com/Arcblade-02/hydroMetrics
 BugReports: https://github.com/Arcblade-02/hydroMetrics/issues
 Imports:
@@ -26,6 +26,7 @@ Suggests:
     markdown,
     microbenchmark,
     rmarkdown,
+    scoringRules,
     xts,
     zoo
 VignetteBuilder: knitr

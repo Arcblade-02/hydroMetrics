@@ -18,12 +18,18 @@ object, or aligned \code{zoo}/\code{xts} series.}
 \item{...}{Additional compatibility arguments, including \code{metric_params}.}
 }
 \value{
-A numeric scalar with class \code{"hydro_metric_scalar"}.
+A numeric scalar with class \code{"hydro_metric_scalar"}. The documented
+class, indexed-input requirement, and failure behavior are part of the
+compatibility contract.
 }
 \description{
-\code{APFB()} is an indexed compatibility wrapper over \code{\link[=gof]{gof()}} for the registry
-metric \code{"apfb"}. It requires univariate \code{zoo} or \code{xts} inputs with a time
-index so yearly maxima can be derived deterministically.
+\code{APFB()} is a compatibility export over \code{\link[=gof]{gof()}} for the registry metric
+\code{"apfb"}. It requires univariate \code{zoo} or \code{xts} inputs with a time index so
+yearly maxima can be derived deterministically.
+Stable compatibility condition contract: it errors on unsupported or
+non-univariate indexed inputs, when fewer than two years remain after
+deterministic alignment/preprocessing, and on downstream preprocessing or
+metric-domain failures from \code{\link[=gof]{gof()}}.
 }
 \examples{
 if (requireNamespace("zoo", quietly = TRUE)) {

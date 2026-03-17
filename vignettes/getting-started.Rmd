@@ -18,46 +18,99 @@ For local release validation, build the source tarball from the package root
 with `R CMD build .` and install the generated bundle:
 
 ```r
-install.packages("hydroMetrics_0.2.0.tar.gz", repos = NULL, type = "source")
+install.packages("hydroMetrics_0.3.1.tar.gz", repos = NULL, type = "source")
 ```
 
-## Core usage
+## A small discovery and evaluation workflow
 
-The primary entry point is `gof()`. It evaluates one or more registered metrics
-over aligned simulated and observed series.
+The current package surface is built around:
+
+- `preproc()` for deterministic alignment and NA handling
+- `metric_search()` for light-weight metric discovery
+- `gof()` for orchestration over one or more selected metrics
+- compatibility wrappers such as `NSeff()` when a single historical entry point
+  is more convenient
 
 ```{r}
 library(hydroMetrics)
 
-sim <- c(1, 2, 3, 4)
-obs <- c(1, 2, 2, 4)
-
-gof_out <- gof(sim, obs, methods = c("NSE", "rmse", "pbias"))
-gof_out
+sim_raw <- c(1.05, 1.80, NA, 3.60, 4.10, 5.00)
+obs_raw <- c(1.00, 2.00, 2.80, 3.40, 4.00, 5.20)
 ```
 
-## Batch summaries with `ggof()`
+## Optional preprocessing
 
-`ggof()` returns a tabular `hydro_metrics_batch` object and does not open a
-graphics device.
+`preproc()` makes the alignment and NA policy explicit before metric
+evaluation. Here we remove the incomplete pair and keep the processed vectors.
 
 ```{r}
-ggof(sim, obs, methods = c("NSE", "rmse"))
+prep <- preproc(sim_raw, obs_raw, na_strategy = "remove")
+prep
 ```
 
-## Wrapper examples
+The processed vectors are then available as `prep$sim` and `prep$obs`.
 
-Compatibility wrappers remain available when a single metric is more
+## Discover a modest metric subset
+
+`metric_search()` returns a simple `data.frame` with registry metadata plus
+discovery annotations such as exported wrapper names, compatibility-export
+status, and preset membership.
+
+```{r}
+recommended <- metric_search(preset = "recommended", exported = TRUE)
+recommended[, c("id", "name", "exported_wrappers", "presets")]
+```
+
+For a short deterministic summary, select a few metrics from the recommended
+set.
+
+```{r}
+selected_ids <- recommended$id[recommended$id %in% c("nse", "rmse", "pbias")]
+selected_ids
+```
+
+## Evaluate the selected metrics
+
+The primary orchestration entry point is `gof()`. For single-series inputs it
+returns a named numeric vector with class `hydro_metrics`.
+
+```{r}
+gof_out <- gof(prep$sim, prep$obs, methods = selected_ids)
+gof_out
+class(gof_out)
+attr(gof_out, "n_obs")
+```
+
+The metric names are the vector names, and the `n_obs` attribute records the
+number of paired values used after preprocessing.
+
+## Compatibility-oriented path
+
+If you only need one metric, a compatibility wrapper can still be more
 convenient.
 
 ```{r}
-NSeff(sim, obs)
-mae(sim, obs)
-pbias(sim, obs)
+NSeff(prep$sim, prep$obs)
 ```
 
-## Compatibility notes
+Uppercase hydroGOF-style names are also accepted as orchestration labels inside
+`gof()`, even though they are not exported standalone functions.
 
+```{r}
+gof(prep$sim, prep$obs, methods = "NSE")
+```
+
+## Reading the workflow
+
+- Use `metric_search()` when you want to discover relevant metrics by preset,
+  tags, text, or compatibility status.
+- Use `gof()` when you want one orchestrated call over a selected metric set.
+- Use an exported compatibility wrapper such as `NSeff()` when you want a
+  single historical entry point with current package behavior.
+
+- Uppercase hydroGOF names such as `NSE`, `KGE`, `RMSE`, `R2`, `NRMSE`, and
+  `PBIAS` are accepted in `gof()` / `ggof()` `methods`, but they are not
+  exported standalone functions in the package namespace.
 - `ggof()` is tabular output only; it does not create plots.
 - `APFB()` requires indexed `zoo` or `xts` inputs.
 - `preproc()` currently supports single-series vector or indexed inputs only.

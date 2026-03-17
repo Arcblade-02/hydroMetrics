@@ -55,13 +55,19 @@
 
 #' Evaluate annual peak flow bias
 #'
-#' `APFB()` is an indexed compatibility wrapper over [gof()] for the registry
-#' metric `"apfb"`. It requires univariate `zoo` or `xts` inputs with a time
-#' index so yearly maxima can be derived deterministically.
+#' `APFB()` is a compatibility export over [gof()] for the registry metric
+#' `"apfb"`. It requires univariate `zoo` or `xts` inputs with a time index so
+#' yearly maxima can be derived deterministically.
+#' Stable compatibility condition contract: it errors on unsupported or
+#' non-univariate indexed inputs, when fewer than two years remain after
+#' deterministic alignment/preprocessing, and on downstream preprocessing or
+#' metric-domain failures from [gof()].
 #'
 #' @inheritParams gof
 #'
-#' @return A numeric scalar with class `"hydro_metric_scalar"`.
+#' @return A numeric scalar with class `"hydro_metric_scalar"`. The documented
+#'   class, indexed-input requirement, and failure behavior are part of the
+#'   compatibility contract.
 #'
 #' @examples
 #' if (requireNamespace("zoo", quietly = TRUE)) {

@@ -1,4 +1,7 @@
-# Phase 2 Benchmark Summary
+# Historical Phase 2 Benchmark Summary
+
+Historical artifact retained for traceability. The active Workstream B
+benchmark baseline now lives in `workstream_b_benchmark_summary.md`.
 
 - Generated: 2026-03-09 22:28:08 +0530
 - Methodology: compare direct `metric_nse()` execution, the `NSE()` compatibility wrapper, and `gof(methods = "NSE")` on identical numeric inputs.

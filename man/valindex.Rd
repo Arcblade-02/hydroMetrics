@@ -20,10 +20,16 @@ object, or aligned \code{zoo}/\code{xts} series.}
 \item{...}{Additional compatibility arguments, including \code{metric_params}.}
 }
 \value{
-A \code{"hydro_metrics"} object returned by \code{\link[=gof]{gof()}}.
+A \code{"hydro_metrics"} object returned by \code{\link[=gof]{gof()}}. The documented
+return class, output shape, and warning/error behavior are inherited from
+\code{\link[=gof]{gof()}} as part of the stable public contract.
 }
 \description{
-Thin exported wrapper that forwards \code{fun} to \code{\link[=gof]{gof()}} as \code{methods}.
+Stable orchestration entry point retained under historical naming. It
+forwards \code{fun} to \code{\link[=gof]{gof()}} as \code{methods}.
+Stable condition contract: \code{valindex()} errors when \code{fun} is missing or
+invalid and otherwise inherits preprocessing, warning, and metric-domain
+behavior directly from \code{\link[=gof]{gof()}}.
 }
 \examples{
 valindex(c(1, 2, 3), c(1, 2, 2), fun = c("NSE", "rmse"))

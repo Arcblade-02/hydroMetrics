@@ -9,6 +9,10 @@ intermediate audit artifact generated during development.
 
 - `phase3-pre1.0-validation-summary.md`: current registry, vignette, test, and
   package-check status for the Phase 3 / pre-1.0 stabilization line.
+- `workstream-b-validation-inventory.md`: initial Workstream B inventory for
+  hydroGOF-overlap and probabilistic-metric validation coverage.
+- `workstream-b-validation-summary.md`: concise consolidated summary of the
+  current Workstream B scientific-validation evidence baseline.
 - `usgs_nwis_manifest.csv`: fixed NWIS station manifest for the Stage 6
   real-data validation subset.
 - `usgs_nwis_provenance.md`: retrieval, provenance, and benchmark-scenario
@@ -29,6 +33,10 @@ truthfully from the shipped repository contents:
 - test and package-check status
 - release-document placeholder and citation cleanliness
 - current API-stability scope for the pre-1.0 milestone
+- initial Workstream B empirical-validation inventory for hydroGOF-overlap and
+  probabilistic metrics
+- a concise Workstream B evidence summary covering validated, intentionally
+  divergent, partially validated, and backlog areas
 
 ## Real-Dataset Validation
 
@@ -47,14 +55,16 @@ not be interpreted as external real-model benchmark outputs.
 
 ## Related Evidence
 
-Broader historical or workflow-specific validation evidence remains in:
+Broader historical or workflow-specific validation evidence remains in the
+development repository rather than the shipped source package, including:
 
 - `inst/benchmarks/`
 - `notes/release-readiness/`
 - `notes/final-cran-evidence/`
 - other `notes/` subdirectories created during earlier stabilization work
 
-The NWIS validation artifacts can be regenerated from the repository root with:
+The NWIS validation artifacts can be regenerated from a repository checkout
+root with:
 
 ```r
 source("tools/generate_usgs_nwis_validation_artifacts.R")

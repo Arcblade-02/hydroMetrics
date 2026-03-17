@@ -1,14 +1,20 @@
 #' Evaluate high-flow bias
 #'
-#' `HFB()` is a deterministic exported wrapper over [gof()] for the registry
-#' metric `"hfb"`. The exact failure mode for sparse high-flow support is
-#' preserved as part of the public compatibility contract.
+#' `HFB()` is a compatibility export over [gof()] for the registry metric
+#' `"hfb"`. The exact failure mode for sparse high-flow support is preserved
+#' as part of the public compatibility contract.
+#' Stable compatibility condition contract: it errors on invalid
+#' `threshold_prob`, on downstream preprocessing failures, and when fewer than
+#' three high-flow points remain; it warns and returns `NA` when the high-flow
+#' denominator is zero.
 #'
 #' @inheritParams gof
 #' @param threshold_prob Probability threshold used to define the high-flow
 #'   subset from `obs`.
 #'
-#' @return A numeric scalar with class `"hydro_metric_scalar"`.
+#' @return A numeric scalar with class `"hydro_metric_scalar"`. The documented
+#'   class, threshold handling, and warning/error behavior are part of the
+#'   compatibility contract.
 #'
 #' @examples
 #' HFB(1:30 + 1, 1:30)

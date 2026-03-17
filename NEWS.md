@@ -1,5 +1,44 @@
 # hydroMetrics news
 
+## 0.4.0
+
+- Frame the current `dev` branch state as a Phase 4 baseline-establishment
+  milestone rather than as Phase 4 completion.
+- Carry forward the closed Workstream A API-governance state, including the
+  stabilized public API boundary, return-object contract, lifecycle policy,
+  alias policy, and documented stable warning/error behavior.
+- Record Workstream B as materially mature for this phase, with a stronger
+  validation narrative, exercised CRPS external-reference tolerance evidence,
+  a reproducible benchmark baseline, and completed hydroGOF-overlap
+  classification across the current overlap surface.
+- Carry forward the established Workstream C discovery/usability baseline,
+  including `metric_search()`, documented preset groups, and the guided
+  workflow vignette.
+- Carry forward the first Workstream D static plotting baseline under the
+  accepted optional-dependency strategy, with `plot_hydrograph()` kept
+  separate from `ggof()`.
+- Carry forward the first Workstream E contributor/governance baseline via
+  published contributor guidance and package governance policy documents.
+
+## 0.3.1
+
+- Freeze the current remediated package state as a non-feature baseline
+  release before Phase 4 planning.
+- Align user-facing documentation with the actual exported public API,
+  including wrapper availability, compatibility-label behavior, and current
+  package version references.
+- Canonicalize metric and registry source definitions by removing residual
+  duplicate implementations and retaining a single live definition for each
+  metric/spec path.
+- Finalize scientific reference metadata for the current exported metric
+  surface, replacing interim placeholder or package-defined notes with
+  literature-backed attribution where supported by repository materials.
+- Improve test-suite signal quality by separating repository/process checks
+  from package behavioral coverage while preserving package-integrity checks.
+- Clean source-package hygiene for the remediation baseline, including stale
+  metadata removal, explicit source-package exclusions for repo-only material,
+  and baseline branch synchronization before the `0.3.1` freeze.
+
 ## 0.3.0
 
 - Finalized the post-Phase-3 release-facing surface on `dev`: `DESCRIPTION`
@@ -114,9 +153,10 @@
   non-trivial cases.
 ## 0.2.1
 
-- Correct the exported hydroGOF-style wrapper surface so `NSE()`, `KGE()`,
-  `RMSE()`, `R2()`, `NRMSE()`, and `PBIAS()` are part of the validated Phase 2
-  public release contract.
+- Correct the hydroGOF-style compatibility surface so method labels such as
+  `NSE`, `KGE`, `RMSE`, `R2`, `NRMSE`, and `PBIAS` are part of the validated
+  Phase 2 public contract via orchestration entry points rather than as
+  standalone exported wrapper functions.
 - Add direct clean-namespace and clean installed-session wrapper verification
   for the corrected compatibility surface.
 - Complete the Phase 2 compatibility/export closure and carry that state into

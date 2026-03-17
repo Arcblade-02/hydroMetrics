@@ -97,6 +97,22 @@ test_that("gof returns hydro_metrics object for single series", {
   expect_true(all(c("NSE", "rmse", "rPearson") %in% names(out)))
 })
 
+test_that("gof canonicalizes deprecated orchestration aliases while preserving labels", {
+  expect_no_warning(
+    out <- .hm_gof_get("gof")(
+      sim = c(1, 2, 3),
+      obs = c(1, 2, 1),
+      methods = "rPearson"
+    )
+  )
+
+  ref <- .hm_gof_get("gof")(sim = c(1, 2, 3), obs = c(1, 2, 1), methods = "r")
+
+  expect_s3_class(out, "hydro_metrics")
+  expect_identical(names(out), "rPearson")
+  expect_equal(as.numeric(out), as.numeric(ref))
+})
+
 test_that("gof supports zoo alignment and method subsets", {
   skip_if_not_installed("zoo")
 

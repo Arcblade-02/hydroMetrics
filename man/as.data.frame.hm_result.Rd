@@ -15,5 +15,5 @@
 A plain data frame.
 }
 \description{
-Convert an \code{hm_result} to data frame
+Stable S3 coercion method for objects created by \code{\link[=hm_result]{hm_result()}}.
 }

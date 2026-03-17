@@ -15,5 +15,5 @@
 The input object, invisibly.
 }
 \description{
-Print an \code{hm_result}
+Stable S3 print method for objects created by \code{\link[=hm_result]{hm_result()}}.
 }

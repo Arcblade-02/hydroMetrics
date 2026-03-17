@@ -1,14 +1,18 @@
 #' Return a tabular compatibility summary
 #'
-#' `ggof()` is a non-plotting compatibility helper. It returns a tidy
-#' `data.frame` with class `"hydro_metrics_batch"` and does not open or mutate
-#' graphics devices.
+#' `ggof()` is a stable orchestration entry point for tabular metric summaries.
+#' It returns a tidy `data.frame` with class `"hydro_metrics_batch"` and does
+#' not open or mutate graphics devices.
+#' The warning and error contract is inherited from [gof()]; `ggof()` does not
+#' suppress unknown-method, preprocessing, or metric-domain failures.
 #'
 #' @inheritParams gof
 #' @param include_meta Whether to append orchestration metadata columns.
 #'
 #' @return A `data.frame` with class `c("hydro_metrics_batch", "data.frame")`
-#'   containing `model`, `metric`, `value`, and `n_obs` columns.
+#'   containing `model`, `metric`, `value`, and `n_obs` columns. The
+#'   documented return class, columns, and non-plotting behavior are part of
+#'   the stable public contract.
 #'
 #' @examples
 #' sim <- c(1, 2, 3, 4)

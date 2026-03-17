@@ -24,10 +24,10 @@ Explicit deferment:
 
 ## Maintainer Readiness Note
 
-- Current package version: `0.3.0`
+- Current package version: `0.3.1`
 - Repository status: milestone-ready post-Phase-3 state with aligned release
   docs, validation summaries, and merged completion work
-- Suggested future tag label: `v0.3.0` (recommendation only; not created here)
+- Suggested future tag label: `v0.3.1` (recommendation only; not created here)
 - Suggested next track: post-1.0 utility design such as `pareto_evaluate()`
 
 ## Current Registry State
@@ -58,6 +58,11 @@ The current hardening pass validated:
   - current vignettes
 
 The placeholder audit was clean at the time of the Stage 6 pass.
+
+Workstream B scientific-validation evidence is now summarized separately in
+`inst/validation/workstream-b-validation-summary.md`, with the detailed metric
+inventory and reconciliation status retained in
+`inst/validation/workstream-b-validation-inventory.md`.
 
 ## API Stability Declaration
 
@@ -114,6 +119,7 @@ It is still narrower than a full external model-validation archive:
 Related evidence already present in the repository includes:
 
 - `inst/benchmarks/benchmark_summary.md`
+- `inst/benchmarks/workstream_b_benchmark_summary.md`
 - `notes/release-readiness/`
 - `notes/final-cran-evidence/`
 

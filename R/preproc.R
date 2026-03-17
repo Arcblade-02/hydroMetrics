@@ -86,9 +86,14 @@ hm_prepare <- function(sim,
 
 #' Preprocess hydrological series
 #'
-#' Public clean-room preprocessing wrapper used by the orchestration layer. The
-#' current exported contract supports single-series numeric, `ts`, `zoo`, and
-#' `xts` inputs and intentionally rejects matrix/data.frame inputs.
+#' Stable orchestration entry point for input preprocessing. The current
+#' exported contract supports single-series numeric, `ts`, `zoo`, and `xts`
+#' inputs and intentionally rejects matrix/data.frame inputs.
+#' Stable condition contract: `preproc()` errors on unsupported public input
+#' types, unequal lengths after required non-indexed validation, invalid
+#' `na_strategy`/compatibility alias values, conflicting epsilon aliases, and
+#' missing values when `na_strategy = "fail"`. Indexed `zoo`/`xts` inputs are
+#' deterministically aligned on their common index before NA handling.
 #'
 #' @param sim Simulated values as a numeric vector or supported indexed
 #'   single-series object.
@@ -112,7 +117,8 @@ hm_prepare <- function(sim,
 #'
 #' @return A list with class `"hydro_preproc"` containing processed vectors and
 #'   metadata, including `sim`, `obs`, `n_original`, `n_aligned`,
-#'   `n_removed_na`, `transform_applied`, and `epsilon_details`.
+#'   `n_removed_na`, `transform_applied`, and `epsilon_details`. The documented
+#'   return fields and error behavior are part of the stable public contract.
 #'
 #' @examples
 #' preproc(c(1, NA, 3), c(1, 2, 3), na.rm = TRUE)

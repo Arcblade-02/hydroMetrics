@@ -7,6 +7,13 @@ hydroGOF-style wrapper surface. It is not the full post-Phase-3 metric
 catalog; use the metric-reference, calibration-guide, and uncertainty-eval
 vignettes for the broader current package surface.
 
+Note: this file tracks the retained hydroGOF-style compatibility surface only.
+The entries `plot2`, `plotbands`, and `plotbandsonly` remain unimplemented as
+compatibility functions. That compatibility status does not mean
+`hydroMetrics` lacks plotting altogether: the package now provides lightweight
+plotting helpers such as `plot_hydrograph()` and `plot_fdc()` outside this
+legacy compatibility ledger.
+
 ## Phase 2 exported wrappers and core entry points tracked here
 - [x] APFB
 - [x] alpha

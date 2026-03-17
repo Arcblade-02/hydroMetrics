@@ -34,16 +34,17 @@ serious CRAN submission push.
   have deeper empirical follow-up beyond classification-level closure.
 - The current benchmark baseline is intentionally modest and should not be read
   as a full performance program or optimization guarantee.
-- Contributor/governance publication is in place, but release-process guidance
-  is still baseline-level rather than fully operationalized.
+- Contributor/governance publication is in place, and the `0.4.x`
+  release-review/evidence process has now been exercised once, but broader
+  submission-oriented operationalization remains outside the current baseline.
 - The package has lightweight plotting helpers, but plotting scope remains
   deliberately narrow and does not yet attempt a broader visualization layer.
 
 ## Likely Pre-Submission Review Areas
 
-- Run a deliberate `--as-cran` style preflight on the current `0.4.x` line and
-  record the result as a fresh line-specific artifact, rather than relying on
-  older historical readiness notes.
+- Build on the existing `0.4.x` line-specific release evidence record with any
+  future submission-oriented preflight, rather than relying only on older
+  historical readiness notes.
 - Review `DESCRIPTION`, package title/description wording, maintainer metadata,
   and package-facing prose for CRAN-facing tone and completeness.
 - Review examples and vignette runtime/verbosity with CRAN constraints in mind,
@@ -89,11 +90,12 @@ serious CRAN submission push.
 ## Not Yet Claimed
 
 - This document does not claim current CRAN submission readiness.
-- It does not claim that the package has completed a fresh `devtools::check(cran = TRUE)`
-  or direct `R CMD check --as-cran` campaign for the `0.4.x` line.
+- It does not claim that the current `0.4.x` line has completed a broader
+  submission-oriented multi-environment CRAN campaign beyond the recorded local
+  preflight evidence.
 - It does not claim pkgdown/site readiness, reverse-dependency assessment, or
   release-process automation completeness.
-- - It does not itself constitute publication approval or CRAN submission
+- It does not itself constitute publication approval or CRAN submission
   readiness for the `0.4.x` line.
 
 ## Next Logical Readiness Step

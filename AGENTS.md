@@ -1,4 +1,4 @@
-# AGENTS.md — hydroMetrics repository working rules
+# AGENTS.md - hydroMetrics repository working rules
 
 This file defines repo-specific working rules for AI/code agents operating in
 `hydroMetrics`.

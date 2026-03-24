@@ -5,6 +5,7 @@
 \alias{as.numeric.hydro_metrics}
 \alias{as.double.hydro_metrics}
 \alias{print.hydro_metrics}
+\alias{as.data.frame.hydro_metrics}
 \alias{print.hydro_preproc}
 \title{Print a hydro_metrics_batch result}
 \usage{
@@ -16,12 +17,18 @@
 
 \method{print}{hydro_metrics}(x, ...)
 
+\method{as.data.frame}{hydro_metrics}(x, row.names = NULL, optional = FALSE, ...)
+
 \method{print}{hydro_preproc}(x, ...)
 }
 \arguments{
 \item{x}{A \code{"hydro_preproc"} object.}
 
 \item{...}{Unused.}
+
+\item{row.names}{\code{NULL} or a character vector of row names.}
+
+\item{optional}{Unused.}
 }
 \value{
 The input object, invisibly.
@@ -31,6 +38,12 @@ The numeric metric values carried by \code{x}.
 The numeric metric values carried by \code{x}.
 
 The input object, invisibly.
+
+A data frame representation of \code{x}.
+Single-series vector outputs become a two-column data frame with
+\code{metric} and \code{value}. Single-series 1-column matrix outputs also become
+a two-column data frame. Multi-series matrix outputs become a data frame
+with metric names as row names.
 
 The input object, invisibly.
 }
@@ -42,6 +55,8 @@ Numeric coercion for hydro_metrics
 Double coercion for hydro_metrics
 
 Print a hydro_metrics object
+
+Data-frame coercion for hydro_metrics
 
 Print a hydro_preproc object
 }

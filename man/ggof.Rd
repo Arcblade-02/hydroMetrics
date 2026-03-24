@@ -30,10 +30,11 @@ object, or aligned \code{zoo}/\code{xts} series.}
 \item{obs}{Observed values with the same shape contract as \code{sim}.}
 
 \item{methods}{Metric names to evaluate. When omitted, the package default
-compat-10 set is used unless \code{extended = TRUE}.}
+curated hydrology summary set is used unless \code{preset} is supplied or
+\code{extended = TRUE}.}
 
 \item{extended}{Whether omitted/\code{NULL} method selection should expand from
-the compat-10 default set to all registered metrics that are applicable to
+the default summary set to all registered metrics that are applicable to
 the current input context.}
 
 \item{na_strategy}{Missing-value strategy forwarded to \code{\link[=preproc]{preproc()}}.}

@@ -8,7 +8,10 @@ gof(
   sim,
   obs,
   methods = NULL,
+  preset = NULL,
   extended = FALSE,
+  output = c("vector", "matrix"),
+  labels = c("requested", "canonical", "hydrogof", "professional"),
   na_strategy = c("fail", "remove", "pairwise"),
   transform = c("none", "log", "sqrt", "reciprocal"),
   epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
@@ -30,11 +33,23 @@ object, or aligned \code{zoo}/\code{xts} series.}
 \item{obs}{Observed values with the same shape contract as \code{sim}.}
 
 \item{methods}{Metric names to evaluate. When omitted, the package default
-compat-10 set is used unless \code{extended = TRUE}.}
+curated hydrology summary set is used unless \code{preset} is supplied or
+\code{extended = TRUE}.}
+
+\item{preset}{Optional preset method bundle. Use \code{"hydrogof"} for a
+hydroGOF-style legacy metric bundle or \code{"recommended"} for the package
+default set.}
 
 \item{extended}{Whether omitted/\code{NULL} method selection should expand from
-the compat-10 default set to all registered metrics that are applicable to
+the default summary set to all registered metrics that are applicable to
 the current input context.}
+
+\item{output}{Output shape for single-series results: \code{"vector"} or
+\code{"matrix"}. \code{preset = "hydrogof"} forces \code{"matrix"}.}
+
+\item{labels}{Label style for reported metrics: \code{"requested"},
+\code{"canonical"}, \code{"hydrogof"}, or \code{"professional"}.
+\code{preset = "hydrogof"} forces \code{"hydrogof"} labels.}
 
 \item{na_strategy}{Missing-value strategy forwarded to \code{\link[=preproc]{preproc()}}.}
 
@@ -68,11 +83,11 @@ value. It maps to \code{epsilon} when \code{epsilon_mode = "constant"} and to
 \item{...}{Additional compatibility arguments, including \code{metric_params}.}
 }
 \value{
-A named numeric vector for single-series inputs or a named numeric
-matrix for multi-series inputs, with class \code{"hydro_metrics"}. Additional
-metadata is attached via the \code{n_obs}, \code{meta}, and \code{call} attributes. The
-documented return class, output shape, names, and warning/error behavior
-are part of the stable public contract.
+A numeric vector or matrix, depending on input shape and \code{output},
+with class \code{"hydro_metrics"}. Single-series inputs return a named vector
+by default and can return a 1-column matrix when \code{output = "matrix"}.
+Multi-series inputs return a named numeric matrix. Additional metadata is
+attached via the \code{n_obs}, \code{meta}, and \code{call} attributes.
 }
 \description{
 Stable orchestration entry point that preprocesses aligned series and
@@ -84,13 +99,13 @@ are not exported standalone functions. Deprecated labels such as
 }
 \details{
 Stable condition contract: \code{gof()} errors on invalid \code{extended} values,
-unknown metric labels, incompatible single-series versus matrix-like input
-shapes, multi-series dimension mismatch, invalid compatibility alias values,
-and preprocessing or metric-domain failures inherited from \code{\link[=preproc]{preproc()}} and
-the selected metrics. Missing-data handling follows \code{na_strategy}; plain
-\code{"fail"} preserves missing-value errors, \code{"remove"} drops incomplete pairs,
-and \code{"pairwise"} keeps aligned vectors for downstream pairwise-capable
-metrics.
+invalid \code{preset}, unknown metric labels, incompatible single-series versus
+matrix-like input shapes, multi-series dimension mismatch, invalid
+compatibility alias values, and preprocessing or metric-domain failures
+inherited from \code{\link[=preproc]{preproc()}} and the selected metrics. Missing-data handling
+follows \code{na_strategy}; plain \code{"fail"} preserves missing-value errors,
+\code{"remove"} drops incomplete pairs, and \code{"pairwise"} keeps aligned vectors
+for downstream pairwise-capable metrics.
 }
 \examples{
 sim <- c(1, 2, 3, 4)
@@ -98,4 +113,7 @@ obs <- c(1, 2, 2, 4)
 
 gof(sim, obs, methods = c("NSE", "rmse"))
 gof(sim, obs, fun = "rmse", na.rm = FALSE)
+gof(sim, obs, preset = "hydrogof")
+gof(sim, obs, extended = TRUE)
+gof(sim, obs, extended = TRUE, output = "matrix", labels = "professional")
 }

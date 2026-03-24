@@ -20,18 +20,27 @@
   get(name, envir = .hm_gof_test_env, inherits = FALSE)
 }
 
-test_that("gof defaults to the compat-10 metric set", {
+.hm_gof_default_ids <- c(
+  "me", "mae", "rmse", "ubrmse", "pbias", "rsr", "rsd", "nse", "r", "r2", "ve", "kge", "mnse", "cp",
+  "alpha", "beta", "ccc",
+  "mdae", "maxae", "smape",
+  "log_nse", "log_rmse", "low_flow_bias", "fdc_lowflow_bias", "log_fdc_rmse",
+  "peak_timing_error", "fdc_highflow_bias", "extreme_event_ratio", "rising_limb_error",
+  "fdc_slope_error", "fdc_shape_distance", "baseflow_index_error",
+  "rspearman", "wasserstein_distance", "distribution_overlap"
+)
+
+test_that("gof defaults to the curated modern summary set", {
   sim <- c(1, 2, 3, 4, 5)
   obs <- c(1.1, 1.9, 3.2, 3.8, 5.1)
-  expected_ids <- c("nse", "kge", "rmse", "pbias", "mae", "mse", "r2", "ve", "rsr", "nrmse")
 
   out <- .hm_gof_get("gof")(sim, obs)
 
   expect_s3_class(out, "hydro_metrics")
   expect_true(is.numeric(out))
   expect_true(is.null(dim(out)))
-  expect_identical(names(out), expected_ids)
-  expect_identical(length(out), 10L)
+  expect_identical(names(out), .hm_gof_default_ids)
+  expect_identical(length(out), length(.hm_gof_default_ids))
   expect_false(any(c("metrics", "n_obs", "meta", "call") %in% names(out)))
   expect_identical(attr(out, "n_obs"), 5L)
   expect_true(is.list(attr(out, "meta")))
@@ -54,7 +63,7 @@ test_that("gof extended = FALSE matches plain default behavior", {
 test_that("gof extended = TRUE returns all auto-applicable registered metrics", {
   sim <- c(1, 2, 3, 4, 5)
   obs <- c(1.1, 1.9, 3.2, 3.8, 5.1)
-  default_ids <- c("nse", "kge", "rmse", "pbias", "mae", "mse", "r2", "ve", "rsr", "nrmse")
+
   payload <- .hm_gof_get("preproc")(sim = sim, obs = obs)
   registered_ids <- .hm_gof_get(".gof_auto_applicable_ids")(
     available_ids = as.character(.hm_gof_get("list_metrics")()$id),
@@ -69,8 +78,8 @@ test_that("gof extended = TRUE returns all auto-applicable registered metrics", 
   expect_true(is.null(dim(out)))
   expect_s3_class(out, "hydro_metrics")
   expect_identical(names(out), registered_ids)
-  expect_true(length(out) > length(default_ids))
-  expect_true(all(default_ids %in% names(out)))
+  expect_true(length(out) >= length(.hm_gof_default_ids))
+  expect_true(all(.hm_gof_default_ids %in% names(out)))
 })
 
 test_that("gof explicit methods override default and extended selection", {
@@ -142,7 +151,7 @@ test_that("gof accepts valid aligned zoo inputs without NA failure on common ind
       "2021-05-02 00:00:00",
       "2021-05-03 00:00:00",
       "2021-05-04 00:00:00",
-    "2021-05-05 00:00:00"
+      "2021-05-05 00:00:00"
     ), tz = "UTC")
   )
 
@@ -169,13 +178,12 @@ test_that("gof returns method x model metrics matrix for multi-series input", {
 test_that("gof preserves output contract for default multi-series output", {
   sim <- cbind(a = c(1, 2, 3, 4, 5), b = c(2, 3, 4, 5, 6))
   obs <- cbind(a = c(1.1, 1.9, 3.2, 3.8, 5.1), b = c(2.2, 2.8, 4.1, 5.2, 5.9))
-  expected_ids <- c("nse", "kge", "rmse", "pbias", "mae", "mse", "r2", "ve", "rsr", "nrmse")
 
   out <- .hm_gof_get("gof")(sim, obs)
 
   expect_s3_class(out, "hydro_metrics")
   expect_true(is.matrix(out))
-  expect_identical(rownames(out), expected_ids)
+  expect_identical(rownames(out), .hm_gof_default_ids)
   expect_identical(colnames(out), c("a", "b"))
   expect_null(names(out))
 })
@@ -204,4 +212,37 @@ test_that("gof stores orchestration meta fields", {
   expect_identical(meta$transform, "none")
   expect_identical(meta$epsilon_mode, "constant")
   expect_identical(meta$components, TRUE)
+})
+
+test_that("gof stores single-series meta alignment fields", {
+  out <- .hm_gof_get("gof")(
+    sim = c(1, 2, 3, 4),
+    obs = c(1, 2, 3, 4),
+    methods = "rmse"
+  )
+
+  meta <- attr(out, "meta")
+
+  expect_identical(meta$n_original, 4L)
+  expect_identical(meta$n_aligned, 4L)
+  expect_identical(meta$n_removed_na, 0L)
+  expect_true(isTRUE(meta$aligned))
+  expect_identical(meta$sim_used, c(1, 2, 3, 4))
+  expect_identical(meta$obs_used, c(1, 2, 3, 4))
+})
+
+test_that("gof propagates output and label selection into metadata", {
+  out <- .hm_gof_get("gof")(
+    sim = c(1, 2, 3, 4),
+    obs = c(1, 2, 3, 4),
+    methods = c("rmse", "nse"),
+    output = "matrix",
+    labels = "professional"
+  )
+
+  meta <- attr(out, "meta")
+
+  expect_identical(meta$output, "matrix")
+  expect_identical(meta$labels, "professional")
+  expect_true(is.matrix(out))
 })

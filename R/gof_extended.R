@@ -1,5 +1,23 @@
-.gof_compat10_ids <- function() {
-  c("nse", "kge", "rmse", "pbias", "mae", "mse", "r2", "ve", "rsr", "nrmse")
+.gof_default_ids <- function() {
+  c(
+    "me", "mae", "rmse", "ubrmse", "pbias", "rsr", "rsd", "nse", "r", "r2", "ve", "kge", "mnse", "cp",
+    "alpha", "beta", "ccc",
+    "mdae", "maxae", "smape",
+    "log_nse", "log_rmse", "low_flow_bias", "fdc_lowflow_bias", "log_fdc_rmse",
+    "peak_timing_error", "fdc_highflow_bias", "extreme_event_ratio", "rising_limb_error",
+    "fdc_slope_error", "fdc_shape_distance", "baseflow_index_error",
+    "rspearman", "wasserstein_distance", "distribution_overlap"
+  )
+}
+
+.gof_hydrogof_ids <- function() {
+  c(
+    "me", "mae", "mse", "rmse", "ubrmse", "nrmse", "pbias", "rsr", "rsd",
+    "nse", "mnse", "rnse", "wnse", "wsnse",
+    "d", "dr", "md", "rd", "cp",
+    "r", "r2", "br2", "ve",
+    "kge", "kgelf", "kgenp", "kgekm"
+  )
 }
 
 .gof_can_auto_run_hfb <- function(obs, threshold_prob = 0.9) {
@@ -268,7 +286,27 @@
   ids
 }
 
-.gof_select_methods <- function(methods, available_ids, extended = FALSE, sim = NULL, obs = NULL, index = NULL) {
+.gof_filter_applicable_ids <- function(ids, available_ids, sim = NULL, obs = NULL, index = NULL) {
+  ids <- ids[ids %in% available_ids]
+
+  if (!is.null(sim) && !is.null(obs)) {
+    ids <- ids[vapply(
+      ids,
+      function(id) .gof_can_auto_run_metric(id, sim = sim, obs = obs, index = index),
+      logical(1)
+    )]
+  }
+
+  ids
+}
+
+.gof_select_methods <- function(methods,
+                                available_ids,
+                                preset = NULL,
+                                extended = FALSE,
+                                sim = NULL,
+                                obs = NULL,
+                                index = NULL) {
   requested <- as.character(methods)
   requested <- requested[nzchar(requested)]
 
@@ -276,10 +314,41 @@
     return(requested)
   }
 
+  if (!is.null(preset)) {
+    preset <- tolower(as.character(preset[[1L]]))
+
+    if (identical(preset, "hydrogof")) {
+      return(.gof_filter_applicable_ids(
+        ids = .gof_hydrogof_ids(),
+        available_ids = available_ids,
+        sim = sim,
+        obs = obs,
+        index = index
+      ))
+    }
+
+    if (identical(preset, "recommended")) {
+      return(.gof_filter_applicable_ids(
+        ids = .gof_default_ids(),
+        available_ids = available_ids,
+        sim = sim,
+        obs = obs,
+        index = index
+      ))
+    }
+
+    stop("Unknown `preset`: ", preset, call. = FALSE)
+  }
+
   if (isTRUE(extended)) {
     return(.gof_auto_applicable_ids(available_ids, sim = sim, obs = obs, index = index))
   }
 
-  compat_ids <- .gof_compat10_ids()
-  compat_ids[compat_ids %in% available_ids]
+  .gof_filter_applicable_ids(
+    ids = .gof_default_ids(),
+    available_ids = available_ids,
+    sim = sim,
+    obs = obs,
+    index = index
+  )
 }

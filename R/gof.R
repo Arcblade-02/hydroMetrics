@@ -32,6 +32,133 @@
   )
 }
 
+.gof_hydrogof_labels <- function() {
+  c(
+    "me" = "ME",
+    "mae" = "MAE",
+    "mse" = "MSE",
+    "rmse" = "RMSE",
+    "ubrmse" = "ubRMSE",
+    "nrmse" = "NRMSE %",
+    "pbias" = "PBIAS %",
+    "rsr" = "RSR",
+    "rsd" = "rSD",
+    "nse" = "NSE",
+    "mnse" = "mNSE",
+    "rnse" = "rNSE",
+    "wnse" = "wNSE",
+    "wsnse" = "wsNSE",
+    "d" = "d",
+    "dr" = "dr",
+    "md" = "md",
+    "rd" = "rd",
+    "cp" = "cp",
+    "r" = "r",
+    "r2" = "R2",
+    "br2" = "bR2",
+    "ve" = "VE",
+    "kge" = "KGE",
+    "kgelf" = "KGElf",
+    "kgenp" = "KGEnp",
+    "kgekm" = "KGEkm"
+  )
+}
+
+.gof_professional_labels <- function() {
+  c(
+    "alpha" = "Alpha",
+    "anderson_darling_stat" = "Anderson-Darling",
+    "baseflow_index_error" = "BFI Error",
+    "beta" = "Beta",
+    "br2" = "bR2",
+    "ccc" = "CCC",
+    "cdf_rmse" = "CDF-RMSE",
+    "cp" = "CP",
+    "d" = "d",
+    "distribution_overlap" = "Distribution Overlap",
+    "dr" = "dr",
+    "e1" = "E1",
+    "entropy_diff" = "Entropy Difference",
+    "extended_valindex" = "Extended ValIndex",
+    "extreme_event_ratio" = "Extreme Event Ratio",
+    "fdc_highflow_bias" = "FDC High-Flow Bias",
+    "fdc_lowflow_bias" = "FDC Low-Flow Bias",
+    "fdc_shape_distance" = "FDC Shape Distance",
+    "fdc_slope_error" = "FDC Slope Error",
+    "flow_duration_entropy" = "Flow Duration Entropy",
+    "huber_loss" = "Huber Loss",
+    "hydrograph_slope_error" = "Hydrograph Slope Error",
+    "iqr_error" = "IQR Error",
+    "js_divergence" = "JS Divergence",
+    "kge" = "KGE",
+    "kgekm" = "KGEkm",
+    "kgelf" = "KGElf",
+    "kgenp" = "KGEnp",
+    "kl_divergence" = "KL Divergence",
+    "kl_divergence_flow" = "KL Divergence (Flow)",
+    "ks_statistic" = "KS Statistic",
+    "kurtosis_error" = "Kurtosis Error",
+    "log_fdc_rmse" = "Log-FDC RMSE",
+    "log_nse" = "Log-NSE",
+    "log_rmse" = "Log-RMSE",
+    "low_flow_bias" = "Low-Flow Bias",
+    "mae" = "MAE",
+    "mape" = "MAPE",
+    "mare" = "MARE",
+    "maxae" = "MaxAE",
+    "md" = "md",
+    "mdae" = "MdAE",
+    "me" = "ME",
+    "mnse" = "mNSE",
+    "mpe" = "MPE",
+    "mrb" = "MRB",
+    "mse" = "MSE",
+    "msle" = "MSLE",
+    "mutual_information" = "Mutual Information",
+    "mutual_information_score" = "MI Score",
+    "normalised_mi" = "Normalized MI",
+    "nrmse" = "NRMSE",
+    "nrmse_range" = "NRMSE (Range)",
+    "nrmse_sd" = "NRMSE (SD)",
+    "nse" = "NSE",
+    "pbias" = "PBIAS",
+    "pbiasfdc" = "PBIAS-FDC",
+    "peak_timing_error" = "Peak Timing Error",
+    "pfactor" = "P-Factor",
+    "quantile_deviation" = "Quantile Deviation",
+    "quantile_kge" = "Quantile KGE",
+    "quantile_loss" = "Quantile Loss",
+    "quantile_shift_index" = "Quantile Shift Index",
+    "r" = "r",
+    "r2" = "R2",
+    "rank_turnover_score" = "Rank Turnover Score",
+    "rbias" = "RBias",
+    "rd" = "rd",
+    "rfactor" = "R-Factor",
+    "rising_limb_error" = "Rising Limb Error",
+    "rmse" = "RMSE",
+    "rnse" = "rNSE",
+    "rrmse" = "RRMSE",
+    "rsd" = "rSD",
+    "rspearman" = "Spearman rho",
+    "rsr" = "RSR",
+    "skewness_error" = "Skewness Error",
+    "skge" = "sKGE",
+    "smape" = "SMAPE",
+    "sqrt_nse" = "Sqrt-NSE",
+    "ssq" = "SSQ",
+    "tail_dependence_score" = "Tail Dependence Score",
+    "trimmed_rmse" = "Trimmed RMSE",
+    "ubrmse" = "ubRMSE",
+    "ve" = "VE",
+    "wasserstein_distance" = "Wasserstein Distance",
+    "weighted_kge" = "Weighted KGE",
+    "winsor_rmse" = "Winsor RMSE",
+    "wnse" = "wNSE",
+    "wsnse" = "wsNSE"
+  )
+}
+
 .gof_resolve_methods <- function(requested) {
   available <- .get_registry()$list()
   available_ids <- as.character(available$id)
@@ -48,7 +175,7 @@
 
   keys <- tolower(requested)
   unknown <- requested[!keys %in% names(alias)]
-  if (length(unknown) > 0) {
+  if (length(unknown) > 0L) {
     stop(
       sprintf(
         "Unknown metric(s): %s. Use available metrics: %s",
@@ -133,7 +260,7 @@
 
   direct <- which(nms %in% c(metric_id, label))
   if (length(direct) > 0L) {
-    return(metric_params[[direct[[1]]]])
+    return(metric_params[[direct[[1L]]]])
   }
 
   lower <- tolower(nms)
@@ -142,7 +269,7 @@
     return(NULL)
   }
 
-  metric_params[[idx[[1]]]]
+  metric_params[[idx[[1L]]]]
 }
 
 .gof_normalize_metric_calls <- function(ids, labels, metric_params = NULL) {
@@ -154,7 +281,7 @@
     if (!is.list(metric_params)) {
       stop("`metric_params` must be a list.", call. = FALSE)
     }
-    return(list(list(id = ids[[1]], params = metric_params)))
+    return(list(list(id = ids[[1L]], params = metric_params)))
   }
 
   lapply(seq_along(ids), function(i) {
@@ -307,7 +434,9 @@
     }
 
     if (identical(epsilon_mode, "constant")) {
-      if (!isTRUE(epsilon_missing) && !is.null(epsilon) && !isTRUE(all.equal(as.numeric(epsilon), as.numeric(epsilon.value)))) {
+      if (!isTRUE(epsilon_missing) &&
+          !is.null(epsilon) &&
+          !isTRUE(all.equal(as.numeric(epsilon), as.numeric(epsilon.value)))) {
         stop("`epsilon.value` conflicts with `epsilon`.", call. = FALSE)
       }
       epsilon <- as.numeric(epsilon.value)
@@ -329,6 +458,94 @@
   )
 }
 
+.gof_normalize_preset <- function(preset) {
+  if (is.null(preset)) {
+    return(NULL)
+  }
+
+  if (!is.character(preset) || length(preset) != 1L || is.na(preset) || !nzchar(preset)) {
+    stop("`preset` must be NULL or a non-empty character scalar.", call. = FALSE)
+  }
+
+  preset <- tolower(preset)
+  if (!preset %in% c("recommended", "hydrogof")) {
+    stop("`preset` must be one of 'recommended' or 'hydrogof'.", call. = FALSE)
+  }
+
+  preset
+}
+
+.gof_apply_legacy_defaults <- function(
+  preset = NULL,
+  output = c("vector", "matrix"),
+  labels = c("requested", "canonical", "hydrogof", "professional")
+) {
+  preset <- .gof_normalize_preset(preset)
+  output <- match.arg(output)
+  labels <- match.arg(labels)
+
+  if (identical(preset, "hydrogof")) {
+    output <- "matrix"
+    labels <- "hydrogof"
+  }
+
+  list(preset = preset, output = output, labels = labels)
+}
+
+.gof_output_labels <- function(ids, requested, labels = c("requested", "canonical", "hydrogof", "professional")) {
+  labels <- match.arg(labels)
+
+  if (identical(labels, "canonical")) {
+    return(ids)
+  }
+
+  if (identical(labels, "requested")) {
+    return(requested)
+  }
+
+  if (identical(labels, "hydrogof")) {
+    map <- .gof_hydrogof_labels()
+    out <- unname(map[ids])
+    missing <- is.na(out)
+    out[missing] <- requested[missing]
+    return(out)
+  }
+
+  map <- .gof_professional_labels()
+  out <- unname(map[ids])
+  missing <- is.na(out)
+  out[missing] <- requested[missing]
+  out
+}
+
+.gof_format_single_output <- function(vals,
+                                      ids,
+                                      requested,
+                                      output = c("vector", "matrix"),
+                                      labels = c("requested", "canonical", "hydrogof", "professional")) {
+  output <- match.arg(output)
+  out_labels <- .gof_output_labels(ids, requested, labels = labels)
+
+  if (identical(output, "vector")) {
+    names(vals) <- out_labels
+    return(vals)
+  }
+
+  mat <- matrix(vals, ncol = 1L)
+  rownames(mat) <- out_labels
+  colnames(mat) <- NULL
+  mat
+}
+
+.gof_format_multi_output <- function(metrics_mat,
+                                     ids,
+                                     requested,
+                                     labels = c("requested", "canonical", "hydrogof", "professional")) {
+  out_labels <- .gof_output_labels(ids, requested, labels = labels)
+  rownames(metrics_mat) <- out_labels
+  metrics_mat
+}
+
 #' Evaluate hydrological metrics
 #'
 #' Stable orchestration entry point that preprocesses aligned series and
@@ -339,22 +556,31 @@
 #' `"rPearson"` resolve to canonical metric ids during method selection.
 #'
 #' Stable condition contract: `gof()` errors on invalid `extended` values,
-#' unknown metric labels, incompatible single-series versus matrix-like input
-#' shapes, multi-series dimension mismatch, invalid compatibility alias values,
-#' and preprocessing or metric-domain failures inherited from [preproc()] and
-#' the selected metrics. Missing-data handling follows `na_strategy`; plain
-#' `"fail"` preserves missing-value errors, `"remove"` drops incomplete pairs,
-#' and `"pairwise"` keeps aligned vectors for downstream pairwise-capable
-#' metrics.
+#' invalid `preset`, unknown metric labels, incompatible single-series versus
+#' matrix-like input shapes, multi-series dimension mismatch, invalid
+#' compatibility alias values, and preprocessing or metric-domain failures
+#' inherited from [preproc()] and the selected metrics. Missing-data handling
+#' follows `na_strategy`; plain `"fail"` preserves missing-value errors,
+#' `"remove"` drops incomplete pairs, and `"pairwise"` keeps aligned vectors
+#' for downstream pairwise-capable metrics.
 #'
 #' @param sim Simulated values supplied as a numeric vector, `ts`, matrix-like
 #'   object, or aligned `zoo`/`xts` series.
 #' @param obs Observed values with the same shape contract as `sim`.
 #' @param methods Metric names to evaluate. When omitted, the package default
-#'   compat-10 set is used unless `extended = TRUE`.
+#'   curated hydrology summary set is used unless `preset` is supplied or
+#'   `extended = TRUE`.
+#' @param preset Optional preset method bundle. Use `"hydrogof"` for a
+#'   hydroGOF-style legacy metric bundle or `"recommended"` for the package
+#'   default set.
 #' @param extended Whether omitted/`NULL` method selection should expand from
-#'   the compat-10 default set to all registered metrics that are applicable to
+#'   the default summary set to all registered metrics that are applicable to
 #'   the current input context.
+#' @param output Output shape for single-series results: `"vector"` or
+#'   `"matrix"`. `preset = "hydrogof"` forces `"matrix"`.
+#' @param labels Label style for reported metrics: `"requested"`,
+#'   `"canonical"`, `"hydrogof"`, or `"professional"`.
+#'   `preset = "hydrogof"` forces `"hydrogof"` labels.
 #' @param na_strategy Missing-value strategy forwarded to [preproc()].
 #' @param transform Transform mode forwarded to [preproc()].
 #' @param epsilon_mode Epsilon policy forwarded to [preproc()].
@@ -375,11 +601,11 @@
 #'   `epsilon_factor` otherwise.
 #' @param ... Additional compatibility arguments, including `metric_params`.
 #'
-#' @return A named numeric vector for single-series inputs or a named numeric
-#'   matrix for multi-series inputs, with class `"hydro_metrics"`. Additional
-#'   metadata is attached via the `n_obs`, `meta`, and `call` attributes. The
-#'   documented return class, output shape, names, and warning/error behavior
-#'   are part of the stable public contract.
+#' @return A numeric vector or matrix, depending on input shape and `output`,
+#'   with class `"hydro_metrics"`. Single-series inputs return a named vector
+#'   by default and can return a 1-column matrix when `output = "matrix"`.
+#'   Multi-series inputs return a named numeric matrix. Additional metadata is
+#'   attached via the `n_obs`, `meta`, and `call` attributes.
 #'
 #' @examples
 #' sim <- c(1, 2, 3, 4)
@@ -387,11 +613,17 @@
 #'
 #' gof(sim, obs, methods = c("NSE", "rmse"))
 #' gof(sim, obs, fun = "rmse", na.rm = FALSE)
+#' gof(sim, obs, preset = "hydrogof")
+#' gof(sim, obs, extended = TRUE)
+#' gof(sim, obs, extended = TRUE, output = "matrix", labels = "professional")
 #' @export
 gof <- function(sim,
                 obs,
                 methods = NULL,
+                preset = NULL,
                 extended = FALSE,
+                output = c("vector", "matrix"),
+                labels = c("requested", "canonical", "hydrogof", "professional"),
                 na_strategy = c("fail", "remove", "pairwise"),
                 transform = c("none", "log", "sqrt", "reciprocal"),
                 epsilon_mode = c("constant", "auto_min_positive", "obs_mean_factor"),
@@ -435,6 +667,15 @@ gof <- function(sim,
     stop("`extended` must be TRUE or FALSE.", call. = FALSE)
   }
 
+  legacy <- .gof_apply_legacy_defaults(
+    preset = preset,
+    output = output,
+    labels = labels
+  )
+  preset <- legacy$preset
+  output <- legacy$output
+  labels <- legacy$labels
+
   na_strategy <- match.arg(na_strategy)
   transform <- match.arg(transform)
   epsilon_mode <- match.arg(epsilon_mode)
@@ -445,8 +686,6 @@ gof <- function(sim,
   prepared <- .gof_prepare_inputs(sim, obs)
   engine <- .get_engine()
   available_ids <- as.character(.get_registry()$list()$id)
-  available_alias <- .gof_alias_map()
-  available_alias <- available_alias[available_alias %in% available_ids]
 
   if (identical(prepared$type, "single")) {
     payload <- .gof_preproc_call(
@@ -459,9 +698,11 @@ gof <- function(sim,
       epsilon_factor = epsilon_factor
     )
     runtime_payload <- .gof_materialize_payload(payload, na_strategy = na_strategy)
+
     requested <- .gof_select_methods(
       methods = methods,
       available_ids = available_ids,
+      preset = preset,
       extended = extended,
       sim = runtime_payload$sim,
       obs = runtime_payload$obs,
@@ -470,6 +711,7 @@ gof <- function(sim,
     if (length(requested) == 0L) {
       stop("No valid methods available for gof().", call. = FALSE)
     }
+
     resolved <- .gof_resolve_methods(requested)
     metric_calls <- .gof_normalize_metric_calls(
       ids = resolved$ids,
@@ -478,18 +720,27 @@ gof <- function(sim,
     )
     runtime_calls <- .gof_runtime_metric_calls(metric_calls, runtime_payload)
     out <- engine$evaluate(runtime_payload$sim, runtime_payload$obs, runtime_calls)
-    vals <- as.numeric(out$value)
-    names(vals) <- resolved$labels
+
+    formatted <- .gof_format_single_output(
+      vals = as.numeric(out$value),
+      ids = resolved$ids,
+      requested = resolved$labels,
+      output = output,
+      labels = labels
+    )
 
     return(
       .new_hydro_metrics(
-        metrics = vals,
+        metrics = formatted,
         n_obs = as.integer(length(runtime_payload$sim)),
         meta = list(
           transform = transform,
           na_strategy = na_strategy,
           epsilon_mode = epsilon_mode,
           components = isTRUE(components),
+          preset = preset,
+          output = output,
+          labels = labels,
           n_original = as.integer(runtime_payload$meta$n_original),
           n_aligned = as.integer(runtime_payload$meta$n_aligned),
           n_removed_na = as.integer(runtime_payload$meta$n_removed_na),
@@ -506,14 +757,16 @@ gof <- function(sim,
   requested <- .gof_select_methods(
     methods = methods,
     available_ids = available_ids,
+    preset = preset,
     extended = extended,
-    sim = NULL,
-    obs = NULL,
+    sim = prepared$sim[, 1L],
+    obs = prepared$obs[, 1L],
     index = NULL
   )
   if (length(requested) == 0L) {
     stop("No valid methods available for gof().", call. = FALSE)
   }
+
   resolved <- .gof_resolve_methods(requested)
   metric_calls <- .gof_normalize_metric_calls(
     ids = resolved$ids,
@@ -547,6 +800,13 @@ gof <- function(sim,
     n_obs[[j]] <- as.integer(length(runtime_payload$sim))
   }
 
+  metrics_mat <- .gof_format_multi_output(
+    metrics_mat = metrics_mat,
+    ids = resolved$ids,
+    requested = resolved$labels,
+    labels = labels
+  )
+
   .new_hydro_metrics(
     metrics = metrics_mat,
     n_obs = n_obs,
@@ -554,7 +814,10 @@ gof <- function(sim,
       transform = transform,
       na_strategy = na_strategy,
       epsilon_mode = epsilon_mode,
-      components = isTRUE(components)
+      components = isTRUE(components),
+      preset = preset,
+      output = output,
+      labels = labels
     ),
     call = match.call()
   )
@@ -593,6 +856,61 @@ as.double.hydro_metrics <- function(x, ...) {
 #' @rdname hydro-orchestration-methods
 #' @export
 print.hydro_metrics <- function(x, ...) {
-  print(.hydro_metrics_payload(x), ...)
+  payload <- .hydro_metrics_payload(x)
+
+  attr(payload, "n_obs") <- NULL
+  attr(payload, "meta") <- NULL
+  attr(payload, "call") <- NULL
+
+  print(payload, ...)
   invisible(x)
+}
+#' Data-frame coercion for hydro_metrics
+#'
+#' @param x A `"hydro_metrics"` object.
+#' @param row.names `NULL` or a character vector of row names.
+#' @param optional Unused.
+#' @param ... Unused.
+#'
+#' @return A data frame representation of `x`.
+#'   Single-series vector outputs become a two-column data frame with
+#'   `metric` and `value`. Single-series 1-column matrix outputs also become
+#'   a two-column data frame. Multi-series matrix outputs become a data frame
+#'   with metric names as row names.
+#' @rdname hydro-orchestration-methods
+#' @export
+as.data.frame.hydro_metrics <- function(x, row.names = NULL, optional = FALSE, ...) {
+  payload <- .hydro_metrics_payload(x)
+
+  attr(payload, "n_obs") <- NULL
+  attr(payload, "meta") <- NULL
+  attr(payload, "call") <- NULL
+
+  if (is.null(dim(payload))) {
+    out <- data.frame(
+      metric = names(payload),
+      value = as.numeric(payload),
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    )
+    if (!is.null(row.names)) {
+      rownames(out) <- row.names
+    }
+    return(out)
+  }
+
+  if (is.matrix(payload) && ncol(payload) == 1L) {
+    out <- data.frame(
+      metric = rownames(payload),
+      value = as.numeric(payload[, 1]),
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    )
+    if (!is.null(row.names)) {
+      rownames(out) <- row.names
+    }
+    return(out)
+  }
+
+  as.data.frame(payload, row.names = row.names, optional = optional, ...)
 }

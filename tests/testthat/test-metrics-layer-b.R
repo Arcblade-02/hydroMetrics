@@ -264,7 +264,6 @@ test_that("layer B batch B2 wrappers integrate with gof extended policy", {
 test_that("layer B batch B3 registry ids are present", {
   ids <- list_metrics()$id
   target <- c(
-    "hydrograph_slope_error",
     "derivative_nse",
     "peak_timing_error",
     "rising_limb_error",
@@ -273,16 +272,6 @@ test_that("layer B batch B3 registry ids are present", {
   )
 
   expect_true(all(target %in% ids))
-})
-
-test_that("hydrograph_slope_error matches RMSE on ordered first differences", {
-  sim <- c(1, 2, 4, 7, 6, 5, 4, 3, 2, 1)
-  obs <- c(1, 2, 3, 6, 7, 6, 5, 4, 2, 1)
-  expected <- sqrt(mean((diff(sim) - diff(obs))^2))
-
-  expect_equal(hydrograph_slope_error(sim, obs), expected)
-  expect_equal(metric_hydrograph_slope_error(sim, obs), expected)
-  expect_equal(hydrograph_slope_error(obs, obs), 0)
 })
 
 test_that("derivative_nse matches NSE on first differences", {
@@ -346,10 +335,6 @@ test_that("baseflow_index_error matches the fixed three-pass BFI proxy differenc
 
 test_that("layer B batch B3 metrics reject invalid temporal edge cases", {
   expect_error(
-    hydrograph_slope_error(c(1), c(1)),
-    "requires at least 2 values"
-  )
-  expect_error(
     derivative_nse(c(1, 1), c(1, 1)),
     "requires at least 3 values"
   )
@@ -374,7 +359,6 @@ test_that("layer B batch B3 wrappers integrate with gof for ordered series metri
     sim,
     obs,
     methods = c(
-      "hydrograph_slope_error",
       "derivative_nse",
       "peak_timing_error",
       "rising_limb_error",
@@ -387,7 +371,6 @@ test_that("layer B batch B3 wrappers integrate with gof for ordered series metri
   expect_identical(
     names(out),
     c(
-      "hydrograph_slope_error",
       "derivative_nse",
       "peak_timing_error",
       "rising_limb_error",

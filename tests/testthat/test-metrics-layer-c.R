@@ -142,10 +142,7 @@ test_that("layer C batch C2 registry ids are present", {
     "entropy_diff",
     "mutual_information_score",
     "mutual_information",
-    "normalised_mi",
-    "kl_divergence_flow",
-    "kl_divergence",
-    "js_divergence"
+    "normalised_mi"
   )
 
   expect_true(all(target %in% ids))
@@ -239,9 +236,6 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "mutual_information_score",
       "mutual_information",
       "normalised_mi",
-      "kl_divergence_flow",
-      "kl_divergence",
-      "js_divergence",
       "flow_duration_entropy",
       "tail_dependence_score",
       "extreme_event_ratio",
@@ -261,9 +255,6 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "mutual_information_score",
       "mutual_information",
       "normalised_mi",
-      "kl_divergence_flow",
-      "kl_divergence",
-      "js_divergence",
       "flow_duration_entropy",
       "tail_dependence_score",
       "extreme_event_ratio",
@@ -284,9 +275,6 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
         "mutual_information_score",
         "mutual_information",
         "normalised_mi",
-        "kl_divergence_flow",
-        "kl_divergence",
-        "js_divergence",
         "flow_duration_entropy",
         "tail_dependence_score",
         "extreme_event_ratio",
@@ -373,61 +361,6 @@ test_that("normalised_mi uses MI / sqrt(H_sim * H_obs) and rejects zero-entropy 
     normalised_mi(const, const),
     "both marginal entropies must be positive"
   )
-})
-
-test_that("kl_divergence_flow matches manual KL(obs || sim) with fixed smoothing", {
-  sim <- c(1, 2, 2, 3, 4, 5, 5, 6, 7, 8)
-  obs <- c(1, 1, 2, 3, 3, 4, 5, 6, 7, 9)
-  breaks <- .test_c2_pooled_breaks(sim, obs)
-  expected <- .test_c2_kl_obs_vs_sim(sim, obs, breaks)
-
-  expect_equal(kl_divergence_flow(sim, obs), expected)
-  expect_equal(metric_kl_divergence_flow(sim, obs), expected)
-})
-
-test_that("kl_divergence is the canonical equivalent of kl_divergence_flow", {
-  sim <- c(1, 2, 2, 3, 4, 5, 5, 6, 7, 8)
-  obs <- c(1, 1, 2, 3, 3, 4, 5, 6, 7, 9)
-  breaks <- .test_c2_pooled_breaks(sim, obs)
-  expected <- .test_c2_kl_obs_vs_sim(sim, obs, breaks)
-
-  expect_equal(kl_divergence(sim, obs), expected)
-  expect_equal(metric_kl_divergence(sim, obs), expected)
-  expect_equal(kl_divergence(sim, obs), kl_divergence_flow(sim, obs))
-})
-
-test_that("kl_divergence_flow keeps direction explicit and constant-series cases finite", {
-  const <- c(1, 1, 1, 1, 1, 1)
-  var <- c(1, 2, 3, 4, 5, 6)
-  breaks <- .test_c2_pooled_breaks(const, var)
-
-  expect_true(is.finite(kl_divergence_flow(const, var)))
-  expect_equal(kl_divergence_flow(const, var), .test_c2_kl_obs_vs_sim(const, var, breaks))
-  expect_gt(abs(kl_divergence_flow(const, var) - kl_divergence_flow(var, const)), 0)
-  expect_error(kl_divergence_flow(1, 1), "requires at least 2 values")
-})
-
-test_that("js_divergence matches the manual Jensen-Shannon divergence and is symmetric", {
-  sim <- c(1, 2, 2, 3, 4, 5, 5, 6, 7, 8)
-  obs <- c(1, 1, 2, 3, 3, 4, 5, 6, 7, 9)
-  breaks <- .test_c2_pooled_breaks(sim, obs)
-  p_sim <- .test_c2_hist_probs(sim, breaks)
-  p_obs <- .test_c2_hist_probs(obs, breaks)
-  p_sim <- (p_sim + 1e-12) / sum(p_sim + 1e-12)
-  p_obs <- (p_obs + 1e-12) / sum(p_obs + 1e-12)
-  midpoint <- 0.5 * (p_sim + p_obs)
-  expected <- 0.5 * sum(p_sim * log(p_sim / midpoint)) + 0.5 * sum(p_obs * log(p_obs / midpoint))
-
-  expect_equal(js_divergence(sim, obs), expected)
-  expect_equal(metric_js_divergence(sim, obs), expected)
-  expect_equal(js_divergence(sim, obs), js_divergence(obs, sim))
-})
-
-test_that("js_divergence handles constant identical distributions deterministically", {
-  const <- c(1, 1, 1, 1, 1, 1)
-
-  expect_equal(js_divergence(const, const), 0)
-  expect_error(js_divergence(1, 1), "requires at least 2 values")
 })
 
 test_that("flow_duration_entropy matches manual FDC-ordered entropy difference", {

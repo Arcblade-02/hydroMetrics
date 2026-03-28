@@ -65,8 +65,8 @@ Current baseline interpretation:
 - `stable`: documented exported functions other than the explicit compatibility
   exports and any future explicitly marked deprecated or experimental surface
 - `compatibility`: retained historical or interoperability-oriented exports
-  such as `NSeff()`, `mNSeff()`, `rNSeff()`, `wsNSeff()`, `HFB()`,
-  `mutual_information_score()`, and `kl_divergence_flow()`
+  such as `NSeff()`, `mNSeff()`, `rNSeff()`, `wsNSeff()`, `HFB()`, and
+  `mutual_information_score()`
 - `deprecated`: no exported functions are currently published in this status
 - `experimental`: no exported functions are currently published in this status
 

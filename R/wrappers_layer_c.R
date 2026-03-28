@@ -125,64 +125,6 @@ normalised_mi <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("normalised_mi", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
-#' Evaluate the flow KL divergence wrapper
-#'
-#' Compatibility export retained alongside canonical [kl_divergence()]. This
-#' thin wrapper delegates to [gof()] for the registry metric
-#' `"kl_divergence_flow"`. The metric reports directed `KL(P_obs || P_sim)` on
-#' pooled-support Sturges histograms after fixed epsilon smoothing with
-#' `epsilon = 1e-12`.
-#'
-#' @inheritParams gof
-#'
-#' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
-#'
-#' @examples
-#' kl_divergence_flow(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))
-#' @export
-kl_divergence_flow <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("kl_divergence_flow", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
-}
-
-#' Evaluate the KL divergence wrapper
-#'
-#' Thin exported wrapper over [gof()] for the canonical registry metric
-#' `"kl_divergence"`. Under the current deterministic policy this is the
-#' canonical name for the same directed `KL(P_obs || P_sim)` quantity reported
-#' by `"kl_divergence_flow"`.
-#'
-#' @inheritParams gof
-#'
-#' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
-#'
-#' @examples
-#' kl_divergence(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))
-#' @export
-kl_divergence <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("kl_divergence", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
-}
-
-#' Evaluate the Jensen-Shannon divergence wrapper
-#'
-#' Thin exported wrapper over [gof()] for the canonical registry metric
-#' `"js_divergence"`. The metric uses pooled-support Sturges histograms,
-#' natural logs, and fixed epsilon smoothing to report
-#' `0.5 * KL(P_sim || M) + 0.5 * KL(P_obs || M)` with `M = 0.5 * (P_sim + P_obs)`.
-#'
-#' @inheritParams gof
-#'
-#' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
-#'
-#' @examples
-#' js_divergence(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))
-#' @export
-js_divergence <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("js_divergence", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
-}
-
 #' Evaluate the flow-duration entropy wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric

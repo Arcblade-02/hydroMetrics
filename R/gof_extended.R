@@ -117,7 +117,7 @@
     isTRUE(diff(range(obs)) != 0)
 }
 
-.gof_can_auto_run_hydrograph_slope_error <- function(sim, obs) {
+.gof_can_auto_run_peak_timing_error <- function(sim, obs) {
   !is.null(sim) && !is.null(obs) && length(sim) >= 2L && length(obs) >= 2L
 }
 
@@ -219,8 +219,8 @@
   if (!.gof_can_auto_run_fdc_shape_distance(sim, obs)) {
     ids <- setdiff(ids, "fdc_shape_distance")
   }
-  if (!.gof_can_auto_run_hydrograph_slope_error(sim, obs)) {
-    ids <- setdiff(ids, c("hydrograph_slope_error", "peak_timing_error"))
+  if (!.gof_can_auto_run_peak_timing_error(sim, obs)) {
+    ids <- setdiff(ids, "peak_timing_error")
   }
   if (!.gof_can_auto_run_derivative_nse(sim, obs)) {
     ids <- setdiff(ids, "derivative_nse")

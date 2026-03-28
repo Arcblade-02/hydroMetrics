@@ -165,23 +165,6 @@ quantile_kge <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("quantile_kge", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
-#' Evaluate the hydrograph slope error wrapper
-#'
-#' Thin exported wrapper over [gof()] for the registry metric
-#' `"hydrograph_slope_error"`.
-#'
-#' @inheritParams gof
-#'
-#' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
-#'
-#' @examples
-#' hydrograph_slope_error(c(1, 2, 4, 7), c(1, 2, 3, 6))
-#' @export
-hydrograph_slope_error <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("hydrograph_slope_error", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
-}
-
 #' Evaluate the derivative NSE wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric

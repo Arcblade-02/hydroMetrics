@@ -329,7 +329,6 @@ core_metric_spec_quantile_kge <- function() {
 # Shared Batch B3 conventions:
 # - ordered input vectors are treated as hydrograph time order without any
 #   magnitude-based reordering
-# - hydrograph_slope_error aggregates first-difference mismatches via RMSE
 # - derivative_nse applies the standard NSE formula to first differences
 # - peak_timing_error uses the first occurrence of the series maximum
 # - rising_limb_error uses observed positive first differences before the first
@@ -456,31 +455,6 @@ core_metric_spec_quantile_kge <- function() {
   }
 
   sum(baseflow) / flow_sum
-}
-
-metric_hydrograph_slope_error <- function(sim, obs) {
-  .hm_b3_validate_ordered_series(sim, "sim", "hydrograph_slope_error", min_length = 2L)
-  .hm_b3_validate_ordered_series(obs, "obs", "hydrograph_slope_error", min_length = 2L)
-
-  slopes_sim <- .hm_b3_first_differences(sim, "hydrograph_slope_error")
-  slopes_obs <- .hm_b3_first_differences(obs, "hydrograph_slope_error")
-
-  sqrt(mean((slopes_sim - slopes_obs)^2))
-}
-
-core_metric_spec_hydrograph_slope_error <- function() {
-  list(
-    id = "hydrograph_slope_error",
-    fun = metric_hydrograph_slope_error,
-    name = "Hydrograph Slope Error",
-    description = "RMSE between ordered first-difference hydrograph slopes of sim and obs.",
-    category = "error",
-    perfect = 0,
-    range = c(0, Inf),
-    references = "Hydrograph diagnostic context from Yilmaz et al. (2008); the package metric is RMSE on ordered first differences.",
-    version_added = "0.2.2",
-    tags = c("phase-3", "layer-b", "batch-b3")
-  )
 }
 
 metric_derivative_nse <- function(sim, obs) {

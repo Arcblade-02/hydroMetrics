@@ -113,10 +113,10 @@ These include Layer A, Layer B, and Layer C additions such as:
 - flow-duration and regime diagnostics: `fdc_slope_error`,
   `fdc_highflow_bias`, `fdc_lowflow_bias`, `fdc_shape_distance`,
   `flow_duration_entropy`
-- hydrograph and event diagnostics: `hydrograph_slope_error`,
-  `peak_timing_error`, `rising_limb_error`, `event_nse`
+- hydrograph and event diagnostics: `peak_timing_error`,
+  `rising_limb_error`, `event_nse`
 - distribution and information-theory diagnostics: `entropy_diff`,
-  `mutual_information`, `normalised_mi`, `kl_divergence`, `js_divergence`
+  `mutual_information`, `normalised_mi`
 - composite and summary diagnostics: `extended_valindex`,
   `rank_turnover_score`, `distribution_overlap`, `quantile_shift_index`
 
@@ -128,7 +128,6 @@ sort(intersect(
   c(
     "entropy_diff",
     "mutual_information",
-    "kl_divergence",
     "extended_valindex",
     "flow_duration_entropy"
   ),

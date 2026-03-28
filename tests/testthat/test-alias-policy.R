@@ -2,7 +2,7 @@ test_that("exported compatibility and alias surface matches the documented polic
   ns_exports <- getNamespaceExports("hydroMetrics")
   compat_exports <- c(
     "HFB", "NSeff", "mNSeff", "rNSeff", "wsNSeff",
-    "mutual_information_score", "kl_divergence_flow"
+    "mutual_information_score"
   )
   label_only_aliases <- c(
     "NSE", "KGE", "MAE", "RMSE", "PBIAS", "R2", "NRMSE",
@@ -18,5 +18,4 @@ test_that("exported canonical and compatibility alias pairs remain numerically a
   obs <- c(1, 1, 3, 4, 6, 8)
 
   expect_equal(mutual_information_score(sim, obs), mutual_information(sim, obs))
-  expect_equal(kl_divergence_flow(sim, obs), kl_divergence(sim, obs))
 })

@@ -59,8 +59,7 @@
       "mNSeff",
       "rNSeff",
       "wsNSeff",
-      "mutual_information_score",
-      "kl_divergence_flow"
+      "mutual_information_score"
     ),
     id = c(
       "hfb",
@@ -68,8 +67,7 @@
       "mnse",
       "rnse",
       "wsnse",
-      "mutual_information",
-      "kl_divergence"
+      "mutual_information"
     ),
     stringsAsFactors = FALSE
   )
@@ -91,7 +89,7 @@
 
   distribution_ids <- ids[
     grepl(
-      "^(cdf_|fdc_|quantile_deviation$|quantile_shift_index$|distribution_overlap$|ks_statistic$|anderson_darling_stat$|wasserstein_distance$|entropy_diff$|mutual_information|normalised_mi$|kl_divergence|js_divergence$|flow_duration_entropy$)",
+      "^(cdf_|fdc_|quantile_deviation$|quantile_shift_index$|distribution_overlap$|ks_statistic$|anderson_darling_stat$|wasserstein_distance$|entropy_diff$|mutual_information|normalised_mi$|flow_duration_entropy$)",
       ids
     )
   ]
@@ -119,7 +117,6 @@
       "rising_limb_error",
       "recession_constant",
       "baseflow_index_error",
-      "hydrograph_slope_error",
       "derivative_nse",
       "low_flow_bias",
       "fdc_highflow_bias",
@@ -162,8 +159,7 @@
     "mNSeff",
     "rNSeff",
     "wsNSeff",
-    "mutual_information_score",
-    "kl_divergence_flow"
+    "mutual_information_score"
   )
   presets <- .hm_metric_search_presets(metrics$id, metrics)
 

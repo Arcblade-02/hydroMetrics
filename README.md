@@ -18,8 +18,7 @@ reproducible package checks.
 - Stable exported utility: `hm_result()` as the low-level constructor for
   `hm_result` S3 objects
 - Compatibility exports retained at the `0.4.0` baseline: `HFB()`, `NSeff()`,
-  `mNSeff()`, `rNSeff()`, `wsNSeff()`,
-  `mutual_information_score()`, and `kl_divergence_flow()`
+  `mNSeff()`, `rNSeff()`, `wsNSeff()`, and `mutual_information_score()`
 - Uppercase hydroGOF-style labels accepted by `gof()`/`ggof()` are
   orchestration method labels, not exported standalone functions: `NSE`,
   `KGE`, `MAE`, `RMSE`, `PBIAS`, `R2`, `NRMSE`, `mNSE`, `rNSE`, and `wsNSE`
@@ -38,7 +37,7 @@ reproducible package checks.
   documented exported metric wrappers other than the explicit compatibility
   exports below
 - `compatibility`: `HFB()`, `NSeff()`, `mNSeff()`, `rNSeff()`, `wsNSeff()`,
-  `mutual_information_score()`, and `kl_divergence_flow()`
+  and `mutual_information_score()`
 - `deprecated`: no exported functions at the `0.4.0` baseline
 - `experimental`: no exported functions at the `0.4.0` baseline
 
@@ -47,9 +46,8 @@ reproducible package checks.
 - Exported compatibility wrappers retained for historical continuity route to
   canonical registry metrics or canonical exported wrappers:
   `NSeff() -> nse`, `mNSeff() -> mnse`, `rNSeff() -> rnse`,
-  `wsNSeff() -> wsnse`, `HFB() -> hfb`,
-  `mutual_information_score() -> mutual_information()`, and
-  `kl_divergence_flow() -> kl_divergence()`
+  `wsNSeff() -> wsnse`, `HFB() -> hfb`, and
+  `mutual_information_score() -> mutual_information()`
 - Uppercase hydroGOF-style names accepted by `gof()` / `ggof()` are
   orchestration-only method labels and are not exported standalone functions
 - Deprecated `rPearson` requests are resolved to canonical `r` during

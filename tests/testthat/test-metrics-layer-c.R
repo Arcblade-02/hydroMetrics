@@ -150,7 +150,7 @@ test_that("layer C batch C2 registry ids are present", {
 
 test_that("layer C batch C3 registry ids are present", {
   ids <- list_metrics()$id
-  target <- c("flow_duration_entropy", "tail_dependence_score", "extreme_event_ratio")
+  target <- c("tail_dependence_score", "extreme_event_ratio")
 
   expect_true(all(target %in% ids))
 })
@@ -236,7 +236,6 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "mutual_information_score",
       "mutual_information",
       "normalised_mi",
-      "flow_duration_entropy",
       "tail_dependence_score",
       "extreme_event_ratio",
       "rank_turnover_score",
@@ -255,7 +254,6 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "mutual_information_score",
       "mutual_information",
       "normalised_mi",
-      "flow_duration_entropy",
       "tail_dependence_score",
       "extreme_event_ratio",
       "rank_turnover_score",
@@ -275,7 +273,6 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
         "mutual_information_score",
         "mutual_information",
         "normalised_mi",
-        "flow_duration_entropy",
         "tail_dependence_score",
         "extreme_event_ratio",
         "rank_turnover_score",
@@ -363,31 +360,6 @@ test_that("normalised_mi uses MI / sqrt(H_sim * H_obs) and rejects zero-entropy 
   )
 })
 
-test_that("flow_duration_entropy matches manual FDC-ordered entropy difference", {
-  sim <- c(1, 2, 3, 7, 8, 4, 3, 2, 6, 7, 3, 2)
-  obs <- c(1, 2, 4, 8, 7, 5, 3, 2, 5, 8, 4, 2)
-  sim_fdc <- .hm_fdc_prepare(sim)$flow
-  obs_fdc <- .hm_fdc_prepare(obs)$flow
-  breaks <- .test_c2_pooled_breaks(sim_fdc, obs_fdc)
-  expected <- abs(.test_c2_entropy(sim_fdc, breaks) - .test_c2_entropy(obs_fdc, breaks))
-
-  expect_equal(flow_duration_entropy(sim, obs), expected)
-  expect_equal(metric_flow_duration_entropy(sim, obs), expected)
-})
-
-test_that("flow_duration_entropy is deterministic for identical and constant series", {
-  const <- c(1, 1, 1, 1, 1, 1)
-  var <- c(1, 2, 3, 4, 5, 6)
-  sim_fdc <- .hm_fdc_prepare(const)$flow
-  obs_fdc <- .hm_fdc_prepare(var)$flow
-  breaks <- .test_c2_pooled_breaks(sim_fdc, obs_fdc)
-
-  expect_equal(flow_duration_entropy(var, var), 0)
-  expect_equal(flow_duration_entropy(const, const), 0)
-  expect_equal(flow_duration_entropy(const, var), abs(0 - .test_c2_entropy(obs_fdc, breaks)))
-  expect_error(flow_duration_entropy(1, 1), "requires at least 2 values")
-})
-
 test_that("tail_dependence_score matches empirical observed-threshold conditional exceedance", {
   sim <- c(1, 2, 3, 7, 8, 4, 3, 2, 6, 7, 3, 2)
   obs <- c(1, 2, 4, 8, 7, 5, 3, 2, 5, 8, 4, 2)
@@ -445,7 +417,6 @@ test_that("gof extended excludes threshold-gated C3 metrics when observed tails 
 
   expect_false("tail_dependence_score" %in% names(out_ext))
   expect_false("extreme_event_ratio" %in% names(out_ext))
-  expect_true("flow_duration_entropy" %in% names(out_ext))
 })
 
 test_that("rank_turnover_score matches normalized average-rank turnover", {

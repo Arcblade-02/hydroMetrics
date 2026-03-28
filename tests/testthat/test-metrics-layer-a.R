@@ -227,7 +227,6 @@ test_that("layer A batch A3 registry ids are present", {
     "fdc_slope_error",
     "fdc_highflow_bias",
     "fdc_lowflow_bias",
-    "log_fdc_rmse",
     "low_flow_bias"
   )
 
@@ -275,30 +274,26 @@ test_that("Batch A3 FDC metrics follow the shared descending Weibull convention"
       sum(log(obs_low) - log(obs_low[[n_low]]))
   ) / sum(log(obs_low) - log(obs_low[[n_low]]))
 
-  expected_log_rmse <- sqrt(mean((log(sim_fdc$flow) - log(obs_fdc$flow))^2))
-
   expect_equal(fdc_slope_error(sim, obs), expected_slope)
   expect_equal(fdc_highflow_bias(sim, obs), expected_high)
   expect_equal(fdc_lowflow_bias(sim, obs), expected_low)
-  expect_equal(log_fdc_rmse(sim, obs), expected_log_rmse)
 
   out <- evaluate_metrics(
     sim,
     obs,
-    c("fdc_slope_error", "fdc_highflow_bias", "fdc_lowflow_bias", "log_fdc_rmse")
+    c("fdc_slope_error", "fdc_highflow_bias", "fdc_lowflow_bias")
   )
   values <- setNames(out$value, out$metric)
   expect_equal(values[["fdc_slope_error"]], expected_slope)
   expect_equal(values[["fdc_highflow_bias"]], expected_high)
   expect_equal(values[["fdc_lowflow_bias"]], expected_low)
-  expect_equal(values[["log_fdc_rmse"]], expected_log_rmse)
 })
 
 test_that("Batch A3 FDC metrics are permutation-invariant after FDC construction", {
   sim <- c(1.2, 1.8, 3.4, 3.9, 5.1, 6.0, 7.2, 8.1, 9.3, 10.0)
   obs <- c(1.0, 2.0, 3.0, 4.0, 5.0, 6.2, 7.0, 8.0, 9.0, 10.1)
   perm <- c(10, 3, 6, 1, 8, 2, 9, 4, 5, 7)
-  fns <- list(fdc_slope_error, fdc_highflow_bias, fdc_lowflow_bias, log_fdc_rmse)
+  fns <- list(fdc_slope_error, fdc_highflow_bias, fdc_lowflow_bias)
 
   for (fn in fns) {
     expect_equal(fn(sim, obs), fn(sim[perm], obs[perm]))
@@ -309,7 +304,6 @@ test_that("Batch A3 FDC metrics reject invalid short or non-positive inputs", {
   expect_error(fdc_slope_error(c(1, 2), c(1, 2)), "at least 3 values")
   expect_error(fdc_slope_error(c(1, 2, 3), c(0, 1, 2)), "non-positive values")
   expect_error(fdc_lowflow_bias(c(1, 2, 3), c(0, 1, 2)), "non-positive values")
-  expect_error(log_fdc_rmse(c(1, 2, 3), c(0, 1, 2)), "non-positive values")
 })
 
 test_that("low_flow_bias matches paired low-flow subset bias", {

@@ -286,9 +286,6 @@ core_metric_spec_normalised_mi <- function() {
 }
 
 # Shared Batch C3 conventions:
-# - flow_duration_entropy reuses descending FDC ordering from .hm_fdc_prepare
-#   and applies the C2 pooled-support Sturges histogram entropy policy to the
-#   ordered flow values
 # - tail_dependence_score uses the observed 0.9 type-7 quantile as a strict
 #   upper-tail threshold and reports P(sim > q_obs | obs > q_obs)
 # - extreme_event_ratio uses the same observed 0.9 type-7 quantile for both
@@ -315,32 +312,6 @@ core_metric_spec_normalised_mi <- function() {
 
   split_points <- cumsum(c(1L, diff(idx) > 1L))
   split(idx, split_points)
-}
-
-metric_flow_duration_entropy <- function(sim, obs) {
-  inputs <- .hm_c2_validate_info_pair(sim, obs, "flow_duration_entropy", min_length = 2L)
-  sim_fdc <- .hm_fdc_prepare(inputs$sim)$flow
-  obs_fdc <- .hm_fdc_prepare(inputs$obs)$flow
-  breaks <- .hm_c2_pooled_breaks(sim_fdc, obs_fdc, "flow_duration_entropy")
-  sim_entropy <- .hm_c2_entropy_from_probs(.hm_c2_hist_probs(sim_fdc, breaks, "flow_duration_entropy", "sim"))
-  obs_entropy <- .hm_c2_entropy_from_probs(.hm_c2_hist_probs(obs_fdc, breaks, "flow_duration_entropy", "obs"))
-
-  abs(sim_entropy - obs_entropy)
-}
-
-core_metric_spec_flow_duration_entropy <- function() {
-  list(
-    id = "flow_duration_entropy",
-    fun = metric_flow_duration_entropy,
-    name = "Flow-Duration Entropy",
-    description = "Absolute difference between pooled-grid Shannon entropies of descending flow-duration-curve values using Sturges histograms.",
-    category = "error",
-    perfect = 0,
-    range = c(0, Inf),
-    references = "Searcy (1959) flow-duration-curve construction with Shannon (1948) entropy and Sturges (1926) histogram binning; package metric uses absolute entropy difference on descending FDC values.",
-    version_added = "0.2.2",
-    tags = c("phase-3", "layer-c", "batch-c3")
-  )
 }
 
 metric_tail_dependence_score <- function(sim, obs) {

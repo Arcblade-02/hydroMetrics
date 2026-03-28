@@ -478,34 +478,6 @@ core_metric_spec_fdc_lowflow_bias <- function() {
   )
 }
 
-metric_log_fdc_rmse <- function(sim, obs) {
-  if (length(obs) < 1L) {
-    stop("log_fdc_rmse requires at least 1 value.", call. = FALSE)
-  }
-  if (any(sim <= 0) || any(obs <= 0)) {
-    stop("log_fdc_rmse is undefined for non-positive values.", call. = FALSE)
-  }
-
-  sim_fdc <- .hm_fdc_prepare(sim)
-  obs_fdc <- .hm_fdc_prepare(obs)
-  sqrt(mean((log(sim_fdc$flow) - log(obs_fdc$flow))^2))
-}
-
-core_metric_spec_log_fdc_rmse <- function() {
-  list(
-    id = "log_fdc_rmse",
-    fun = metric_log_fdc_rmse,
-    name = "Log FDC RMSE",
-    description = "RMSE between descending flow-duration curves computed on log-transformed positive flows.",
-    category = "error",
-    perfect = 0,
-    range = c(0, Inf),
-    references = "Searcy (1959) flow-duration-curve construction with log-error emphasis following low-flow objective-function practice discussed by Krause et al. (2005).",
-    version_added = "0.2.2",
-    tags = c("phase-3", "layer-a", "batch-a3")
-  )
-}
-
 metric_low_flow_bias <- function(sim, obs) {
   if (length(obs) < 1L) {
     stop("low_flow_bias requires at least 1 value.", call. = FALSE)

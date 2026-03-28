@@ -125,7 +125,6 @@ ext_out <- gof(sim, obs, extended = TRUE)
 sort(intersect(
   c(
     "entropy_diff",
-    "flow_duration_entropy",
     "tail_dependence_score",
     "extended_valindex"
   ),
@@ -145,14 +144,14 @@ reflect that.
 
 ### Regime and Flow-Duration Diagnostics
 
-Metrics such as `fdc_slope_error`, `fdc_highflow_bias`, `fdc_lowflow_bias`, and
-`flow_duration_entropy` are useful when calibration is aimed at regime shape or
+Metrics such as `fdc_slope_error`, `fdc_highflow_bias`, and `fdc_lowflow_bias`
+are useful when calibration is aimed at regime shape or
 flow-duration behavior instead of only pointwise error.
 
 These can be requested directly when that is the modeling objective:
 
 ```{r}
-gof(sim, obs, methods = c("fdc_slope_error", "fdc_highflow_bias", "flow_duration_entropy"))
+gof(sim, obs, methods = c("fdc_slope_error", "fdc_highflow_bias"))
 ```
 
 ### Tail and Event-Sensitive Metrics

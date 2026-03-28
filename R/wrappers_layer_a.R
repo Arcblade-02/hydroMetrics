@@ -254,22 +254,6 @@ fdc_lowflow_bias <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("fdc_lowflow_bias", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
-#' Evaluate the log flow-duration-curve RMSE wrapper
-#'
-#' Thin exported wrapper over [gof()] for the registry metric `"log_fdc_rmse"`.
-#'
-#' @inheritParams gof
-#'
-#' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
-#'
-#' @examples
-#' log_fdc_rmse(c(1.2, 1.8, 3.4), c(1, 2, 3))
-#' @export
-log_fdc_rmse <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("log_fdc_rmse", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
-}
-
 #' Evaluate the low-flow bias wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric `"low_flow_bias"`.

@@ -4,8 +4,8 @@ Generated on: 2026-03-04
 
 This tracker is retained as a Phase 2 compatibility ledger for the legacy
 hydroGOF-style wrapper surface. It is not the full post-Phase-3 metric
-catalog; use the metric-reference, calibration-guide, and uncertainty-eval
-vignettes for the broader current package surface.
+catalog; use the metric-reference and calibration-guide vignettes for the
+broader current package surface.
 
 Note: this file tracks the retained hydroGOF-style compatibility surface only.
 The entries `plot2`, `plotbands`, and `plotbandsonly` remain unimplemented as
@@ -15,7 +15,6 @@ plotting helpers such as `plot_hydrograph()` and `plot_fdc()` outside this
 legacy compatibility ledger.
 
 ## Phase 2 exported wrappers and core entry points tracked here
-- [x] APFB
 - [x] alpha
 - [x] beta
 - [x] ggof
@@ -76,7 +75,6 @@ handling; they are not exported standalone functions.
 | id | name | category | version_added | references |
 | --- | --- | --- | --- | --- |
 | alpha | Variability Ratio | scale | 0.1.0 | KGE component definition in hydrology literature using variability ratio sd(sim)/sd(obs). |
-| apfb | Annual Peak Flow Bias | bias | 0.1.0 | Clean-room APFB compatibility implementation over yearly maxima. |
 | beta | Bias Ratio | bias | 0.1.0 | KGE component definition in hydrology literature using bias ratio mean(sim)/mean(obs). |
 | br2 | Bias-Corrected R-squared | correlation | 0.1.0 | Krause, P., Boyle, D. P., & Baese, F. (2005). Comparison of different efficiency criteria for hydrological model assessment; the package follows the selected `bR2` interpretation recorded in Architecture Decision D-029. |
 | cp | Coefficient of Persistence | efficiency | 0.1.0 | Persistence skill-score definition from hydrology model-evaluation literature. |

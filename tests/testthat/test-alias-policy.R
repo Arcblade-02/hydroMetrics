@@ -1,7 +1,7 @@
 test_that("exported compatibility and alias surface matches the documented policy", {
   ns_exports <- getNamespaceExports("hydroMetrics")
   compat_exports <- c(
-    "APFB", "HFB", "NSeff", "mNSeff", "rNSeff", "wsNSeff",
+    "HFB", "NSeff", "mNSeff", "rNSeff", "wsNSeff",
     "mutual_information_score", "kl_divergence_flow"
   )
   label_only_aliases <- c(

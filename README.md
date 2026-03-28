@@ -5,8 +5,8 @@
 `hydroMetrics` is a clean-room MIT-licensed R package for hydrological model
 evaluation. The current `0.4.0` release line combines a compat-oriented
 default metric surface with broader gated deterministic diagnostics,
-seasonal/regime-sensitive evaluation, wrapper-only probabilistic workflows,
-and release-facing validation artifacts for reproducible package checks.
+regime-sensitive evaluation, and release-facing validation artifacts for
+reproducible package checks.
 
 ## Scope
 
@@ -17,8 +17,8 @@ and release-facing validation artifacts for reproducible package checks.
 - Stable exported metric surface: documented exported metric wrappers
 - Stable exported utility: `hm_result()` as the low-level constructor for
   `hm_result` S3 objects
-- Compatibility exports retained at the `0.4.0` baseline: `APFB()`, `HFB()`,
-  `NSeff()`, `mNSeff()`, `rNSeff()`, `wsNSeff()`,
+- Compatibility exports retained at the `0.4.0` baseline: `HFB()`, `NSeff()`,
+  `mNSeff()`, `rNSeff()`, `wsNSeff()`,
   `mutual_information_score()`, and `kl_divergence_flow()`
 - Uppercase hydroGOF-style labels accepted by `gof()`/`ggof()` are
   orchestration method labels, not exported standalone functions: `NSE`,
@@ -30,10 +30,6 @@ and release-facing validation artifacts for reproducible package checks.
 - Seasonal, regime-sensitive, information-theory, and tail-sensitive metrics
   are available through documented exported wrappers and documented `gof()`
   method selection when their input contracts hold
-- Probabilistic metrics such as `crps()`, `picp()`, `mwpi()`, and
-  `skill_score()` remain wrapper-only special-interface workflows rather than
-  part of default deterministic `gof(sim, obs)` auto-selection
-
 ## Lifecycle Policy
 
 - `stable`: exported orchestration entry points, documented exported helpers
@@ -41,8 +37,8 @@ and release-facing validation artifacts for reproducible package checks.
   `plot_fdc()`, and `hm_result()`, and
   documented exported metric wrappers other than the explicit compatibility
   exports below
-- `compatibility`: `APFB()`, `HFB()`, `NSeff()`, `mNSeff()`, `rNSeff()`,
-  `wsNSeff()`, `mutual_information_score()`, and `kl_divergence_flow()`
+- `compatibility`: `HFB()`, `NSeff()`, `mNSeff()`, `rNSeff()`, `wsNSeff()`,
+  `mutual_information_score()`, and `kl_divergence_flow()`
 - `deprecated`: no exported functions at the `0.4.0` baseline
 - `experimental`: no exported functions at the `0.4.0` baseline
 
@@ -51,7 +47,7 @@ and release-facing validation artifacts for reproducible package checks.
 - Exported compatibility wrappers retained for historical continuity route to
   canonical registry metrics or canonical exported wrappers:
   `NSeff() -> nse`, `mNSeff() -> mnse`, `rNSeff() -> rnse`,
-  `wsNSeff() -> wsnse`, `APFB() -> apfb`, `HFB() -> hfb`,
+  `wsNSeff() -> wsnse`, `HFB() -> hfb`,
   `mutual_information_score() -> mutual_information()`, and
   `kl_divergence_flow() -> kl_divergence()`
 - Uppercase hydroGOF-style names accepted by `gof()` / `ggof()` are
@@ -98,8 +94,6 @@ mae(sim, obs)
   metric catalog and navigation guide
 - `vignette("calibration-guide", package = "hydroMetrics")` for metric
   selection in calibration workflows
-- `vignette("uncertainty-eval", package = "hydroMetrics")` for probabilistic
-  and interval-evaluation workflows
 - `?gof`, `?ggof`, `?preproc`, and `?hm_result` for API details
 - `?metric_search` for the first metric-discovery baseline
 - `?metric_preset` for resolving documented preset groups to
@@ -168,7 +162,6 @@ does not replace the detailed metric reference vignette.
   subset artifacts are available under `inst/validation/`.
 - `ggof()` returns a tabular `hydro_metrics_batch` object and does not open a
   graphics device.
-- `APFB()` requires indexed `zoo` or `xts` inputs.
 - `preproc()` currently supports single-series vector or indexed inputs only.
 
 ## Development Notes

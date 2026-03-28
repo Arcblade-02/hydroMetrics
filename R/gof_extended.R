@@ -42,19 +42,6 @@
   is.finite(den) && den != 0
 }
 
-.gof_can_auto_run_apfb <- function(index) {
-  if (is.null(index) || length(index) == 0L) {
-    return(FALSE)
-  }
-
-  years <- tryCatch(
-    suppressWarnings(as.integer(format(as.POSIXlt(index, tz = "UTC"), "%Y"))),
-    error = function(e) rep(NA_integer_, length(index))
-  )
-
-  all(is.finite(years)) && length(unique(years)) >= 2L
-}
-
 .gof_can_auto_run_positive <- function(sim, obs) {
   !is.null(sim) &&
     !is.null(obs) &&
@@ -130,11 +117,6 @@
     isTRUE(diff(range(obs)) != 0)
 }
 
-.gof_can_auto_run_seasonal_bias <- function(index) {
-  groups <- tryCatch(.hm_skge_month_groups_from_index(index), error = function(e) NULL)
-  !is.null(groups) && length(groups) >= 12L && all(1:12 %in% groups)
-}
-
 .gof_can_auto_run_hydrograph_slope_error <- function(sim, obs) {
   !is.null(sim) && !is.null(obs) && length(sim) >= 2L && length(obs) >= 2L
 }
@@ -205,23 +187,14 @@
     return(TRUE)
   }
 
-  params <- list()
-  if (metric_id %in% c("apfb", "seasonal_bias", "seasonal_nse", "seasonal_skill")) {
-    params$index <- index
-  }
-
   tryCatch({
-    .get_engine()$evaluate(sim, obs, list(list(id = metric_id, params = params)))
+    .get_engine()$evaluate(sim, obs, list(list(id = metric_id, params = list())))
     TRUE
   }, error = function(e) FALSE)
 }
 
 .gof_auto_applicable_ids <- function(available_ids, sim = NULL, obs = NULL, index = NULL) {
   ids <- available_ids
-  ids <- setdiff(ids, c("crps", "picp", "mwpi", "skill_score"))
-  if (!.gof_can_auto_run_apfb(index)) {
-    ids <- setdiff(ids, "apfb")
-  }
   if (!.gof_can_auto_run_hfb(obs)) {
     ids <- setdiff(ids, "hfb")
   }
@@ -272,9 +245,6 @@
   }
   if (!.gof_can_auto_run_quantile_shift_index(obs)) {
     ids <- setdiff(ids, "quantile_shift_index")
-  }
-  if (!.gof_can_auto_run_seasonal_bias(index)) {
-    ids <- setdiff(ids, c("seasonal_bias", "seasonal_nse", "seasonal_skill"))
   }
   if (!is.null(sim) && !is.null(obs)) {
     ids <- ids[vapply(

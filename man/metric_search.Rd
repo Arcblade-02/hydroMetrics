@@ -72,6 +72,6 @@ supplied values.
 \examples{
 metric_search(text = "bias")
 metric_search(category = "correlation")
-metric_search(tags = "probabilistic")
+metric_search(tags = "kge-component")
 metric_search(preset = "compatibility_core")
 }

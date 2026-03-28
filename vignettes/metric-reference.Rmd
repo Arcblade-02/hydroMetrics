@@ -69,7 +69,6 @@ head(hydroMetrics:::list_metrics()[, c("id", "name", "tags")], 12)
 The current compatibility-oriented wrapper names exported from the package
 namespace are:
 
-- `APFB()`
 - `HFB()`
 - `NSeff()`
 - `alpha()`
@@ -137,41 +136,6 @@ sort(intersect(
 ))
 ```
 
-## Seasonal Metrics
-
-Seasonal metrics require real monthly structure. They are not ordinary
-drop-in numeric-vector diagnostics.
-
-The current seasonal wrappers include:
-
-- `seasonal_bias()`
-- `seasonal_nse()`
-- `seasonal_skill()`
-
-These expect valid monthly inputs such as `ts` series with `frequency = 12`,
-or other monthly indexed inputs supported by the package's seasonal helpers.
-
-```{r}
-sim_ts <- ts(
-  c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11,
-    10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11),
-  frequency = 12
-)
-obs_ts <- ts(
-  c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10,
-    9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10),
-  frequency = 12
-)
-
-intersect(
-  c("seasonal_bias", "seasonal_nse", "seasonal_skill"),
-  names(gof(sim_ts, obs_ts, extended = TRUE))
-)
-```
-
-For plain numeric vectors without seasonal structure, these metrics are not
-auto-selected.
-
 ## Tail, Event, and Regime-Sensitive Metrics
 
 Some metrics are deterministic but still conditional because they require
@@ -196,29 +160,6 @@ intersect(
 )
 ```
 
-## Wrapper-Only Probabilistic Metrics
-
-The current uncertainty-facing probabilistic metrics are not part of the
-default deterministic `gof(sim, obs)` route:
-
-- `crps()` for ensemble forecasts
-- `picp()` for interval coverage
-- `mwpi()` for interval width
-- `skill_score()` for relative improvement against a baseline score
-
-These require shaped inputs that differ from the ordinary deterministic
-single-series contract, so they are explicit-wrapper metrics and are excluded
-from deterministic `gof(sim, obs, extended = TRUE)` auto-selection.
-
-```{r}
-intersect(
-  c("crps", "picp", "mwpi", "skill_score"),
-  names(gof(sim, obs, extended = TRUE))
-)
-```
-
-For practical examples of these wrappers, see the uncertainty vignette.
-
 ## Where To Go Next
 
 Use this vignette as the package map, then move to the workflow guide that
@@ -228,8 +169,6 @@ matches your task:
   package walkthrough
 - `vignette("calibration-guide", package = "hydroMetrics")` for deterministic
   calibration workflows and metric selection
-- `vignette("uncertainty-eval", package = "hydroMetrics")` for interval,
-  ensemble, and probabilistic wrapper use
 
 For exact function contracts, consult `?gof`, `?ggof`, and the relevant metric
 wrapper help pages.

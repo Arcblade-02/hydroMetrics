@@ -11,8 +11,8 @@ Completed areas include:
 
 - Layer A, Layer B, and Layer C implementation and closure
 - original-plan recovery items including `gof(extended = TRUE)`, canonical
-  information-theory reconciliation, `seasonal_skill`, `extended_valindex`,
-  and the completed vignette set
+  information-theory reconciliation, `extended_valindex`, and the completed
+  vignette set
 - Stage 6 validation artifacts and the compact NWIS-backed real-data
   validation layer under `inst/validation/`
 
@@ -32,7 +32,7 @@ Explicit deferment:
 
 ## Current Registry State
 
-- Registered metric ids: `102`
+- Registered metric ids: `94`
 - Registry uniqueness: confirmed (`unique_ids = TRUE`)
 - Recommended shortlist size: `10`
 
@@ -48,7 +48,6 @@ The current hardening pass validated:
   - `getting-started`
   - `metric-reference`
   - `calibration-guide`
-  - `uncertainty-eval`
 - full `devtools::test()`
 - `devtools::check(document = FALSE, error_on = 'warning')`
 - release-facing placeholder audit across:
@@ -79,10 +78,8 @@ remains conditional on metric-specific applicability rules. It should be
 treated as a broader deterministic discovery path rather than as an
 unconditional default contract.
 
-Wrapper-only or special-interface metrics remain outside ordinary deterministic
-auto-selection. This includes the current probabilistic wrappers `crps`,
-`picp`, `mwpi`, and `skill_score`, along with metrics that require special
-seasonal, event, interval, or ensemble structure.
+Conditional metrics remain outside ordinary deterministic auto-selection when
+their documented input contracts are not satisfied.
 
 `pareto_skill` remains deferred and unimplemented because the current
 literature audit did not establish a strong enough direct metric basis for a

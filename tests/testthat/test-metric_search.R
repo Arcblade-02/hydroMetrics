@@ -34,16 +34,12 @@ test_that("metric_search filters by text, category, tags, preset, and export fla
   expect_true(nrow(category_out) > 0L)
   expect_true(all(category_out$category == "correlation"))
 
-  tag_out <- metric_search(tags = "probabilistic")
-  expect_true(all(grepl("probabilistic", tag_out$tags, fixed = TRUE)))
-  expect_true(all(c("crps", "picp", "mwpi", "skill_score") %in% tag_out$id))
+  tag_out <- metric_search(tags = "kge-component")
+  expect_true(all(grepl("kge-component", tag_out$tags, fixed = TRUE)))
+  expect_true(all(c("alpha", "beta") %in% tag_out$id))
 
   preset_out <- metric_search(preset = "probabilistic_uncertainty")
   expect_true(all(c(
-    "crps",
-    "picp",
-    "mwpi",
-    "skill_score",
     "quantile_loss",
     "quantile_kge",
     "cdf_rmse",
@@ -55,7 +51,7 @@ test_that("metric_search filters by text, category, tags, preset, and export fla
 
   compat_out <- metric_search(compatibility = TRUE)
   expect_true(all(compat_out$compatibility_export))
-  expect_true(all(c("nse", "mnse", "rnse", "wsnse", "apfb", "hfb") %in% compat_out$id))
+  expect_true(all(c("nse", "mnse", "rnse", "wsnse", "hfb") %in% compat_out$id))
 })
 
 test_that("metric_search validates discovery filters conservatively", {
@@ -76,7 +72,7 @@ test_that("metric_preset resolves documented presets to canonical metric ids", {
   exported_out <- metric_preset("compatibility_core", exported_only = TRUE)
   expect_type(exported_out, "character")
   expect_true(all(exported_out %in% hydroMetrics:::metric_search(exported = TRUE)$id))
-  expect_true(all(c("nse", "mnse", "rnse", "wsnse", "apfb", "hfb") %in% exported_out))
+  expect_true(all(c("nse", "mnse", "rnse", "wsnse", "hfb") %in% exported_out))
 })
 
 test_that("metric_preset validates input conservatively", {

@@ -1040,57 +1040,6 @@ core_metric_spec_pbiasfdc <- function() {
   )
 }
 
-.metric_year_from_index <- function(index) {
-  years <- suppressWarnings(as.integer(format(as.POSIXlt(index, tz = "UTC"), "%Y")))
-  if (any(!is.finite(years))) {
-    stop("APFB could not derive calendar year from index.", call. = FALSE)
-  }
-  years
-}
-
-metric_apfb <- function(sim, obs, index) {
-  if (missing(index) || is.null(index)) {
-    stop("APFB requires an aligned time index.", call. = FALSE)
-  }
-  if (length(index) != length(obs)) {
-    stop("APFB index length must match input length.", call. = FALSE)
-  }
-
-  years <- .metric_year_from_index(index)
-  n_years <- length(unique(years))
-  if (n_years < 2L) {
-    stop("APFB requires at least 2 years after preprocessing.", call. = FALSE)
-  }
-
-  sim_peak <- tapply(sim, years, max)
-  obs_peak <- tapply(obs, years, max)
-  if (any(obs_peak == 0)) {
-    stop("APFB is undefined because annual observed peak includes zero.", call. = FALSE)
-  }
-
-  ratios <- (sim_peak - obs_peak) / obs_peak
-  if (length(ratios) == 0L || any(!is.finite(ratios))) {
-    stop("APFB denominator invalid.", call. = FALSE)
-  }
-
-  mean(ratios) * 100
-}
-
-core_metric_spec_apfb <- function() {
-  list(
-    id = "apfb",
-    fun = metric_apfb,
-    name = "Annual Peak Flow Bias",
-    description = "APFB as mean percent bias between annual simulated and observed peak flows.",
-    category = "bias",
-    perfect = 0,
-    range = NULL,
-    references = "Clean-room APFB compatibility implementation over yearly maxima.",
-    version_added = "0.1.0",
-    tags = character()
-  )
-}
-
 metric_hfb <- function(sim, obs, threshold_prob = 0.9) {
   if (!is.numeric(threshold_prob) ||
       length(threshold_prob) != 1L ||

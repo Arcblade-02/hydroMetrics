@@ -208,8 +208,6 @@ core_metric_spec_wasserstein_distance <- function() {
 
 # Shared Batch B2 conventions:
 # - sqrt_nse applies sqrt() to both sim and obs before the standard NSE formula
-# - seasonal_nse computes NSE on monthly climatology means and therefore
-#   requires monthly seasonal structure
 # - weighted_kge uses the explicit weighted Euclidean distance in KGE component
 #   space with stable defaults w_r = w_alpha = w_beta = 1
 # - quantile_kge uses type-7 sample quantiles on the fixed probability grid
@@ -252,44 +250,6 @@ core_metric_spec_sqrt_nse <- function() {
     perfect = 1,
     range = c(-Inf, 1),
     references = "Nash & Sutcliffe (1970) baseline NSE with transformed-objective-function context from Krause et al. (2005).",
-    version_added = "0.2.2",
-    tags = c("phase-3", "layer-b", "batch-b2")
-  )
-}
-
-metric_seasonal_nse <- function(sim, obs, index = NULL) {
-  if (length(obs) < 12L) {
-    stop("seasonal_nse requires at least 12 monthly values.", call. = FALSE)
-  }
-
-  groups <- .hm_monthly_groups_for_seasonal_bias(index)
-  sim_month <- tapply(sim, groups, mean)
-  obs_month <- tapply(obs, groups, mean)
-  sim_month <- as.numeric(sim_month[as.character(1:12)])
-  obs_month <- as.numeric(obs_month[as.character(1:12)])
-
-  if (any(!is.finite(sim_month)) || any(!is.finite(obs_month))) {
-    stop("seasonal_nse is undefined because monthly climatology could not be estimated.", call. = FALSE)
-  }
-
-  denom <- sum((obs_month - mean(obs_month))^2)
-  if (denom == 0) {
-    stop("seasonal_nse is undefined because observed monthly climatology has zero variance.", call. = FALSE)
-  }
-
-  1 - sum((sim_month - obs_month)^2) / denom
-}
-
-core_metric_spec_seasonal_nse <- function() {
-  list(
-    id = "seasonal_nse",
-    fun = metric_seasonal_nse,
-    name = "Seasonal NSE",
-    description = "NSE computed on monthly climatology means inferred from monthly ts or aligned date-like indexed input.",
-    category = "efficiency",
-    perfect = 1,
-    range = c(-Inf, 1),
-    references = "Nash & Sutcliffe (1970) baseline NSE with seasonal streamflow context from Gnann et al. (2020) and Berghuijs et al. (2025); the package metric is monthly-climatology NSE.",
     version_added = "0.2.2",
     tags = c("phase-3", "layer-b", "batch-b2")
   )

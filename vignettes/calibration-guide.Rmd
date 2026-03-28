@@ -77,7 +77,7 @@ When you want a single metric directly, the exported wrappers are often more
 convenient than a multi-metric `gof()` call. For core metrics that are not
 exposed as direct wrappers in the current public namespace, use
 `gof(methods = ...)`. The current compatibility-oriented exported wrappers are
-`APFB()`, `HFB()`, `NSeff()`, `alpha()`, `beta()`, `mae()`, `mNSeff()`,
+`HFB()`, `NSeff()`, `alpha()`, `beta()`, `mae()`, `mNSeff()`,
 `pbias()`, `r()`, `rNSeff()`, `rsr()`, and `wsNSeff()`. Core metrics such as
 `kge`, `rmse`, `r2`, and `nrmse` are available through `gof()` / `ggof()`
 method selection rather than standalone exported wrapper functions.
@@ -127,8 +127,7 @@ sort(intersect(
     "entropy_diff",
     "flow_duration_entropy",
     "tail_dependence_score",
-    "extended_valindex",
-    "seasonal_skill"
+    "extended_valindex"
   ),
   names(ext_out)
 ))
@@ -143,32 +142,6 @@ it still respects conditional gating.
 Some calibration targets are about more than overall fit. If the modeling goal
 is seasonal timing, regime shape, or selected extremes, metric choice should
 reflect that.
-
-### Seasonal Metrics
-
-`seasonal_nse` and `seasonal_skill` require valid monthly seasonality. They are
-defined on monthly climatology vectors, so the input must carry monthly time
-structure such as a `ts` series with `frequency = 12`.
-
-```{r}
-sim_ts <- ts(
-  c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11,
-    10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11),
-  frequency = 12
-)
-obs_ts <- ts(
-  c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10,
-    9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10),
-  frequency = 12
-)
-
-seasonal_nse(sim_ts, obs_ts)
-seasonal_skill(sim_ts, obs_ts)
-intersect(c("seasonal_nse", "seasonal_skill"), names(gof(sim_ts, obs_ts, extended = TRUE)))
-```
-
-For plain numeric vectors without monthly structure, these seasonal metrics are
-not auto-selected by `gof(extended = TRUE)`.
 
 ### Regime and Flow-Duration Diagnostics
 
@@ -201,26 +174,6 @@ intersect(
 These are best treated as targeted diagnostics, not generic first-choice
 calibration objectives.
 
-## Probabilistic and Special-Interface Metrics
-
-Not every package metric is a drop-in deterministic calibration score.
-
-The probabilistic Layer A metrics:
-
-- `crps`
-- `picp`
-- `mwpi`
-- `skill_score`
-
-are explicit-wrapper metrics with special input contracts. They are not part of
-default deterministic `gof(sim, obs)` selection, and they are not auto-selected
-by `gof(sim, obs, extended = TRUE)` for ordinary single simulated and observed
-vectors.
-
-Likewise, some specialized metrics need structural context or extra parameters.
-Use direct wrappers or explicit `gof(methods = ..., metric_params = ...)` calls
-only when that input contract matches the calibration problem.
-
 ## Practical Calibration Workflows
 
 ### A conservative deterministic workflow
@@ -241,19 +194,6 @@ not replace objective-specific diagnostics.
 extended_valindex(sim, obs)
 ```
 
-### A seasonal workflow
-
-When the calibration objective is seasonal climatology rather than only
-pointwise fit, move from the default deterministic metrics to seasonal
-wrappers:
-
-```{r}
-c(
-  seasonal_nse = seasonal_nse(sim_ts, obs_ts),
-  seasonal_skill = seasonal_skill(sim_ts, obs_ts)
-)
-```
-
 ## Caveats for Metric Choice
 
 - No single metric is universally best for calibration.
@@ -261,15 +201,13 @@ c(
   compat-10 shortlist.
 - `gof(extended = TRUE)` is useful for exploration, but conditional metrics
   appear only when their contracts are satisfied.
-- Seasonal metrics require genuine monthly structure.
 - Tail/event metrics require qualifying observed extremes or events.
-- Probabilistic metrics are not generic deterministic drop-ins.
 - Log-sensitive or zero-sensitive metrics should only be used when their input
   assumptions match the data and calibration objective.
 
 Choose metrics that match the behavior you want the model to reproduce:
-overall efficiency, low-flow fidelity, bias, seasonality, regime shape, or
-extreme-event behavior.
+overall efficiency, low-flow fidelity, bias, regime shape, or extreme-event
+behavior.
 
 ## Next Steps
 

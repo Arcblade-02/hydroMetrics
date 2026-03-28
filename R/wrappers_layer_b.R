@@ -110,26 +110,6 @@ sqrt_nse <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("sqrt_nse", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
-#' Evaluate the seasonal NSE wrapper
-#'
-#' Thin exported wrapper over [gof()] for the registry metric `"seasonal_nse"`.
-#' This metric requires monthly seasonality that can be inferred from a monthly
-#' `ts` series or from aligned date-like indexed input.
-#'
-#' @inheritParams gof
-#'
-#' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
-#'
-#' @examples
-#' sim <- ts(rep(c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11), 2), frequency = 12)
-#' obs <- ts(rep(c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10), 2), frequency = 12)
-#' seasonal_nse(sim, obs)
-#' @export
-seasonal_nse <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("seasonal_nse", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
-}
-
 #' Evaluate the weighted KGE wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric

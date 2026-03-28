@@ -42,7 +42,6 @@ notes recorded in `workstream-b-validation-inventory.md`:
 - `kgelf`
 - `kgenp`
 - `skge`
-- `apfb` / `APFB`
 - `hfb` / `HFB`
 
 These divergences are treated as evidence-backed classification outcomes, not
@@ -58,10 +57,6 @@ Not directly comparable on the current public package surfaces:
 
 Currently validated through literature/example-based or base-statistics checks:
 
-- `crps`
-- `picp`
-- `mwpi`
-- `skill_score`
 - `quantile_loss`
 - `cdf_rmse`
 - `quantile_deviation`
@@ -98,14 +93,7 @@ Currently validated through literature/example-based or base-statistics checks:
   classification level.
 - The probabilistic/distributional surface now has a clearer validation map:
   the currently audited metrics are supported by direct literature/example-
-  based checks, and `crps` now also has an exercised `scoringRules`
-  comparison path on a small deterministic reference set.
-
-For `crps`, the current recorded tolerance rule is absolute agreement within
-`sqrt(.Machine$double.eps)` against
-`scoringRules::crps_sample(..., method = "edf")`. The exercised baseline run
-observed a maximum absolute difference of `1.39e-17` across the committed
-reference cases.
+  based checks focused on the remaining registered package surface.
 
 ## Backlog
 

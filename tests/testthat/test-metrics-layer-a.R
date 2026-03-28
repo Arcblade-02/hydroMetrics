@@ -228,8 +228,7 @@ test_that("layer A batch A3 registry ids are present", {
     "fdc_highflow_bias",
     "fdc_lowflow_bias",
     "log_fdc_rmse",
-    "low_flow_bias",
-    "seasonal_bias"
+    "low_flow_bias"
   )
 
   expect_true(all(target %in% ids))
@@ -331,45 +330,6 @@ test_that("low_flow_bias errors when the observed low-flow subset sums to zero",
   )
 })
 
-test_that("seasonal_bias matches monthly climatology bias on monthly ts input", {
-  sim <- ts(
-    c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11,
-      10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11),
-    frequency = 12
-  )
-  obs <- ts(
-    c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10,
-      9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10),
-    frequency = 12
-  )
-  sim_month <- tapply(as.numeric(sim), stats::cycle(sim), mean)
-  obs_month <- tapply(as.numeric(obs), stats::cycle(obs), mean)
-  expected <- 100 * mean((sim_month - obs_month) / obs_month)
-
-  expect_equal(seasonal_bias(sim, obs), expected)
-  out <- gof(sim, obs, methods = "seasonal_bias")
-  expect_equal(unname(out[["seasonal_bias"]]), expected)
-})
-
-test_that("seasonal_bias rejects unsupported or incomplete seasonal structure", {
-  expect_error(
-    seasonal_bias(1:12, 1:12),
-    "requires monthly ts input or an aligned date-like index"
-  )
-
-  skip_if_not_installed("zoo")
-  idx <- as.Date(c(
-    "2000-01-01", "2000-02-01", "2000-03-01", "2000-04-01", "2000-05-01", "2000-06-01",
-    "2001-01-01", "2001-02-01", "2001-03-01", "2001-04-01", "2001-05-01", "2001-06-01"
-  ))
-  partial_sim <- zoo::zoo(rep(c(10, 11, 12, 13, 14, 15), 2), order.by = idx)
-  partial_obs <- zoo::zoo(rep(c(9, 10, 11, 12, 13, 14), 2), order.by = idx)
-  expect_error(
-    seasonal_bias(partial_sim, partial_obs),
-    "requires monthly ts input or an aligned date-like index"
-  )
-})
-
 test_that("layer A batch A4 registry ids are present", {
   ids <- list_metrics()$id
   target <- c("huber_loss", "quantile_loss", "trimmed_rmse", "winsor_rmse")
@@ -460,73 +420,4 @@ test_that("Batch A4 wrappers integrate with metric_params for multi-series input
   out_trim <- trimmed_rmse(sim, obs, trim = 0.2)
   expect_true(is.numeric(out_trim))
   expect_identical(names(out_trim), c("a", "b"))
-})
-
-test_that("layer A batch A5 registry ids are present", {
-  ids <- list_metrics()$id
-  target <- c("crps", "picp", "mwpi", "skill_score")
-
-  expect_true(all(target %in% ids))
-})
-
-test_that("crps matches the empirical ensemble formula", {
-  ens <- matrix(
-    c(
-      1.0, 1.2, 0.8,
-      2.0, 2.2, 1.8,
-      3.0, 3.2, 2.8
-    ),
-    nrow = 3,
-    byrow = TRUE
-  )
-  obs <- c(1.1, 2.1, 3.1)
-
-  expected_case <- vapply(seq_len(nrow(ens)), function(i) {
-    members <- ens[i, ]
-    mean(abs(members - obs[[i]])) - sum(abs(outer(members, members, "-"))) / (2 * ncol(ens)^2)
-  }, numeric(1))
-  expected <- mean(expected_case)
-
-  expect_equal(crps(ens, obs), expected)
-  expect_equal(metric_crps(ens, obs), expected)
-})
-
-test_that("picp and mwpi match interval coverage and width definitions", {
-  lower <- c(0.9, 1.9, 2.9)
-  upper <- c(1.3, 2.3, 3.3)
-  obs <- c(1.1, 2.4, 3.1)
-
-  expect_equal(picp(lower, upper, obs), mean(obs >= lower & obs <= upper))
-  expect_equal(mwpi(lower, upper), mean(upper - lower))
-  expect_equal(metric_picp(lower, obs, upper = upper), mean(obs >= lower & obs <= upper))
-  expect_equal(metric_mwpi(lower, upper), mean(upper - lower))
-})
-
-test_that("skill_score matches lower-is-better baseline normalization", {
-  score <- c(0.8, 0.7, 0.9)
-  baseline <- c(1.0, 1.0, 1.0)
-  expected <- 1 - mean(score) / mean(baseline)
-
-  expect_equal(skill_score(score, baseline), expected)
-  expect_equal(metric_skill_score(score, baseline), expected)
-})
-
-test_that("A5 input contracts reject unsupported structures", {
-  ens_bad <- matrix(c(1, 2, 3), nrow = 3)
-  obs <- c(1, 2, 3)
-
-  expect_error(crps(ens_bad, obs), "at least 2 ensemble members")
-  expect_error(crps(c(1, 2, 3), obs), "numeric matrix")
-  expect_error(picp(c(2, 1), c(1, 2), c(1.5, 1.5)), "`lower` must be less than or equal to `upper`")
-  expect_error(mwpi(c(2, 1), c(1, 2)), "`lower` must be less than or equal to `upper`")
-  expect_error(skill_score(score = 1, baseline_score = 0), "mean\\(baseline_score\\) == 0")
-})
-
-test_that("A5 contracts reject mismatched lengths and invalid score inputs", {
-  ens <- matrix(c(1, 2, 3, 2, 3, 4), nrow = 2, byrow = TRUE)
-
-  expect_error(crps(ens, c(1)), "must match `nrow\\(sim\\)`")
-  expect_error(picp(c(0, 1), c(1, 2), c(0.5)), "same length")
-  expect_error(mwpi(c(0, 1), c(1)), "same length")
-  expect_error(skill_score(score = c(-1, 1), baseline_score = c(1, 1)), "must be non-negative")
 })

@@ -43,7 +43,6 @@ reconciliation outcome: `equivalent`, `intentionally divergent`,
 | `pfactor` | compatibility overlap | `hydroGOF::pfactor` | interface/signature inspection in `test-compat-hydrogof.R` | not directly comparable | `hydroMetrics` defines `pfactor(sim, obs, tol)` as a tolerance-band hit proportion on paired series; `hydroGOF::pfactor(x, lband, uband)` is an uncertainty-band coverage diagnostic with different required inputs |
 | `rfactor` | compatibility overlap | `hydroGOF::rfactor` | interface/signature inspection in `test-compat-hydrogof.R` | not directly comparable | `hydroMetrics` defines `rfactor(sim, obs)` as mean absolute error normalized by mean absolute observations; `hydroGOF::rfactor(x, lband, uband)` is an interval-width diagnostic normalized by `sd(x)` |
 | `rsd` | compatibility overlap | no direct `hydroGOF` export | namespace inspection in `test-compat-hydrogof.R` | not directly comparable | `hydroMetrics::rsd` is a standard-deviation ratio metric, but `hydroGOF` does not expose a direct `RSD` / `rsd` comparator on the current public surface |
-| `apfb` / `APFB` | compatibility overlap | `hydroGOF::APFB` | explicit divergence test in `test-compat-hydrogof.R`, plus formula inspection | intentionally divergent | `hydroMetrics` returns signed mean percent bias over annual peaks; `hydroGOF` returns mean absolute relative annual-peak error on `zoo` inputs |
 | `hfb` / `HFB` | compatibility overlap | `hydroGOF::HFB` | explicit divergence test in `test-compat-hydrogof.R`, plus formula inspection | intentionally divergent | `hydroMetrics` computes percent bias over observations above a global threshold; `hydroGOF` computes a per-year median absolute relative high-flow bias on `zoo` inputs |
 
 ## Additional HydroGOF-Overlap Metrics Still Needing Explicit Comparison Evidence
@@ -61,10 +60,6 @@ outcome is intentional divergence or non-comparability rather than equivalence.
 
 | Metric | Category | Intended validation source type | Current evidence | Status | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `crps` | probabilistic / ensemble scoring | external reference package plus literature/example-based validation | independent empirical-CRPS formula test in `test-metrics-layer-a.R`; exercised `scoringRules::crps_sample(..., method = "edf")` comparison on three deterministic ensemble cases in `test-probabilistic-validation.R`; literature references in `inst/REFERENCES.md` | validated | Current practical tolerance rule is absolute agreement within `sqrt(.Machine$double.eps)`; the exercised baseline run observed max absolute difference `1.39e-17` across the committed cases |
-| `picp` | probabilistic / interval coverage | literature/example-based validation | explicit inclusive-coverage formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | validated | Straightforward deterministic coverage proportion with direct independent test |
-| `mwpi` | probabilistic / interval width | literature/example-based validation | explicit interval-width formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | validated | Straightforward deterministic width diagnostic with direct independent test |
-| `skill_score` | probabilistic / verification | literature/example-based validation | explicit normalization-formula test in `test-metrics-layer-a.R`; literature references in `inst/REFERENCES.md` | validated | Current package variant is directly tested against the lower-is-better skill-score normalization |
 | `quantile_loss` | probabilistic / quantile scoring | literature/example-based validation | explicit pinball-loss formula test in `test-metrics-layer-a.R`; additional identity check in `test-probabilistic-validation.R`; literature references in `inst/REFERENCES.md` | validated | Grounded in Koenker & Bassett (1978) |
 | `cdf_rmse` | distributional / empirical CDF | literature/example-based validation | explicit pooled-support ECDF RMSE test in `test-metrics-layer-b.R`; reference note in `inst/REFERENCES.md` | validated | Strongest practical path is independent base-`stats` ECDF calculation rather than external package comparison |
 | `quantile_deviation` | distributional / quantile summary | literature/example-based validation | explicit type-7 fixed-grid quantile RMSE test in `test-metrics-layer-b.R`; literature references in `inst/REFERENCES.md` | validated | Grounded in Hyndman & Fan (1996) quantile conventions |
@@ -81,8 +76,8 @@ outcome is intentional divergence or non-comparability rather than equivalence.
   set of exported hydroGOF-overlap wrappers whose behavior matches committed
   `hydroGOF` comparison examples.
 - The previously unresolved overlap metrics targeted in this pass now have
-  explicit reconciliation outcomes: `rnse`, `wsnse`, `pbias`, `apfb`, and
-  `hfb` are intentionally divergent rather than unresolved.
+  explicit reconciliation outcomes: `rnse`, `wsnse`, `pbias`, and `hfb` are
+  intentionally divergent rather than unresolved.
 - The next deterministic overlap tranche now has explicit outcomes as well:
   `rmse`, `mse`, `ve`, and `kge` are evidenced as equivalent on the committed
   comparison cases, while `nrmse` and `r2` are now classified as intentionally
@@ -106,8 +101,3 @@ outcome is intentional divergence or non-comparability rather than equivalence.
 - Probabilistic and distributional metrics now have an explicit validation map
   that distinguishes literature/example-based evidence from future
   external-package comparison paths.
-- `crps` now has both a committed conditional external reference-package path
-  via `scoringRules` and an exercised baseline comparison result recorded for
-  the current deterministic case set.
-- No comparable external-package baseline is yet wired for the broader
-  probabilistic surface.

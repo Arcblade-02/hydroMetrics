@@ -42,7 +42,7 @@ test_that("layer B batch B1 registry ids are present", {
 
 test_that("layer B batch B2 registry ids are present", {
   ids <- list_metrics()$id
-  target <- c("sqrt_nse", "seasonal_nse", "weighted_kge", "quantile_kge")
+  target <- c("sqrt_nse", "weighted_kge", "quantile_kge")
 
   expect_true(all(target %in% ids))
 })
@@ -198,35 +198,6 @@ test_that("sqrt_nse rejects negative inputs explicitly", {
   )
 })
 
-test_that("seasonal_nse matches NSE on monthly climatology means", {
-  sim <- ts(
-    c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11,
-      10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11),
-    frequency = 12
-  )
-  obs <- ts(
-    c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10,
-      9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10),
-    frequency = 12
-  )
-  sim_month <- tapply(as.numeric(sim), stats::cycle(sim), mean)
-  obs_month <- tapply(as.numeric(obs), stats::cycle(obs), mean)
-  expected <- 1 - sum((sim_month - obs_month)^2) / sum((obs_month - mean(obs_month))^2)
-
-  expect_equal(seasonal_nse(sim, obs), expected)
-  expect_equal(metric_seasonal_nse(as.numeric(sim), as.numeric(obs), index = stats::time(obs)), expected)
-
-  out <- gof(sim, obs, methods = "seasonal_nse")
-  expect_equal(unname(out[["seasonal_nse"]]), expected)
-})
-
-test_that("seasonal_nse rejects unsupported seasonal structure", {
-  expect_error(
-    seasonal_nse(1:12, 1:12),
-    "requires monthly ts input or an aligned date-like index"
-  )
-})
-
 test_that("weighted_kge matches the explicit weighted KGE formula", {
   sim <- c(1.2, 1.8, 3.4, 3.9, 5.1, 6.0)
   obs <- c(1.0, 2.0, 3.0, 4.0, 5.0, 6.2)
@@ -288,21 +259,6 @@ test_that("layer B batch B2 wrappers integrate with gof extended policy", {
   out_plain <- gof(sim, obs, extended = TRUE)
 
   expect_true(all(c("sqrt_nse", "weighted_kge", "quantile_kge") %in% names(out_plain)))
-  expect_false("seasonal_nse" %in% names(out_plain))
-
-  sim_ts <- ts(
-    c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11,
-      10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11),
-    frequency = 12
-  )
-  obs_ts <- ts(
-    c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10,
-      9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10),
-    frequency = 12
-  )
-  out_ts <- gof(sim_ts, obs_ts, extended = TRUE)
-
-  expect_true("seasonal_nse" %in% names(out_ts))
 })
 
 test_that("layer B batch B3 registry ids are present", {

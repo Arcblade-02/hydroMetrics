@@ -54,7 +54,6 @@
 
   alias_map <- data.frame(
     wrapper = c(
-      "APFB",
       "HFB",
       "NSeff",
       "mNSeff",
@@ -64,7 +63,6 @@
       "kl_divergence_flow"
     ),
     id = c(
-      "apfb",
       "hfb",
       "nse",
       "mnse",
@@ -115,9 +113,6 @@
 
   seasonal_regime_ids <- ids[
     ids %in% c(
-      "seasonal_bias",
-      "seasonal_nse",
-      "seasonal_skill",
       "event_nse",
       "extreme_event_ratio",
       "peak_timing_error",
@@ -129,7 +124,6 @@
       "low_flow_bias",
       "fdc_highflow_bias",
       "fdc_lowflow_bias",
-      "apfb",
       "hfb",
       "pbiasfdc",
       "tail_dependence_score",
@@ -149,7 +143,6 @@
         "mnse",
         "rnse",
         "wsnse",
-        "apfb",
         "hfb"
       )
     ),
@@ -165,7 +158,6 @@
   metrics <- .get_registry()$list()
   export_map <- .hm_metric_search_export_map(metrics$id)
   compatibility_wrappers <- c(
-    "APFB",
     "HFB",
     "NSeff",
     "mNSeff",
@@ -264,7 +256,7 @@
 #' @examples
 #' metric_search(text = "bias")
 #' metric_search(category = "correlation")
-#' metric_search(tags = "probabilistic")
+#' metric_search(tags = "kge-component")
 #' metric_search(preset = "compatibility_core")
 #' @export
 metric_search <- function(text = NULL,

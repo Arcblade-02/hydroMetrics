@@ -130,31 +130,6 @@ test_that("canonical metric tree contains no NA-handling logic tokens", {
     return(list(sim = sim, obs = obs, params = list()))
   }
 
-  if (identical(id, "apfb")) {
-    idx <- as.Date(c("2020-01-01", "2020-06-01", "2021-01-01", "2021-06-01"))
-    sim <- c(12, 18, 33, 35)
-    obs <- c(10, 20, 30, 40)
-    return(list(sim = sim, obs = obs, params = list(index = idx)))
-  }
-
-  if (identical(id, "seasonal_bias")) {
-    obs <- stats::ts(c(1:12, 2:13), start = c(2000, 1), frequency = 12)
-    sim <- obs + 0.5
-    return(list(sim = as.numeric(sim), obs = as.numeric(obs), params = list(index = stats::time(obs))))
-  }
-
-  if (identical(id, "seasonal_nse")) {
-    obs <- stats::ts(c(1:12, 2:13), start = c(2000, 1), frequency = 12)
-    sim <- obs + c(rep(0.5, 12), rep(-0.5, 12))
-    return(list(sim = as.numeric(sim), obs = as.numeric(obs), params = list(index = stats::time(obs))))
-  }
-
-  if (identical(id, "seasonal_skill")) {
-    obs <- stats::ts(c(1:12, 2:13), start = c(2000, 1), frequency = 12)
-    sim <- obs + c(rep(0.5, 12), rep(-0.5, 12))
-    return(list(sim = as.numeric(sim), obs = as.numeric(obs), params = list(index = stats::time(obs))))
-  }
-
   if (identical(id, "derivative_nse")) {
     sim <- c(1, 2, 4, 7)
     obs <- c(1, 2, 3, 5)
@@ -171,28 +146,6 @@ test_that("canonical metric tree contains no NA-handling logic tokens", {
     sim <- c(1, 2, 4, 7, 2, 1, 1, 3, 6, 2, 1, 1)
     obs <- c(1, 2, 5, 6, 2, 1, 1, 4, 5, 2, 1, 1)
     return(list(sim = sim, obs = obs, params = list()))
-  }
-
-  if (identical(id, "crps")) {
-    sim <- matrix(c(1, 1.2, 0.8, 2, 2.2, 1.8), nrow = 2, byrow = TRUE)
-    obs <- c(1.1, 2.1)
-    return(list(sim = sim, obs = obs, params = list()))
-  }
-
-  if (identical(id, "picp")) {
-    return(list(
-      sim = c(0.9, 1.9),
-      obs = c(1.1, 2.1),
-      params = list(upper = c(1.3, 2.3))
-    ))
-  }
-
-  if (identical(id, "mwpi")) {
-    return(list(sim = c(0.9, 1.9), obs = c(1.3, 2.3), params = list()))
-  }
-
-  if (identical(id, "skill_score")) {
-    return(list(sim = c(0.8, 0.7), obs = c(1.0, 1.0), params = list()))
   }
 
   if (identical(id, "hfb")) {

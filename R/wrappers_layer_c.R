@@ -314,27 +314,6 @@ quantile_shift_index <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("quantile_shift_index", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
-#' Evaluate the seasonal skill wrapper
-#'
-#' Thin exported wrapper over [gof()] for the registry metric
-#' `"seasonal_skill"`. The metric requires monthly seasonality that can be
-#' inferred from a monthly `ts` input or from aligned date-like indices, then
-#' computes an NSE-style skill score on the 12 monthly climatology means.
-#'
-#' @inheritParams gof
-#'
-#' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
-#'
-#' @examples
-#' sim <- ts(rep(c(10, 12, 9, 8, 7, 6, 5, 6, 7, 8, 9, 11), 2), frequency = 12)
-#' obs <- ts(rep(c(9, 11, 10, 8, 6, 6, 5, 5, 8, 8, 10, 10), 2), frequency = 12)
-#' seasonal_skill(sim, obs)
-#' @export
-seasonal_skill <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("seasonal_skill", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
-}
-
 #' Evaluate the extended validation index wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric

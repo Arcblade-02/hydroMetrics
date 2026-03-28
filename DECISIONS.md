@@ -47,7 +47,7 @@ two duplicated historical `D-030` headings.
 - Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
 
 #### D-008: Core Metric Bootstrap Strategy
-- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `beta`, `alpha`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `pbiasfdc`, `apfb`, `hfb`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
+- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `beta`, `alpha`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `pbiasfdc`, `hfb`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
 - Status: Accepted
 - Notes: Public API remains stable and users can evaluate core metrics without manual registration. Deprecated `rpearson` requests are handled by alias resolution rather than as a separately registered core metric.
 
@@ -200,7 +200,7 @@ sequence.
 #### Former D-027: Phase 2B Batch 4A APFB/HFB Modern Scalar Exports
 - Decision: Add `APFB` and `HFB` as clean-room compatibility exports that return numerically coercible S3 scalars with class `c("hydro_metric_scalar", "numeric")`.
 - Status: Retained supporting record
-- Notes: Former numbering only. The scalar-output contract remains current, while the exact wrapper-routing path is governed by the later orchestration and consolidation records below.
+- Notes: Former numbering only. This record is historical after the removal of `APFB()` from the current package surface; the scalar-wrapper convention remains relevant only to surviving wrappers such as `HFB()`.
 
 #### Former D-028: Phase 2B Batch 4B Modern Orchestration Compatibility Layer
 - Decision: Export `preproc`, `gof`, `ggof`, and `valindex` as clean-room compatibility wrappers over the existing preprocessing engine and registered metric dispatch, with structured S3 returns.

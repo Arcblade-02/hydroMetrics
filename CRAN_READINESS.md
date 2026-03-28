@@ -18,7 +18,8 @@ serious CRAN submission push.
   has been removed, and targeted reference checks are in place.
 - Workstream B validation artifacts are materially stronger than the earlier
   baseline: hydroGOF-overlap classification is closed at the classification
-  level, and the CRPS external reference path is exercised and documented.
+  level, and the remaining validation/reference narrative is exercised and
+  documented.
 - A reproducible benchmark baseline exists for the current public orchestration
   paths, and it is clearly separated from broader exploratory performance
   tooling.
@@ -58,8 +59,7 @@ serious CRAN submission push.
 
 - Core runtime dependencies remain narrow (`R6`, `stats`).
 - Plotting, comparison-package validation, and indexed time-series support stay
-  optional through `Suggests` (`ggplot2`, `hydroGOF`, `scoringRules`, `xts`,
-  `zoo`).
+  optional through `Suggests` (`ggplot2`, `hydroGOF`, `xts`, `zoo`).
 - This is a good fit for the current package scope, but it means any CRAN
   readiness review should check examples, optional failure paths, and
   documentation clarity around suggested packages.

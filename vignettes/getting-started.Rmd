@@ -112,7 +112,6 @@ gof(prep$sim, prep$obs, methods = "NSE")
   `PBIAS` are accepted in `gof()` / `ggof()` `methods`, but they are not
   exported standalone functions in the package namespace.
 - `ggof()` is tabular output only; it does not create plots.
-- `APFB()` requires indexed `zoo` or `xts` inputs.
 - `preproc()` currently supports single-series vector or indexed inputs only.
 - Formal compatibility aliases such as `na.rm`, `fun`, `keep`,
   `epsilon.type`, and `epsilon.value` are documented where already supported by

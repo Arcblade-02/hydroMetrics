@@ -41,14 +41,6 @@ test_that("selected hydroGOF-overlap metrics are intentionally divergent", {
   expect_gt(abs(hm_pbias - hg_pbias), tol)
   expect_equal(round(hm_pbias, 1), hg_pbias, tolerance = tol)
 
-  idx_apfb <- as.Date(c("2020-01-01", "2020-06-01", "2021-01-01", "2021-06-01"))
-  sim_apfb <- zoo::zoo(c(12, 15, 25, 35), order.by = idx_apfb)
-  obs_apfb <- zoo::zoo(c(10, 10, 20, 30), order.by = idx_apfb)
-  hm_apfb <- as.numeric(APFB(sim_apfb, obs_apfb))
-  hg_apfb <- as.numeric(hydroGOF::APFB(sim_apfb, obs_apfb))
-  expect_gt(abs(hm_apfb - hg_apfb), tol)
-  expect_equal(hm_apfb / 100, hg_apfb, tolerance = tol)
-
   idx_hfb <- as.Date("2020-01-01") + 0:29
   sim_hfb <- zoo::zoo(2:31, order.by = idx_hfb)
   obs_hfb <- zoo::zoo(1:30, order.by = idx_hfb)

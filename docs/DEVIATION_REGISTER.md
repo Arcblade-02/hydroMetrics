@@ -13,8 +13,6 @@
 - Lowercase/internal-style compatibility exports remain available where they
   were already public in Phase 2: `alpha()`, `beta()`, `mae()`, `pbias()`,
   `r()`, and `rsr()`.
-- `APFB()` remains an indexed compatibility wrapper that requires univariate
-  `zoo` or `xts` inputs with a time index.
 - `preproc()` remains intentionally limited to single-series numeric or indexed
   inputs; matrix/data.frame preprocessing is not added in this closure.
 

@@ -99,7 +99,7 @@ result.
   yes
 - Notes:
   - Validation inventory and summary are coherent with the current hydroGOF
-    overlap classifications and the exercised CRPS reference path.
+    overlap classifications and the remaining validation/reference narrative.
   - The benchmark area distinguishes the active Workstream B baseline from the
     older historical Phase 2 material.
 
@@ -118,7 +118,7 @@ result.
 - `Suggests` behavior reviewed for examples/vignettes/helpers: yes
 - Any suggested package now acting like a hard dependency: no
 - Notes:
-  - `ggplot2`, `hydroGOF`, `scoringRules`, `xts`, and `zoo` remain optional.
+  - `ggplot2`, `hydroGOF`, `xts`, and `zoo` remain optional.
   - Current helper and validation paths document graceful optional-dependency
     behavior rather than treating suggested packages as silent hard runtime
     requirements.

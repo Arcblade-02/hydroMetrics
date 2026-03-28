@@ -27,7 +27,6 @@
     "kgenp" = "kgenp",
     "skge" = "skge",
     "pbiasfdc" = "pbiasfdc",
-    "apfb" = "apfb",
     "hfb" = "hfb"
   )
 }
@@ -345,11 +344,6 @@
 
 .gof_runtime_metric_calls <- function(metric_calls, payload) {
   lapply(metric_calls, function(call) {
-    params <- call$params
-    if (call$id %in% c("apfb", "seasonal_bias", "seasonal_nse", "seasonal_skill") && is.null(params$index)) {
-      params$index <- payload$index
-    }
-    call$params <- params
     call
   })
 }

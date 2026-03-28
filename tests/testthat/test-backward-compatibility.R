@@ -36,7 +36,7 @@ test_that("gof preserves na.rm compatibility mapping to na_strategy", {
 })
 
 test_that("public wrappers and orchestration entry points expose compatibility formals", {
-  wrapper_fns <- c("alpha", "APFB", "beta", "HFB", "mae", "mNSeff", "NSeff", "pbias", "r", "rNSeff", "rsr", "valindex", "wsNSeff")
+  wrapper_fns <- c("alpha", "beta", "HFB", "mae", "mNSeff", "NSeff", "pbias", "r", "rNSeff", "rsr", "valindex", "wsNSeff")
   for (fn_name in wrapper_fns) {
     expect_true("na.rm" %in% names(formals(get(fn_name, envir = asNamespace("hydroMetrics")))))
   }

@@ -124,7 +124,7 @@ test_that("layer A wrappers integrate with gof output", {
 
 test_that("layer A batch A2 registry ids are present", {
   ids <- list_metrics()$id
-  target <- c("smape", "mare", "mrb", "log_rmse", "msle", "log_nse")
+  target <- c("smape", "mare", "mrb", "msle")
 
   expect_true(all(target %in% ids))
 })
@@ -159,15 +159,6 @@ test_that("mare and mrb error when observed values contain zero", {
   expect_error(mrb(c(1, 2, 3), c(1, 0, 3)), "obs contains zero")
 })
 
-test_that("log_rmse matches RMSE on logged positive values", {
-  sim <- c(1.2, 1.8, 3.4, 3.9, 5.1)
-  obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
-  expected <- sqrt(mean((log(sim) - log(obs))^2))
-
-  expect_equal(log_rmse(sim, obs), expected)
-  expect_equal(evaluate_metrics(sim, obs, "log_rmse")$value[[1]], expected)
-})
-
 test_that("msle matches the log1p squared-error formula", {
   sim <- c(0, 1.2, 1.8, 3.4, 3.9, 5.1)
   obs <- c(0, 1.0, 2.0, 3.0, 4.0, 5.0)
@@ -177,30 +168,8 @@ test_that("msle matches the log1p squared-error formula", {
   expect_equal(evaluate_metrics(sim, obs, "msle")$value[[1]], expected)
 })
 
-test_that("log_nse matches NSE on logged positive values", {
-  sim <- c(1.2, 1.8, 3.4, 3.9, 5.1)
-  obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
-  log_sim <- log(sim)
-  log_obs <- log(obs)
-  expected <- 1 - sum((log_sim - log_obs)^2) / sum((log_obs - mean(log_obs))^2)
-
-  expect_equal(log_nse(sim, obs), expected)
-  expect_equal(evaluate_metrics(sim, obs, "log_nse")$value[[1]], expected)
-})
-
 test_that("log-domain metrics reject invalid values conservatively", {
-  expect_error(log_rmse(c(1, 2, 3), c(0, 1, 2)), "non-positive values")
-  expect_error(log_rmse(c(1, 2, 3), c(-1, 1, 2)), "non-positive values")
   expect_error(msle(c(1, 2, 3), c(-1, 1, 2)), "negative values")
-  expect_error(log_nse(c(1, 2, 3), c(0, 1, 2)), "non-positive values")
-  expect_error(log_nse(c(1, 2, 3), c(-1, 1, 2)), "non-positive values")
-})
-
-test_that("log_nse errors when logged observed variance is zero", {
-  expect_error(
-    log_nse(c(2, 2, 2), c(1, 1, 1)),
-    "log\\(obs\\) has zero variance"
-  )
 })
 
 .test_a3_fdc_prepare <- function(x) {
@@ -224,7 +193,6 @@ test_that("layer A batch A3 registry ids are present", {
   ids <- list_metrics()$id
   target <- c(
     "nrmse_range",
-    "fdc_lowflow_bias",
     "low_flow_bias"
   )
 
@@ -245,46 +213,6 @@ test_that("nrmse_range errors when the observed range is zero", {
     nrmse_range(c(1, 2, 3), c(2, 2, 2)),
     "range\\(obs\\) == 0"
   )
-})
-
-test_that("Batch A3 FDC metrics follow the shared descending Weibull convention", {
-  sim <- c(1.2, 1.8, 3.4, 3.9, 5.1, 6.0, 7.2, 8.1, 9.3, 10.0)
-  obs <- c(1.0, 2.0, 3.0, 4.0, 5.0, 6.2, 7.0, 8.0, 9.0, 10.1)
-  sim_fdc <- .test_a3_fdc_prepare(sim)
-  obs_fdc <- .test_a3_fdc_prepare(obs)
-
-  n_low <- max(2L, ceiling(length(obs) * 0.30))
-  sim_low <- tail(sim_fdc$flow, n_low)
-  obs_low <- tail(obs_fdc$flow, n_low)
-  expected_low <- -100 * (
-    sum(log(sim_low) - log(sim_low[[n_low]])) -
-      sum(log(obs_low) - log(obs_low[[n_low]]))
-  ) / sum(log(obs_low) - log(obs_low[[n_low]]))
-
-  expect_equal(fdc_lowflow_bias(sim, obs), expected_low)
-
-  out <- evaluate_metrics(
-    sim,
-    obs,
-    c("fdc_lowflow_bias")
-  )
-  values <- setNames(out$value, out$metric)
-  expect_equal(values[["fdc_lowflow_bias"]], expected_low)
-})
-
-test_that("Batch A3 FDC metrics are permutation-invariant after FDC construction", {
-  sim <- c(1.2, 1.8, 3.4, 3.9, 5.1, 6.0, 7.2, 8.1, 9.3, 10.0)
-  obs <- c(1.0, 2.0, 3.0, 4.0, 5.0, 6.2, 7.0, 8.0, 9.0, 10.1)
-  perm <- c(10, 3, 6, 1, 8, 2, 9, 4, 5, 7)
-  fns <- list(fdc_lowflow_bias)
-
-  for (fn in fns) {
-    expect_equal(fn(sim, obs), fn(sim[perm], obs[perm]))
-  }
-})
-
-test_that("Batch A3 FDC metrics reject invalid short or non-positive inputs", {
-  expect_error(fdc_lowflow_bias(c(1, 2, 3), c(0, 1, 2)), "non-positive values")
 })
 
 test_that("low_flow_bias matches paired low-flow subset bias", {

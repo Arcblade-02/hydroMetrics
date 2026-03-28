@@ -142,22 +142,6 @@ mrb <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("mrb", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
-#' Evaluate the log-transformed RMSE wrapper
-#'
-#' Thin exported wrapper over [gof()] for the registry metric `"log_rmse"`.
-#'
-#' @inheritParams gof
-#'
-#' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
-#'
-#' @examples
-#' log_rmse(c(1.2, 1.8, 3.4), c(1, 2, 3))
-#' @export
-log_rmse <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("log_rmse", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
-}
-
 #' Evaluate the mean squared logarithmic error wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric `"msle"`.
@@ -174,22 +158,6 @@ msle <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("msle", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
-#' Evaluate the log-transformed NSE wrapper
-#'
-#' Thin exported wrapper over [gof()] for the registry metric `"log_nse"`.
-#'
-#' @inheritParams gof
-#'
-#' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
-#'
-#' @examples
-#' log_nse(c(1.2, 1.8, 3.4), c(1, 2, 3))
-#' @export
-log_nse <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("log_nse", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
-}
-
 #' Evaluate the range-normalized RMSE wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric `"nrmse_range"`.
@@ -204,22 +172,6 @@ log_nse <- function(sim, obs, na.rm = NULL, ...) {
 #' @export
 nrmse_range <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("nrmse_range", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
-}
-
-#' Evaluate the flow-duration-curve low-flow bias wrapper
-#'
-#' Thin exported wrapper over [gof()] for the registry metric `"fdc_lowflow_bias"`.
-#'
-#' @inheritParams gof
-#'
-#' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
-#'
-#' @examples
-#' fdc_lowflow_bias(c(1.2, 1.8, 3.4), c(1, 2, 3))
-#' @export
-fdc_lowflow_bias <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("fdc_lowflow_bias", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
 #' Evaluate the low-flow bias wrapper

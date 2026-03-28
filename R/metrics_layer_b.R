@@ -126,31 +126,6 @@ core_metric_spec_quantile_deviation <- function() {
   )
 }
 
-metric_fdc_shape_distance <- function(sim, obs) {
-  validate_distribution_vector(sim, "fdc_shape_distance")
-  validate_distribution_vector(obs, "fdc_shape_distance")
-
-  sim_norm <- .hm_b1_fdc_normalize(sim, "sim")
-  obs_norm <- .hm_b1_fdc_normalize(obs, "obs")
-
-  sqrt(mean((sim_norm - obs_norm)^2))
-}
-
-core_metric_spec_fdc_shape_distance <- function() {
-  list(
-    id = "fdc_shape_distance",
-    fun = metric_fdc_shape_distance,
-    name = "FDC Shape Distance",
-    description = "RMSE between descending flow-duration curves after within-series range normalization to [0, 1].",
-    category = "error",
-    perfect = 0,
-    range = c(0, Inf),
-    references = "Searcy (1959) flow-duration-curve construction; package metric uses range-normalized descending FDC RMSE as a shape-only distance.",
-    version_added = "0.2.2",
-    tags = c("phase-3", "layer-b", "batch-b1")
-  )
-}
-
 metric_anderson_darling_stat <- function(sim, obs) {
   validate_distribution_vector(sim, "anderson_darling_stat")
   validate_distribution_vector(obs, "anderson_darling_stat")

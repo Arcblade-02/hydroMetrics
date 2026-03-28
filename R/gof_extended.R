@@ -3,9 +3,9 @@
     "me", "mae", "rmse", "ubrmse", "pbias", "rsr", "rsd", "nse", "r", "r2", "ve", "kge", "mnse", "cp",
     "alpha", "beta", "ccc",
     "mdae", "maxae", "smape",
-    "log_nse", "log_rmse", "low_flow_bias", "fdc_lowflow_bias",
+    "low_flow_bias",
     "peak_timing_error", "extreme_event_ratio", "rising_limb_error",
-    "fdc_shape_distance", "baseflow_index_error",
+    "baseflow_index_error",
     "rspearman", "wasserstein_distance", "distribution_overlap"
   )
 }
@@ -57,18 +57,6 @@
   !is.null(obs) && length(obs) > 0L && isTRUE(diff(range(obs)) != 0)
 }
 
-.gof_can_auto_run_fdc_lowflow_bias <- function(sim, obs) {
-  if (!.gof_can_auto_run_positive(sim, obs) || length(obs) < 2L) {
-    return(FALSE)
-  }
-
-  n_low <- max(2L, ceiling(length(obs) * 0.30))
-  obs_low <- utils::tail(sort(obs, decreasing = TRUE), n_low)
-  obs_terms <- log(obs_low) - log(obs_low[[n_low]])
-  denom <- sum(obs_terms)
-  is.finite(denom) && denom != 0
-}
-
 .gof_can_auto_run_low_flow_bias <- function(obs) {
   if (is.null(obs) || length(obs) < 1L) {
     return(FALSE)
@@ -84,15 +72,6 @@
 
   idx <- which(obs <= q_low)
   length(idx) > 0L && is.finite(sum(obs[idx])) && sum(obs[idx]) != 0
-}
-
-.gof_can_auto_run_fdc_shape_distance <- function(sim, obs) {
-  !is.null(sim) &&
-    !is.null(obs) &&
-    length(sim) > 0L &&
-    length(obs) > 0L &&
-    isTRUE(diff(range(sim)) != 0) &&
-    isTRUE(diff(range(obs)) != 0)
 }
 
 .gof_can_auto_run_peak_timing_error <- function(sim, obs) {
@@ -179,14 +158,8 @@
   if (!.gof_can_auto_run_nrmse_range(obs)) {
     ids <- setdiff(ids, "nrmse_range")
   }
-  if (!.gof_can_auto_run_fdc_lowflow_bias(sim, obs)) {
-    ids <- setdiff(ids, "fdc_lowflow_bias")
-  }
   if (!.gof_can_auto_run_low_flow_bias(obs)) {
     ids <- setdiff(ids, "low_flow_bias")
-  }
-  if (!.gof_can_auto_run_fdc_shape_distance(sim, obs)) {
-    ids <- setdiff(ids, "fdc_shape_distance")
   }
   if (!.gof_can_auto_run_peak_timing_error(sim, obs)) {
     ids <- setdiff(ids, "peak_timing_error")

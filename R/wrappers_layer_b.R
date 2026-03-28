@@ -46,22 +46,6 @@ quantile_deviation <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("quantile_deviation", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
-#' Evaluate the flow-duration-curve shape distance wrapper
-#'
-#' Thin exported wrapper over [gof()] for the registry metric `"fdc_shape_distance"`.
-#'
-#' @inheritParams gof
-#'
-#' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
-#'
-#' @examples
-#' fdc_shape_distance(c(1, 2, 4), c(1, 3, 2))
-#' @export
-fdc_shape_distance <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("fdc_shape_distance", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
-}
-
 #' Evaluate the Anderson-Darling distribution statistic wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric `"anderson_darling_stat"`.

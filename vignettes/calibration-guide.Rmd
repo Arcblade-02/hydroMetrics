@@ -142,16 +142,15 @@ Some calibration targets are about more than overall fit. If the modeling goal
 is seasonal timing, regime shape, or selected extremes, metric choice should
 reflect that.
 
-### Regime and Flow-Duration Diagnostics
+### Low-Flow Diagnostics
 
-Metrics such as `fdc_lowflow_bias`
-are useful when calibration is aimed at regime shape or
-flow-duration behavior instead of only pointwise error.
+Metrics such as `low_flow_bias` are useful when calibration is aimed at low-flow
+behavior instead of only pointwise error.
 
 These can be requested directly when that is the modeling objective:
 
 ```{r}
-gof(sim, obs, methods = c("fdc_lowflow_bias"))
+gof(sim, obs, methods = c("low_flow_bias"))
 ```
 
 ### Tail and Event-Sensitive Metrics

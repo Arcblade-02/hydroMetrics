@@ -32,7 +32,6 @@ test_that("layer B batch B1 registry ids are present", {
     "ks_statistic",
     "cdf_rmse",
     "quantile_deviation",
-    "fdc_shape_distance",
     "anderson_darling_stat",
     "wasserstein_distance"
   )
@@ -81,17 +80,6 @@ test_that("quantile_deviation matches fixed-grid quantile RMSE", {
   expect_equal(metric_quantile_deviation(sim, obs), expected)
 })
 
-test_that("fdc_shape_distance matches range-normalized descending FDC RMSE", {
-  sim <- c(1, 2, 4, 6, 8)
-  obs <- c(2, 3, 5, 7, 9)
-  sim_norm <- (sort(sim, decreasing = TRUE) - min(sim)) / diff(range(sim))
-  obs_norm <- (sort(obs, decreasing = TRUE) - min(obs)) / diff(range(obs))
-  expected <- sqrt(mean((sim_norm - obs_norm)^2))
-
-  expect_equal(fdc_shape_distance(sim, obs), expected)
-  expect_equal(metric_fdc_shape_distance(sim, obs), expected)
-})
-
 test_that("anderson_darling_stat matches pooled-grid tail-weighted EDF distance", {
   sim <- c(1, 2, 3, 4)
   obs <- c(1, 2, 4, 5)
@@ -129,15 +117,6 @@ test_that("layer B metrics return zero on identical samples where appropriate", 
   expect_equal(wasserstein_distance(same, same), 0)
 })
 
-test_that("fdc_shape_distance rejects zero-range series conservatively", {
-  same <- c(2, 2, 2, 2, 2)
-
-  expect_error(
-    fdc_shape_distance(same, same),
-    "range\\(sim\\) == 0"
-  )
-})
-
 test_that("layer B wrappers integrate with gof for deterministic metrics", {
   sim <- c(1.2, 1.8, 3.4, 3.9, 5.1, 6.0, 7.2, 8.1, 9.3, 10.0)
   obs <- c(1.0, 2.0, 3.0, 4.0, 5.0, 6.2, 7.0, 8.0, 9.0, 10.1)
@@ -148,7 +127,6 @@ test_that("layer B wrappers integrate with gof for deterministic metrics", {
       "ks_statistic",
       "cdf_rmse",
       "quantile_deviation",
-      "fdc_shape_distance",
       "anderson_darling_stat",
       "wasserstein_distance"
     )
@@ -161,7 +139,6 @@ test_that("layer B wrappers integrate with gof for deterministic metrics", {
       "ks_statistic",
       "cdf_rmse",
       "quantile_deviation",
-      "fdc_shape_distance",
       "anderson_darling_stat",
       "wasserstein_distance"
     )

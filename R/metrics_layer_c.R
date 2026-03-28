@@ -3,8 +3,6 @@
 #   Joanes & Gill (1998) and returns abs(G1_sim - G1_obs)
 # - kurtosis_error uses the adjusted Fisher-Pearson sample excess kurtosis G2
 #   from Joanes & Gill (1998) and returns abs(G2_sim - G2_obs)
-# - iqr_error uses stats::quantile(..., type = 7) with IQR = Q3 - Q1 and
-#   returns abs(IQR_sim - IQR_obs)
 
 .hm_c1_validate_summary_vector <- function(x, metric_id, name, min_length) {
   validate_numeric_vector(x, name)
@@ -95,28 +93,6 @@ core_metric_spec_kurtosis_error <- function() {
     perfect = 0,
     range = c(0, Inf),
     references = "Joanes & Gill (1998) sample kurtosis conventions; package metric uses absolute error in adjusted Fisher-Pearson excess kurtosis G2.",
-    version_added = "0.2.2",
-    tags = c("phase-3", "layer-c", "batch-c1")
-  )
-}
-
-metric_iqr_error <- function(sim, obs) {
-  abs(
-    .hm_c1_type7_iqr(sim, "iqr_error", "sim") -
-      .hm_c1_type7_iqr(obs, "iqr_error", "obs")
-  )
-}
-
-core_metric_spec_iqr_error <- function() {
-  list(
-    id = "iqr_error",
-    fun = metric_iqr_error,
-    name = "Interquartile Range Error",
-    description = "Absolute difference between type-7 interquartile ranges IQR = Q3 - Q1 of sim and obs.",
-    category = "error",
-    perfect = 0,
-    range = c(0, Inf),
-    references = "Hyndman & Fan (1996) sample-quantile conventions; package metric uses absolute error in the type-7 interquartile range.",
     version_added = "0.2.2",
     tags = c("phase-3", "layer-c", "batch-c1")
   )

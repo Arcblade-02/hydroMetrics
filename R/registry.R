@@ -51,7 +51,6 @@ register_core_metrics <- function(registry) {
     core_metric_spec_event_nse(),
     core_metric_spec_skewness_error(),
     core_metric_spec_kurtosis_error(),
-    core_metric_spec_iqr_error(),
     core_metric_spec_entropy_diff(),
     core_metric_spec_mutual_information_score(),
     core_metric_spec_mutual_information(),
@@ -96,7 +95,6 @@ register_core_metrics <- function(registry) {
     core_metric_spec_kgelf(),
     core_metric_spec_kgenp(),
     core_metric_spec_skge(),
-    core_metric_spec_pbiasfdc(),
     core_metric_spec_hfb(),
     core_metric_spec_rspearman(),
     core_metric_spec_rsd()

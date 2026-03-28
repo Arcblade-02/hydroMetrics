@@ -2,26 +2,25 @@ test_that("batch6 metrics return expected hm_result structure and ids", {
   out <- evaluate_metrics(
     sim = c(1, 2, 3),
     obs = c(1, 2, 1),
-    metrics = c("kgekm", "kgelf", "kgenp", "pbiasfdc")
+    metrics = c("kgekm", "kgelf", "kgenp")
   )
 
   expect_s3_class(out, "hm_result")
   expect_true(is.data.frame(out))
   expect_identical(colnames(out), c("metric", "name", "value"))
-  expect_identical(out$metric, c("kgekm", "kgelf", "kgenp", "pbiasfdc"))
+  expect_identical(out$metric, c("kgekm", "kgelf", "kgenp"))
 })
 
 test_that("batch6 perfect-fit values are correct", {
   sim <- c(1, 2, 3, 4)
   obs <- c(1, 2, 3, 4)
 
-  out <- evaluate_metrics(sim, obs, c("kgekm", "kgelf", "kgenp", "pbiasfdc"))
+  out <- evaluate_metrics(sim, obs, c("kgekm", "kgelf", "kgenp"))
   values <- setNames(out$value, out$metric)
 
   expect_equal(values[["kgekm"]], 1)
   expect_equal(values[["kgelf"]], 1)
   expect_equal(values[["kgenp"]], 1)
-  expect_equal(values[["pbiasfdc"]], 0)
 })
 
 test_that("kgekm matches inline formula", {
@@ -62,18 +61,6 @@ test_that("kgenp matches inline nonparametric formula", {
   expected <- 1 - sqrt((r - 1)^2 + (alpha - 1)^2 + (beta - 1)^2)
 
   out <- evaluate_metrics(sim, obs, "kgenp")
-  expect_equal(out$value[[1]], expected)
-})
-
-test_that("pbiasfdc matches inline quantile-grid formula", {
-  sim <- c(1, 2, 3)
-  obs <- c(1, 2, 1)
-  p <- seq(0.01, 0.99, by = 0.01)
-  qobs <- stats::quantile(obs, probs = 1 - p, type = 7, names = FALSE)
-  qsim <- stats::quantile(sim, probs = 1 - p, type = 7, names = FALSE)
-  expected <- 100 * sum(qsim - qobs) / sum(qobs)
-
-  out <- evaluate_metrics(sim, obs, "pbiasfdc")
   expect_equal(out$value[[1]], expected)
 })
 
@@ -121,12 +108,5 @@ test_that("kgenp errors on invalid observed robust moments", {
   expect_error(
     evaluate_metrics(c(0, 1, 2), c(0, 1, 0), "kgenp"),
     "median\\(obs\\) == 0"
-  )
-})
-
-test_that("pbiasfdc errors when sum(Qobs) is zero", {
-  expect_error(
-    evaluate_metrics(c(0, 0, 0), c(0, 0, 0), "pbiasfdc"),
-    "sum\\(Qobs\\) == 0"
   )
 })

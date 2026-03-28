@@ -49,7 +49,6 @@ handling; they are not exported standalone functions.
 - [x] mse
 - [x] nrmse
 - [x] NSE
-- [x] pbiasfdc
 - [x] pfactor
 - [x] R2
 - [x] rd
@@ -96,7 +95,6 @@ handling; they are not exported standalone functions.
 | nrmse_sd | NRMSE by SD | error | 0.1.0 | Project-defined NRMSE variant normalized by sd(obs). |
 | nse | Nash-Sutcliffe Efficiency | efficiency | 0.1.0 | Nash, J.E. & Sutcliffe, J.V. (1970). River flow forecasting through conceptual models part I - A discussion of principles. |
 | pbias | Percent Bias | bias | 0.1.0 | Moriasi, D.N., et al. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations. |
-| pbiasfdc | Percent Bias of Flow Duration Curve | bias | 0.1.0 | Based on Moriasi et al. (2007) percent bias interpretation applied to a flow-duration-curve quantile grid in the Searcy (1959) convention. |
 | pfactor | P-factor | efficiency | 0.1.0 | Project-defined compatibility pfactor using tolerance-band hit proportion. |
 | r | Pearson Correlation | correlation | 0.1.0 | Pearson correlation coefficient (standard definition). |
 | r2 | Squared Pearson Correlation | correlation | 0.1.0 | R-squared defined as squared Pearson correlation. |

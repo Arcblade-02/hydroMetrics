@@ -242,9 +242,6 @@ test_that("remaining hydroGOF-overlap backlog metrics are divergent or not direc
   sim <- c(1.1, 1.4, 1.8, 2.2, 2.6, 3.0, 3.4, 3.8, 4.1, 4.5)
   obs <- c(1.0, 1.3, 1.7, 2.0, 2.4, 2.8, 3.2, 3.6, 4.0, 4.3)
 
-  out <- gof(sim, obs, methods = "pbiasfdc")
-  expect_gt(abs(out[["pbiasfdc"]] - hydroGOF::pbiasfdc(sim, obs, plot = FALSE)), tol)
-
   expect_false("rsd" %in% getNamespaceExports("hydroGOF"))
   expect_false("RSD" %in% getNamespaceExports("hydroGOF"))
 

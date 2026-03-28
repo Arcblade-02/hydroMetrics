@@ -131,7 +131,7 @@ if (!exists("gof", mode = "function")) {
 
 test_that("layer C batch C1 registry ids are present", {
   ids <- list_metrics()$id
-  target <- c("skewness_error", "kurtosis_error", "iqr_error")
+  target <- c("skewness_error", "kurtosis_error")
 
   expect_true(all(target %in% ids))
 })
@@ -225,34 +225,6 @@ test_that("kurtosis_error rejects too-short and zero-variance inputs", {
   )
 })
 
-test_that("iqr_error matches manual type-7 IQR error", {
-  sim <- c(1, 2, 3, 4, 8, 9, 10, 11)
-  obs <- c(1, 2, 3, 4, 5, 6, 7, 8)
-  expected <- abs(.test_c1_type7_iqr(sim) - .test_c1_type7_iqr(obs))
-
-  expect_equal(iqr_error(sim, obs), expected)
-  expect_equal(metric_iqr_error(sim, obs), expected)
-})
-
-test_that("iqr_error is zero on identical series and nonzero on spread changes", {
-  obs <- c(1, 2, 3, 4, 5, 6, 7, 8)
-  sim <- c(1, 1, 2, 3, 5, 8, 13, 21)
-
-  expect_equal(iqr_error(obs, obs), 0)
-  expect_gt(iqr_error(sim, obs), 0)
-})
-
-test_that("iqr_error allows constant series but rejects too-short inputs", {
-  expect_equal(
-    iqr_error(c(1, 1, 1, 1), c(1, 2, 3, 4)),
-    abs(0 - .test_c1_type7_iqr(c(1, 2, 3, 4)))
-  )
-  expect_error(
-    iqr_error(1, 1),
-    "requires at least 2 values"
-  )
-})
-
 test_that("layer C wrappers integrate with gof and extended deterministic visibility", {
   sim <- c(1, 2, 3, 4, 8, 9, 10, 11, 5, 4, 3, 2)
   obs <- c(1, 2, 3, 4, 5, 6, 7, 10, 6, 5, 4, 3)
@@ -263,7 +235,6 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
     methods = c(
       "skewness_error",
       "kurtosis_error",
-      "iqr_error",
       "entropy_diff",
       "mutual_information_score",
       "mutual_information",
@@ -286,7 +257,6 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
     c(
       "skewness_error",
       "kurtosis_error",
-      "iqr_error",
       "entropy_diff",
       "mutual_information_score",
       "mutual_information",
@@ -310,7 +280,6 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       c(
         "skewness_error",
         "kurtosis_error",
-        "iqr_error",
         "entropy_diff",
         "mutual_information_score",
         "mutual_information",

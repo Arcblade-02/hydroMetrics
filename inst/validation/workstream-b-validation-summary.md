@@ -87,8 +87,8 @@ Currently validated through literature/example-based or base-statistics checks:
 - The specialized KGE-family / seasonal tranche now classifies `kgekm`,
   `kgelf`, `kgenp`, and `skge` as intentional divergence rather than leaving
   them in the unresolved backlog.
-- The final backlog pass now records `pbiasfdc` as intentionally divergent and
-  `pfactor`, `rfactor`, and `rsd` as not directly comparable on the current
+- The final backlog pass now records `pfactor`, `rfactor`, and `rsd` as not
+  directly comparable on the current
   public surfaces, so the hydroGOF-overlap backlog is now cleared at the
   classification level.
 - The probabilistic/distributional surface now has a clearer validation map:

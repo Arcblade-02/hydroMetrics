@@ -91,7 +91,7 @@
 
   distribution_ids <- ids[
     grepl(
-      "^(cdf_|fdc_|quantile_deviation$|quantile_shift_index$|distribution_overlap$|ks_statistic$|anderson_darling_stat$|wasserstein_distance$|entropy_diff$|mutual_information|normalised_mi$|kl_divergence|js_divergence$|flow_duration_entropy$|pbiasfdc$)",
+      "^(cdf_|fdc_|quantile_deviation$|quantile_shift_index$|distribution_overlap$|ks_statistic$|anderson_darling_stat$|wasserstein_distance$|entropy_diff$|mutual_information|normalised_mi$|kl_divergence|js_divergence$|flow_duration_entropy$)",
       ids
     )
   ]
@@ -125,7 +125,6 @@
       "fdc_highflow_bias",
       "fdc_lowflow_bias",
       "hfb",
-      "pbiasfdc",
       "tail_dependence_score",
       "flow_duration_entropy"
     )

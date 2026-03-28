@@ -26,7 +26,6 @@
     "kgelf" = "kgelf",
     "kgenp" = "kgenp",
     "skge" = "skge",
-    "pbiasfdc" = "pbiasfdc",
     "hfb" = "hfb"
   )
 }
@@ -87,7 +86,6 @@
     "flow_duration_entropy" = "Flow Duration Entropy",
     "huber_loss" = "Huber Loss",
     "hydrograph_slope_error" = "Hydrograph Slope Error",
-    "iqr_error" = "IQR Error",
     "js_divergence" = "JS Divergence",
     "kge" = "KGE",
     "kgekm" = "KGEkm",
@@ -121,7 +119,6 @@
     "nrmse_sd" = "NRMSE (SD)",
     "nse" = "NSE",
     "pbias" = "PBIAS",
-    "pbiasfdc" = "PBIAS-FDC",
     "peak_timing_error" = "Peak Timing Error",
     "pfactor" = "P-Factor",
     "quantile_deviation" = "Quantile Deviation",

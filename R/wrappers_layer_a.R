@@ -206,38 +206,6 @@ nrmse_range <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("nrmse_range", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
-#' Evaluate the flow-duration-curve slope error wrapper
-#'
-#' Thin exported wrapper over [gof()] for the registry metric `"fdc_slope_error"`.
-#'
-#' @inheritParams gof
-#'
-#' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
-#'
-#' @examples
-#' fdc_slope_error(c(1.2, 1.8, 3.4), c(1, 2, 3))
-#' @export
-fdc_slope_error <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("fdc_slope_error", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
-}
-
-#' Evaluate the flow-duration-curve high-flow bias wrapper
-#'
-#' Thin exported wrapper over [gof()] for the registry metric `"fdc_highflow_bias"`.
-#'
-#' @inheritParams gof
-#'
-#' @return A numeric scalar for single-series inputs or a numeric vector for
-#'   multi-series inputs.
-#'
-#' @examples
-#' fdc_highflow_bias(c(1.2, 1.8, 3.4), c(1, 2, 3))
-#' @export
-fdc_highflow_bias <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("fdc_highflow_bias", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
-}
-
 #' Evaluate the flow-duration-curve low-flow bias wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric `"fdc_lowflow_bias"`.

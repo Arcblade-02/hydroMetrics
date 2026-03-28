@@ -144,14 +144,14 @@ reflect that.
 
 ### Regime and Flow-Duration Diagnostics
 
-Metrics such as `fdc_slope_error`, `fdc_highflow_bias`, and `fdc_lowflow_bias`
+Metrics such as `fdc_lowflow_bias`
 are useful when calibration is aimed at regime shape or
 flow-duration behavior instead of only pointwise error.
 
 These can be requested directly when that is the modeling objective:
 
 ```{r}
-gof(sim, obs, methods = c("fdc_slope_error", "fdc_highflow_bias"))
+gof(sim, obs, methods = c("fdc_lowflow_bias"))
 ```
 
 ### Tail and Event-Sensitive Metrics

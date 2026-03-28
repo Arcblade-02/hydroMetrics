@@ -25,8 +25,8 @@
   "alpha", "beta", "ccc",
   "mdae", "maxae", "smape",
   "log_nse", "log_rmse", "low_flow_bias", "fdc_lowflow_bias",
-  "peak_timing_error", "fdc_highflow_bias", "extreme_event_ratio", "rising_limb_error",
-  "fdc_slope_error", "fdc_shape_distance", "baseflow_index_error",
+  "peak_timing_error", "extreme_event_ratio", "rising_limb_error",
+  "fdc_shape_distance", "baseflow_index_error",
   "rspearman", "wasserstein_distance", "distribution_overlap"
 )
 

@@ -119,7 +119,6 @@
       "baseflow_index_error",
       "derivative_nse",
       "low_flow_bias",
-      "fdc_highflow_bias",
       "fdc_lowflow_bias",
       "hfb",
       "tail_dependence_score"

@@ -4,8 +4,8 @@
     "alpha", "beta", "ccc",
     "mdae", "maxae", "smape",
     "log_nse", "log_rmse", "low_flow_bias", "fdc_lowflow_bias",
-    "peak_timing_error", "fdc_highflow_bias", "extreme_event_ratio", "rising_limb_error",
-    "fdc_slope_error", "fdc_shape_distance", "baseflow_index_error",
+    "peak_timing_error", "extreme_event_ratio", "rising_limb_error",
+    "fdc_shape_distance", "baseflow_index_error",
     "rspearman", "wasserstein_distance", "distribution_overlap"
   )
 }
@@ -57,16 +57,6 @@
   !is.null(obs) && length(obs) > 0L && isTRUE(diff(range(obs)) != 0)
 }
 
-.gof_can_auto_run_fdc_highflow_bias <- function(obs) {
-  if (is.null(obs) || length(obs) < 1L) {
-    return(FALSE)
-  }
-
-  n_high <- max(1L, ceiling(length(obs) * 0.02))
-  denom <- sum(sort(obs, decreasing = TRUE)[seq_len(n_high)])
-  is.finite(denom) && denom != 0
-}
-
 .gof_can_auto_run_fdc_lowflow_bias <- function(sim, obs) {
   if (!.gof_can_auto_run_positive(sim, obs) || length(obs) < 2L) {
     return(FALSE)
@@ -77,18 +67,6 @@
   obs_terms <- log(obs_low) - log(obs_low[[n_low]])
   denom <- sum(obs_terms)
   is.finite(denom) && denom != 0
-}
-
-.gof_can_auto_run_fdc_slope_error <- function(sim, obs) {
-  if (!.gof_can_auto_run_positive(sim, obs) || length(obs) < 3L) {
-    return(FALSE)
-  }
-
-  obs_sorted <- sort(obs, decreasing = TRUE)
-  p <- seq_along(obs_sorted) / (length(obs_sorted) + 1)
-  obs_q <- stats::approx(x = p, y = obs_sorted, xout = c(0.2, 0.7), rule = 2, ties = "ordered")$y
-  obs_slope <- abs(log(obs_q[[1L]]) - log(obs_q[[2L]]))
-  is.finite(obs_slope) && obs_slope != 0
 }
 
 .gof_can_auto_run_low_flow_bias <- function(obs) {
@@ -200,12 +178,6 @@
   }
   if (!.gof_can_auto_run_nrmse_range(obs)) {
     ids <- setdiff(ids, "nrmse_range")
-  }
-  if (!.gof_can_auto_run_fdc_slope_error(sim, obs)) {
-    ids <- setdiff(ids, "fdc_slope_error")
-  }
-  if (!.gof_can_auto_run_fdc_highflow_bias(obs)) {
-    ids <- setdiff(ids, "fdc_highflow_bias")
   }
   if (!.gof_can_auto_run_fdc_lowflow_bias(sim, obs)) {
     ids <- setdiff(ids, "fdc_lowflow_bias")

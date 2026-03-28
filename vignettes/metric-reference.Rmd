@@ -110,8 +110,8 @@ These include Layer A, Layer B, and Layer C additions such as:
 
 - robust and alternative loss metrics: `huber_loss`, `quantile_loss`,
   `trimmed_rmse`, `winsor_rmse`
-- flow-duration and regime diagnostics: `fdc_slope_error`,
-  `fdc_highflow_bias`, `fdc_lowflow_bias`, `fdc_shape_distance`
+- flow-duration and regime diagnostics: `fdc_lowflow_bias`,
+  `fdc_shape_distance`
 - hydrograph and event diagnostics: `peak_timing_error`,
   `rising_limb_error`, `event_nse`
 - distribution and information-theory diagnostics: `entropy_diff`,

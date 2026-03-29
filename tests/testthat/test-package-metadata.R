@@ -10,7 +10,7 @@ test_that("package metadata and core exports are present at runtime", {
   expect_true(is.function(utils::getS3method("print", "hydro_preproc")))
   expect_true(all(c("gof", "ggof", "preproc") %in% getNamespaceExports("hydroMetrics")))
   expect_true("rmsle" %in% getNamespaceExports("hydroMetrics"))
-  expect_false(any(c("sae", "evs") %in% getNamespaceExports("hydroMetrics")))
+  expect_false(any(c("sae", "evs", "rae", "rrse") %in% getNamespaceExports("hydroMetrics")))
 })
 
 test_that("KGE component reference metadata remains literature-backed", {

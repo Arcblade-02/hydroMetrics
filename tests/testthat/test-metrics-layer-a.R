@@ -24,7 +24,7 @@ if (!exists("gof", mode = "function")) {
 
 test_that("layer A batch A1 registry ids are present", {
   ids <- list_metrics()$id
-  target <- c("mdae", "maxae", "sae", "rbias", "ccc", "e1", "rrmse")
+  target <- c("mdae", "maxae", "sae", "rbias", "ccc", "e1", "rae", "rrmse")
 
   expect_true(all(target %in% ids))
 })
@@ -109,6 +109,24 @@ test_that("e1 errors when the observed baseline denominator is zero", {
   )
 })
 
+test_that("rae matches the relative absolute error formula and e1 relation", {
+  sim <- c(1.2, 1.8, 3.4, 3.9, 5.1)
+  obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
+  denom <- sum(abs(obs - mean(obs)))
+  expected <- sum(abs(sim - obs)) / denom
+
+  expect_equal(metric_rae(sim, obs), expected)
+  expect_equal(evaluate_metrics(sim, obs, "rae")$value[[1]], expected)
+  expect_equal(expected, 1 - e1(sim, obs))
+})
+
+test_that("rae errors when the observed baseline denominator is not positive", {
+  expect_error(
+    metric_rae(c(1, 2, 3), c(2, 2, 2)),
+    "sum\\(abs\\(obs - mean\\(obs\\)\\)\\) must be positive"
+  )
+})
+
 test_that("rrmse matches root mean squared relative error", {
   sim <- c(1.2, 1.8, 3.4, 3.9, 5.1)
   obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
@@ -129,11 +147,29 @@ test_that("layer A wrappers integrate with gof output", {
   sim <- cbind(a = c(1.2, 1.8, 3.4, 3.9, 5.1), b = c(1.0, 2.1, 2.9, 4.2, 5.0))
   obs <- cbind(a = c(1.0, 2.0, 3.0, 4.0, 5.0), b = c(1.0, 2.0, 3.0, 4.0, 5.0))
 
-  out <- gof(sim, obs, methods = c("mdae", "ccc", "rrmse", "rmsle"))
+  out <- gof(sim, obs, methods = c("mdae", "ccc", "rae", "rrmse", "rrse", "rmsle"))
   expect_true(is.matrix(out))
   expect_true(inherits(out, "hydro_metrics"))
-  expect_identical(rownames(out), c("mdae", "ccc", "rrmse", "rmsle"))
+  expect_identical(rownames(out), c("mdae", "ccc", "rae", "rrmse", "rrse", "rmsle"))
   expect_identical(colnames(out), c("a", "b"))
+})
+
+test_that("rrse matches the root relative squared error formula and nse relation", {
+  sim <- c(1.2, 1.8, 3.4, 3.9, 5.1)
+  obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
+  denom <- sum((obs - mean(obs))^2)
+  expected <- sqrt(sum((sim - obs)^2) / denom)
+
+  expect_equal(metric_rrse(sim, obs), expected)
+  expect_equal(evaluate_metrics(sim, obs, "rrse")$value[[1]], expected)
+  expect_equal(expected^2, 1 - metric_nse(sim, obs))
+})
+
+test_that("rrse errors when the observed squared-deviation denominator is not positive", {
+  expect_error(
+    metric_rrse(c(1, 2, 3), c(2, 2, 2)),
+    "sum\\(\\(obs - mean\\(obs\\)\\)\\^2\\) must be positive"
+  )
 })
 
 test_that("layer A batch A2 registry ids are present", {

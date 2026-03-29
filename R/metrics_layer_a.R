@@ -150,6 +150,34 @@ core_metric_spec_e1 <- function() {
   )
 }
 
+metric_rae <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("rae requires at least 1 value.", call. = FALSE)
+  }
+
+  denom <- sum(abs(obs - mean(obs)))
+  if (denom <= 0) {
+    stop("rae is undefined because sum(abs(obs - mean(obs))) must be positive.", call. = FALSE)
+  }
+
+  sum(abs(sim - obs)) / denom
+}
+
+core_metric_spec_rae <- function() {
+  list(
+    id = "rae",
+    fun = metric_rae,
+    name = "Relative Absolute Error",
+    description = "RAE computed as sum(abs(sim - obs)) / sum(abs(obs - mean(obs))).",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Standard regression/error-measure convention using the total absolute error normalized by the total absolute deviation from mean(obs).",
+    version_added = "0.4.0",
+    tags = c("phase-4", "layer-a", "add-back-batch-2")
+  )
+}
+
 metric_rrmse <- function(sim, obs) {
   if (any(obs == 0)) {
     stop("rrmse is undefined because obs contains zero.", call. = FALSE)
@@ -170,6 +198,34 @@ core_metric_spec_rrmse <- function() {
     references = "Relative-error model-evaluation family described by Hwang et al. (2012).",
     version_added = "0.2.0",
     tags = c("phase-3", "layer-a", "batch-a1")
+  )
+}
+
+metric_rrse <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("rrse requires at least 1 value.", call. = FALSE)
+  }
+
+  denom <- sum((obs - mean(obs))^2)
+  if (denom <= 0) {
+    stop("rrse is undefined because sum((obs - mean(obs))^2) must be positive.", call. = FALSE)
+  }
+
+  sqrt(sum((sim - obs)^2) / denom)
+}
+
+core_metric_spec_rrse <- function() {
+  list(
+    id = "rrse",
+    fun = metric_rrse,
+    name = "Root Relative Squared Error",
+    description = "RRSE computed as sqrt(sum((sim - obs)^2) / sum((obs - mean(obs))^2)).",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Standard regression/error-measure convention using the total squared error normalized by the total squared deviation from mean(obs).",
+    version_added = "0.4.0",
+    tags = c("phase-4", "layer-a", "add-back-batch-2")
   )
 }
 

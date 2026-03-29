@@ -80,7 +80,7 @@ test_that("gof extended = TRUE returns all auto-applicable registered metrics", 
   expect_identical(names(out), registered_ids)
   expect_true(length(out) >= length(.hm_gof_default_ids))
   expect_true(all(.hm_gof_default_ids %in% names(out)))
-  expect_true(all(c("sae", "rmsle", "evs") %in% names(out)))
+  expect_true(all(c("sae", "rmsle", "evs", "rae", "rrse") %in% names(out)))
 })
 
 test_that("gof explicit methods override default and extended selection", {
@@ -111,13 +111,25 @@ test_that("gof exposes sae, rmsle, and evs through explicit method selection", {
   )
 })
 
+test_that("gof exposes rae and rrse through explicit method selection", {
+  sim <- c(1.2, 1.9, 3.4, 4.8)
+  obs <- c(1, 2, 3, 5)
+
+  out <- .hm_gof_get("gof")(sim, obs, methods = c("rae", "rrse"))
+
+  expect_s3_class(out, "hydro_metrics")
+  expect_identical(names(out), c("rae", "rrse"))
+  expect_equal(as.numeric(out[["rae"]]), 1 - .hm_gof_get("metric_e1")(sim, obs), tolerance = 1e-12)
+  expect_equal(as.numeric(out[["rrse"]])^2, 1 - .hm_gof_get("metric_nse")(sim, obs), tolerance = 1e-12)
+})
+
 test_that("gof defaults remain unchanged after adding sae, rmsle, and evs", {
   sim <- c(1, 2, 3, 4, 5)
   obs <- c(1.1, 1.9, 3.2, 3.8, 5.1)
 
   out <- .hm_gof_get("gof")(sim, obs)
 
-  expect_false(any(c("sae", "rmsle", "evs") %in% names(out)))
+  expect_false(any(c("sae", "rmsle", "evs", "rae", "rrse") %in% names(out)))
   expect_identical(names(out), .hm_gof_default_ids)
 })
 

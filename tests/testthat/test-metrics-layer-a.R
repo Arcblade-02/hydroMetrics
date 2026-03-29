@@ -24,7 +24,7 @@ if (!exists("gof", mode = "function")) {
 
 test_that("layer A batch A1 registry ids are present", {
   ids <- list_metrics()$id
-  target <- c("mdae", "maxae", "rbias", "ccc", "e1", "rrmse")
+  target <- c("mdae", "maxae", "sae", "rbias", "ccc", "e1", "rrmse")
 
   expect_true(all(target %in% ids))
 })
@@ -41,6 +41,20 @@ test_that("mdae and maxae match absolute-error summaries", {
   values <- setNames(out$value, out$metric)
   expect_equal(values[["mdae"]], stats::median(abs_err))
   expect_equal(values[["maxae"]], max(abs_err))
+})
+
+test_that("sae matches the summed absolute-error formula and mae relation", {
+  sim <- c(1.2, 1.8, 3.4, 3.9, 5.1)
+  obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
+  expected <- sum(abs(sim - obs))
+
+  expect_equal(metric_sae(sim, obs), expected)
+  expect_equal(evaluate_metrics(sim, obs, "sae")$value[[1]], expected)
+  expect_equal(expected, length(obs) * mae(sim, obs))
+})
+
+test_that("sae requires at least one paired value", {
+  expect_error(metric_sae(numeric(), numeric()), "at least 1 value")
 })
 
 test_that("mdae and maxae require at least one paired value", {
@@ -115,16 +129,16 @@ test_that("layer A wrappers integrate with gof output", {
   sim <- cbind(a = c(1.2, 1.8, 3.4, 3.9, 5.1), b = c(1.0, 2.1, 2.9, 4.2, 5.0))
   obs <- cbind(a = c(1.0, 2.0, 3.0, 4.0, 5.0), b = c(1.0, 2.0, 3.0, 4.0, 5.0))
 
-  out <- gof(sim, obs, methods = c("mdae", "ccc", "rrmse"))
+  out <- gof(sim, obs, methods = c("mdae", "ccc", "rrmse", "rmsle"))
   expect_true(is.matrix(out))
   expect_true(inherits(out, "hydro_metrics"))
-  expect_identical(rownames(out), c("mdae", "ccc", "rrmse"))
+  expect_identical(rownames(out), c("mdae", "ccc", "rrmse", "rmsle"))
   expect_identical(colnames(out), c("a", "b"))
 })
 
 test_that("layer A batch A2 registry ids are present", {
   ids <- list_metrics()$id
-  target <- c("smape", "mare", "mrb", "msle")
+  target <- c("smape", "mare", "mrb", "msle", "rmsle", "evs")
 
   expect_true(all(target %in% ids))
 })
@@ -168,8 +182,36 @@ test_that("msle matches the log1p squared-error formula", {
   expect_equal(evaluate_metrics(sim, obs, "msle")$value[[1]], expected)
 })
 
+test_that("rmsle matches the square root of msle", {
+  sim <- c(0, 1.2, 1.8, 3.4, 3.9, 5.1)
+  obs <- c(0, 1.0, 2.0, 3.0, 4.0, 5.0)
+  expected <- sqrt(mean((log1p(sim) - log1p(obs))^2))
+
+  expect_equal(rmsle(sim, obs), expected)
+  expect_equal(metric_rmsle(sim, obs), expected)
+  expect_equal(rmsle(sim, obs)^2, msle(sim, obs))
+})
+
+test_that("evs matches the sample-variance explained-variance formula", {
+  sim <- c(1.2, 1.8, 3.4, 3.9, 5.1)
+  obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
+  expected <- 1 - (stats::var(obs - sim) / stats::var(obs))
+
+  expect_equal(metric_evs(sim, obs), expected)
+  expect_equal(evaluate_metrics(sim, obs, "evs")$value[[1]], expected)
+})
+
 test_that("log-domain metrics reject invalid values conservatively", {
   expect_error(msle(c(1, 2, 3), c(-1, 1, 2)), "negative values")
+  expect_error(rmsle(c(1, 2, 3), c(-1, 1, 2)), "negative values")
+})
+
+test_that("evs rejects too-short and zero-variance observed inputs", {
+  expect_error(metric_evs(1, 1), "at least 2 values")
+  expect_error(
+    metric_evs(c(1, 2, 3), c(2, 2, 2)),
+    "var\\(obs\\) must be positive"
+  )
 })
 
 .test_a3_fdc_prepare <- function(x) {

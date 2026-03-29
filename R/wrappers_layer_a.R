@@ -158,6 +158,22 @@ msle <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("msle", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
+#' Evaluate the root mean squared logarithmic error wrapper
+#'
+#' Thin exported wrapper over [gof()] for the registry metric `"rmsle"`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' rmsle(c(1.2, 1.8, 3.4), c(1, 2, 3))
+#' @export
+rmsle <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper("rmsle", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+}
+
 #' Evaluate the range-normalized RMSE wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric `"nrmse_range"`.

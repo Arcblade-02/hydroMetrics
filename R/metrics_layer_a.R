@@ -44,6 +44,29 @@ core_metric_spec_maxae <- function() {
   )
 }
 
+metric_sae <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("sae requires at least 1 value.", call. = FALSE)
+  }
+
+  sum(abs(sim - obs))
+}
+
+core_metric_spec_sae <- function() {
+  list(
+    id = "sae",
+    fun = metric_sae,
+    name = "Sum Absolute Error",
+    description = "SAE computed as sum(abs(sim - obs)).",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Standard absolute-error aggregate convention summarized in the NIST/SEMATECH e-Handbook of Statistical Methods.",
+    version_added = "0.4.0",
+    tags = c("phase-4", "layer-a", "add-back-batch-1")
+  )
+}
+
 metric_rbias <- function(sim, obs) {
   if (any(obs == 0)) {
     stop("rbias is undefined because obs contains zero.", call. = FALSE)
@@ -246,6 +269,60 @@ core_metric_spec_msle <- function() {
     references = "Hodson (2021) and Hodson et al. (2021) on MSLE in streamflow prediction benchmarking.",
     version_added = "0.2.0",
     tags = c("phase-3", "layer-a", "batch-a2")
+  )
+}
+
+metric_rmsle <- function(sim, obs) {
+  if (length(obs) < 1L) {
+    stop("rmsle requires at least 1 value.", call. = FALSE)
+  }
+  if (any(sim < 0) || any(obs < 0)) {
+    stop("rmsle is undefined for negative values.", call. = FALSE)
+  }
+
+  sqrt(mean((log1p(sim) - log1p(obs))^2))
+}
+
+core_metric_spec_rmsle <- function() {
+  list(
+    id = "rmsle",
+    fun = metric_rmsle,
+    name = "Root Mean Squared Logarithmic Error",
+    description = "RMSLE computed as sqrt(mean((log1p(sim) - log1p(obs))^2)) for non-negative inputs.",
+    category = "error",
+    perfect = 0,
+    range = c(0, Inf),
+    references = "Standard RMSLE software convention defined as the square root of MSLE; see scikit-learn regression metric documentation and the package's existing MSLE references.",
+    version_added = "0.4.0",
+    tags = c("phase-4", "layer-a", "add-back-batch-1")
+  )
+}
+
+metric_evs <- function(sim, obs) {
+  if (length(obs) < 2L) {
+    stop("evs requires at least 2 values.", call. = FALSE)
+  }
+
+  var_obs <- stats::var(obs)
+  if (!is.finite(var_obs) || var_obs <= 0) {
+    stop("evs is undefined because var(obs) must be positive under the sample-variance convention.", call. = FALSE)
+  }
+
+  1 - (stats::var(obs - sim) / var_obs)
+}
+
+core_metric_spec_evs <- function() {
+  list(
+    id = "evs",
+    fun = metric_evs,
+    name = "Explained Variance Score",
+    description = "EVS computed as 1 - var(obs - sim) / var(obs) using stats::var(), i.e. the sample-variance convention.",
+    category = "efficiency",
+    perfect = 1,
+    range = c(-Inf, 1),
+    references = "Standard explained-variance regression-score convention defined in scikit-learn documentation as 1 - Var(y - yhat) / Var(y).",
+    version_added = "0.4.0",
+    tags = c("phase-4", "layer-a", "add-back-batch-1")
   )
 }
 

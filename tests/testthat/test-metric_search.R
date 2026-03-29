@@ -25,10 +25,25 @@ test_that("metric_search returns annotated metric metadata", {
   expect_false(mae_row$compatibility_export[[1]])
   expect_match(mi_row$exported_wrappers[[1]], "mutual_information")
   expect_match(mi_row$exported_wrappers[[1]], "mutual_information_score")
+  expect_true(all(c("sae", "rmsle", "evs") %in% out$id))
+
+  sae_row <- out[out$id == "sae", , drop = FALSE]
+  rmsle_row <- out[out$id == "rmsle", , drop = FALSE]
+  evs_row <- out[out$id == "evs", , drop = FALSE]
+
+  expect_identical(sae_row$category[[1]], "error")
+  expect_identical(sae_row$exported_wrappers[[1]], "")
+  expect_identical(rmsle_row$category[[1]], "error")
+  expect_identical(rmsle_row$exported_wrappers[[1]], "rmsle")
+  expect_identical(evs_row$category[[1]], "efficiency")
+  expect_identical(evs_row$exported_wrappers[[1]], "")
 })
 
 test_that("metric_search filters by text, category, tags, preset, and export flags", {
   expect_true("pbias" %in% metric_search(text = "percent bias")$id)
+  expect_true("sae" %in% metric_search(text = "sum absolute error")$id)
+  expect_true("rmsle" %in% metric_search(text = "logarithmic")$id)
+  expect_true("evs" %in% metric_search(text = "explained variance")$id)
 
   category_out <- metric_search(category = "correlation")
   expect_true(nrow(category_out) > 0L)
@@ -48,10 +63,16 @@ test_that("metric_search filters by text, category, tags, preset, and export fla
 
   exported_out <- metric_search(exported = TRUE)
   expect_true(all(nzchar(exported_out$exported_wrappers)))
+  expect_true("rmsle" %in% exported_out$id)
+  expect_false(any(c("sae", "evs") %in% exported_out$id))
 
   compat_out <- metric_search(compatibility = TRUE)
   expect_true(all(compat_out$compatibility_export))
   expect_true(all(c("nse", "mnse", "rnse", "wsnse", "hfb") %in% compat_out$id))
+
+  deterministic_error_out <- metric_search(preset = "deterministic_error")
+  expect_true(all(c("sae", "rmsle") %in% deterministic_error_out$id))
+  expect_false("evs" %in% deterministic_error_out$id)
 })
 
 test_that("metric_search validates discovery filters conservatively", {

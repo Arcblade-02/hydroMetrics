@@ -38,7 +38,6 @@ handling; they are not exported standalone functions.
 - [x] br2
 - [x] cp
 - [x] d
-- [x] dr
 - [x] KGE
 - [x] KGEkm
 - [x] KGElf
@@ -78,7 +77,6 @@ handling; they are not exported standalone functions.
 | br2 | Bias-Corrected R-squared | correlation | 0.1.0 | Krause, P., Boyle, D. P., & Baese, F. (2005). Comparison of different efficiency criteria for hydrological model assessment; the package follows the selected `bR2` interpretation recorded in Architecture Decision D-029. |
 | cp | Coefficient of Persistence | efficiency | 0.1.0 | Persistence skill-score definition from hydrology model-evaluation literature. |
 | d | Willmott Index of Agreement | agreement | 0.1.0 | Willmott, C.J. (1981). On the validation of models. |
-| dr | Relative Absolute Index of Agreement | agreement | 0.1.0 | Willmott agreement-index family with relative absolute-error normalization. |
 | hfb | High Flow Bias | bias | 0.1.0 | Clean-room HFB compatibility implementation using deterministic quantile thresholding. |
 | kge | Kling-Gupta Efficiency | efficiency | 0.1.0 | Kling, H., Fuchs, M., & Paulin, M. (2009). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. |
 | kgekm | KGE Modified Variability | efficiency | 0.1.0 | Kling, H., Fuchs, M., & Paulin, M. (2012). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. |

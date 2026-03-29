@@ -14,7 +14,7 @@
   c(
     "me", "mae", "mse", "rmse", "ubrmse", "nrmse", "pbias", "rsr", "rsd",
     "nse", "mnse", "rnse", "wnse", "wsnse",
-    "d", "dr", "md", "rd", "cp",
+    "d", "md", "rd", "cp",
     "r", "r2", "br2", "ve",
     "kge", "kgelf", "kgenp", "kgekm"
   )

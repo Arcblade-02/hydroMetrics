@@ -23,7 +23,6 @@
 | d | Mathematical definition from agreement-index literature | Willmott, C.J. (1981). On the validation of models. | Implemented from published formula definition, no code copied. |
 | md | Mathematical definition from modified agreement-index literature | Willmott, C.J., Robeson, S.M., & Matsuura, K. (2012). A refined index of model performance. | Implemented from published formula definition, no code copied. |
 | rd | Relative agreement formula variant | Willmott agreement-index family with relative normalization by observations. | Implemented from explicit formula definition selected for compatibility tracking. |
-| dr | Relative absolute-agreement formula variant | Willmott agreement-index family with relative absolute-error normalization. | Implemented from explicit formula definition selected for compatibility tracking. |
 | br2 | Bias-corrected correlation formulation | Krause, P., Boyle, D. P., & Baese, F. (2005). Comparison of different efficiency criteria for hydrological model assessment; package interpretation fixed by Architecture Decision D-029. | Implemented from the selected formula interpretation, no code copied. |
 | rNSE | Relative NSE variant | NSE family variant per hydrology literature (relative scaling by observations). | Implemented from explicit formula definition, no code copied. |
 | mNSE | Modified NSE variant | NSE family variant using absolute-error formulation in hydrology literature. | Implemented from explicit formula definition, no code copied. |

@@ -36,7 +36,6 @@ notes recorded in `workstream-b-validation-inventory.md`:
 - `pbias`
 - `nrmse`
 - `r2`
-- `dr`
 - `rd`
 - `kgekm`
 - `kgelf`
@@ -82,8 +81,8 @@ Currently validated through literature/example-based or base-statistics checks:
   this tranche because `hydroGOF` does not expose a direct like-for-like
   `RSD` / `rsd` comparator.
 - The small direct-comparator tranche now records `wnse` as equivalent on the
-  committed comparable cases, while `dr` and `rd` are now explicitly treated
-  as intentional divergence rather than unresolved backlog items.
+  committed comparable cases, while `rd` is now explicitly treated as
+  intentional divergence rather than an unresolved backlog item.
 - The specialized KGE-family / seasonal tranche now classifies `kgekm`,
   `kgelf`, `kgenp`, and `skge` as intentional divergence rather than leaving
   them in the unresolved backlog.

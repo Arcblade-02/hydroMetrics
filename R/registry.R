@@ -71,7 +71,6 @@ register_core_metrics <- function(registry) {
     core_metric_spec_d(),
     core_metric_spec_md(),
     core_metric_spec_rd(),
-    core_metric_spec_dr(),
     core_metric_spec_br2(),
     core_metric_spec_rnse(),
     core_metric_spec_mnse(),

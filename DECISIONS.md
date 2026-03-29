@@ -47,7 +47,7 @@ two duplicated historical `D-030` headings.
 - Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
 
 #### D-008: Core Metric Bootstrap Strategy
-- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `beta`, `alpha`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `dr`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `hfb`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
+- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `beta`, `alpha`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `hfb`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
 - Status: Accepted
 - Notes: Public API remains stable and users can evaluate core metrics without manual registration. Deprecated `rpearson` requests are handled by alias resolution rather than as a separately registered core metric.
 
@@ -77,7 +77,7 @@ two duplicated historical `D-030` headings.
 - Notes: Zero-observation divisions are treated as invalid input; no silent `Inf`/`NaN` handling is applied.
 
 #### D-014: Relative Agreement Variants
-- Decision: `rd` and `dr` use observation-normalized relative formulations selected for compatibility tracking.
+- Decision: `rd` uses observation-normalized relative formulations selected for compatibility tracking.
 - Status: Accepted
 - Notes: Both metrics fail when `obs` contains zero, and both fail when their denominator evaluates to zero.
 

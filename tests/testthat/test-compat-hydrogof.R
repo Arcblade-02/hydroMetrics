@@ -138,7 +138,7 @@ test_that("moderate hydroGOF-overlap tranche matches on intended comparable case
   }
 })
 
-test_that("direct hydroGOF-overlap tranche reconciles wnse, dr, and rd", {
+test_that("direct hydroGOF-overlap tranche reconciles wnse and rd", {
   skip_if_not_installed("hydroGOF")
 
   tol <- sqrt(.Machine$double.eps)
@@ -158,10 +158,9 @@ test_that("direct hydroGOF-overlap tranche reconciles wnse, dr, and rd", {
   )
 
   for (case in cases) {
-    out <- gof(case$sim, case$obs, methods = c("wnse", "dr", "rd"))
+    out <- gof(case$sim, case$obs, methods = c("wnse", "rd"))
 
     expect_equal(out[["wnse"]], hydroGOF::wNSE(case$sim, case$obs), tolerance = tol)
-    expect_gt(abs(out[["dr"]] - hydroGOF::dr(case$sim, case$obs)), tol)
     expect_gt(abs(out[["rd"]] - hydroGOF::rd(case$sim, case$obs)), tol)
   }
 })

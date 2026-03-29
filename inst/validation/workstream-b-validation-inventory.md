@@ -36,7 +36,6 @@ reconciliation outcome: `equivalent`, `intentionally divergent`,
 | `nrmse` | compatibility overlap | `hydroGOF::nrmse` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` uses RMSE / mean(obs); `hydroGOF::nrmse` defaults to rounded `100 * RMSE / sd(obs)` with `norm = "sd"` |
 | `r2` | compatibility overlap | `hydroGOF::R2` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` uses Pearson correlation squared; `hydroGOF::R2` computes `1 - SSres / SStot` |
 | `rsr` | compatibility overlap | `hydroGOF::rsr` | explicit comparison test in `test-compat-hydrogof.R` | equivalent | Exported wrapper covered |
-| `dr` | compatibility overlap | `hydroGOF::dr` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` uses an observation-normalized relative absolute agreement formula; `hydroGOF::dr` uses the Willmott et al. (2012) refined index with piecewise `1 - A/B` or `1 - B/A` scaling |
 | `rd` | compatibility overlap | `hydroGOF::rd` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` uses obs-normalized relative terms in both numerator and denominator; `hydroGOF::rd` normalizes the denominator by `mean(obs)` and warns rather than failing on zero observations |
 | `skge` | compatibility overlap | `hydroGOF::sKGE` | explicit divergence test in `test-compat-hydrogof.R`, plus function-definition inspection | intentionally divergent | `hydroMetrics` computes mean monthly-group KGE when monthly context is available and otherwise falls back to KGE; `hydroGOF::sKGE` requires `zoo` inputs and averages per-year KGE values |
 | `pfactor` | compatibility overlap | `hydroGOF::pfactor` | interface/signature inspection in `test-compat-hydrogof.R` | not directly comparable | `hydroMetrics` defines `pfactor(sim, obs, tol)` as a tolerance-band hit proportion on paired series; `hydroGOF::pfactor(x, lband, uband)` is an uncertainty-band coverage diagnostic with different required inputs |
@@ -86,7 +85,7 @@ outcome is intentional divergence or non-comparability rather than equivalence.
   remains in the backlog because `hydroGOF` does not expose a direct
   like-for-like `RSD` / `rsd` comparator.
 - The small direct-comparator tranche now records `wnse` as equivalent on
-  intended comparable cases, while `dr` and `rd` are explicitly classified as
+  intended comparable cases, while `rd` is explicitly classified as
   intentionally divergent based on both comparison tests and formula
   inspection.
 - The specialized KGE-family / seasonal tranche now records `kgekm`,

@@ -1,8 +1,6 @@
 #' Evaluate the RSR wrapper
 #'
-#' Thin exported wrapper over [gof()] for the canonical registry metric
-#' `"rsr"`. Deprecated alias `"nrmse_sd"` resolves to this canonical metric
-#' during orchestration and engine evaluation.
+#' Thin exported wrapper over [gof()] for the registry metric `"rsr"`.
 #'
 #' @inheritParams gof
 #'

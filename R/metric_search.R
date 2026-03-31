@@ -64,7 +64,7 @@
       "extended_valindex"
     ),
     id = c(
-      "high_flow_percent_bias",
+      "hfb",
       "nse",
       "mnse",
       "rnse",
@@ -123,7 +123,7 @@
       "baseflow_index_error",
       "derivative_nse",
       "low_flow_bias",
-      "high_flow_percent_bias",
+      "hfb",
       "upper_tail_conditional_exceedance"
     )
   ]
@@ -140,7 +140,7 @@
         "mnse",
         "rnse",
         "wsnse",
-        "high_flow_percent_bias"
+        "hfb"
       )
     ),
     deterministic_error = ids[metrics$category == "error" & !grepl("probabilistic", tags_lower, fixed = TRUE)],
@@ -159,7 +159,8 @@
     "NSeff",
     "mNSeff",
     "rNSeff",
-    "wsNSeff"
+    "wsNSeff",
+    "mutual_information_score"
   )
   presets <- .hm_metric_search_presets(metrics$id, metrics)
 

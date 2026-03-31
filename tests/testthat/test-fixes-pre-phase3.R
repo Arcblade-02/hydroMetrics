@@ -49,7 +49,7 @@ test_that("pairwise gof remains deterministic on valid paired values", {
   expect_identical(attr(out_pair, "meta")$n_removed_na, 2L)
 })
 
-test_that("slope_scaled_r2 matches abs(slope) * r^2 and differs from the old penalty formula", {
+test_that("br2 matches abs(slope) * r^2 and differs from the old penalty formula", {
   sim <- c(1.2, 1.8, 3.4, 3.9, 5.1)
   obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
 
@@ -61,58 +61,10 @@ test_that("slope_scaled_r2 matches abs(slope) * r^2 and differs from the old pen
     (r^2) * (sd_penalty^2) * (mean_penalty^2)
   }
 
-  out <- .hm_get("evaluate_metrics")(sim, obs, "slope_scaled_r2")
+  out <- .hm_get("evaluate_metrics")(sim, obs, "br2")
 
   expect_equal(out$value[[1]], unname(manual), tolerance = 1e-12)
   expect_false(isTRUE(all.equal(unname(manual), unname(old_formula), tolerance = 1e-12)))
-})
-
-test_that("Batch 3A aliases are deprecated and no longer canonical registry ids", {
-  ids <- .hm_get("list_metrics")()$id
-
-  expect_true(all(c("mean_absolute_error_ratio", "within_tolerance_rate", "slope_scaled_r2") %in% ids))
-  expect_false(any(c("rfactor", "pfactor", "br2") %in% ids))
-
-  expect_warning(
-    rfactor_out <- .hm_get("evaluate_metrics")(c(1, 1, 4), c(1, 2, 3), "rfactor"),
-    "deprecated"
-  )
-  expect_identical(rfactor_out$metric, "mean_absolute_error_ratio")
-
-  expect_warning(
-    pfactor_out <- .hm_get("evaluate_metrics")(c(9, 11, 12), c(10, 10, 10), "pfactor"),
-    "deprecated"
-  )
-  expect_identical(pfactor_out$metric, "within_tolerance_rate")
-
-  expect_warning(
-    br2_out <- .hm_get("evaluate_metrics")(c(1.2, 1.8, 3.4, 3.9, 5.1), c(1.0, 2.0, 3.0, 4.0, 5.0), "br2"),
-    "deprecated"
-  )
-  expect_identical(br2_out$metric, "slope_scaled_r2")
-})
-
-test_that("Batch 3B aliases follow the approved lifecycle and no longer canonical registry ids", {
-  ids <- .hm_get("list_metrics")()$id
-
-  expect_true(all(c("obs_normalized_agreement_index", "monthly_grouped_kge", "log_transformed_kge") %in% ids))
-  expect_false(any(c("rd", "skge", "kgelf") %in% ids))
-
-  expect_warning(
-    rd_out <- .hm_get("evaluate_metrics")(c(1.2, 1.8, 3.4, 3.9, 5.1), c(1.0, 2.0, 3.0, 4.0, 5.0), "rd"),
-    "deprecated"
-  )
-  expect_identical(rd_out$metric, "obs_normalized_agreement_index")
-
-  expect_no_warning(
-    skge_out <- .hm_get("evaluate_metrics")(c(1, 2, 3, 4), c(1, 2, 3, 4), "skge")
-  )
-  expect_identical(skge_out$metric, "monthly_grouped_kge")
-
-  expect_no_warning(
-    kgelf_out <- .hm_get("evaluate_metrics")(c(1, 2, 3), c(1, 2, 1), "kgelf")
-  )
-  expect_identical(kgelf_out$metric, "log_transformed_kge")
 })
 
 test_that("rpearson is deprecated and no longer a canonical registry id", {

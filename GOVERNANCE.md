@@ -41,23 +41,14 @@ Current compatibility policy:
 
 - uppercase hydroGOF-style names accepted by `gof()` / `ggof()` are
   orchestration labels, not exported standalone functions
-- documented compatibility exports keep a canonical target and resolve
-  silently
-- deprecated aliases may continue to resolve, but they warn and must not
-  silently become new canonical ids
+- documented compatibility exports keep a canonical target
+- deprecated aliases may continue to resolve, but they should not silently
+  become new canonical ids
 - intentional divergence from reference packages should be documented as
   intentional, not described as unresolved compatibility
 
 Compatibility work should prefer thin wrappers or resolution aliases over
 parallel live implementations.
-
-Current deprecated metric-id alias paths include `rPearson`, `nrmse_sd`,
-`mutual_information_score`, `rfactor`, `pfactor`, `br2`, `rd`, `hfb`,
-`tail_dependence_score`, and `extended_valindex`; they resolve to their
-canonical targets and must not remain as duplicate registry entries. Current
-silent compatibility metric-id aliases include `kgelf` and `skge`; they also
-resolve to canonical targets and must not remain as duplicate registry
-entries.
 
 ## Lifecycle Policy
 
@@ -74,10 +65,9 @@ Current baseline interpretation:
 - `stable`: documented exported functions other than the explicit compatibility
   exports and any future explicitly marked deprecated or experimental surface
 - `compatibility`: retained historical or interoperability-oriented exports
-  such as `NSeff()`, `mNSeff()`, `rNSeff()`, and `wsNSeff()`
-- `deprecated`: `HFB()`, `mutual_information_score()`,
-  `tail_dependence_score()`, and `extended_valindex()` remain exported
-  temporarily as forwarding wrappers to their canonical exported wrappers
+  such as `NSeff()`, `mNSeff()`, `rNSeff()`, `wsNSeff()`, `HFB()`, and
+  `mutual_information_score()`
+- `deprecated`: no exported functions are currently published in this status
 - `experimental`: no exported functions are currently published in this status
 
 If a new exported function is added, its lifecycle status should be stated

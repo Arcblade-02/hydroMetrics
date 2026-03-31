@@ -18,13 +18,6 @@ test_that("metric_search returns annotated metric metadata", {
   nse_row <- out[out$id == "nse", , drop = FALSE]
   mae_row <- out[out$id == "mae", , drop = FALSE]
   mi_row <- out[out$id == "mutual_information", , drop = FALSE]
-  mar_row <- out[out$id == "mean_absolute_error_ratio", , drop = FALSE]
-  wtr_row <- out[out$id == "within_tolerance_rate", , drop = FALSE]
-  ssr2_row <- out[out$id == "slope_scaled_r2", , drop = FALSE]
-  onai_row <- out[out$id == "obs_normalized_agreement_index", , drop = FALSE]
-  mgk_row <- out[out$id == "monthly_grouped_kge", , drop = FALSE]
-  ltk_row <- out[out$id == "log_transformed_kge", , drop = FALSE]
-  hfpb_row <- out[out$id == "high_flow_percent_bias", , drop = FALSE]
   utce_row <- out[out$id == "upper_tail_conditional_exceedance", , drop = FALSE]
   cpi_row <- out[out$id == "composite_performance_index", , drop = FALSE]
 
@@ -34,32 +27,14 @@ test_that("metric_search returns annotated metric metadata", {
   expect_false(mae_row$compatibility_export[[1]])
   expect_match(mi_row$exported_wrappers[[1]], "mutual_information")
   expect_match(mi_row$exported_wrappers[[1]], "mutual_information_score")
-  expect_false(mi_row$compatibility_export[[1]])
-  expect_false(any(c("nrmse_sd", "mutual_information_score", "rfactor", "pfactor", "br2", "rd", "skge", "kgelf", "hfb", "tail_dependence_score", "extended_valindex") %in% out$id))
-  expect_identical(mar_row$category[[1]], "error")
-  expect_false(mar_row$compatibility_export[[1]])
-  expect_identical(wtr_row$category[[1]], "efficiency")
-  expect_false(wtr_row$compatibility_export[[1]])
-  expect_identical(ssr2_row$category[[1]], "correlation")
-  expect_false(ssr2_row$compatibility_export[[1]])
-  expect_identical(onai_row$category[[1]], "agreement")
-  expect_false(onai_row$compatibility_export[[1]])
-  expect_identical(mgk_row$category[[1]], "efficiency")
-  expect_false(mgk_row$compatibility_export[[1]])
-  expect_identical(ltk_row$category[[1]], "efficiency")
-  expect_false(ltk_row$compatibility_export[[1]])
-  expect_identical(hfpb_row$category[[1]], "bias")
-  expect_true(hfpb_row$compatibility_export[[1]])
-  expect_match(hfpb_row$exported_wrappers[[1]], "HFB")
-  expect_match(hfpb_row$exported_wrappers[[1]], "high_flow_percent_bias")
-  expect_identical(utce_row$category[[1]], "agreement")
-  expect_false(utce_row$compatibility_export[[1]])
+  expect_false("tail_dependence_score" %in% out$id)
+  expect_false("extended_valindex" %in% out$id)
   expect_match(utce_row$exported_wrappers[[1]], "tail_dependence_score")
   expect_match(utce_row$exported_wrappers[[1]], "upper_tail_conditional_exceedance")
-  expect_identical(cpi_row$category[[1]], "agreement")
-  expect_false(cpi_row$compatibility_export[[1]])
+  expect_false(utce_row$compatibility_export[[1]])
   expect_match(cpi_row$exported_wrappers[[1]], "extended_valindex")
   expect_match(cpi_row$exported_wrappers[[1]], "composite_performance_index")
+  expect_false(cpi_row$compatibility_export[[1]])
   expect_true(all(c("sae", "rmsle", "evs", "rae", "rrse") %in% out$id))
 
   sae_row <- out[out$id == "sae", , drop = FALSE]
@@ -107,13 +82,12 @@ test_that("metric_search filters by text, category, tags, preset, and export fla
   exported_out <- metric_search(exported = TRUE)
   expect_true(all(nzchar(exported_out$exported_wrappers)))
   expect_true("rmsle" %in% exported_out$id)
-  expect_true(all(c("high_flow_percent_bias", "upper_tail_conditional_exceedance", "composite_performance_index") %in% exported_out$id))
+  expect_true(all(c("upper_tail_conditional_exceedance", "composite_performance_index") %in% exported_out$id))
   expect_false(any(c("sae", "evs", "rae", "rrse") %in% exported_out$id))
 
   compat_out <- metric_search(compatibility = TRUE)
   expect_true(all(compat_out$compatibility_export))
-  expect_true(all(c("nse", "mnse", "rnse", "wsnse", "high_flow_percent_bias") %in% compat_out$id))
-  expect_false(any(c("nrmse_sd", "mutual_information_score", "rfactor", "pfactor", "br2", "rd", "skge", "kgelf", "hfb", "tail_dependence_score", "extended_valindex") %in% compat_out$id))
+  expect_true(all(c("nse", "mnse", "rnse", "wsnse", "hfb") %in% compat_out$id))
 
   deterministic_error_out <- metric_search(preset = "deterministic_error")
   expect_true(all(c("sae", "rmsle", "rae", "rrse") %in% deterministic_error_out$id))
@@ -138,7 +112,7 @@ test_that("metric_preset resolves documented presets to canonical metric ids", {
   exported_out <- metric_preset("compatibility_core", exported_only = TRUE)
   expect_type(exported_out, "character")
   expect_true(all(exported_out %in% hydroMetrics:::metric_search(exported = TRUE)$id))
-  expect_true(all(c("nse", "mnse", "rnse", "wsnse", "high_flow_percent_bias") %in% exported_out))
+  expect_true(all(c("nse", "mnse", "rnse", "wsnse", "hfb") %in% exported_out))
 })
 
 test_that("metric_preset validates input conservatively", {

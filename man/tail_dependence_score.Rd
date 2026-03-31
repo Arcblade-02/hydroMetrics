@@ -27,7 +27,7 @@ Deprecated forwarding wrapper for \code{\link[=upper_tail_conditional_exceedance
 \details{
 \code{tail_dependence_score()} remains exported temporarily for compatibility,
 but \code{"tail_dependence_score"} is no longer a live canonical registry metric
-id. Each call warns once and then forwards directly to canonical
+id. Calls emit a deprecation warning and then forward directly to canonical
 \code{\link[=upper_tail_conditional_exceedance]{upper_tail_conditional_exceedance()}}.
 }
 \examples{

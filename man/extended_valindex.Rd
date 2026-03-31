@@ -27,7 +27,7 @@ Deprecated forwarding wrapper for \code{\link[=composite_performance_index]{comp
 \details{
 \code{extended_valindex()} remains exported temporarily for compatibility, but
 \code{"extended_valindex"} is no longer a live canonical registry metric id.
-Each call warns once and then forwards directly to canonical
+Calls emit a deprecation warning and then forward directly to canonical
 \code{\link[=composite_performance_index]{composite_performance_index()}}.
 }
 \examples{

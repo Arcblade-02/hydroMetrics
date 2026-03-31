@@ -14,9 +14,9 @@
   c(
     "me", "mae", "mse", "rmse", "ubrmse", "nrmse", "pbias", "rsr", "rsd",
     "nse", "mnse", "rnse", "wnse", "wsnse",
-    "d", "md", "obs_normalized_agreement_index", "cp",
-    "r", "r2", "slope_scaled_r2", "ve",
-    "kge", "log_transformed_kge", "kgenp", "kgekm"
+    "d", "md", "rd", "cp",
+    "r", "r2", "br2", "ve",
+    "kge", "kgelf", "kgenp", "kgekm"
   )
 }
 
@@ -153,7 +153,7 @@
 .gof_auto_applicable_ids <- function(available_ids, sim = NULL, obs = NULL, index = NULL) {
   ids <- available_ids
   if (!.gof_can_auto_run_hfb(obs)) {
-    ids <- setdiff(ids, "high_flow_percent_bias")
+    ids <- setdiff(ids, "hfb")
   }
   if (!.gof_can_auto_run_nrmse_range(obs)) {
     ids <- setdiff(ids, "nrmse_range")

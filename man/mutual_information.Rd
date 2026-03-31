@@ -24,10 +24,8 @@ multi-series inputs.
 \description{
 Thin exported wrapper over \code{\link[=gof]{gof()}} for the canonical registry metric
 \code{"mutual_information"}. Under the current deterministic policy this is the
-canonical name for the same pooled-grid raw mutual information formerly
-exposed through deprecated wrapper \code{\link[=mutual_information_score]{mutual_information_score()}}. The
-estimator uses a pooled-support Sturges histogram on the paired joint
-empirical distribution and reports the result in natural-log units.
+canonical name for the same pooled-grid raw mutual information reported by
+\code{"mutual_information_score"}.
 }
 \examples{
 mutual_information(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))

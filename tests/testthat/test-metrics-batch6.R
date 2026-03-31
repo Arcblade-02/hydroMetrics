@@ -2,24 +2,24 @@ test_that("batch6 metrics return expected hm_result structure and ids", {
   out <- evaluate_metrics(
     sim = c(1, 2, 3),
     obs = c(1, 2, 1),
-    metrics = c("kgekm", "log_transformed_kge", "kgenp")
+    metrics = c("kgekm", "kgelf", "kgenp")
   )
 
   expect_s3_class(out, "hm_result")
   expect_true(is.data.frame(out))
   expect_identical(colnames(out), c("metric", "name", "value"))
-  expect_identical(out$metric, c("kgekm", "log_transformed_kge", "kgenp"))
+  expect_identical(out$metric, c("kgekm", "kgelf", "kgenp"))
 })
 
 test_that("batch6 perfect-fit values are correct", {
   sim <- c(1, 2, 3, 4)
   obs <- c(1, 2, 3, 4)
 
-  out <- evaluate_metrics(sim, obs, c("kgekm", "log_transformed_kge", "kgenp"))
+  out <- evaluate_metrics(sim, obs, c("kgekm", "kgelf", "kgenp"))
   values <- setNames(out$value, out$metric)
 
   expect_equal(values[["kgekm"]], 1)
-  expect_equal(values[["log_transformed_kge"]], 1)
+  expect_equal(values[["kgelf"]], 1)
   expect_equal(values[["kgenp"]], 1)
 })
 
@@ -36,7 +36,7 @@ test_that("kgekm matches inline formula", {
   expect_equal(out$value[[1]], expected)
 })
 
-test_that("log_transformed_kge matches inline transformed KGE formula", {
+test_that("kgelf matches inline transformed KGE formula", {
   sim <- c(1, 2, 3)
   obs <- c(1, 2, 1)
   sim_lf <- log1p(sim)
@@ -47,7 +47,7 @@ test_that("log_transformed_kge matches inline transformed KGE formula", {
   beta <- mean(sim_lf) / mean(obs_lf)
   expected <- 1 - sqrt((r - 1)^2 + (alpha - 1)^2 + (beta - 1)^2)
 
-  out <- evaluate_metrics(sim, obs, "log_transformed_kge")
+  out <- evaluate_metrics(sim, obs, "kgelf")
   expect_equal(out$value[[1]], expected)
 })
 
@@ -64,27 +64,27 @@ test_that("kgenp matches inline nonparametric formula", {
   expect_equal(out$value[[1]], expected)
 })
 
-test_that("monthly_grouped_kge works for monthly ts input", {
+test_that("skge works for monthly ts input", {
   obs_ts <- stats::ts(c(1:12, 2:13), start = c(2000, 1), frequency = 12)
   sim_ts <- obs_ts
 
-  out <- evaluate_metrics(sim_ts, obs_ts, "monthly_grouped_kge")
+  out <- evaluate_metrics(sim_ts, obs_ts, "skge")
   expect_true(is.numeric(out$value[[1]]))
   expect_true(out$value[[1]] <= 1)
   expect_equal(out$value[[1]], 1)
 })
 
-test_that("monthly_grouped_kge falls back to KGE for plain numeric vectors", {
+test_that("skge falls back to KGE for plain numeric vectors", {
   sim <- c(1, 2, 3, 4)
   obs <- c(1, 2, 3, 4)
 
-  out <- evaluate_metrics(sim, obs, "monthly_grouped_kge")
+  out <- evaluate_metrics(sim, obs, "skge")
   expect_equal(out$value[[1]], 1)
 })
 
-test_that("log_transformed_kge errors on negative flows", {
+test_that("kgelf errors on negative flows", {
   expect_error(
-    evaluate_metrics(c(-0.1, 1, 2), c(1, 1, 2), "log_transformed_kge"),
+    evaluate_metrics(c(-0.1, 1, 2), c(1, 1, 2), "kgelf"),
     "negative values"
   )
 })

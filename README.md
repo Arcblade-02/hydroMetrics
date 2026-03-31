@@ -17,24 +17,13 @@ reproducible package checks.
 - Stable exported metric surface: documented exported metric wrappers
 - Stable exported utility: `hm_result()` as the low-level constructor for
   `hm_result` S3 objects
-- Compatibility exports retained at the `0.4.0` baseline: `NSeff()`,
-  `mNSeff()`, `rNSeff()`, and `wsNSeff()`
-- Deprecated exported wrappers retained temporarily at the `0.4.0` baseline:
-  `HFB()`, `mutual_information_score()`, `tail_dependence_score()`, and
-  `extended_valindex()`, which forward to their canonical wrappers
+- Compatibility exports retained at the `0.4.0` baseline: `HFB()`, `NSeff()`,
+  `mNSeff()`, `rNSeff()`, `wsNSeff()`, and `mutual_information_score()`
 - Uppercase hydroGOF-style labels accepted by `gof()`/`ggof()` are
   orchestration method labels, not exported standalone functions: `NSE`,
   `KGE`, `MAE`, `RMSE`, `PBIAS`, `R2`, `NRMSE`, `mNSE`, `rNSE`, and `wsNSE`
-- Deprecated orchestration aliases: `rPearson -> r`, `nrmse_sd -> rsr`,
-  `mutual_information_score -> mutual_information`,
-  `rfactor -> mean_absolute_error_ratio`,
-  `pfactor -> within_tolerance_rate`, `br2 -> slope_scaled_r2`,
-  `rd -> obs_normalized_agreement_index`,
-  `hfb -> high_flow_percent_bias`,
-  `tail_dependence_score -> upper_tail_conditional_exceedance`, and
-  `extended_valindex -> composite_performance_index`
-- Silent compatibility metric-id aliases: `kgelf -> log_transformed_kge` and
-  `skge -> monthly_grouped_kge`
+- Deprecated orchestration alias: `rPearson` resolves to canonical `r` during
+  method selection
 - Default `gof()` remains compat-oriented, while `gof(extended = TRUE)`
   exposes the broader automatically applicable deterministic surface
 - Seasonal, regime-sensitive, information-theory, and tail-sensitive metrics
@@ -47,47 +36,22 @@ reproducible package checks.
   `plot_fdc()`, and `hm_result()`, and
   documented exported metric wrappers other than the explicit compatibility
   exports below
-- `compatibility`: `NSeff()`, `mNSeff()`, `rNSeff()`, and `wsNSeff()`
-- `deprecated`: `HFB()`, `mutual_information_score()`,
-  `tail_dependence_score()`, and `extended_valindex()`
+- `compatibility`: `HFB()`, `NSeff()`, `mNSeff()`, `rNSeff()`, `wsNSeff()`,
+  and `mutual_information_score()`
+- `deprecated`: no exported functions at the `0.4.0` baseline
 - `experimental`: no exported functions at the `0.4.0` baseline
 
 ## Alias Policy
 
-- Compatibility aliases resolve silently to their canonical targets.
-- Deprecated aliases resolve to canonical targets with a warning.
 - Exported compatibility wrappers retained for historical continuity route to
   canonical registry metrics or canonical exported wrappers:
   `NSeff() -> nse`, `mNSeff() -> mnse`, `rNSeff() -> rnse`,
-  `wsNSeff() -> wsnse`
+  `wsNSeff() -> wsnse`, `HFB() -> hfb`, and
+  `mutual_information_score() -> mutual_information()`
 - Uppercase hydroGOF-style names accepted by `gof()` / `ggof()` are
   orchestration-only method labels and are not exported standalone functions
-- Deprecated alias requests are resolved to their canonical targets during
-  orchestration-level method selection: `rPearson -> r`,
-  `nrmse_sd -> rsr`, `mutual_information_score -> mutual_information`,
-  `rfactor -> mean_absolute_error_ratio`,
-  `pfactor -> within_tolerance_rate`, `br2 -> slope_scaled_r2`, and
-  `rd -> obs_normalized_agreement_index`,
-  `hfb -> high_flow_percent_bias`,
-  `tail_dependence_score -> upper_tail_conditional_exceedance`, and
-  `extended_valindex -> composite_performance_index`
-- Silent compatibility metric-id alias requests currently include
-  `kgelf -> log_transformed_kge` and `skge -> monthly_grouped_kge`
-- Canonical exported wrappers now include `high_flow_percent_bias()`,
-  `upper_tail_conditional_exceedance()`, and
-  `composite_performance_index()`
-- Deprecated exported wrappers warn and forward to canonical wrappers:
-  `HFB() -> high_flow_percent_bias()`,
-  `mutual_information_score() -> mutual_information()`,
-  `tail_dependence_score() -> upper_tail_conditional_exceedance()`, and
-  `extended_valindex() -> composite_performance_index()`
-
-## Metric Notes
-
-- `cdf_rmse()` is a package-defined empirical-distribution diagnostic rather
-  than a claim to a single external standard name.
-- `mutual_information()` is the canonical raw mutual information metric and
-  uses pooled-support Sturges histogram bins with natural-log units.
+- Deprecated `rPearson` requests are resolved to canonical `r` during
+  orchestration-level method selection
 
 ## Install
 

@@ -140,12 +140,12 @@ test_that("layer C batch C2 registry ids are present", {
   ids <- list_metrics()$id
   target <- c(
     "entropy_diff",
+    "mutual_information_score",
     "mutual_information",
     "normalised_mi"
   )
 
   expect_true(all(target %in% ids))
-  expect_false("mutual_information_score" %in% ids)
 })
 
 test_that("layer C batch C3 registry ids are present", {
@@ -229,25 +229,23 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
   sim <- c(1, 2, 3, 4, 8, 9, 10, 11, 5, 4, 3, 2)
   obs <- c(1, 2, 3, 4, 5, 6, 7, 10, 6, 5, 4, 3)
 
-  expect_warning(
-    out <- gof(
-      sim,
-      obs,
-      methods = c(
-        "skewness_error",
-        "kurtosis_error",
-        "entropy_diff",
-        "mutual_information",
-        "normalised_mi",
-        "upper_tail_conditional_exceedance",
-        "extreme_event_ratio",
-        "rank_turnover_score",
-        "distribution_overlap",
-        "quantile_shift_index",
-        "composite_performance_index"
-      )
-    ),
-    NA
+  out <- gof(
+    sim,
+    obs,
+    methods = c(
+      "skewness_error",
+      "kurtosis_error",
+      "entropy_diff",
+      "mutual_information_score",
+      "mutual_information",
+      "normalised_mi",
+      "upper_tail_conditional_exceedance",
+      "extreme_event_ratio",
+      "rank_turnover_score",
+      "distribution_overlap",
+      "quantile_shift_index",
+      "composite_performance_index"
+    )
   )
   expect_true(inherits(out, "hydro_metrics"))
   expect_identical(
@@ -256,6 +254,7 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "skewness_error",
       "kurtosis_error",
       "entropy_diff",
+      "mutual_information_score",
       "mutual_information",
       "normalised_mi",
       "upper_tail_conditional_exceedance",
@@ -274,6 +273,7 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
         "skewness_error",
         "kurtosis_error",
         "entropy_diff",
+        "mutual_information_score",
         "mutual_information",
         "normalised_mi",
         "upper_tail_conditional_exceedance",
@@ -285,7 +285,6 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       ) %in% names(out_ext)
     )
   )
-  expect_false("mutual_information_score" %in% names(out_ext))
 })
 
 test_that("entropy_diff matches manual pooled-grid Shannon entropy difference", {
@@ -315,17 +314,7 @@ test_that("mutual_information_score matches manual pooled-grid mutual informatio
   breaks <- .test_c2_pooled_breaks(sim, obs)
   expected <- .test_c2_mutual_information(sim, obs, breaks)
 
-  warn_count <- 0L
-  wrapper_value <- withCallingHandlers(
-    mutual_information_score(sim, obs),
-    warning = function(w) {
-      warn_count <<- warn_count + 1L
-      invokeRestart("muffleWarning")
-    }
-  )
-
-  expect_identical(warn_count, 1L)
-  expect_equal(wrapper_value, expected)
+  expect_equal(mutual_information_score(sim, obs), expected)
   expect_equal(metric_mutual_information_score(sim, obs), expected)
 })
 
@@ -337,10 +326,7 @@ test_that("mutual_information is the canonical equivalent of mutual_information_
 
   expect_equal(mutual_information(sim, obs), expected)
   expect_equal(metric_mutual_information(sim, obs), expected)
-  expect_warning(
-    expect_equal(mutual_information(sim, obs), mutual_information_score(sim, obs)),
-    "deprecated"
-  )
+  expect_equal(mutual_information(sim, obs), mutual_information_score(sim, obs))
 })
 
 test_that("mutual_information_score handles constant inputs and rejects too-short inputs", {
@@ -348,20 +334,11 @@ test_that("mutual_information_score handles constant inputs and rejects too-shor
   var <- c(1, 2, 3, 4, 5, 6)
   paired <- c(1, 2, 2, 3, 4, 5)
 
-  expect_warning(
-    expect_equal(mutual_information_score(const, var), 0),
-    "deprecated"
-  )
-  expect_warning(
-    expect_gt(mutual_information_score(paired, paired), 0),
-    "deprecated"
-  )
-  expect_warning(
-    expect_error(
-      mutual_information_score(c(1, 2), c(1, 2)),
-      "requires at least 3 values"
-    ),
-    "deprecated"
+  expect_equal(mutual_information_score(const, var), 0)
+  expect_gt(mutual_information_score(paired, paired), 0)
+  expect_error(
+    mutual_information_score(c(1, 2), c(1, 2)),
+    "requires at least 3 values"
   )
 })
 

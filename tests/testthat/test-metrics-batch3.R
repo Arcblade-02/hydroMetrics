@@ -2,20 +2,20 @@ test_that("batch3 metrics return expected hm_result structure and ids", {
   out <- evaluate_metrics(
     sim = c(1, 2, 3),
     obs = c(1, 2, 1),
-    metrics = c("kge", "rsr", "mape", "mpe", "ve")
+    metrics = c("kge", "rsr", "mape", "mpe", "ve", "nrmse_sd")
   )
 
   expect_s3_class(out, "hm_result")
   expect_true(is.data.frame(out))
   expect_identical(colnames(out), c("metric", "name", "value"))
-  expect_identical(out$metric, c("kge", "rsr", "mape", "mpe", "ve"))
+  expect_identical(out$metric, c("kge", "rsr", "mape", "mpe", "ve", "nrmse_sd"))
 })
 
 test_that("batch3 perfect-fit case returns expected values", {
   out <- evaluate_metrics(
     sim = c(1, 2, 3),
     obs = c(1, 2, 3),
-    metrics = c("kge", "rsr", "mape", "mpe", "ve")
+    metrics = c("kge", "rsr", "mape", "mpe", "ve", "nrmse_sd")
   )
   values <- setNames(out$value, out$metric)
 
@@ -24,6 +24,7 @@ test_that("batch3 perfect-fit case returns expected values", {
   expect_equal(values[["mape"]], 0)
   expect_equal(values[["mpe"]], 0)
   expect_equal(values[["ve"]], 1)
+  expect_equal(values[["nrmse_sd"]], 0)
 })
 
 test_that("batch3 metrics match inline formula computations", {
@@ -34,7 +35,7 @@ test_that("batch3 metrics match inline formula computations", {
   alpha <- stats::sd(sim) / stats::sd(obs)
   beta <- mean(sim) / mean(obs)
 
-  out <- evaluate_metrics(sim, obs, c("kge", "rsr", "mape", "mpe", "ve"))
+  out <- evaluate_metrics(sim, obs, c("kge", "rsr", "mape", "mpe", "ve", "nrmse_sd"))
   values <- setNames(out$value, out$metric)
 
   expect_equal(values[["kge"]], 1 - sqrt((r - 1)^2 + (alpha - 1)^2 + (beta - 1)^2))
@@ -42,20 +43,7 @@ test_that("batch3 metrics match inline formula computations", {
   expect_equal(values[["mape"]], 100 * mean(abs((sim - obs) / obs)))
   expect_equal(values[["mpe"]], 100 * mean((sim - obs) / obs))
   expect_equal(values[["ve"]], 1 - sum(abs(sim - obs)) / sum(obs))
-})
-
-test_that("nrmse_sd resolves to canonical rsr with a deprecation warning", {
-  expect_warning(
-    out <- evaluate_metrics(
-      sim = c(1, 2, 3),
-      obs = c(1, 2, 1),
-      metrics = "nrmse_sd"
-    ),
-    "deprecated"
-  )
-
-  expect_identical(out$metric, "rsr")
-  expect_equal(out$value[[1]], evaluate_metrics(c(1, 2, 3), c(1, 2, 1), "rsr")$value[[1]])
+  expect_equal(values[["nrmse_sd"]], rmse / stats::sd(obs))
 })
 
 test_that("mape and mpe error when obs contains zero", {
@@ -85,12 +73,9 @@ test_that("rsr and nrmse_sd error when sd(obs) is zero", {
     evaluate_metrics(c(1, 2, 3), c(2, 2, 2), "rsr"),
     "sd\\(obs\\) is zero|sd\\(obs\\) == 0"
   )
-  expect_warning(
-    expect_error(
-      evaluate_metrics(c(1, 2, 3), c(2, 2, 2), "nrmse_sd"),
-      "sd\\(obs\\) is zero|sd\\(obs\\) == 0|RSR undefined"
-    ),
-    "deprecated"
+  expect_error(
+    evaluate_metrics(c(1, 2, 3), c(2, 2, 2), "nrmse_sd"),
+    "sd\\(obs\\) == 0"
   )
 })
 

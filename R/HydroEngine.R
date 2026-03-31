@@ -2,46 +2,15 @@
   data.frame(
     alias = c(
       "rpearson",
-      "nrmse_sd",
-      "mutual_information_score",
-      "rfactor",
-      "pfactor",
-      "br2",
-      "rd",
-      "skge",
-      "kgelf",
-      "hfb",
       "tail_dependence_score",
       "extended_valindex"
     ),
     target = c(
       "r",
-      "rsr",
-      "mutual_information",
-      "mean_absolute_error_ratio",
-      "within_tolerance_rate",
-      "slope_scaled_r2",
-      "obs_normalized_agreement_index",
-      "monthly_grouped_kge",
-      "log_transformed_kge",
-      "high_flow_percent_bias",
       "upper_tail_conditional_exceedance",
       "composite_performance_index"
     ),
-    lifecycle = c(
-      "deprecated",
-      "deprecated",
-      "deprecated",
-      "deprecated",
-      "deprecated",
-      "deprecated",
-      "deprecated",
-      "compatibility",
-      "compatibility",
-      "deprecated",
-      "deprecated",
-      "deprecated"
-    ),
+    lifecycle = rep("deprecated", 3L),
     stringsAsFactors = FALSE
   )
 }

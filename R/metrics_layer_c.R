@@ -229,7 +229,7 @@ core_metric_spec_mutual_information_score <- function() {
     id = "mutual_information_score",
     fun = metric_mutual_information_score,
     name = "Mutual Information Score",
-    description = "Compatibility-label raw mutual information on the paired Sturges-binned joint empirical distribution using the pooled support grid and natural logs.",
+    description = "Raw mutual information on the paired Sturges-binned joint empirical distribution using the pooled support grid and natural logs.",
     category = "agreement",
     perfect = Inf,
     range = c(0, Inf),
@@ -248,11 +248,11 @@ core_metric_spec_mutual_information <- function() {
     id = "mutual_information",
     fun = metric_mutual_information,
     name = "Mutual Information",
-    description = "Canonical raw mutual information in nats on the paired joint empirical distribution using pooled-support Sturges histogram bins and natural logs.",
+    description = "Canonical raw mutual information in nats on the paired Sturges-binned joint empirical distribution using the pooled support grid.",
     category = "agreement",
     perfect = Inf,
     range = c(0, Inf),
-    references = "Shannon (1948) mutual-information foundation with Sturges (1926) histogram binning; package metric is the canonical raw pooled-grid mutual information in nats, estimated on a pooled-support joint histogram with natural logs, and matches mutual_information_score under the current deterministic policy.",
+    references = "Shannon (1948) mutual-information foundation with Sturges (1926) histogram binning; package metric is the canonical raw pooled-grid mutual information in nats and matches mutual_information_score under the current deterministic policy.",
     version_added = "0.2.2",
     tags = c("phase-3", "layer-c", "canonical-info-theory")
   )

@@ -57,12 +57,9 @@ entropy_diff <- function(sim, obs, na.rm = NULL, ...) {
 
 #' Evaluate the mutual information score wrapper
 #'
-#' Deprecated forwarding wrapper for [mutual_information()].
-#'
-#' `mutual_information_score()` remains exported temporarily for compatibility,
-#' but `"mutual_information_score"` is no longer a live canonical registry
-#' metric id. Each call warns once and then forwards directly to canonical
-#' [mutual_information()], which computes raw mutual information in
+#' Compatibility export retained alongside canonical [mutual_information()].
+#' This thin wrapper delegates to [gof()] for the registry metric
+#' `"mutual_information_score"`. The metric computes raw mutual information in
 #' natural-log units from the paired Sturges-binned joint empirical
 #' distribution on the pooled support grid.
 #'
@@ -75,21 +72,21 @@ entropy_diff <- function(sim, obs, na.rm = NULL, ...) {
 #' mutual_information_score(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))
 #' @export
 mutual_information_score <- function(sim, obs, na.rm = NULL, ...) {
-  warning(
-    "`mutual_information_score()` is deprecated; use `mutual_information()`.",
-    call. = FALSE
+  .hm_run_single_metric_wrapper(
+    "mutual_information_score",
+    sim = sim,
+    obs = obs,
+    na.rm = na.rm,
+    dots = list(...)
   )
-  mutual_information(sim = sim, obs = obs, na.rm = na.rm, ...)
 }
 
 #' Evaluate the mutual information wrapper
 #'
 #' Thin exported wrapper over [gof()] for the canonical registry metric
 #' `"mutual_information"`. Under the current deterministic policy this is the
-#' canonical name for the same pooled-grid raw mutual information formerly
-#' exposed through deprecated wrapper [mutual_information_score()]. The
-#' estimator uses a pooled-support Sturges histogram on the paired joint
-#' empirical distribution and reports the result in natural-log units.
+#' canonical name for the same pooled-grid raw mutual information reported by
+#' `"mutual_information_score"`.
 #'
 #' @inheritParams gof
 #'
@@ -159,7 +156,7 @@ upper_tail_conditional_exceedance <- function(sim, obs, na.rm = NULL, ...) {
 #'
 #' `tail_dependence_score()` remains exported temporarily for compatibility,
 #' but `"tail_dependence_score"` is no longer a live canonical registry metric
-#' id. Each call warns once and then forwards directly to canonical
+#' id. Calls emit a deprecation warning and then forward directly to canonical
 #' [upper_tail_conditional_exceedance()].
 #'
 #' @inheritParams gof
@@ -284,7 +281,7 @@ composite_performance_index <- function(sim, obs, na.rm = NULL, ...) {
 #'
 #' `extended_valindex()` remains exported temporarily for compatibility, but
 #' `"extended_valindex"` is no longer a live canonical registry metric id.
-#' Each call warns once and then forwards directly to canonical
+#' Calls emit a deprecation warning and then forward directly to canonical
 #' [composite_performance_index()].
 #'
 #' @inheritParams gof

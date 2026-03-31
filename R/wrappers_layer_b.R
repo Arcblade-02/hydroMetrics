@@ -17,8 +17,6 @@ ks_statistic <- function(sim, obs, na.rm = NULL, ...) {
 #' Evaluate the empirical CDF RMSE wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric `"cdf_rmse"`.
-#' This is a package-defined empirical-distribution diagnostic that compares
-#' paired empirical CDFs through an RMSE summary on the pooled support grid.
 #'
 #' @inheritParams gof
 #'

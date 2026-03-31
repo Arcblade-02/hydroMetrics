@@ -22,13 +22,9 @@ A numeric scalar for single-series inputs or a numeric vector for
 multi-series inputs.
 }
 \description{
-Deprecated forwarding wrapper for \code{\link[=mutual_information]{mutual_information()}}.
-}
-\details{
-\code{mutual_information_score()} remains exported temporarily for compatibility,
-but \code{"mutual_information_score"} is no longer a live canonical registry
-metric id. Each call warns once and then forwards directly to canonical
-\code{\link[=mutual_information]{mutual_information()}}, which computes raw mutual information in
+Compatibility export retained alongside canonical \code{\link[=mutual_information]{mutual_information()}}.
+This thin wrapper delegates to \code{\link[=gof]{gof()}} for the registry metric
+\code{"mutual_information_score"}. The metric computes raw mutual information in
 natural-log units from the paired Sturges-binned joint empirical
 distribution on the pooled support grid.
 }

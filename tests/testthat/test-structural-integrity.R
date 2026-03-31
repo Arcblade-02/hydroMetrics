@@ -148,7 +148,7 @@ test_that("canonical metric tree contains no NA-handling logic tokens", {
     return(list(sim = sim, obs = obs, params = list()))
   }
 
-  if (identical(id, "high_flow_percent_bias")) {
+  if (identical(id, "hfb")) {
     obs <- 1:30
     sim <- obs + 1
     return(list(sim = sim, obs = obs, params = list(threshold_prob = 0.9)))

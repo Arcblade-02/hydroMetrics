@@ -175,6 +175,11 @@ be extended.
 - Status: Accepted
 - Notes: Output names, row/column interpretation, and single-series vs multi-series shape rules are part of the stable contract where documented. Missing-data handling, undefined-domain handling, and edge-case behavior are part of the return contract because they determine whether users receive a value, `NA`, warning, or error. Stable functions must not silently switch default output mode from numeric/vector/matrix/data.frame/S3 structure to a materially different default structure without deliberate versioned API change.
 
+#### D-036: HFB Compatibility Wrapper Contract
+- Decision: `HFB()` remains a compatibility-stable exported wrapper over internal registry metric id `"hfb"` and is not treated as a routine deprecated alias or canonicalization candidate.
+- Status: Accepted
+- Notes: `HFB()` preserves wrapper-specific public contract behavior that extends beyond numeric equivalence, including scalar return class `c("hydro_metric_scalar", "numeric")`, metric label `"HFB"`, documented `threshold_prob` handling, metadata fields (`threshold_prob`, `n_high`, `aligned`, `na_method`), denominator-zero warning-plus-`NA` behavior, and sparse high-flow support errors. No tracked `high_flow_percent_bias` source, documentation, or test surface exists in the current repository state, so no parallel descriptive wrapper is treated as canonical or slated for restoration in this phase. Any future descriptive alias or wrapper expansion must preserve the current `HFB()` compatibility contract unless an explicit deprecation and migration decision is recorded.
+
 ### Stage 6 Pareto Disposition
 - Decision: Phase 3 is complete, `pareto_skill` remains deferred, and any future Pareto-based calibration support should be implemented as a helper/evaluation utility rather than as a registry metric.
 - Status: Accepted
@@ -200,7 +205,7 @@ sequence.
 #### Former D-027: Phase 2B Batch 4A APFB/HFB Modern Scalar Exports
 - Decision: Add `APFB` and `HFB` as clean-room compatibility exports that return numerically coercible S3 scalars with class `c("hydro_metric_scalar", "numeric")`.
 - Status: Retained supporting record
-- Notes: Former numbering only. This record is historical after the removal of `APFB()` from the current package surface; the scalar-wrapper convention remains relevant only to surviving wrappers such as `HFB()`.
+- Notes: Former numbering only. This record is historical after the removal of `APFB()` from the current package surface; active canonical governance for the surviving `HFB()` wrapper now resides in `D-036`.
 
 #### Former D-028: Phase 2B Batch 4B Modern Orchestration Compatibility Layer
 - Decision: Export `preproc`, `gof`, `ggof`, and `valindex` as clean-room compatibility wrappers over the existing preprocessing engine and registered metric dispatch, with structured S3 returns.

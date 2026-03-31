@@ -22,7 +22,9 @@ A numeric scalar for single-series inputs or a numeric vector for
 multi-series inputs.
 }
 \description{
-Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric \code{"rsr"}.
+Thin exported wrapper over \code{\link[=gof]{gof()}} for the canonical registry metric
+\code{"rsr"}. Deprecated alias \code{"nrmse_sd"} resolves to this canonical metric
+during orchestration and engine evaluation.
 }
 \examples{
 rsr(c(1, 2, 3), c(1, 2, 4))

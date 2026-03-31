@@ -90,11 +90,11 @@ core_metric_spec_cdf_rmse <- function() {
     id = "cdf_rmse",
     fun = metric_cdf_rmse,
     name = "CDF RMSE",
-    description = "RMSE between empirical CDFs of sim and obs evaluated on the pooled support grid.",
+    description = "Package-defined RMSE between empirical CDFs of sim and obs evaluated on the pooled support grid.",
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Empirical-distribution comparison grounded in Smirnov-type EDF distances; package metric uses RMSE over the pooled support grid.",
+    references = "Package-defined empirical-distribution comparison grounded in Smirnov-type EDF distances; the metric uses RMSE over the pooled support grid.",
     version_added = "0.2.2",
     tags = c("phase-3", "layer-b", "batch-b1")
   )

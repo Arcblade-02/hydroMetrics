@@ -140,19 +140,20 @@ test_that("layer C batch C2 registry ids are present", {
   ids <- list_metrics()$id
   target <- c(
     "entropy_diff",
-    "mutual_information_score",
     "mutual_information",
     "normalised_mi"
   )
 
   expect_true(all(target %in% ids))
+  expect_false("mutual_information_score" %in% ids)
 })
 
 test_that("layer C batch C3 registry ids are present", {
   ids <- list_metrics()$id
-  target <- c("tail_dependence_score", "extreme_event_ratio")
+  target <- c("upper_tail_conditional_exceedance", "extreme_event_ratio")
 
   expect_true(all(target %in% ids))
+  expect_false("tail_dependence_score" %in% ids)
 })
 
 test_that("layer C batch C4 registry ids are present", {
@@ -162,8 +163,10 @@ test_that("layer C batch C4 registry ids are present", {
   expect_true(all(target %in% ids))
 })
 
-test_that("extended_valindex registry id is present", {
-  expect_true("extended_valindex" %in% list_metrics()$id)
+test_that("composite_performance_index registry id is present", {
+  ids <- list_metrics()$id
+  expect_true("composite_performance_index" %in% ids)
+  expect_false("extended_valindex" %in% ids)
 })
 
 test_that("skewness_error matches adjusted Fisher-Pearson skewness error", {
@@ -226,23 +229,25 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
   sim <- c(1, 2, 3, 4, 8, 9, 10, 11, 5, 4, 3, 2)
   obs <- c(1, 2, 3, 4, 5, 6, 7, 10, 6, 5, 4, 3)
 
-  out <- gof(
-    sim,
-    obs,
-    methods = c(
-      "skewness_error",
-      "kurtosis_error",
-      "entropy_diff",
-      "mutual_information_score",
-      "mutual_information",
-      "normalised_mi",
-      "tail_dependence_score",
-      "extreme_event_ratio",
-      "rank_turnover_score",
-      "distribution_overlap",
-      "quantile_shift_index",
-      "extended_valindex"
-    )
+  expect_warning(
+    out <- gof(
+      sim,
+      obs,
+      methods = c(
+        "skewness_error",
+        "kurtosis_error",
+        "entropy_diff",
+        "mutual_information",
+        "normalised_mi",
+        "upper_tail_conditional_exceedance",
+        "extreme_event_ratio",
+        "rank_turnover_score",
+        "distribution_overlap",
+        "quantile_shift_index",
+        "composite_performance_index"
+      )
+    ),
+    NA
   )
   expect_true(inherits(out, "hydro_metrics"))
   expect_identical(
@@ -251,15 +256,14 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "skewness_error",
       "kurtosis_error",
       "entropy_diff",
-      "mutual_information_score",
       "mutual_information",
       "normalised_mi",
-      "tail_dependence_score",
+      "upper_tail_conditional_exceedance",
       "extreme_event_ratio",
       "rank_turnover_score",
       "distribution_overlap",
       "quantile_shift_index",
-      "extended_valindex"
+      "composite_performance_index"
     )
   )
 
@@ -270,18 +274,18 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
         "skewness_error",
         "kurtosis_error",
         "entropy_diff",
-        "mutual_information_score",
         "mutual_information",
         "normalised_mi",
-        "tail_dependence_score",
+        "upper_tail_conditional_exceedance",
         "extreme_event_ratio",
         "rank_turnover_score",
         "distribution_overlap",
         "quantile_shift_index",
-        "extended_valindex"
+        "composite_performance_index"
       ) %in% names(out_ext)
     )
   )
+  expect_false("mutual_information_score" %in% names(out_ext))
 })
 
 test_that("entropy_diff matches manual pooled-grid Shannon entropy difference", {
@@ -311,7 +315,17 @@ test_that("mutual_information_score matches manual pooled-grid mutual informatio
   breaks <- .test_c2_pooled_breaks(sim, obs)
   expected <- .test_c2_mutual_information(sim, obs, breaks)
 
-  expect_equal(mutual_information_score(sim, obs), expected)
+  warn_count <- 0L
+  wrapper_value <- withCallingHandlers(
+    mutual_information_score(sim, obs),
+    warning = function(w) {
+      warn_count <<- warn_count + 1L
+      invokeRestart("muffleWarning")
+    }
+  )
+
+  expect_identical(warn_count, 1L)
+  expect_equal(wrapper_value, expected)
   expect_equal(metric_mutual_information_score(sim, obs), expected)
 })
 
@@ -323,7 +337,10 @@ test_that("mutual_information is the canonical equivalent of mutual_information_
 
   expect_equal(mutual_information(sim, obs), expected)
   expect_equal(metric_mutual_information(sim, obs), expected)
-  expect_equal(mutual_information(sim, obs), mutual_information_score(sim, obs))
+  expect_warning(
+    expect_equal(mutual_information(sim, obs), mutual_information_score(sim, obs)),
+    "deprecated"
+  )
 })
 
 test_that("mutual_information_score handles constant inputs and rejects too-short inputs", {
@@ -331,11 +348,20 @@ test_that("mutual_information_score handles constant inputs and rejects too-shor
   var <- c(1, 2, 3, 4, 5, 6)
   paired <- c(1, 2, 2, 3, 4, 5)
 
-  expect_equal(mutual_information_score(const, var), 0)
-  expect_gt(mutual_information_score(paired, paired), 0)
-  expect_error(
-    mutual_information_score(c(1, 2), c(1, 2)),
-    "requires at least 3 values"
+  expect_warning(
+    expect_equal(mutual_information_score(const, var), 0),
+    "deprecated"
+  )
+  expect_warning(
+    expect_gt(mutual_information_score(paired, paired), 0),
+    "deprecated"
+  )
+  expect_warning(
+    expect_error(
+      mutual_information_score(c(1, 2), c(1, 2)),
+      "requires at least 3 values"
+    ),
+    "deprecated"
   )
 })
 
@@ -360,26 +386,34 @@ test_that("normalised_mi uses MI / sqrt(H_sim * H_obs) and rejects zero-entropy 
   )
 })
 
-test_that("tail_dependence_score matches empirical observed-threshold conditional exceedance", {
+test_that("upper_tail_conditional_exceedance matches empirical observed-threshold conditional exceedance", {
   sim <- c(1, 2, 3, 7, 8, 4, 3, 2, 6, 7, 3, 2)
   obs <- c(1, 2, 4, 8, 7, 5, 3, 2, 5, 8, 4, 2)
   threshold <- .test_c3_tail_threshold(obs)
   obs_exceed <- obs > threshold
   expected <- mean(sim[obs_exceed] > threshold)
 
-  expect_equal(tail_dependence_score(sim, obs), expected)
+  expect_equal(upper_tail_conditional_exceedance(sim, obs), expected)
   expect_equal(metric_tail_dependence_score(sim, obs), expected)
+  expect_warning(
+    expect_equal(tail_dependence_score(sim, obs), expected),
+    "deprecated"
+  )
 })
 
-test_that("tail_dependence_score handles identical, absent simulated, and no-observed-exceedance cases", {
+test_that("upper_tail_conditional_exceedance handles identical, absent simulated, and no-observed-exceedance cases", {
   paired <- c(1, 2, 3, 7, 8, 4, 3, 2, 6, 7, 3, 2)
   const <- c(1, 1, 1, 1, 1, 1)
   var <- c(1, 2, 3, 4, 5, 6)
 
-  expect_equal(tail_dependence_score(paired, paired), 1)
-  expect_equal(tail_dependence_score(const, var), 0)
+  expect_equal(upper_tail_conditional_exceedance(paired, paired), 1)
+  expect_equal(upper_tail_conditional_exceedance(const, var), 0)
+  expect_warning(
+    expect_equal(tail_dependence_score(paired, paired), 1),
+    "deprecated"
+  )
   expect_error(
-    tail_dependence_score(const, const),
+    upper_tail_conditional_exceedance(const, const),
     "obs contains no exceedances above the observed 0.9 quantile threshold"
   )
 })
@@ -415,7 +449,7 @@ test_that("gof extended excludes threshold-gated C3 metrics when observed tails 
 
   out_ext <- gof(sim, obs, extended = TRUE)
 
-  expect_false("tail_dependence_score" %in% names(out_ext))
+  expect_false("upper_tail_conditional_exceedance" %in% names(out_ext))
   expect_false("extreme_event_ratio" %in% names(out_ext))
 })
 

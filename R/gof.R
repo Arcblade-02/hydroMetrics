@@ -1,33 +1,31 @@
-.gof_alias_map <- function() {
-  c(
-    "nse" = "nse",
-    "kge" = "kge",
-    "rmse" = "rmse",
-    "pbias" = "pbias",
-    "cp" = "cp",
-    "pfactor" = "pfactor",
-    "rfactor" = "rfactor",
-    "mae" = "mae",
-    "mse" = "mse",
-    "r2" = "r2",
-    "ve" = "ve",
-    "rsr" = "rsr",
-    "nrmse" = "nrmse",
-    "rpearson" = "r",
-    "rspearman" = "rspearman",
-    "rsd" = "rsd",
-    "rnse" = "rnse",
-    "mnse" = "mnse",
-    "wnse" = "wnse",
-    "wsnse" = "wsnse",
-    "ubrmse" = "ubrmse",
-    "ssq" = "ssq",
-    "kgekm" = "kgekm",
-    "kgelf" = "kgelf",
-    "kgenp" = "kgenp",
-    "skge" = "skge",
-    "hfb" = "hfb"
+.gof_method_alias_policy <- function() {
+  policy <- .hm_metric_alias_policy()
+  policy <- rbind(
+    data.frame(
+      alias = c(
+        "nse", "kge", "rmse", "pbias", "cp", "mae",
+        "mse", "r2", "ve", "rsr", "nrmse", "rspearman", "rsd", "rnse",
+        "mnse", "wnse", "wsnse", "ubrmse", "ssq", "kgekm",
+        "kgenp"
+      ),
+      target = c(
+        "nse", "kge", "rmse", "pbias", "cp", "mae",
+        "mse", "r2", "ve", "rsr", "nrmse", "rspearman", "rsd", "rnse",
+        "mnse", "wnse", "wsnse", "ubrmse", "ssq", "kgekm",
+        "kgenp"
+      ),
+      lifecycle = rep("compatibility", 21L),
+      stringsAsFactors = FALSE
+    ),
+    policy
   )
+
+  policy[!duplicated(policy$alias), , drop = FALSE]
+}
+
+.gof_alias_map <- function() {
+  policy <- .gof_method_alias_policy()
+  stats::setNames(policy$target, policy$alias)
 }
 
 .gof_hydrogof_labels <- function() {
@@ -48,16 +46,22 @@
     "wsnse" = "wsNSE",
     "d" = "d",
     "md" = "md",
-    "rd" = "rd",
+    "obs_normalized_agreement_index" = "rd",
     "cp" = "cp",
     "r" = "r",
     "r2" = "R2",
-    "br2" = "bR2",
+    "slope_scaled_r2" = "bR2",
     "ve" = "VE",
     "kge" = "KGE",
-    "kgelf" = "KGElf",
+    "high_flow_percent_bias" = "HFB",
+    "log_transformed_kge" = "KGElf",
     "kgenp" = "KGEnp",
-    "kgekm" = "KGEkm"
+    "kgekm" = "KGEkm",
+    "monthly_grouped_kge" = "sKGE",
+    "within_tolerance_rate" = "P-factor",
+    "mean_absolute_error_ratio" = "R-factor",
+    "upper_tail_conditional_exceedance" = "Tail Dependence Score",
+    "composite_performance_index" = "Extended ValIndex"
   )
 }
 
@@ -67,7 +71,6 @@
     "anderson_darling_stat" = "Anderson-Darling",
     "baseflow_index_error" = "BFI Error",
     "beta" = "Beta",
-    "br2" = "bR2",
     "ccc" = "CCC",
     "cdf_rmse" = "CDF-RMSE",
     "cp" = "CP",
@@ -76,12 +79,12 @@
     "e1" = "E1",
     "entropy_diff" = "Entropy Difference",
     "evs" = "EVS",
-    "extended_valindex" = "Extended ValIndex",
+    "composite_performance_index" = "Composite Performance Index",
     "extreme_event_ratio" = "Extreme Event Ratio",
+    "high_flow_percent_bias" = "High Flow Percent Bias",
     "huber_loss" = "Huber Loss",
     "kge" = "KGE",
     "kgekm" = "KGEkm",
-    "kgelf" = "KGElf",
     "kgenp" = "KGEnp",
     "ks_statistic" = "KS Statistic",
     "kurtosis_error" = "Kurtosis Error",
@@ -98,16 +101,16 @@
     "mrb" = "MRB",
     "mse" = "MSE",
     "msle" = "MSLE",
+    "monthly_grouped_kge" = "Monthly Grouped KGE",
     "mutual_information" = "Mutual Information",
-    "mutual_information_score" = "MI Score",
     "normalised_mi" = "Normalized MI",
     "nrmse" = "NRMSE",
     "nrmse_range" = "NRMSE (Range)",
-    "nrmse_sd" = "NRMSE (SD)",
     "nse" = "NSE",
+    "obs_normalized_agreement_index" = "Observation-Normalized Agreement Index",
     "pbias" = "PBIAS",
     "peak_timing_error" = "Peak Timing Error",
-    "pfactor" = "P-Factor",
+    "within_tolerance_rate" = "Within Tolerance Rate",
     "quantile_deviation" = "Quantile Deviation",
     "quantile_kge" = "Quantile KGE",
     "quantile_loss" = "Quantile Loss",
@@ -117,9 +120,9 @@
     "rae" = "RAE",
     "rank_turnover_score" = "Rank Turnover Score",
     "rbias" = "RBias",
-    "rd" = "rd",
-    "rfactor" = "R-Factor",
+    "mean_absolute_error_ratio" = "Mean Absolute Error Ratio",
     "rising_limb_error" = "Rising Limb Error",
+    "log_transformed_kge" = "Log-Transformed KGE",
     "rmse" = "RMSE",
     "rmsle" = "RMSLE",
     "rnse" = "rNSE",
@@ -130,11 +133,11 @@
     "rsr" = "RSR",
     "sae" = "SAE",
     "skewness_error" = "Skewness Error",
-    "skge" = "sKGE",
+    "slope_scaled_r2" = "Slope-Scaled R2",
     "smape" = "SMAPE",
     "sqrt_nse" = "Sqrt-NSE",
     "ssq" = "SSQ",
-    "tail_dependence_score" = "Tail Dependence Score",
+    "upper_tail_conditional_exceedance" = "Upper Tail Conditional Exceedance",
     "trimmed_rmse" = "Trimmed RMSE",
     "ubrmse" = "ubRMSE",
     "ve" = "VE",
@@ -150,6 +153,8 @@
   available <- .get_registry()$list()
   available_ids <- as.character(available$id)
   available_map <- stats::setNames(available_ids, tolower(available_ids))
+  policy <- .gof_method_alias_policy()
+  deprecated <- policy$alias[policy$lifecycle == "deprecated"]
 
   alias <- available_map
   extra_alias <- .gof_alias_map()
@@ -173,8 +178,19 @@
     )
   }
 
+  deprecated_hits <- unique(keys[keys %in% deprecated])
+  if (length(deprecated_hits) > 0L) {
+    alias_targets <- .hm_metric_alias_targets()
+    for (id in deprecated_hits) {
+      warning(
+        sprintf("`%s` is deprecated; use `%s`.", id, alias_targets[[id]]),
+        call. = FALSE
+      )
+    }
+  }
+
   list(
-    ids = .hm_canonicalize_metric_ids(unname(alias[keys]), warn = TRUE),
+    ids = .hm_canonicalize_metric_ids(unname(alias[keys]), warn = FALSE),
     labels = requested
   )
 }
@@ -535,7 +551,11 @@
 #' formulas in the public API layer. Uppercase hydroGOF-style method labels
 #' such as `"NSE"` and `"KGE"` are accepted as orchestration labels only and
 #' are not exported standalone functions. Deprecated labels such as
-#' `"rPearson"` resolve to canonical metric ids during method selection.
+#' `"rPearson"`, `"nrmse_sd"`, `"mutual_information_score"`, `"rfactor"`,
+#' `"pfactor"`, `"br2"`, `"rd"`, `"hfb"`, `"tail_dependence_score"`, and
+#' `"extended_valindex"` resolve to canonical metric ids during method
+#' selection, while compatibility aliases such as `"kgelf"` and `"skge"`
+#' resolve silently to their canonical targets.
 #'
 #' Stable condition contract: `gof()` errors on invalid `extended` values,
 #' invalid `preset`, unknown metric labels, incompatible single-series versus

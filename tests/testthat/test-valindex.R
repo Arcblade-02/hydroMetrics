@@ -76,37 +76,41 @@ test_that("valindex errors when fun is missing", {
   )
 })
 
-test_that("extended_valindex matches the fixed normalized composite of valindex-style components", {
+test_that("composite_performance_index matches the fixed normalized composite of valindex-style components", {
   sim <- c(1.2, 1.8, 3.4, 3.9, 5.1)
   obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
   expected <- .test_extended_valindex_expected(sim, obs)
 
-  expect_equal(extended_valindex(sim, obs), expected)
+  expect_equal(composite_performance_index(sim, obs), expected)
   expect_equal(metric_extended_valindex(sim, obs), expected)
+  expect_warning(
+    expect_equal(extended_valindex(sim, obs), expected),
+    "deprecated"
+  )
 })
 
-test_that("extended_valindex gives a better score to a better simulation and peaks at one", {
+test_that("composite_performance_index gives a better score to a better simulation and peaks at one", {
   obs <- c(1, 2, 3, 4, 5)
   sim_good <- c(1.0, 2.1, 2.9, 4.0, 5.1)
   sim_bad <- c(2, 3, 4, 5, 6)
 
-  expect_equal(extended_valindex(obs, obs), 1)
-  expect_gt(extended_valindex(sim_good, obs), extended_valindex(sim_bad, obs))
+  expect_equal(composite_performance_index(obs, obs), 1)
+  expect_gt(composite_performance_index(sim_good, obs), composite_performance_index(sim_bad, obs))
 })
 
-test_that("extended_valindex stays related to the base valindex component bundle", {
+test_that("composite_performance_index stays related to the base valindex component bundle", {
   sim <- c(1.2, 1.8, 3.4, 3.9, 5.1)
   obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
   raw <- valindex(sim, obs, fun = c("nse", "kge", "rmse", "pbias", "r", "mae", "rsr", "ve"))
 
   expect_s3_class(raw, "hydro_metrics")
   expect_identical(names(raw), c("nse", "kge", "rmse", "pbias", "r", "mae", "rsr", "ve"))
-  expect_equal(extended_valindex(sim, obs), .test_extended_valindex_expected(sim, obs))
+  expect_equal(composite_performance_index(sim, obs), .test_extended_valindex_expected(sim, obs))
 })
 
-test_that("extended_valindex rejects undefined observed-scale and component states", {
+test_that("composite_performance_index rejects undefined observed-scale and component states", {
   expect_error(
-    extended_valindex(c(1, 2, 3, 4, 5), c(0, 0, 0, 0, 0)),
+    composite_performance_index(c(1, 2, 3, 4, 5), c(0, 0, 0, 0, 0)),
     "mean\\(abs\\(obs\\)\\) must be positive"
   )
 })

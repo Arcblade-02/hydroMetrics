@@ -23,6 +23,8 @@ multi-series inputs.
 }
 \description{
 Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric \code{"cdf_rmse"}.
+This is a package-defined empirical-distribution diagnostic that compares
+paired empirical CDFs through an RMSE summary on the pooled support grid.
 }
 \examples{
 cdf_rmse(c(1, 2, 4), c(1, 3, 2))

@@ -14,9 +14,9 @@
   c(
     "me", "mae", "mse", "rmse", "ubrmse", "nrmse", "pbias", "rsr", "rsd",
     "nse", "mnse", "rnse", "wnse", "wsnse",
-    "d", "md", "rd", "cp",
-    "r", "r2", "br2", "ve",
-    "kge", "kgelf", "kgenp", "kgekm"
+    "d", "md", "obs_normalized_agreement_index", "cp",
+    "r", "r2", "slope_scaled_r2", "ve",
+    "kge", "log_transformed_kge", "kgenp", "kgekm"
   )
 }
 
@@ -120,7 +120,7 @@
 
 .gof_can_auto_run_tail_dependence_score <- function(obs) {
   tryCatch({
-    threshold <- .hm_c3_tail_threshold(obs, "tail_dependence_score")
+    threshold <- .hm_c3_tail_threshold(obs, "upper_tail_conditional_exceedance")
     any(as.numeric(obs) > threshold)
   }, error = function(e) FALSE)
 }
@@ -153,7 +153,7 @@
 .gof_auto_applicable_ids <- function(available_ids, sim = NULL, obs = NULL, index = NULL) {
   ids <- available_ids
   if (!.gof_can_auto_run_hfb(obs)) {
-    ids <- setdiff(ids, "hfb")
+    ids <- setdiff(ids, "high_flow_percent_bias")
   }
   if (!.gof_can_auto_run_nrmse_range(obs)) {
     ids <- setdiff(ids, "nrmse_range")
@@ -180,7 +180,7 @@
     ids <- setdiff(ids, "event_nse")
   }
   if (!.gof_can_auto_run_tail_dependence_score(obs)) {
-    ids <- setdiff(ids, "tail_dependence_score")
+    ids <- setdiff(ids, "upper_tail_conditional_exceedance")
   }
   if (!.gof_can_auto_run_extreme_event_ratio(obs)) {
     ids <- setdiff(ids, "extreme_event_ratio")

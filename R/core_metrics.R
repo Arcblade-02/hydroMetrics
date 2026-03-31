@@ -96,12 +96,12 @@ core_metric_spec_cp <- function() {
 
 compute_rfactor <- function(sim, obs) {
   if (length(sim) == 0L) {
-    stop("rfactor requires at least 1 paired value.", call. = FALSE)
+    stop("mean_absolute_error_ratio requires at least 1 paired value.", call. = FALSE)
   }
 
   denom <- mean(abs(obs))
   if (denom == 0) {
-    stop("rfactor is undefined because mean(abs(obs)) is zero.", call. = FALSE)
+    stop("mean_absolute_error_ratio is undefined because mean(abs(obs)) is zero.", call. = FALSE)
   }
 
   mean(abs(sim - obs)) / denom
@@ -113,14 +113,14 @@ metric_rfactor <- function(sim, obs) {
 
 core_metric_spec_rfactor <- function() {
   list(
-    id = "rfactor",
+    id = "mean_absolute_error_ratio",
     fun = metric_rfactor,
-    name = "R-factor",
+    name = "Mean Absolute Error Ratio",
     description = "Mean absolute error normalized by mean absolute observations.",
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Project-defined compatibility rfactor: mean(abs(sim - obs)) / mean(abs(obs)).",
+    references = "Package-defined mean_absolute_error_ratio: mean(abs(sim - obs)) / mean(abs(obs)).",
     version_added = "0.1.0",
     tags = character()
   )
@@ -132,7 +132,7 @@ compute_pfactor <- function(sim, obs, tol = 0.10) {
   }
 
   if (length(sim) == 0L) {
-    stop("pfactor requires at least 1 paired value.", call. = FALSE)
+    stop("within_tolerance_rate requires at least 1 paired value.", call. = FALSE)
   }
 
   threshold <- tol * abs(obs)
@@ -146,14 +146,14 @@ metric_pfactor <- function(sim, obs, tol = 0.10) {
 
 core_metric_spec_pfactor <- function() {
   list(
-    id = "pfactor",
+    id = "within_tolerance_rate",
     fun = metric_pfactor,
-    name = "P-factor",
+    name = "Within Tolerance Rate",
     description = "Proportion of paired values within a relative tolerance band around observations.",
     category = "efficiency",
     perfect = 1,
     range = c(0, 1),
-    references = "Project-defined compatibility pfactor using tolerance-band hit proportion.",
+    references = "Package-defined within_tolerance_rate using tolerance-band hit proportion.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -363,7 +363,7 @@ core_metric_spec_kge <- function() {
     id = "kge",
     fun = metric_kge,
     name = "Kling-Gupta Efficiency",
-    description = "KGE (2009) using r, alpha=sd(sim)/sd(obs), and beta=mean(sim)/mean(obs).",
+    description = "KGE (2009) using Pearson correlation r, alpha = sd(sim)/sd(obs), and beta = mean(sim)/mean(obs).",
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
@@ -559,27 +559,27 @@ core_metric_spec_md <- function() {
 
 metric_rd <- function(sim, obs) {
   if (any(obs == 0)) {
-    stop("rd undefined because obs contains zero.", call. = FALSE)
+    stop("obs_normalized_agreement_index undefined because obs contains zero.", call. = FALSE)
   }
   obs_mean <- mean(obs)
   rel_err <- (sim - obs) / obs
   denom <- sum((abs((sim - obs_mean) / obs) + abs((obs - obs_mean) / obs))^2)
   if (denom == 0) {
-    stop("rd is undefined (denominator is 0).", call. = FALSE)
+    stop("obs_normalized_agreement_index is undefined (denominator is 0).", call. = FALSE)
   }
   1 - sum(rel_err^2) / denom
 }
 
 core_metric_spec_rd <- function() {
   list(
-    id = "rd",
+    id = "obs_normalized_agreement_index",
     fun = metric_rd,
-    name = "Relative Index of Agreement",
-    description = "Relative squared-error agreement index using obs-normalized terms.",
+    name = "Observation-Normalized Agreement Index",
+    description = "Relative squared-error agreement index using observation-normalized terms.",
     category = "agreement",
     perfect = 1,
     range = NULL,
-    references = "Willmott agreement-index family with relative normalization by observations.",
+    references = "Willmott agreement-index family with observation-normalized relative terms.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -587,17 +587,17 @@ core_metric_spec_rd <- function() {
 
 metric_br2 <- function(sim, obs) {
   if (stats::sd(obs) == 0) {
-    stop("br2 undefined because sd(obs) == 0.", call. = FALSE)
+    stop("slope_scaled_r2 undefined because sd(obs) == 0.", call. = FALSE)
   }
 
   r <- stats::cor(sim, obs)
   if (!is.finite(r)) {
-    stop("br2 undefined because cor(sim, obs) is NA.", call. = FALSE)
+    stop("slope_scaled_r2 undefined because cor(sim, obs) is NA.", call. = FALSE)
   }
 
   slope <- unname(stats::coef(stats::lm(sim ~ obs))[2])
   if (!is.finite(slope)) {
-    stop("br2 undefined because lm(sim ~ obs) slope is NA.", call. = FALSE)
+    stop("slope_scaled_r2 undefined because lm(sim ~ obs) slope is NA.", call. = FALSE)
   }
 
   abs(slope) * (r^2)
@@ -605,10 +605,10 @@ metric_br2 <- function(sim, obs) {
 
 core_metric_spec_br2 <- function() {
   list(
-    id = "br2",
+    id = "slope_scaled_r2",
     fun = metric_br2,
-    name = "Bias-Corrected R-squared",
-    description = "Bias-corrected R-squared computed as abs(slope(sim ~ obs)) * cor(sim, obs)^2.",
+    name = "Slope-Scaled R-squared",
+    description = "Slope-scaled R-squared computed as abs(slope(sim ~ obs)) * cor(sim, obs)^2.",
     category = "correlation",
     perfect = 1,
     range = c(0, Inf),
@@ -806,13 +806,13 @@ core_metric_spec_kgekm <- function() {
 
 metric_kgelf <- function(sim, obs) {
   if (any(sim < 0) || any(obs < 0)) {
-    stop("KGElf undefined because sim/obs contain negative values for low-flow log transform.", call. = FALSE)
+    stop("log_transformed_kge undefined because sim/obs contain negative values for log1p transformation.", call. = FALSE)
   }
 
   sim_lf <- log1p(sim)
   obs_lf <- log1p(obs)
   if (stats::sd(obs_lf) == 0) {
-    stop("KGElf undefined because sd(log1p(obs)) == 0.", call. = FALSE)
+    stop("log_transformed_kge undefined because sd(log1p(obs)) == 0.", call. = FALSE)
   }
 
   metric_kge(sim_lf, obs_lf)
@@ -820,14 +820,14 @@ metric_kgelf <- function(sim, obs) {
 
 core_metric_spec_kgelf <- function() {
   list(
-    id = "kgelf",
+    id = "log_transformed_kge",
     fun = metric_kgelf,
-    name = "KGE Low-Flow",
-    description = "Low-flow KGE using log1p-transformed series prior to KGE computation.",
+    name = "Log-Transformed KGE",
+    description = "KGE computed on log1p-transformed nonnegative series.",
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "Based on Gupta et al. (2009) KGE, with low-flow log-transformed objective-function context from Krause et al. (2005).",
+    references = "Based on Gupta et al. (2009) KGE, with log-transformed low-flow context from Krause et al. (2005).",
     version_added = "0.1.0",
     tags = character()
   )
@@ -927,7 +927,7 @@ core_metric_spec_kgenp <- function() {
   }
 
   if (length(group_scores) == 0L) {
-    stop("sKGE has no valid seasonal groups for KGE computation.", call. = FALSE)
+    stop("monthly_grouped_kge has no valid monthly groups for KGE computation.", call. = FALSE)
   }
 
   mean(group_scores)
@@ -936,10 +936,10 @@ core_metric_spec_kgenp <- function() {
 metric_skge <- function(sim, obs, index = NULL) {
   if (inherits(sim, "ts") || inherits(obs, "ts")) {
     if (!inherits(sim, "ts") || !inherits(obs, "ts")) {
-      stop("sKGE requires both inputs to share the same time context.", call. = FALSE)
+      stop("monthly_grouped_kge requires both inputs to share the same time context.", call. = FALSE)
     }
     if (stats::frequency(sim) != 12 || stats::frequency(obs) != 12) {
-      stop("sKGE requires monthly ts inputs (frequency = 12).", call. = FALSE)
+      stop("monthly_grouped_kge requires monthly ts inputs (frequency = 12).", call. = FALSE)
     }
 
     return(.hm_skge_grouped_mean(sim, obs, stats::cycle(sim)))
@@ -955,14 +955,14 @@ metric_skge <- function(sim, obs, index = NULL) {
 
 core_metric_spec_skge <- function() {
   list(
-    id = "skge",
+    id = "monthly_grouped_kge",
     fun = metric_skge,
-    name = "Seasonal KGE",
-    description = "Seasonal KGE using monthly groups when monthly time context is available, otherwise falling back to KGE.",
+    name = "Monthly Grouped KGE",
+    description = "KGE averaged over monthly groups when monthly time context is available, otherwise falling back to KGE.",
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "Based on Gupta et al. (2009) KGE with monthly streamflow seasonality context from Gnann et al. (2020) and Berghuijs et al. (2025).",
+    references = "Based on Gupta et al. (2009) KGE with monthly streamflow grouping context from Gnann et al. (2020) and Berghuijs et al. (2025).",
     version_added = "0.1.0",
     tags = character()
   )
@@ -993,29 +993,29 @@ metric_hfb <- function(sim, obs, threshold_prob = 0.9) {
   q_high <- as.numeric(stats::quantile(obs, probs = threshold_prob, type = 7, names = FALSE))
   high_idx <- which(obs >= q_high)
   if (length(high_idx) < 3L) {
-    stop("HFB requires at least 3 points at or above the high-flow threshold.", call. = FALSE)
+    stop("high_flow_percent_bias requires at least 3 points at or above the high-flow threshold.", call. = FALSE)
   }
 
   sim_high <- sim[high_idx]
   obs_high <- obs[high_idx]
   den <- sum(obs_high)
   if (!is.finite(den) || den == 0) {
-    stop("HFB denominator is zero.", call. = FALSE)
+    stop("high_flow_percent_bias denominator is zero.", call. = FALSE)
   }
 
   out <- (sum(sim_high - obs_high) / den) * 100
   if (!is.finite(out)) {
-    stop("HFB denominator invalid.", call. = FALSE)
+    stop("high_flow_percent_bias denominator invalid.", call. = FALSE)
   }
   out
 }
 
 core_metric_spec_hfb <- function() {
   list(
-    id = "hfb",
+    id = "high_flow_percent_bias",
     fun = metric_hfb,
-    name = "High Flow Bias",
-    description = "HFB as percent bias over observations at or above a high-flow quantile threshold.",
+    name = "High Flow Percent Bias",
+    description = "Percent bias over observations at or above a high-flow quantile threshold.",
     category = "bias",
     perfect = 0,
     range = NULL,
@@ -1084,11 +1084,11 @@ core_metric_spec_rsd <- function() {
     id = "rsd",
     fun = metric_rsd,
     name = "Standard Deviation Ratio",
-    description = "rSD computed as sd(sim) / sd(obs).",
+    description = "Standard deviation ratio computed as sd(sim) / sd(obs).",
     category = "scale",
     perfect = 1,
     range = c(0, Inf),
-    references = "Project definition for hydrology compatibility: ratio of simulated to observed standard deviation.",
+    references = "Package-defined hydrology compatibility metric using the ratio of simulated to observed standard deviation.",
     version_added = "0.1.0",
     tags = character()
   )

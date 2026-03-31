@@ -44,7 +44,7 @@ test_that("selected hydroGOF-overlap metrics are intentionally divergent", {
   idx_hfb <- as.Date("2020-01-01") + 0:29
   sim_hfb <- zoo::zoo(2:31, order.by = idx_hfb)
   obs_hfb <- zoo::zoo(1:30, order.by = idx_hfb)
-  hm_hfb <- as.numeric(HFB(sim_hfb, obs_hfb))
+  hm_hfb <- as.numeric(high_flow_percent_bias(sim_hfb, obs_hfb))
   hg_hfb <- as.numeric(hydroGOF::HFB(sim_hfb, obs_hfb))
   expect_true(is.finite(hm_hfb))
   expect_true(is.finite(hg_hfb))
@@ -138,7 +138,7 @@ test_that("moderate hydroGOF-overlap tranche matches on intended comparable case
   }
 })
 
-test_that("direct hydroGOF-overlap tranche reconciles wnse and rd", {
+test_that("direct hydroGOF-overlap tranche reconciles wnse and obs_normalized_agreement_index", {
   skip_if_not_installed("hydroGOF")
 
   tol <- sqrt(.Machine$double.eps)
@@ -158,10 +158,10 @@ test_that("direct hydroGOF-overlap tranche reconciles wnse and rd", {
   )
 
   for (case in cases) {
-    out <- gof(case$sim, case$obs, methods = c("wnse", "rd"))
+    out <- gof(case$sim, case$obs, methods = c("wnse", "obs_normalized_agreement_index"))
 
     expect_equal(out[["wnse"]], hydroGOF::wNSE(case$sim, case$obs), tolerance = tol)
-    expect_gt(abs(out[["rd"]] - hydroGOF::rd(case$sim, case$obs)), tol)
+    expect_gt(abs(out[["obs_normalized_agreement_index"]] - hydroGOF::rd(case$sim, case$obs)), tol)
   }
 })
 

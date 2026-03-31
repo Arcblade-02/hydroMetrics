@@ -47,9 +47,9 @@ two duplicated historical `D-030` headings.
 - Notes: Required fields are `id`, `fun`, `name`, `description`, `category`, `perfect`, `range`, `references`, `version_added`, with optional `tags` defaulting to `character()`.
 
 #### D-008: Core Metric Bootstrap Strategy
-- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `pfactor`, `rfactor`, `mae`, `mse`, `nrmse`, `beta`, `alpha`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `nrmse_sd`, `me`, `d`, `md`, `rd`, `br2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `kgelf`, `kgenp`, `skge`, `hfb`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
+- Decision: Core metrics (`nse`, `rmse`, `pbias`, `cp`, `within_tolerance_rate`, `mean_absolute_error_ratio`, `mae`, `mse`, `nrmse`, `beta`, `alpha`, `r`, `r2`, `kge`, `rsr`, `mape`, `mpe`, `ve`, `me`, `d`, `md`, `obs_normalized_agreement_index`, `slope_scaled_r2`, `rnse`, `mnse`, `wnse`, `wsnse`, `ubrmse`, `ssq`, `kgekm`, `log_transformed_kge`, `kgenp`, `monthly_grouped_kge`, `high_flow_percent_bias`, `rspearman`, `rsd`) are lazily auto-registered on first registry/engine access.
 - Status: Accepted
-- Notes: Public API remains stable and users can evaluate core metrics without manual registration. Deprecated `rpearson` requests are handled by alias resolution rather than as a separately registered core metric.
+- Notes: Public API remains stable and users can evaluate core metrics without manual registration. Deprecated `rpearson`, `rfactor`, `pfactor`, and `br2` requests are handled by alias resolution rather than as separately registered core metrics.
 
 #### D-009: NRMSE Normalization
 - Decision: `NRMSE` is defined as `sqrt(mean((sim - obs)^2)) / mean(obs)`.
@@ -67,19 +67,19 @@ two duplicated historical `D-030` headings.
 - Notes: Evaluation errors explicitly when `sd(obs) == 0` or `mean(obs) == 0`.
 
 #### D-012: NRMSE Variants
-- Decision: Keep two NRMSE variants: `nrmse = RMSE/mean(obs)` and `nrmse_sd = RMSE/sd(obs)`.
+- Decision: Retain the package-defined formulas `nrmse = RMSE/mean(obs)` and `nrmse_sd = RMSE/sd(obs)`, but keep only `nrmse` and `rsr` as live canonical registry ids.
 - Status: Accepted
-- Notes: `nrmse` and `nrmse_sd` are distinct metrics and both are retained for compatibility.
+- Notes: No formula changes are made. Deprecated `nrmse_sd` requests resolve to canonical `rsr` with a warning during engine and orchestration evaluation.
 
 #### D-013: Zero-Observation Percentage Metrics Policy
 - Decision: `mape` and `mpe` fail when observed values contain zero.
 - Status: Accepted
 - Notes: Zero-observation divisions are treated as invalid input; no silent `Inf`/`NaN` handling is applied.
 
-#### D-014: Relative Agreement Variants
-- Decision: `rd` uses observation-normalized relative formulations selected for compatibility tracking.
+#### D-014: Observation-Normalized Agreement Index
+- Decision: `obs_normalized_agreement_index` uses observation-normalized relative formulations selected for compatibility tracking.
 - Status: Accepted
-- Notes: Both metrics fail when `obs` contains zero, and both fail when their denominator evaluates to zero.
+- Notes: No formula changes are made. Deprecated `rd` requests resolve to canonical `obs_normalized_agreement_index`. The metric fails when `obs` contains zero and when its denominator evaluates to zero.
 
 ### Current Metric and Package Contracts
 
@@ -94,19 +94,19 @@ two duplicated historical `D-030` headings.
 - Notes: Both are standard error definitions used for compatibility coverage.
 
 #### D-018: KGE Variant Definitions
-- Decision: `kgekm` uses `gamma = CV(sim)/CV(obs)` with standard KGE distance, `kgelf` applies KGE to `log1p`-transformed nonnegative flows, and `kgenp` uses Spearman/IQR/median components.
+- Decision: `kgekm` uses `gamma = CV(sim)/CV(obs)` with standard KGE distance, `log_transformed_kge` applies KGE to `log1p`-transformed nonnegative flows, and `kgenp` uses Spearman/IQR/median components.
 - Status: Accepted
-- Notes: Literature-backed reference metadata for these variants is recorded in `inst/REFERENCES.md`; package decisions still document the exact implementation choices.
+- Notes: Literature-backed reference metadata for these variants is recorded in `inst/REFERENCES.md`; package decisions still document the exact implementation choices. Compatibility `kgelf` requests resolve silently to canonical `log_transformed_kge`.
 
-#### D-019: Seasonal KGE and FDC Bias Choices
-- Decision: `skge` is defined as mean monthly KGE over `ts` inputs with frequency 12.
+#### D-019: Monthly Grouped KGE and FDC Bias Choices
+- Decision: `monthly_grouped_kge` is defined as mean monthly KGE over `ts` inputs with frequency 12.
 - Status: Accepted
-- Notes: `skge` currently requires a monthly time index and errors for plain numeric vectors.
+- Notes: Compatibility `skge` requests resolve silently to canonical `monthly_grouped_kge`. The metric uses monthly grouping when monthly time context is available and otherwise falls back to canonical `kge` for plain numeric vectors.
 
-#### D-023: Batch 8B pfactor/rfactor Definitions
-- Decision: `rfactor` is defined as `mean(abs(sim - obs)) / mean(abs(obs))` and `pfactor` is defined as the proportion where `abs(sim - obs) <= tol * abs(obs)`, with `obs == 0` handled by absolute threshold `tol`.
+#### D-023: Batch 8B Mean-Absolute-Error-Ratio / Within-Tolerance-Rate Definitions
+- Decision: `mean_absolute_error_ratio` is defined as `mean(abs(sim - obs)) / mean(abs(obs))` and `within_tolerance_rate` is defined as the proportion where `abs(sim - obs) <= tol * abs(obs)`, with `obs == 0` handled by absolute threshold `tol`.
 - Status: Accepted
-- Notes: `rfactor` requires at least one non-missing paired value and errors when `mean(abs(obs)) == 0`. `pfactor` requires `tol >= 0` and at least one non-missing paired value; default `tol` is `0.10`.
+- Notes: No formula changes are made. Deprecated `rfactor` requests resolve to canonical `mean_absolute_error_ratio`, and deprecated `pfactor` requests resolve to canonical `within_tolerance_rate`. `mean_absolute_error_ratio` requires at least one non-missing paired value and errors when `mean(abs(obs)) == 0`. `within_tolerance_rate` requires `tol >= 0` and at least one non-missing paired value; default `tol` is `0.10`.
 
 #### D-024: Phase 2B Batch 1 Parity Policies (rsr/pbias/mae)
 - Decision: `rsr`, `pbias`, and `mae` use explicit clean-room formulas with deterministic edge policies and wrappers routed through the Phase 2A preprocessing pipeline.
@@ -138,7 +138,7 @@ be extended.
 #### D-026: Canonical Metric ID and Alias Policy
 - Decision: Phase 3 metric IDs are unique canonical registry identifiers. Compatibility aliases or deprecated names may remain only as wrappers or resolution aliases and must not persist as duplicate canonical registry entries.
 - Status: Accepted
-- Notes: Canonical Pearson correlation id is `r`. Deprecated `rpearson` metric-id requests resolve to `r` and no longer persist as an independent registry entry. Engine-level metric-id evaluation currently warns on that deprecated alias, while orchestration-level method selection preserves the requested label and does not currently emit a warning.
+- Notes: Canonical Pearson correlation id is `r`. Compatibility aliases resolve silently to their canonical targets, while deprecated aliases resolve with a warning. Deprecated `rpearson` metric-id requests resolve to `r`, deprecated `nrmse_sd` requests resolve to `rsr`, deprecated `mutual_information_score` requests resolve to `mutual_information`, deprecated `rfactor` requests resolve to `mean_absolute_error_ratio`, deprecated `pfactor` requests resolve to `within_tolerance_rate`, deprecated `br2` requests resolve to `slope_scaled_r2`, deprecated `rd` requests resolve to `obs_normalized_agreement_index`, deprecated `hfb` requests resolve to `high_flow_percent_bias`, deprecated `tail_dependence_score` requests resolve to `upper_tail_conditional_exceedance`, and deprecated `extended_valindex` requests resolve to `composite_performance_index`. Compatibility `kgelf` requests resolve silently to `log_transformed_kge`, and compatibility `skge` requests resolve silently to `monthly_grouped_kge`; none persist as independent registry entries. Requested-label orchestration output preserves the exact user-supplied alias, while canonical-label output emits canonical ids only. Exported `mutual_information_score()`, `HFB()`, `tail_dependence_score()`, and `extended_valindex()` survive temporarily only as deprecated forwarding wrappers.
 
 #### D-027: gof() Default and Extended Metric-Set Contract
 - Decision: `gof()` and `gof(extended = FALSE)` default to the compat-10 baseline set (`nse`, `kge`, `rmse`, `pbias`, `mae`, `mse`, `r2`, `ve`, `rsr`, `nrmse`), while `gof(extended = TRUE)` expands omitted or `NULL` selection to the full registered metric set supported by the current input context.
@@ -150,15 +150,15 @@ be extended.
 - Status: Accepted
 - Notes: The current `dev` implementation matches this scope and fallback rule.
 
-#### D-029: br2 Literature Correction Policy
-- Decision: `br2` must follow the Krause et al. (2005) `bR2` interpretation selected by project policy, and this canonical decision supersedes the earlier project-specific formula recorded in `D-015`.
+#### D-029: slope_scaled_r2 Literature Correction Policy
+- Decision: `slope_scaled_r2` must follow the Krause et al. (2005) `bR2` interpretation selected by project policy, and this canonical decision supersedes the earlier project-specific formula recorded in `D-015`.
 - Status: Accepted
-- Notes: This is a release-governance correction, not a new metric. `dev` now implements `bR2 = abs(slope(sim ~ obs)) * cor(sim, obs)^2`, with the older `D-015` formula retained only as historical record.
+- Notes: This is a release-governance correction, not a new metric. `dev` now implements `slope_scaled_r2 = abs(slope(sim ~ obs)) * cor(sim, obs)^2`, with deprecated `br2` requests resolving to `slope_scaled_r2` and the older `D-015` formula retained only as historical record.
 
 #### D-030: Information-Theoretic Metric Disclosure Rule
 - Decision: Information-theoretic metrics may not be added or released without explicit bandwidth-sensitivity disclosure, estimator assumptions, and literature citations sufficient for reproducible interpretation.
 - Status: Accepted
-- Notes: This rule remains forward-looking. No current public metric on `dev` claims exemption from this disclosure requirement.
+- Notes: This rule remains forward-looking. Current `mutual_information` disclosure explicitly documents pooled-support Sturges histogram estimation and natural-log units; no public metric on `dev` claims exemption from this disclosure requirement.
 
 #### D-031: No Uncited Layer C / Research-Frontier Additions
 - Decision: No uncited Layer C metric or other research-frontier metric may be added to the package. Any such addition must carry literature grounding in `inst/REFERENCES.md` before implementation is considered release-ready.
@@ -210,7 +210,7 @@ sequence.
 #### Former D-029: Phase 2C Metric Engine Consolidation
 - Decision: Consolidate to a single canonical metric tree in `R/core_metrics.R`, remove duplicate `R/metrics/*` definitions, and enforce registry-only metric execution from orchestration wrappers.
 - Status: Retained supporting record
-- Notes: Former numbering only. The current package still follows the single-tree / registry-execution model, while active canonical `D-029` now refers to the `br2` literature correction policy.
+- Notes: Former numbering only. The current package still follows the single-tree / registry-execution model, while active canonical `D-029` now refers to the `slope_scaled_r2` literature correction policy.
 
 ## Historical and Superseded Decisions
 

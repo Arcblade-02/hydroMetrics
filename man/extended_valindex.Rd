@@ -22,10 +22,13 @@ A numeric scalar for single-series inputs or a numeric vector for
 multi-series inputs.
 }
 \description{
-Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric
-\code{"extended_valindex"}. The metric is a fixed equal-weight composite of
-normalized \code{nse}, \code{kge}, \code{rmse}, \code{pbias}, \code{r}, \code{mae}, \code{rsr}, and \code{ve}
-component scores computed on the same aligned prepared data.
+Deprecated forwarding wrapper for \code{\link[=composite_performance_index]{composite_performance_index()}}.
+}
+\details{
+\code{extended_valindex()} remains exported temporarily for compatibility, but
+\code{"extended_valindex"} is no longer a live canonical registry metric id.
+Each call warns once and then forwards directly to canonical
+\code{\link[=composite_performance_index]{composite_performance_index()}}.
 }
 \examples{
 extended_valindex(c(1.2, 1.8, 3.4, 3.9, 5.1), c(1.0, 2.0, 3.0, 4.0, 5.0))

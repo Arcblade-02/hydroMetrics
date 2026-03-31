@@ -57,9 +57,12 @@ entropy_diff <- function(sim, obs, na.rm = NULL, ...) {
 
 #' Evaluate the mutual information score wrapper
 #'
-#' Compatibility export retained alongside canonical [mutual_information()].
-#' This thin wrapper delegates to [gof()] for the registry metric
-#' `"mutual_information_score"`. The metric computes raw mutual information in
+#' Deprecated forwarding wrapper for [mutual_information()].
+#'
+#' `mutual_information_score()` remains exported temporarily for compatibility,
+#' but `"mutual_information_score"` is no longer a live canonical registry
+#' metric id. Each call warns once and then forwards directly to canonical
+#' [mutual_information()], which computes raw mutual information in
 #' natural-log units from the paired Sturges-binned joint empirical
 #' distribution on the pooled support grid.
 #'
@@ -72,21 +75,21 @@ entropy_diff <- function(sim, obs, na.rm = NULL, ...) {
 #' mutual_information_score(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))
 #' @export
 mutual_information_score <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper(
-    "mutual_information_score",
-    sim = sim,
-    obs = obs,
-    na.rm = na.rm,
-    dots = list(...)
+  warning(
+    "`mutual_information_score()` is deprecated; use `mutual_information()`.",
+    call. = FALSE
   )
+  mutual_information(sim = sim, obs = obs, na.rm = na.rm, ...)
 }
 
 #' Evaluate the mutual information wrapper
 #'
 #' Thin exported wrapper over [gof()] for the canonical registry metric
 #' `"mutual_information"`. Under the current deterministic policy this is the
-#' canonical name for the same pooled-grid raw mutual information reported by
-#' `"mutual_information_score"`.
+#' canonical name for the same pooled-grid raw mutual information formerly
+#' exposed through deprecated wrapper [mutual_information_score()]. The
+#' estimator uses a pooled-support Sturges histogram on the paired joint
+#' empirical distribution and reports the result in natural-log units.
 #'
 #' @inheritParams gof
 #'
@@ -125,12 +128,39 @@ normalised_mi <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("normalised_mi", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
+#' Evaluate the upper-tail conditional exceedance wrapper
+#'
+#' Thin exported wrapper over [gof()] for the canonical registry metric
+#' `"upper_tail_conditional_exceedance"`. The metric uses the observed type-7
+#' `0.9` quantile as a strict upper-tail threshold and reports the empirical
+#' conditional exceedance score `P(sim > q_obs | obs > q_obs)`.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' upper_tail_conditional_exceedance(c(1, 2, 3, 7, 8, 4), c(1, 2, 4, 8, 7, 5))
+#' @export
+upper_tail_conditional_exceedance <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper(
+    "upper_tail_conditional_exceedance",
+    sim = sim,
+    obs = obs,
+    na.rm = na.rm,
+    dots = list(...)
+  )
+}
+
 #' Evaluate the tail dependence score wrapper
 #'
-#' Thin exported wrapper over [gof()] for the registry metric
-#' `"tail_dependence_score"`. The metric uses the observed type-7 `0.9`
-#' quantile as a strict upper-tail threshold and reports the empirical
-#' conditional exceedance score `P(sim > q_obs | obs > q_obs)`.
+#' Deprecated forwarding wrapper for [upper_tail_conditional_exceedance()].
+#'
+#' `tail_dependence_score()` remains exported temporarily for compatibility,
+#' but `"tail_dependence_score"` is no longer a live canonical registry metric
+#' id. Each call warns once and then forwards directly to canonical
+#' [upper_tail_conditional_exceedance()].
 #'
 #' @inheritParams gof
 #'
@@ -141,7 +171,11 @@ normalised_mi <- function(sim, obs, na.rm = NULL, ...) {
 #' tail_dependence_score(c(1, 2, 3, 7, 8, 4), c(1, 2, 4, 8, 7, 5))
 #' @export
 tail_dependence_score <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("tail_dependence_score", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+  warning(
+    "`tail_dependence_score()` is deprecated; use `upper_tail_conditional_exceedance()`.",
+    call. = FALSE
+  )
+  upper_tail_conditional_exceedance(sim = sim, obs = obs, na.rm = na.rm, ...)
 }
 
 #' Evaluate the extreme event ratio wrapper
@@ -219,12 +253,39 @@ quantile_shift_index <- function(sim, obs, na.rm = NULL, ...) {
   .hm_run_single_metric_wrapper("quantile_shift_index", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
 }
 
+#' Evaluate the composite performance index wrapper
+#'
+#' Thin exported wrapper over [gof()] for the canonical registry metric
+#' `"composite_performance_index"`. The metric is a fixed equal-weight
+#' composite of normalized `nse`, `kge`, `rmse`, `pbias`, `r`, `mae`, `rsr`,
+#' and `ve` component scores computed on the same aligned prepared data.
+#'
+#' @inheritParams gof
+#'
+#' @return A numeric scalar for single-series inputs or a numeric vector for
+#'   multi-series inputs.
+#'
+#' @examples
+#' composite_performance_index(c(1.2, 1.8, 3.4, 3.9, 5.1), c(1.0, 2.0, 3.0, 4.0, 5.0))
+#' @export
+composite_performance_index <- function(sim, obs, na.rm = NULL, ...) {
+  .hm_run_single_metric_wrapper(
+    "composite_performance_index",
+    sim = sim,
+    obs = obs,
+    na.rm = na.rm,
+    dots = list(...)
+  )
+}
+
 #' Evaluate the extended validation index wrapper
 #'
-#' Thin exported wrapper over [gof()] for the registry metric
-#' `"extended_valindex"`. The metric is a fixed equal-weight composite of
-#' normalized `nse`, `kge`, `rmse`, `pbias`, `r`, `mae`, `rsr`, and `ve`
-#' component scores computed on the same aligned prepared data.
+#' Deprecated forwarding wrapper for [composite_performance_index()].
+#'
+#' `extended_valindex()` remains exported temporarily for compatibility, but
+#' `"extended_valindex"` is no longer a live canonical registry metric id.
+#' Each call warns once and then forwards directly to canonical
+#' [composite_performance_index()].
 #'
 #' @inheritParams gof
 #'
@@ -235,5 +296,9 @@ quantile_shift_index <- function(sim, obs, na.rm = NULL, ...) {
 #' extended_valindex(c(1.2, 1.8, 3.4, 3.9, 5.1), c(1.0, 2.0, 3.0, 4.0, 5.0))
 #' @export
 extended_valindex <- function(sim, obs, na.rm = NULL, ...) {
-  .hm_run_single_metric_wrapper("extended_valindex", sim = sim, obs = obs, na.rm = na.rm, dots = list(...))
+  warning(
+    "`extended_valindex()` is deprecated; use `composite_performance_index()`.",
+    call. = FALSE
+  )
+  composite_performance_index(sim = sim, obs = obs, na.rm = na.rm, ...)
 }

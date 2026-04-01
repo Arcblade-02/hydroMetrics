@@ -26,6 +26,13 @@ correlation, bias, variability, seasonality, or selected flow regimes. No
 single metric is universally best. A calibration target should match the
 modeling objective.
 
+This guide uses the current public contract:
+
+- canonical metric selection through `gof()` and discovery-oriented helpers
+- compatibility wrappers where a retained historical entry point is useful
+- deprecated forwarding wrappers only as transitional aliases, not as primary
+  current metric names
+
 ## Start With the Recommended Shortlist
 
 For most deterministic calibration workflows, the safest starting point is the
@@ -98,11 +105,16 @@ gof(sim, obs, methods = c("nse", "kge", "rmse", "pbias"))
 ```
 
 Use a wrapper when the metric itself is the focus or when the metric has a
-more specialized contract that you want to call explicitly:
+more specialized contract that you want to call explicitly. For current
+canonical naming, prefer the canonical exported wrapper when one exists:
 
 ```{r}
-extended_valindex(sim, obs)
+composite_performance_index(sim, obs)
 ```
+
+The deprecated forwarding wrapper `extended_valindex()` still resolves to
+`composite_performance_index()`, but it is transitional rather than the
+preferred current name.
 
 `valindex()` is also available, but it remains the historical orchestration
 wrapper around `gof(methods = fun, ...)`, not a fixed composite score:
@@ -125,8 +137,8 @@ ext_out <- gof(sim, obs, extended = TRUE)
 sort(intersect(
   c(
     "entropy_diff",
-    "tail_dependence_score",
-    "extended_valindex"
+    "upper_tail_conditional_exceedance",
+    "composite_performance_index"
   ),
   names(ext_out)
 ))
@@ -155,19 +167,24 @@ gof(sim, obs, methods = c("low_flow_bias"))
 
 ### Tail and Event-Sensitive Metrics
 
-Metrics such as `tail_dependence_score`, `extreme_event_ratio`, and `event_nse`
-are narrower. They rely on observed tail or event structure. When that
-structure is absent, `gof(extended = TRUE)` excludes them rather than failing.
+Metrics such as `upper_tail_conditional_exceedance`, `extreme_event_ratio`, and
+`event_nse` are narrower. They rely on observed tail or event structure. When
+that structure is absent, `gof(extended = TRUE)` excludes them rather than
+failing.
 
 ```{r}
 sim_flat <- c(1, 2, 2, 2, 2, 2)
 obs_flat <- c(1, 1, 1, 1, 2, 2)
 
 intersect(
-  c("tail_dependence_score", "extreme_event_ratio", "event_nse"),
+  c("upper_tail_conditional_exceedance", "extreme_event_ratio", "event_nse"),
   names(gof(sim_flat, obs_flat, extended = TRUE))
 )
 ```
+
+The deprecated forwarding wrapper `tail_dependence_score()` remains available
+for transition, but the canonical current metric name is
+`upper_tail_conditional_exceedance`.
 
 These are best treated as targeted diagnostics, not generic first-choice
 calibration objectives.
@@ -184,13 +201,17 @@ default_out[c("nse", "kge", "rmse", "pbias", "ve", "rsr")]
 ```
 
 If you want one fixed scalar summary for comparing candidate runs, the package
-also provides `extended_valindex()`. It is a package-defined composite of
-stable core metrics, so it can be useful as a secondary summary, but it should
-not replace objective-specific diagnostics.
+also provides `composite_performance_index()`. It is a package-defined
+composite of stable core metrics, so it can be useful as a secondary summary,
+but it should not replace objective-specific diagnostics.
 
 ```{r}
-extended_valindex(sim, obs)
+composite_performance_index(sim, obs)
 ```
+
+The deprecated forwarding wrapper `extended_valindex()` still routes to the same
+canonical metric, but `composite_performance_index()` is the preferred current
+name.
 
 ## Caveats for Metric Choice
 

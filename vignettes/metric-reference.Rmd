@@ -37,6 +37,11 @@ the compat-10 deterministic shortlist, while `extended = TRUE` expands to the
 broader registered deterministic metric set that can safely run on the current
 input.
 
+Discovery-facing metric IDs are the lowercase canonical registry IDs returned
+by helpers such as `metric_search()` and `metric_preset()`. Compatibility
+wrappers and deprecated forwarding wrappers may still be exported, but they are
+not independent canonical discovery IDs.
+
 ```{r}
 sim <- c(1.2, 1.8, 3.4, 3.9, 5.1, 6.0, 7.2, 8.1)
 obs <- c(1.0, 2.0, 3.0, 4.0, 5.0, 6.2, 7.0, 8.0)
@@ -73,20 +78,15 @@ head(metric_search(category = "correlation")[, c("id", "name", "category")], 12)
 
 ## Exported Wrapper Naming
 
-The current compatibility-oriented wrapper names exported from the package
-namespace are:
+The current exported wrapper surface contains three distinct kinds of names:
 
-- `HFB()`
-- `NSeff()`
-- `alpha()`
-- `beta()`
-- `mae()`
-- `mNSeff()`
-- `pbias()`
-- `r()`
-- `rNSeff()`
-- `rsr()`
-- `wsNSeff()`
+- canonical exported wrappers such as `alpha()`, `beta()`, `mae()`, `pbias()`,
+  `r()`, and `rsr()`
+- retained compatibility exports such as `HFB()`, `NSeff()`, `mNSeff()`,
+  `rNSeff()`, `wsNSeff()`, and `mutual_information_score()`
+- deprecated forwarding wrappers such as `tail_dependence_score()` and
+  `extended_valindex()`, which remain callable temporarily but are no longer
+  canonical current metric names
 
 Uppercase hydroGOF names such as `NSE`, `KGE`, `RMSE`, `R2`, `NRMSE`, and
 `PBIAS` remain available as `gof()` / `ggof()` method labels, not as exported
@@ -121,7 +121,7 @@ These include Layer A, Layer B, and Layer C additions such as:
   `rising_limb_error`, `event_nse`
 - distribution and information-theory diagnostics: `entropy_diff`,
   `mutual_information`, `normalised_mi`
-- composite and summary diagnostics: `extended_valindex`,
+- composite and summary diagnostics: `composite_performance_index`,
   `rank_turnover_score`, `distribution_overlap`, `quantile_shift_index`
 
 This route is broader, but not unconditional. Auto-selection remains gated by
@@ -132,11 +132,15 @@ sort(intersect(
   c(
     "entropy_diff",
     "mutual_information",
-    "extended_valindex"
+    "composite_performance_index"
   ),
   names(gof(sim, obs, extended = TRUE))
 ))
 ```
+
+The deprecated forwarding wrapper `extended_valindex()` still routes to
+`composite_performance_index()`, but the canonical current metric name is
+`composite_performance_index`.
 
 ## Tail, Event, and Regime-Sensitive Metrics
 
@@ -145,7 +149,7 @@ observed structure such as qualifying tails, events, or hydrograph phases.
 
 Examples include:
 
-- `tail_dependence_score`
+- `upper_tail_conditional_exceedance`
 - `extreme_event_ratio`
 - `event_nse`
 - `rising_limb_error`
@@ -157,10 +161,14 @@ meet their documented preconditions.
 
 ```{r}
 intersect(
-  c("tail_dependence_score", "extreme_event_ratio", "event_nse"),
+  c("upper_tail_conditional_exceedance", "extreme_event_ratio", "event_nse"),
   names(gof(sim, obs, extended = TRUE))
 )
 ```
+
+The deprecated forwarding wrapper `tail_dependence_score()` still routes to
+`upper_tail_conditional_exceedance()`, but it is transitional rather than the
+preferred current name.
 
 ## Where To Go Next
 

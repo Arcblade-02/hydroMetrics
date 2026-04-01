@@ -46,22 +46,29 @@ names(gof(sim, obs))
 
 ## Discovering Metrics
 
-For most users, the easiest discovery path is to start with `gof()` and then
-move to explicit wrappers or explicit `methods = ...` requests as needed.
+For most users, the easiest discovery path is to start with `gof()` for the
+default deterministic shortlist, then use the public discovery helpers when a
+more targeted metric set is needed.
 
-Internally, the package also maintains a registry listing. The internal helper
-`hydroMetrics:::list_metrics(recommended = TRUE)` returns the curated
-recommended shortlist that matches the stable default deterministic starting
-point.
+`metric_preset("recommended")` returns the curated recommended shortlist that
+matches the stable default deterministic starting point.
 
 ```{r}
-hydroMetrics:::list_metrics(recommended = TRUE)[, c("id", "name")]
+metric_preset("recommended")
 ```
 
-The full internal registry is also available for audit and discovery work:
+`metric_search()` provides a lightweight public discovery view over the current
+registry metadata. It can be used to search by preset, category, tags, and
+text without relying on internal helpers.
 
 ```{r}
-head(hydroMetrics:::list_metrics()[, c("id", "name", "tags")], 12)
+metric_search(preset = "recommended")[, c("id", "name", "presets")]
+```
+
+For broader discovery, search by category or text:
+
+```{r}
+head(metric_search(category = "correlation")[, c("id", "name", "category")], 12)
 ```
 
 ## Exported Wrapper Naming

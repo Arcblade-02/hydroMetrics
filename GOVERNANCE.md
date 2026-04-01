@@ -17,7 +17,7 @@ Current stable boundary:
 - documented exported helpers such as `metric_search()`,
   `metric_preset()`, `plot_hydrograph()`, `plot_fdc()`, and `hm_result()`
 - documented exported metric wrappers other than the explicitly marked
-  compatibility exports
+  compatibility or deprecated exports
 
 Contract stability includes more than signatures. It also includes:
 
@@ -42,6 +42,9 @@ Current compatibility policy:
 - uppercase hydroGOF-style names accepted by `gof()` / `ggof()` are
   orchestration labels, not exported standalone functions
 - documented compatibility exports keep a canonical target
+- deprecated exported forwarding wrappers may remain public temporarily, but
+  they must forward to canonical interfaces rather than recreate parallel live
+  registry entries
 - deprecated aliases may continue to resolve, but they should not silently
   become new canonical ids
 - intentional divergence from reference packages should be documented as
@@ -63,12 +66,20 @@ The package currently uses four statuses:
 Current baseline interpretation:
 
 - `stable`: documented exported functions other than the explicit compatibility
-  exports and any future explicitly marked deprecated or experimental surface
+  exports, explicit deprecated forwarding wrappers, and any future explicitly
+  marked experimental surface
 - `compatibility`: retained historical or interoperability-oriented exports
   such as `NSeff()`, `mNSeff()`, `rNSeff()`, `wsNSeff()`, `HFB()`, and
   `mutual_information_score()`
-- `deprecated`: no exported functions are currently published in this status
+- `deprecated`: exported forwarding wrappers `tail_dependence_score()` and
+  `extended_valindex()`, plus orchestration-only deprecated aliases such as
+  `rPearson` / `rpearson` that continue to resolve to canonical metric ids
 - `experimental`: no exported functions are currently published in this status
+
+Discovery-facing canonical ids remain the lowercase registry-backed metric ids.
+Compatibility exports, deprecated forwarding wrappers, and orchestration-only
+aliases are part of the public surface contract, but they are not independent
+canonical metric ids.
 
 If a new exported function is added, its lifecycle status should be stated
 clearly in the package-facing docs rather than left implicit.

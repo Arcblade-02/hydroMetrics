@@ -14,6 +14,25 @@ compatibility functions. That compatibility status does not mean
 plotting helpers such as `plot_hydrograph()` and `plot_fdc()` outside this
 legacy compatibility ledger.
 
+Canonical discovery ids for the current package are the lowercase
+registry-backed metric ids returned by `metric_search()` and `metric_preset()`.
+Exported compatibility wrappers, deprecated forwarding wrappers, and
+orchestration-only aliases may route to those canonical ids, but they are not
+independent discovery-canonical metric ids.
+
+## Current surface interpretation for compatibility review
+
+- exported compatibility wrappers retained at the current baseline:
+  `HFB()`, `NSeff()`, `mNSeff()`, `rNSeff()`, `wsNSeff()`, and
+  `mutual_information_score()`
+- exported deprecated forwarding wrappers retained temporarily:
+  `tail_dependence_score()` and `extended_valindex()`
+- uppercase hydroGOF-style names such as `NSE`, `KGE`, `RMSE`, `R2`,
+  `NRMSE`, and `PBIAS` are accepted through `gof()` / `ggof()` orchestration
+  handling; they are not exported standalone functions
+- deprecated orchestration aliases such as `rPearson` / `rpearson` resolve to
+  canonical `r` and are not listed as separate canonical metric ids below
+
 ## Phase 2 exported wrappers and core entry points tracked here
 - [x] alpha
 - [x] beta
@@ -68,7 +87,9 @@ Deprecated compatibility aliases may still be accepted during orchestration or
 engine-level resolution, but they are not listed as separate canonical metric
 ids in the implemented metrics table below. In particular, deprecated
 `rPearson` / `rpearson` requests resolve to canonical `r` rather than
-persisting as an independent metric entry.
+persisting as an independent metric entry. Deprecated exported forwarding
+wrappers such as `tail_dependence_score()` and `extended_valindex()` likewise
+route to canonical ids rather than creating additional canonical entries.
 
 ## Not implemented
 - [ ] plot2

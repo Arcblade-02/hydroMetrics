@@ -18,20 +18,18 @@ test_that("metric_search returns annotated metric metadata", {
   expect_identical(anyDuplicated(out$id), 0L)
   expect_true(all(nzchar(out$id)))
   expect_true(all(c(
-    "tail_dependence_score",
-    "extended_valindex",
-    "apfb",
     "mae",
     "nse",
+    "hfb",
+    "mutual_information",
     "r"
   ) %in% out$id))
 
   nse_row <- out[out$id == "nse", , drop = FALSE]
   mae_row <- out[out$id == "mae", , drop = FALSE]
   mi_row <- out[out$id == "mutual_information", , drop = FALSE]
-  tail_row <- out[out$id == "tail_dependence_score", , drop = FALSE]
-  ext_row <- out[out$id == "extended_valindex", , drop = FALSE]
-  apfb_row <- out[out$id == "apfb", , drop = FALSE]
+  hfb_row <- out[out$id == "hfb", , drop = FALSE]
+  r_row <- out[out$id == "r", , drop = FALSE]
 
   expect_identical(nse_row$exported_wrappers[[1]], "NSeff")
   expect_true(nse_row$compatibility_export[[1]])
@@ -43,17 +41,11 @@ test_that("metric_search returns annotated metric metadata", {
   expect_match(mi_row$exported_wrappers[[1]], "mutual_information_score")
   expect_true(mi_row$compatibility_export[[1]])
 
-  expect_identical(tail_row$exported_wrappers[[1]], "tail_dependence_score")
-  expect_false(tail_row$compatibility_export[[1]])
+  expect_identical(hfb_row$exported_wrappers[[1]], "HFB")
+  expect_true(hfb_row$compatibility_export[[1]])
 
-  expect_identical(ext_row$exported_wrappers[[1]], "extended_valindex")
-  expect_false(ext_row$compatibility_export[[1]])
-
-  expect_identical(apfb_row$exported_wrappers[[1]], "APFB")
-  expect_true(apfb_row$compatibility_export[[1]])
-
-  expect_identical(out[out$id == "r", "exported_wrappers"][[1]], "r")
-  expect_false(out[out$id == "r", "compatibility_export"][[1]])
+  expect_identical(r_row$exported_wrappers[[1]], "r")
+  expect_false(r_row$compatibility_export[[1]])
 })
 
 test_that("metric_search filters by text, category, tags, preset, and export flags", {
@@ -80,15 +72,12 @@ test_that("metric_search filters by text, category, tags, preset, and export fla
   expect_true(all(nzchar(exported_out$exported_wrappers)))
   expect_true(all(c(
     "msle",
-    "tail_dependence_score",
-    "extended_valindex",
-    "mutual_information",
-    "apfb"
+    "mutual_information"
   ) %in% exported_out$id))
 
   compat_out <- hydroMetrics::metric_search(compatibility = TRUE)
   expect_true(all(compat_out$compatibility_export))
-  expect_true(all(c("nse", "mnse", "rnse", "wsnse", "hfb", "apfb") %in% compat_out$id))
+  expect_true(all(c("nse", "mnse", "rnse", "wsnse", "hfb") %in% compat_out$id))
 
   deterministic_error_out <- hydroMetrics::metric_search(preset = "deterministic_error")
   expect_true(all(c(
@@ -124,7 +113,7 @@ test_that("metric_preset resolves documented presets to canonical metric ids", {
   exported_out <- hydroMetrics::metric_preset("compatibility_core", exported_only = TRUE)
   expect_type(exported_out, "character")
   expect_true(all(exported_out %in% hydroMetrics::metric_search(exported = TRUE)$id))
-  expect_true(all(c("nse", "mnse", "rnse", "wsnse", "hfb", "apfb") %in% exported_out))
+  expect_true(all(c("nse", "mnse", "rnse", "wsnse", "hfb") %in% exported_out))
 })
 
 test_that("metric_preset validates input conservatively", {

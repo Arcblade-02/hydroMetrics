@@ -50,11 +50,11 @@ handling; they are not exported standalone functions.
 - [x] NSE
 - [x] pfactor
 - [x] R2
+- [x] r
 - [x] rd
 - [x] rfactor
 - [x] rmse
 - [x] rNSE
-- [x] rPearson
 - [x] rSD
 - [x] rSpearman
 - [x] sKGE
@@ -63,6 +63,12 @@ handling; they are not exported standalone functions.
 - [x] VE
 - [x] wNSE
 - [x] wsNSE
+
+Deprecated compatibility aliases may still be accepted during orchestration or
+engine-level resolution, but they are not listed as separate canonical metric
+ids in the implemented metrics table below. In particular, deprecated
+`rPearson` / `rpearson` requests resolve to canonical `r` rather than
+persisting as an independent metric entry.
 
 ## Not implemented
 - [ ] plot2
@@ -94,13 +100,12 @@ handling; they are not exported standalone functions.
 | nse | Nash-Sutcliffe Efficiency | efficiency | 0.1.0 | Nash, J.E. & Sutcliffe, J.V. (1970). River flow forecasting through conceptual models part I - A discussion of principles. |
 | pbias | Percent Bias | bias | 0.1.0 | Moriasi, D.N., et al. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations. |
 | pfactor | P-factor | efficiency | 0.1.0 | Project-defined compatibility pfactor using tolerance-band hit proportion. |
-| r | Pearson Correlation | correlation | 0.1.0 | Pearson correlation coefficient (standard definition). |
+| r | Pearson Correlation | correlation | 0.1.0 | Canonical Pearson correlation metric id; deprecated `rPearson` / `rpearson` requests resolve here through compatibility alias handling. |
 | r2 | Squared Pearson Correlation | correlation | 0.1.0 | R-squared defined as squared Pearson correlation. |
 | rd | Relative Index of Agreement | agreement | 0.1.0 | Willmott agreement-index family with relative normalization by observations. |
 | rfactor | R-factor | error | 0.1.0 | Project-defined compatibility rfactor: mean(abs(sim - obs)) / mean(abs(obs)). |
 | rmse | Root Mean Squared Error | error | 0.1.0 | Standard RMSE definition in statistical error analysis texts. |
 | rnse | Relative NSE | efficiency | 0.1.0 | Based on Nash & Sutcliffe (1970) NSE, using observation-scaled relative errors. |
-| rpearson | Pearson Correlation | correlation | 0.1.0 | Pearson correlation coefficient (standard statistical definition). |
 | rsd | Standard Deviation Ratio | scale | 0.1.0 | Project definition for hydrology compatibility: ratio of simulated to observed standard deviation. |
 | rspearman | Spearman Correlation | correlation | 0.1.0 | Spearman rank correlation (standard statistical definition). |
 | rsr | RSR | error | 0.1.0 | Moriasi, D.N., et al. (2007). Model evaluation guidelines for systematic quantification of accuracy in watershed simulations. |

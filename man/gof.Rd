@@ -95,7 +95,8 @@ dispatches registered metric implementations without embedding metric
 formulas in the public API layer. Uppercase hydroGOF-style method labels
 such as \code{"NSE"} and \code{"KGE"} are accepted as orchestration labels only and
 are not exported standalone functions. Deprecated labels such as
-\code{"rPearson"} resolve to canonical metric ids during method selection.
+\code{"rPearson"}, \code{"tail_dependence_score"}, and \code{"extended_valindex"} resolve
+to canonical metric ids during method selection.
 }
 \details{
 Stable condition contract: \code{gof()} errors on invalid \code{extended} values,

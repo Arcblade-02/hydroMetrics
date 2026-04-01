@@ -22,10 +22,13 @@ A numeric scalar for single-series inputs or a numeric vector for
 multi-series inputs.
 }
 \description{
-Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric
-\code{"tail_dependence_score"}. The metric uses the observed type-7 \code{0.9}
-quantile as a strict upper-tail threshold and reports the empirical
-conditional exceedance score \code{P(sim > q_obs | obs > q_obs)}.
+Deprecated forwarding wrapper for \code{\link[=upper_tail_conditional_exceedance]{upper_tail_conditional_exceedance()}}.
+}
+\details{
+\code{tail_dependence_score()} remains exported temporarily for compatibility,
+but \code{"tail_dependence_score"} is no longer a live canonical registry metric
+id. Calls emit a deprecation warning and then forward directly to canonical
+\code{\link[=upper_tail_conditional_exceedance]{upper_tail_conditional_exceedance()}}.
 }
 \examples{
 tail_dependence_score(c(1, 2, 3, 7, 8, 4), c(1, 2, 4, 8, 7, 5))

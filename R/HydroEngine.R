@@ -1,5 +1,23 @@
-.hm_metric_id_aliases <- function() {
-  c(rpearson = "r")
+.hm_metric_alias_policy <- function() {
+  data.frame(
+    alias = c(
+      "rpearson",
+      "tail_dependence_score",
+      "extended_valindex"
+    ),
+    target = c(
+      "r",
+      "upper_tail_conditional_exceedance",
+      "composite_performance_index"
+    ),
+    lifecycle = rep("deprecated", 3L),
+    stringsAsFactors = FALSE
+  )
+}
+
+.hm_metric_alias_targets <- function() {
+  policy <- .hm_metric_alias_policy()
+  stats::setNames(policy$target, policy$alias)
 }
 
 .hm_canonicalize_metric_ids <- function(metric_ids, warn = TRUE) {
@@ -7,12 +25,14 @@
     return(metric_ids)
   }
 
-  aliases <- .hm_metric_id_aliases()
+  policy <- .hm_metric_alias_policy()
+  aliases <- .hm_metric_alias_targets()
   keys <- tolower(metric_ids)
-  deprecated <- unique(keys[keys %in% names(aliases)])
+  deprecated <- unique(policy$alias[policy$lifecycle == "deprecated"])
+  deprecated_hits <- unique(keys[keys %in% deprecated])
 
-  if (isTRUE(warn) && length(deprecated) > 0L) {
-    for (id in deprecated) {
+  if (isTRUE(warn) && length(deprecated_hits) > 0L) {
+    for (id in deprecated_hits) {
       warning(
         sprintf("`%s` is deprecated; use `%s`.", id, aliases[[id]]),
         call. = FALSE
@@ -21,8 +41,9 @@
   }
 
   resolved <- metric_ids
-  if (length(deprecated) > 0L) {
-    resolved[keys %in% names(aliases)] <- unname(aliases[keys[keys %in% names(aliases)]])
+  alias_hits <- keys %in% names(aliases)
+  if (any(alias_hits)) {
+    resolved[alias_hits] <- unname(aliases[keys[alias_hits]])
   }
 
   resolved

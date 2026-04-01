@@ -134,10 +134,13 @@ test_that("gof defaults remain unchanged after adding sae, rmsle, and evs", {
 })
 
 test_that("gof returns hydro_metrics object for single series", {
-  out <- .hm_gof_get("gof")(
-    sim = c(1, 2, 3),
-    obs = c(1, 2, 1),
-    methods = c("NSE", "rmse", "rPearson")
+  expect_warning(
+    out <- .hm_gof_get("gof")(
+      sim = c(1, 2, 3),
+      obs = c(1, 2, 1),
+      methods = c("NSE", "rmse", "rPearson")
+    ),
+    "deprecated"
   )
 
   expect_s3_class(out, "hydro_metrics")
@@ -147,12 +150,13 @@ test_that("gof returns hydro_metrics object for single series", {
 })
 
 test_that("gof canonicalizes deprecated orchestration aliases while preserving labels", {
-  expect_no_warning(
+  expect_warning(
     out <- .hm_gof_get("gof")(
       sim = c(1, 2, 3),
       obs = c(1, 2, 1),
       methods = "rPearson"
-    )
+    ),
+    "deprecated"
   )
 
   ref <- .hm_gof_get("gof")(sim = c(1, 2, 3), obs = c(1, 2, 1), methods = "r")
@@ -160,6 +164,83 @@ test_that("gof canonicalizes deprecated orchestration aliases while preserving l
   expect_s3_class(out, "hydro_metrics")
   expect_identical(names(out), "rPearson")
   expect_equal(as.numeric(out), as.numeric(ref))
+})
+
+test_that("gof resolves the approved Batch 4 deprecated ids while preserving requested labels", {
+  sim_tail <- c(1, 2, 3, 7, 8, 4, 3, 2, 6, 7, 3, 2)
+  obs_tail <- c(1, 2, 4, 8, 7, 5, 3, 2, 5, 8, 4, 2)
+
+  expect_warning(
+    out_requested_tail <- .hm_gof_get("gof")(
+      sim = sim_tail,
+      obs = obs_tail,
+      methods = "tail_dependence_score",
+      labels = "requested"
+    ),
+    "deprecated"
+  )
+  expect_identical(names(out_requested_tail), "tail_dependence_score")
+
+  expect_warning(
+    out_canonical_tail <- .hm_gof_get("gof")(
+      sim = sim_tail,
+      obs = obs_tail,
+      methods = "tail_dependence_score",
+      labels = "canonical"
+    ),
+    "deprecated"
+  )
+  expect_identical(names(out_canonical_tail), "upper_tail_conditional_exceedance")
+  expect_equal(
+    out_canonical_tail[["upper_tail_conditional_exceedance"]],
+    .hm_gof_get("gof")(sim_tail, obs_tail, methods = "upper_tail_conditional_exceedance")[["upper_tail_conditional_exceedance"]]
+  )
+
+  sim_ext <- c(1.2, 1.8, 3.4, 3.9, 5.1)
+  obs_ext <- c(1.0, 2.0, 3.0, 4.0, 5.0)
+
+  expect_warning(
+    out_requested_ext <- .hm_gof_get("gof")(
+      sim = sim_ext,
+      obs = obs_ext,
+      methods = "extended_valindex",
+      labels = "requested"
+    ),
+    "deprecated"
+  )
+  expect_identical(names(out_requested_ext), "extended_valindex")
+
+  expect_warning(
+    out_canonical_ext <- .hm_gof_get("gof")(
+      sim = sim_ext,
+      obs = obs_ext,
+      methods = "extended_valindex",
+      labels = "canonical"
+    ),
+    "deprecated"
+  )
+  expect_identical(names(out_canonical_ext), "composite_performance_index")
+  expect_equal(
+    out_canonical_ext[["composite_performance_index"]],
+    .hm_gof_get("gof")(sim_ext, obs_ext, methods = "composite_performance_index")[["composite_performance_index"]]
+  )
+})
+
+test_that("gof professional labels expose the approved Batch 4 canonical names", {
+  sim_tail <- c(1, 2, 3, 7, 8, 4, 3, 2, 6, 7, 3, 2)
+  obs_tail <- c(1, 2, 4, 8, 7, 5, 3, 2, 5, 8, 4, 2)
+
+  out <- .hm_gof_get("gof")(
+    sim = sim_tail,
+    obs = obs_tail,
+    methods = c("upper_tail_conditional_exceedance", "composite_performance_index"),
+    labels = "professional"
+  )
+
+  expect_identical(
+    names(out),
+    c("Upper Tail Conditional Exceedance", "Composite Performance Index")
+  )
 })
 
 test_that("gof supports zoo alignment and method subsets", {

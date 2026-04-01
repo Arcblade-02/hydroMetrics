@@ -26,7 +26,9 @@
     "kgelf" = "kgelf",
     "kgenp" = "kgenp",
     "skge" = "skge",
-    "hfb" = "hfb"
+    "hfb" = "hfb",
+    "tail_dependence_score" = "upper_tail_conditional_exceedance",
+    "extended_valindex" = "composite_performance_index"
   )
 }
 
@@ -57,7 +59,9 @@
     "kge" = "KGE",
     "kgelf" = "KGElf",
     "kgenp" = "KGEnp",
-    "kgekm" = "KGEkm"
+    "kgekm" = "KGEkm",
+    "upper_tail_conditional_exceedance" = "Upper Tail Conditional Exceedance",
+    "composite_performance_index" = "Composite Performance Index"
   )
 }
 
@@ -76,7 +80,7 @@
     "e1" = "E1",
     "entropy_diff" = "Entropy Difference",
     "evs" = "EVS",
-    "extended_valindex" = "Extended ValIndex",
+    "composite_performance_index" = "Composite Performance Index",
     "extreme_event_ratio" = "Extreme Event Ratio",
     "huber_loss" = "Huber Loss",
     "kge" = "KGE",
@@ -134,7 +138,7 @@
     "smape" = "SMAPE",
     "sqrt_nse" = "Sqrt-NSE",
     "ssq" = "SSQ",
-    "tail_dependence_score" = "Tail Dependence Score",
+    "upper_tail_conditional_exceedance" = "Upper Tail Conditional Exceedance",
     "trimmed_rmse" = "Trimmed RMSE",
     "ubrmse" = "ubRMSE",
     "ve" = "VE",
@@ -150,6 +154,8 @@
   available <- .get_registry()$list()
   available_ids <- as.character(available$id)
   available_map <- stats::setNames(available_ids, tolower(available_ids))
+  policy <- .hm_metric_alias_policy()
+  deprecated <- policy$alias[policy$lifecycle == "deprecated"]
 
   alias <- available_map
   extra_alias <- .gof_alias_map()
@@ -173,8 +179,19 @@
     )
   }
 
+  deprecated_hits <- unique(keys[keys %in% deprecated])
+  if (length(deprecated_hits) > 0L) {
+    alias_targets <- .hm_metric_alias_targets()
+    for (id in deprecated_hits) {
+      warning(
+        sprintf("`%s` is deprecated; use `%s`.", id, alias_targets[[id]]),
+        call. = FALSE
+      )
+    }
+  }
+
   list(
-    ids = .hm_canonicalize_metric_ids(unname(alias[keys]), warn = TRUE),
+    ids = .hm_canonicalize_metric_ids(unname(alias[keys]), warn = FALSE),
     labels = requested
   )
 }
@@ -535,7 +552,8 @@
 #' formulas in the public API layer. Uppercase hydroGOF-style method labels
 #' such as `"NSE"` and `"KGE"` are accepted as orchestration labels only and
 #' are not exported standalone functions. Deprecated labels such as
-#' `"rPearson"` resolve to canonical metric ids during method selection.
+#' `"rPearson"`, `"tail_dependence_score"`, and `"extended_valindex"` resolve
+#' to canonical metric ids during method selection.
 #'
 #' Stable condition contract: `gof()` errors on invalid `extended` values,
 #' invalid `preset`, unknown metric labels, incompatible single-series versus

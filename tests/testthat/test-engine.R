@@ -102,6 +102,47 @@ test_that("engine canonicalizes deprecated metric aliases during evaluation", {
   expect_equal(out$value[[1]], stats::cor(c(1, 2, 3), c(1, 2, 1)))
 })
 
+test_that("metric alias policy stays limited to rpearson and the two approved Batch 4 aliases", {
+  policy <- hydroMetrics:::.hm_metric_alias_policy()
+
+  expect_true(is.data.frame(policy))
+  expect_identical(colnames(policy), c("alias", "target", "lifecycle"))
+  expect_identical(policy$alias, c("rpearson", "tail_dependence_score", "extended_valindex"))
+  expect_identical(
+    policy$target,
+    c("r", "upper_tail_conditional_exceedance", "composite_performance_index")
+  )
+  expect_true(all(policy$lifecycle == "deprecated"))
+})
+
+test_that("engine canonicalizes the approved Batch 4 deprecated aliases during evaluation", {
+  tail_sim <- c(1, 2, 3, 7, 8, 4, 3, 2, 6, 7, 3, 2)
+  tail_obs <- c(1, 2, 4, 8, 7, 5, 3, 2, 5, 8, 4, 2)
+
+  expect_warning(
+    tail_out <- evaluate_metrics(sim = tail_sim, obs = tail_obs, metrics = "tail_dependence_score"),
+    "deprecated"
+  )
+  expect_identical(tail_out$metric, "upper_tail_conditional_exceedance")
+  expect_equal(
+    tail_out$value[[1]],
+    evaluate_metrics(sim = tail_sim, obs = tail_obs, metrics = "upper_tail_conditional_exceedance")$value[[1]]
+  )
+
+  score_sim <- c(1.2, 1.8, 3.4, 3.9, 5.1)
+  score_obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
+
+  expect_warning(
+    ext_out <- evaluate_metrics(sim = score_sim, obs = score_obs, metrics = "extended_valindex"),
+    "deprecated"
+  )
+  expect_identical(ext_out$metric, "composite_performance_index")
+  expect_equal(
+    ext_out$value[[1]],
+    evaluate_metrics(sim = score_sim, obs = score_obs, metrics = "composite_performance_index")$value[[1]]
+  )
+})
+
 test_that("engine forwards metric-call parameters to registered metrics", {
   sim <- c(1.0, 2.2, 2.7, 4.0)
   obs <- c(1.0, 2.0, 3.0, 4.0)

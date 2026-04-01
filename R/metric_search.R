@@ -59,7 +59,9 @@
       "mNSeff",
       "rNSeff",
       "wsNSeff",
-      "mutual_information_score"
+      "mutual_information_score",
+      "tail_dependence_score",
+      "extended_valindex"
     ),
     id = c(
       "hfb",
@@ -67,7 +69,9 @@
       "mnse",
       "rnse",
       "wsnse",
-      "mutual_information"
+      "mutual_information",
+      "upper_tail_conditional_exceedance",
+      "composite_performance_index"
     ),
     stringsAsFactors = FALSE
   )
@@ -120,7 +124,7 @@
       "derivative_nse",
       "low_flow_bias",
       "hfb",
-      "tail_dependence_score"
+      "upper_tail_conditional_exceedance"
     )
   ]
 

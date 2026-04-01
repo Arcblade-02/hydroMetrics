@@ -120,7 +120,7 @@
 
 .gof_can_auto_run_tail_dependence_score <- function(obs) {
   tryCatch({
-    threshold <- .hm_c3_tail_threshold(obs, "tail_dependence_score")
+    threshold <- .hm_c3_tail_threshold(obs, "upper_tail_conditional_exceedance")
     any(as.numeric(obs) > threshold)
   }, error = function(e) FALSE)
 }
@@ -180,7 +180,7 @@
     ids <- setdiff(ids, "event_nse")
   }
   if (!.gof_can_auto_run_tail_dependence_score(obs)) {
-    ids <- setdiff(ids, "tail_dependence_score")
+    ids <- setdiff(ids, "upper_tail_conditional_exceedance")
   }
   if (!.gof_can_auto_run_extreme_event_ratio(obs)) {
     ids <- setdiff(ids, "extreme_event_ratio")

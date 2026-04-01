@@ -150,9 +150,10 @@ test_that("layer C batch C2 registry ids are present", {
 
 test_that("layer C batch C3 registry ids are present", {
   ids <- list_metrics()$id
-  target <- c("tail_dependence_score", "extreme_event_ratio")
+  target <- c("upper_tail_conditional_exceedance", "extreme_event_ratio")
 
   expect_true(all(target %in% ids))
+  expect_false("tail_dependence_score" %in% ids)
 })
 
 test_that("layer C batch C4 registry ids are present", {
@@ -162,8 +163,10 @@ test_that("layer C batch C4 registry ids are present", {
   expect_true(all(target %in% ids))
 })
 
-test_that("extended_valindex registry id is present", {
-  expect_true("extended_valindex" %in% list_metrics()$id)
+test_that("composite_performance_index registry id is present", {
+  ids <- list_metrics()$id
+  expect_true("composite_performance_index" %in% ids)
+  expect_false("extended_valindex" %in% ids)
 })
 
 test_that("skewness_error matches adjusted Fisher-Pearson skewness error", {
@@ -236,12 +239,12 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "mutual_information_score",
       "mutual_information",
       "normalised_mi",
-      "tail_dependence_score",
+      "upper_tail_conditional_exceedance",
       "extreme_event_ratio",
       "rank_turnover_score",
       "distribution_overlap",
       "quantile_shift_index",
-      "extended_valindex"
+      "composite_performance_index"
     )
   )
   expect_true(inherits(out, "hydro_metrics"))
@@ -254,12 +257,12 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
       "mutual_information_score",
       "mutual_information",
       "normalised_mi",
-      "tail_dependence_score",
+      "upper_tail_conditional_exceedance",
       "extreme_event_ratio",
       "rank_turnover_score",
       "distribution_overlap",
       "quantile_shift_index",
-      "extended_valindex"
+      "composite_performance_index"
     )
   )
 
@@ -273,12 +276,12 @@ test_that("layer C wrappers integrate with gof and extended deterministic visibi
         "mutual_information_score",
         "mutual_information",
         "normalised_mi",
-        "tail_dependence_score",
+        "upper_tail_conditional_exceedance",
         "extreme_event_ratio",
         "rank_turnover_score",
         "distribution_overlap",
         "quantile_shift_index",
-        "extended_valindex"
+        "composite_performance_index"
       ) %in% names(out_ext)
     )
   )
@@ -360,26 +363,34 @@ test_that("normalised_mi uses MI / sqrt(H_sim * H_obs) and rejects zero-entropy 
   )
 })
 
-test_that("tail_dependence_score matches empirical observed-threshold conditional exceedance", {
+test_that("upper_tail_conditional_exceedance matches empirical observed-threshold conditional exceedance", {
   sim <- c(1, 2, 3, 7, 8, 4, 3, 2, 6, 7, 3, 2)
   obs <- c(1, 2, 4, 8, 7, 5, 3, 2, 5, 8, 4, 2)
   threshold <- .test_c3_tail_threshold(obs)
   obs_exceed <- obs > threshold
   expected <- mean(sim[obs_exceed] > threshold)
 
-  expect_equal(tail_dependence_score(sim, obs), expected)
+  expect_equal(upper_tail_conditional_exceedance(sim, obs), expected)
   expect_equal(metric_tail_dependence_score(sim, obs), expected)
+  expect_warning(
+    expect_equal(tail_dependence_score(sim, obs), expected),
+    "deprecated"
+  )
 })
 
-test_that("tail_dependence_score handles identical, absent simulated, and no-observed-exceedance cases", {
+test_that("upper_tail_conditional_exceedance handles identical, absent simulated, and no-observed-exceedance cases", {
   paired <- c(1, 2, 3, 7, 8, 4, 3, 2, 6, 7, 3, 2)
   const <- c(1, 1, 1, 1, 1, 1)
   var <- c(1, 2, 3, 4, 5, 6)
 
-  expect_equal(tail_dependence_score(paired, paired), 1)
-  expect_equal(tail_dependence_score(const, var), 0)
+  expect_equal(upper_tail_conditional_exceedance(paired, paired), 1)
+  expect_equal(upper_tail_conditional_exceedance(const, var), 0)
+  expect_warning(
+    expect_equal(tail_dependence_score(paired, paired), 1),
+    "deprecated"
+  )
   expect_error(
-    tail_dependence_score(const, const),
+    upper_tail_conditional_exceedance(const, const),
     "obs contains no exceedances above the observed 0.9 quantile threshold"
   )
 })
@@ -415,7 +426,7 @@ test_that("gof extended excludes threshold-gated C3 metrics when observed tails 
 
   out_ext <- gof(sim, obs, extended = TRUE)
 
-  expect_false("tail_dependence_score" %in% names(out_ext))
+  expect_false("upper_tail_conditional_exceedance" %in% names(out_ext))
   expect_false("extreme_event_ratio" %in% names(out_ext))
 })
 

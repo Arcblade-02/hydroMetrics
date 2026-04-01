@@ -318,15 +318,15 @@ metric_tail_dependence_score <- function(sim, obs) {
   inputs <- .hm_c2_validate_info_pair(
     sim,
     obs,
-    "tail_dependence_score",
+    "upper_tail_conditional_exceedance",
     min_length = 3L,
     require_equal_length = TRUE
   )
-  threshold <- .hm_c3_tail_threshold(inputs$obs, "tail_dependence_score")
+  threshold <- .hm_c3_tail_threshold(inputs$obs, "upper_tail_conditional_exceedance")
   obs_exceed <- inputs$obs > threshold
 
   if (!any(obs_exceed)) {
-    stop("tail_dependence_score is undefined because obs contains no exceedances above the observed 0.9 quantile threshold.", call. = FALSE)
+    stop("upper_tail_conditional_exceedance is undefined because obs contains no exceedances above the observed 0.9 quantile threshold.", call. = FALSE)
   }
 
   mean(inputs$sim[obs_exceed] > threshold)
@@ -334,10 +334,10 @@ metric_tail_dependence_score <- function(sim, obs) {
 
 core_metric_spec_tail_dependence_score <- function() {
   list(
-    id = "tail_dependence_score",
+    id = "upper_tail_conditional_exceedance",
     fun = metric_tail_dependence_score,
-    name = "Tail Dependence Score",
-    description = "Empirical upper-tail dependence proxy P(sim > q_obs,0.9 | obs > q_obs,0.9) using the observed type-7 0.9 quantile threshold.",
+    name = "Upper Tail Conditional Exceedance",
+    description = "Empirical upper-tail conditional exceedance P(sim > q_obs,0.9 | obs > q_obs,0.9) using the observed type-7 0.9 quantile threshold.",
     category = "agreement",
     perfect = 1,
     range = c(0, 1),
@@ -501,7 +501,7 @@ core_metric_spec_quantile_shift_index <- function() {
 .hm_extended_valindex_obs_scale <- function(obs) {
   scale <- mean(abs(obs))
   if (!is.finite(scale) || scale <= 0) {
-    stop("extended_valindex is undefined because mean(abs(obs)) must be positive.", call. = FALSE)
+    stop("composite_performance_index is undefined because mean(abs(obs)) must be positive.", call. = FALSE)
   }
 
   as.numeric(scale)
@@ -518,7 +518,7 @@ core_metric_spec_quantile_shift_index <- function() {
   as.numeric(value)
 }
 
-.hm_extended_valindex_component_scores <- function(sim, obs, metric_id = "extended_valindex") {
+.hm_extended_valindex_component_scores <- function(sim, obs, metric_id = "composite_performance_index") {
   obs_scale <- .hm_extended_valindex_obs_scale(obs)
   values <- c(
     nse = .hm_extended_valindex_require_finite(metric_nse(sim, obs), metric_id, "nse"),
@@ -544,19 +544,19 @@ core_metric_spec_quantile_shift_index <- function() {
 }
 
 metric_extended_valindex <- function(sim, obs) {
-  mean(.hm_extended_valindex_component_scores(sim, obs, metric_id = "extended_valindex"))
+  mean(.hm_extended_valindex_component_scores(sim, obs, metric_id = "composite_performance_index"))
 }
 
 core_metric_spec_extended_valindex <- function() {
   list(
-    id = "extended_valindex",
+    id = "composite_performance_index",
     fun = metric_extended_valindex,
-    name = "Extended Validation Index",
+    name = "Composite Performance Index",
     description = "Equal-weight composite of normalized NSE, KGE, RMSE, PBIAS, r, MAE, RSR, and VE component scores on the same aligned data.",
     category = "agreement",
     perfect = 1,
     range = c(0, 1),
-    references = "Package-defined composite validation index grounded in the valindex decision context plus the NSE, KGE, correlation, bias, error, and volumetric-efficiency literature already cited in the package references; the metric uses fixed equal weights and explicit bounded normalizations.",
+    references = "Package-defined composite performance index grounded in the valindex decision context plus the NSE, KGE, correlation, bias, error, and volumetric-efficiency literature already cited in the package references; the metric uses fixed equal weights and explicit bounded normalizations.",
     version_added = "0.2.2",
     tags = c("phase-3", "layer-c", "composite")
   )

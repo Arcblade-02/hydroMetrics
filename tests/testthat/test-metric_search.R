@@ -22,7 +22,9 @@ test_that("metric_search returns annotated metric metadata", {
     "nse",
     "hfb",
     "mutual_information",
-    "r"
+    "r",
+    "upper_tail_conditional_exceedance",
+    "composite_performance_index"
   ) %in% out$id))
 
   nse_row <- out[out$id == "nse", , drop = FALSE]
@@ -30,6 +32,8 @@ test_that("metric_search returns annotated metric metadata", {
   mi_row <- out[out$id == "mutual_information", , drop = FALSE]
   hfb_row <- out[out$id == "hfb", , drop = FALSE]
   r_row <- out[out$id == "r", , drop = FALSE]
+  tail_row <- out[out$id == "upper_tail_conditional_exceedance", , drop = FALSE]
+  composite_row <- out[out$id == "composite_performance_index", , drop = FALSE]
 
   expect_identical(nse_row$exported_wrappers[[1]], "NSeff")
   expect_true(nse_row$compatibility_export[[1]])
@@ -46,6 +50,18 @@ test_that("metric_search returns annotated metric metadata", {
 
   expect_identical(r_row$exported_wrappers[[1]], "r")
   expect_false(r_row$compatibility_export[[1]])
+
+  expect_identical(
+    tail_row$exported_wrappers[[1]],
+    "tail_dependence_score; upper_tail_conditional_exceedance"
+  )
+  expect_false(tail_row$compatibility_export[[1]])
+
+  expect_identical(
+    composite_row$exported_wrappers[[1]],
+    "composite_performance_index; extended_valindex"
+  )
+  expect_false(composite_row$compatibility_export[[1]])
 })
 
 test_that("metric_search filters by text, category, tags, preset, and export flags", {
@@ -72,12 +88,18 @@ test_that("metric_search filters by text, category, tags, preset, and export fla
   expect_true(all(nzchar(exported_out$exported_wrappers)))
   expect_true(all(c(
     "msle",
-    "mutual_information"
+    "mutual_information",
+    "upper_tail_conditional_exceedance",
+    "composite_performance_index"
   ) %in% exported_out$id))
 
   compat_out <- hydroMetrics::metric_search(compatibility = TRUE)
   expect_true(all(compat_out$compatibility_export))
   expect_true(all(c("nse", "mnse", "rnse", "wsnse", "hfb") %in% compat_out$id))
+  expect_false(any(c(
+    "upper_tail_conditional_exceedance",
+    "composite_performance_index"
+  ) %in% compat_out$id))
 
   deterministic_error_out <- hydroMetrics::metric_search(preset = "deterministic_error")
   expect_true(all(c(
@@ -92,6 +114,22 @@ test_that("metric_search filters by text, category, tags, preset, and export fla
     "rsr"
   ) %in% deterministic_error_out$id))
   expect_false("kge" %in% deterministic_error_out$id)
+})
+
+test_that("metric_search keeps canonical ids distinct from deprecated and orchestration-only aliases", {
+  out <- hydroMetrics::metric_search()
+
+  expect_false(any(c(
+    "rpearson",
+    "tail_dependence_score",
+    "extended_valindex"
+  ) %in% out$id))
+
+  tail_row <- out[out$id == "upper_tail_conditional_exceedance", , drop = FALSE]
+  composite_row <- out[out$id == "composite_performance_index", , drop = FALSE]
+
+  expect_match(tail_row$exported_wrappers[[1]], "tail_dependence_score")
+  expect_match(composite_row$exported_wrappers[[1]], "extended_valindex")
 })
 
 test_that("metric_search validates discovery filters conservatively", {

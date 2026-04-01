@@ -19,26 +19,36 @@ reproducible package checks.
   `hm_result` S3 objects
 - Compatibility exports retained at the `0.4.0` baseline: `HFB()`, `NSeff()`,
   `mNSeff()`, `rNSeff()`, `wsNSeff()`, and `mutual_information_score()`
-- Uppercase hydroGOF-style labels accepted by `gof()`/`ggof()` are
+- Deprecated exported forwarding wrappers retained temporarily at the `0.4.0`
+  baseline: `tail_dependence_score()` and `extended_valindex()`
+- Uppercase hydroGOF-style labels accepted by `gof()` / `ggof()` are
   orchestration method labels, not exported standalone functions: `NSE`,
   `KGE`, `MAE`, `RMSE`, `PBIAS`, `R2`, `NRMSE`, `mNSE`, `rNSE`, and `wsNSE`
-- Deprecated orchestration alias: `rPearson` resolves to canonical `r` during
-  method selection
+- Deprecated orchestration aliases remain accepted during method selection,
+  but they are not discovery-canonical metric ids: `rPearson` resolves to `r`,
+  `tail_dependence_score` resolves to
+  `upper_tail_conditional_exceedance`, and `extended_valindex` resolves to
+  `composite_performance_index`
+- Discovery APIs such as `metric_search()` and `metric_preset()` expose the
+  lowercase registry-backed canonical metric ids rather than compatibility or
+  deprecated aliases
 - Default `gof()` remains compat-oriented, while `gof(extended = TRUE)`
   exposes the broader automatically applicable deterministic surface
 - Seasonal, regime-sensitive, information-theory, and tail-sensitive metrics
   are available through documented exported wrappers and documented `gof()`
   method selection when their input contracts hold
+
 ## Lifecycle Policy
 
 - `stable`: exported orchestration entry points, documented exported helpers
   such as `metric_search()`, `metric_preset()`, `plot_hydrograph()`,
-  `plot_fdc()`, and `hm_result()`, and
-  documented exported metric wrappers other than the explicit compatibility
-  exports below
+  `plot_fdc()`, and `hm_result()`, and documented exported metric wrappers
+  other than the explicit compatibility and deprecated exports below
 - `compatibility`: `HFB()`, `NSeff()`, `mNSeff()`, `rNSeff()`, `wsNSeff()`,
   and `mutual_information_score()`
-- `deprecated`: no exported functions at the `0.4.0` baseline
+- `deprecated`: exported forwarding wrappers `tail_dependence_score()` and
+  `extended_valindex()`, plus orchestration-only deprecated aliases such as
+  `rPearson` / `rpearson` that continue to resolve to canonical metric ids
 - `experimental`: no exported functions at the `0.4.0` baseline
 
 ## Alias Policy
@@ -48,10 +58,16 @@ reproducible package checks.
   `NSeff() -> nse`, `mNSeff() -> mnse`, `rNSeff() -> rnse`,
   `wsNSeff() -> wsnse`, `HFB() -> hfb`, and
   `mutual_information_score() -> mutual_information()`
+- Exported deprecated forwarding wrappers remain callable temporarily, but
+  their names are no longer canonical registry metric ids:
+  `tail_dependence_score() -> upper_tail_conditional_exceedance()` and
+  `extended_valindex() -> composite_performance_index()`
 - Uppercase hydroGOF-style names accepted by `gof()` / `ggof()` are
   orchestration-only method labels and are not exported standalone functions
 - Deprecated `rPearson` requests are resolved to canonical `r` during
   orchestration-level method selection
+- Discovery-facing canonical ids remain the lowercase registry-backed metric
+  ids returned by `metric_search()` and `metric_preset()`
 
 ## Install
 
@@ -112,6 +128,11 @@ registry metadata. The first baseline can filter by:
 - whether a metric has an exported wrapper path
 - whether a metric is reached by a documented compatibility export
 
+Discovery results use lowercase registry-backed canonical metric ids. Exported
+compatibility wrappers and deprecated forwarding wrappers may appear in the
+`exported_wrappers` annotation for a canonical metric, but they are not
+returned as independent canonical ids.
+
 Current preset groups are:
 
 - `recommended`
@@ -138,7 +159,8 @@ does not replace the detailed metric reference vignette.
 ## Validation Notes
 
 - The default public baseline is the compat-10 `gof()` surface together with
-  the exported compatibility wrappers and documented exported metric wrappers.
+  the exported compatibility wrappers, deprecated forwarding wrappers, and
+  documented exported metric wrappers.
 - Stable return contracts are part of the public API: `gof()` returns a
   `hydro_metrics` numeric vector or matrix, `ggof()` returns a tabular
   `hydro_metrics_batch` object, `preproc()` returns `hydro_preproc`, and

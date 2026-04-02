@@ -18,10 +18,13 @@ snapshot from `dev`.
 ## 1. Version and Release Framing
 
 - [ ] `DESCRIPTION` version matches the intended release or milestone cut.
+- [ ] `DESCRIPTION` maintainer / `Authors@R` metadata are appropriate for the
+      intended release or submission context.
 - [ ] `NEWS.md` has a truthful top entry for the intended release line.
 - [ ] The release framing is honest about what is and is not being claimed.
-- [ ] If the cut is still part of the Phase 4 line, the wording does not imply
-      that all remaining Phase 4 work is complete unless that is actually true.
+- [ ] If the cut is still part of the current `0.4.x` line, the wording does
+      not imply broader completion or CRAN readiness beyond what is actually
+      supported.
 
 ## 2. Public API and Documentation Parity
 

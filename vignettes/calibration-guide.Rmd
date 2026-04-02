@@ -50,12 +50,12 @@ same compat-10 shortlist that powers the default `gof()` behavior:
 - `nrmse`
 
 The package currently exposes that curated shortlist through the internal
-registry helper `hydroMetrics:::list_metrics(recommended = TRUE)`. This helper
-is useful for package-development or audit workflows; the main public user path
-is simply to call `gof(sim, obs)` with no explicit `methods`.
+public discovery helpers rather than through internal registry access. The main
+public user path is simply to call `gof(sim, obs)` with no explicit `methods`,
+but `metric_search()` also makes the current recommended shortlist visible.
 
 ```{r}
-hydroMetrics:::list_metrics(recommended = TRUE)[, c("id", "name")]
+metric_search(preset = "recommended")[, c("id", "name")]
 ```
 
 ## Core Deterministic Calibration Metrics

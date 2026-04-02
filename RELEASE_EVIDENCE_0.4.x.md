@@ -1,37 +1,209 @@
 # 0.4.x Release Evidence Record
 
-This record completes the current `0.4.x` release-evidence baseline using the
-maintainer-facing template in [RELEASE_EVIDENCE_TEMPLATE.md](RELEASE_EVIDENCE_TEMPLATE.md).
+This record captures the validated post-Batch-7 baseline for the current
+`0.4.x` line.
 
-It records the evaluated candidate branch state. It is not, by itself, a CRAN
-submission approval.
+It supersedes the earlier baseline-establishment evidence framing by recording
+the current stabilized state after Batch 5, Batch 6, Batch 7, and the
+post-Batch-7 live backlog triage.
+
+It is a release-positioning and baseline-closure artifact. It is not, by
+itself, a CRAN submission approval.
 
 ## Release Candidate Summary
 
 - Intended version: `0.4.0` on the current `0.4.x` line
 - Release type:
-  - milestone framing / line-baseline evidence record
+  - post-stabilization baseline closure / release-positioning record
 - Branch: `dev`
-- Commit SHA: `62869838de3b516f82bacd47b0b95601b9e57912`
-- Review date: `2026-03-15`
-- Reviewer: `Codex-assisted maintainer review record`
+- Commit SHA:
+  - update at commit time
+- Review date:
+  - update at commit time
+- Reviewer:
+  - maintainer closure record
 
 ## Release Framing
 
 - Intended public framing:
-  - The current `0.4.x` line is a Phase 4 baseline-establishment and
-    disciplined post-baseline maintenance line.
-- What this cut explicitly claims:
-  - Workstream A is closed.
-  - Workstream B is materially mature for the phase.
-  - Workstreams C and D have materially mature lightweight baselines.
-  - Workstream E now has an operational review/evidence posture rather than
-    only baseline governance notes.
-- What this cut explicitly does **not** claim:
+  - The current `0.4.x` line is a stabilized, post-Batch-7 baseline on the
+    active `dev` branch.
+- What this record explicitly claims:
+  - Batch 5 closure work is complete.
+  - Batch 6 wrapper / compatibility / deprecated / discovery contract
+    consolidation is complete.
+  - Batch 7 vignette contract alignment is complete.
+  - A live post-Batch-7 backlog triage was performed against the current repo
+    state.
+  - That triage found no meaningful immediate cleanup batch remaining.
+  - Remaining items are explicitly treated as deferred rather than active
+    stabilization backlog.
+- What this record explicitly does **not** claim:
   - CRAN submission readiness
   - pkgdown/site readiness
   - reverse-dependency review completion
-  - that every possible post-Phase-4 refinement is complete
+  - that all future wrapper or compatibility strategy decisions are complete
+  - that broader post-closure roadmap work has already been executed
+
+## Stabilization Baseline Objective
+
+The stabilization objective pursued on the current `0.4.x` line was to move the
+package from a post-Phase-4 baseline-establishment state into a cleaner,
+explicitly governed, contract-aligned, and validated working baseline.
+
+This stabilization lane focused on public-surface correctness and consistency,
+not on formula redesign or broad architectural change.
+
+The target outcome was:
+
+- removal of stale or duplicate alias residue
+- synchronization of docs, governance language, discovery exposure, and tests
+- alignment of package-facing vignettes to the current canonical /
+  compatibility / deprecated contract
+- explicit live reassessment of whether any meaningful cleanup backlog remained
+
+## Batch Completion Summary
+
+### Batch 5
+
+Batch 5 closed the stale internal alias residue and discovery-contract cleanup
+lane.
+
+Completed in Batch 5:
+
+- stale internal `rpearson` residue removed
+- compatibility / governance docs synchronized afterward
+- getting-started vignette version drift fixed
+- metric-reference vignette aligned to public discovery APIs
+- `metric_search` / `metric_preset` tests re-baselined to the actual package
+  contract
+- validated package state restored on the then-current baseline
+
+### Batch 6
+
+Batch 6 closed the wrapper / compatibility / deprecated / discovery contract
+alignment lane.
+
+Completed in Batch 6:
+
+- `README.md` updated to reflect the actual wrapper and lifecycle surface
+- `GOVERNANCE.md` updated to reflect current lifecycle classification
+- `COMPATIBILITY_TRACKER.md` tightened as a compatibility ledger rather than a
+  canonical discovery source
+- explicit distinction recorded between:
+  - stable exports
+  - compatibility exports
+  - deprecated exported forwarding wrappers
+  - orchestration-only aliases
+  - discovery-canonical metric ids
+- `test-metric_search.R` updated to lock canonical-vs-compatibility-vs-
+  deprecated discovery behavior
+
+### Batch 7
+
+Batch 7 closed the remaining vignette contract-alignment lane.
+
+Completed in Batch 7:
+
+- `vignettes/calibration-guide.Rmd` aligned to canonical current metric names
+- `vignettes/metric-reference.Rmd` aligned to canonical current metric names
+- deprecated forwarding wrappers retained only as transition notes in vignette
+  teaching material
+- package-facing vignette language now matches the Batch 6 public contract
+
+## Post-Batch-7 Live Backlog Triage
+
+A fresh repo-wide reassessment was performed after Batch 7 against the live
+current package state.
+
+The triage reviewed:
+
+- exported wrappers
+- compatibility exports
+- deprecated forwarding wrappers
+- orchestration-only aliases
+- discovery-visible canonical ids
+- `README.md`
+- `GOVERNANCE.md`
+- `COMPATIBILITY_TRACKER.md`
+- `DECISIONS.md`
+- package-facing vignettes
+- man pages
+- relevant public-surface and compatibility tests
+
+### Triage conclusion
+
+The post-Batch-7 live reassessment found:
+
+- no meaningful immediate cleanup batch remaining
+- no active public-contract mismatch requiring another isolated stabilization
+  batch
+- remaining items are defer-only rather than active blockers
+
+This means the correct next move is formal baseline closure / release
+positioning rather than an invented Batch 8.
+
+## Current Contract Classification
+
+### Stable
+
+The following are treated as stable on the current `0.4.x` line:
+
+- orchestration entry points:
+  - `gof()`
+  - `ggof()`
+  - `preproc()`
+  - `valindex()`
+- documented exported helpers:
+  - `metric_search()`
+  - `metric_preset()`
+  - `plot_hydrograph()`
+  - `plot_fdc()`
+  - `hm_result()`
+- documented exported metric wrappers other than the explicit compatibility and
+  deprecated retained surfaces
+- lowercase registry-backed canonical metric ids exposed through discovery
+
+### Compatibility-only
+
+The following remain compatibility-oriented retained exports:
+
+- `HFB()`
+- `NSeff()`
+- `mNSeff()`
+- `rNSeff()`
+- `wsNSeff()`
+- `mutual_information_score()`
+
+Uppercase hydroGOF-style names such as `NSE`, `KGE`, `RMSE`, `R2`, `NRMSE`, and
+`PBIAS` remain accepted as orchestration method labels through `gof()` /
+`ggof()`, not as exported standalone functions.
+
+### Deprecated but retained
+
+The following remain intentionally retained transitional surfaces:
+
+- exported deprecated forwarding wrappers:
+  - `tail_dependence_score()`
+  - `extended_valindex()`
+- orchestration-only deprecated aliases:
+  - `rPearson` / `rpearson`
+
+These resolve to canonical current metric ids and are not treated as separate
+discovery-canonical metrics.
+
+### Explicitly deferred
+
+The following are explicitly deferred beyond the current stabilization closure:
+
+- any `ggof()` redesign beyond the current tabular contract
+- export-surface redesign
+- wrapper removal or lifecycle escalation beyond the current documented state
+- formula changes
+- discovery redesign
+- broad test reorganization or renaming
+- historical governance-file cleanup beyond active contract clarity
+- general repo housekeeping not tied to current public-contract risk
 
 ## Version and NEWS Sanity
 
@@ -39,42 +211,39 @@ submission approval.
 - `NEWS.md` top entry checked: yes
 - Versioned README/package-facing references checked if touched: yes
 - Notes:
-  - `DESCRIPTION` reports version `0.4.0`.
-  - `NEWS.md` frames `0.4.0` as a Phase 4 baseline-establishment milestone,
-    not as Phase 4 completion.
-  - Current README install examples and helper references are aligned to the
-    `0.4.0` line and current helper surface.
+  - `DESCRIPTION` continues to report version `0.4.0`.
+  - `NEWS.md` remains consistent with the current `0.4.x` line framing.
+  - README, governance docs, vignettes, and discovery-facing documentation now
+    reflect the current public surface more accurately than the earlier
+    baseline-establishment state.
 
 ## Public API and Behavior Summary
 
-- Public API changed: no
-- Behavior changed: no
-- If yes, summarize exactly:
-  - Not applicable.
-- If no, confirm the cut is docs/process-only or non-boundary-safe:
-  - The evaluated candidate state reflects the current documented public API
-    and behavior without a new API or runtime change in this evidence step.
+- Public API changed during the stabilization lane: no broad redesign
+- Behavior changed during the stabilization lane: no formula redesign or
+  exported-surface redesign
+- What changed:
+  - stale alias residue and contract ambiguity were removed or explicitly
+    governed
+  - package-facing documentation, governance language, discovery classification,
+    and vignette naming were aligned to the current runtime surface
+- Boundary statement:
+  - the current validated candidate reflects a cleaner expression of the
+    existing public contract rather than a new public API phase
 
 ## Validation Record
 
-Record the exact commands actually used for the candidate state.
+Record the exact commands actually used for the stabilized candidate state.
 
-- `devtools::document()`:
-  - `Rscript -e "options(repos=c(CRAN='https://cloud.r-project.org')); devtools::document()"`
+- `devtools::build_vignettes()`:
+  - executed
   - Result: passed
-- `devtools::load_all('.')`:
-  - `Rscript -e "options(repos=c(CRAN='https://cloud.r-project.org')); devtools::load_all('.'); cat('load_all_ok\n')"`
-  - Result: passed
-- Focused `devtools::test(filter = ...)`:
-  - `Rscript -e "options(repos=c(CRAN='https://cloud.r-project.org')); devtools::test(filter='api|validation|benchmark|metric_search|preset|plot|governance|gof|preproc|structural')"`
-  - Result: passed with `698` passes and `1` expected source-tree skip
-- Full `devtools::check(document = FALSE, error_on = "warning")`:
-  - `Rscript -e "options(repos=c(CRAN='https://cloud.r-project.org')); devtools::check(document = FALSE, error_on='warning')"`
+- `devtools::test()`:
+  - executed
+  - Result: passed with `1290` passes and `1` expected source-tree skip
+- `devtools::check(document = FALSE, error_on = "warning")`:
+  - executed
   - Result: passed with `0 errors`, `0 warnings`, `0 notes`
-- Any separate `--as-cran` or CRAN-style preflight:
-  - No separate additional path in this evidence record.
-  - The recorded `devtools::check()` run executed with `--no-manual --as-cran`
-    in the validated environment.
 
 ## Cross-Environment / Preflight Notes
 
@@ -82,7 +251,7 @@ Record only what was actually checked.
 
 | Environment | Check path | Result | Notes |
 |---|---|---|---|
-| Local Windows | `devtools::check(document = FALSE, error_on = "warning")` | pass | Executed with `--as-cran`; initial in-sandbox wrapper attempt hit the known Windows pipe restriction, then passed outside the sandbox. |
+| Local Windows | `devtools::check(document = FALSE, error_on = "warning")` | pass | Executed successfully with `0 errors`, `0 warnings`, `0 notes` on the validated post-Batch-7 state. |
 | Local Linux / WSL |  |  |  |
 | Local macOS |  |  |  |
 | CI release |  |  |  |
@@ -92,82 +261,73 @@ Record only what was actually checked.
 If an environment was not checked, leave it blank rather than inferring a
 result.
 
-## Validation / Benchmark Artifact Review
-
-- `inst/validation/` reviewed for current-state truthfulness: yes
-- `inst/benchmarks/` reviewed for current baseline vs historical labeling:
-  yes
-- Notes:
-  - Validation inventory and summary are coherent with the current hydroGOF
-    overlap classifications and the remaining validation/reference narrative.
-  - The benchmark area distinguishes the active Workstream B baseline from the
-    older historical Phase 2 material.
-
 ## Discovery / Plotting / Governance Alignment
 
 - Discovery docs align with `metric_search()` / `metric_preset()`: yes
 - Plotting docs align with `plot_hydrograph()` / `plot_fdc()`: yes
 - Governance/readiness docs align with current public surface: yes
+- Vignette-facing contract aligns with current public surface: yes
 - Notes:
-  - `README.md`, `DECISIONS.md`, and `GOVERNANCE.md` reflect the current stable
-    helper surface on the `0.4.x` line.
-  - `ggof()` remains documented as tabular and non-plotting.
+  - top-level docs, governance docs, compatibility ledger language, vignettes,
+    man pages, and tests now consistently describe the current stable /
+    compatibility / deprecated / discovery split
+  - `ggof()` remains documented and tested as tabular and non-plotting
 
 ## Optional Dependency Review
 
 - `Suggests` behavior reviewed for examples/vignettes/helpers: yes
 - Any suggested package now acting like a hard dependency: no
 - Notes:
-  - `ggplot2`, `hydroGOF`, `xts`, and `zoo` remain optional.
-  - Current helper and validation paths document graceful optional-dependency
-    behavior rather than treating suggested packages as silent hard runtime
-    requirements.
+  - suggested packages continue to behave as optional rather than silent hard
+    runtime dependencies
+  - current validated package-facing behavior remains compatible with the
+    documented optional-dependency model
 
 ## Source-Package Hygiene Review
 
 - `.Rbuildignore` reviewed for repo-only artifacts: yes
 - Packaged contents look intentional for the candidate cut: yes
 - Notes:
-  - Repo-only governance, readiness, agent, and release-process documents
-    remain excluded from the source tarball.
-  - Packaged vignettes and `inst/validation/` contents remain intentional for
-    the current line.
+  - repo-only governance and process documents remain excluded from the source
+    tarball where intended
+  - packaged vignette contents remain intentional for the current line
+  - transient `.Rcheck` build detritus was removed during stabilization work and
+    is not treated as part of the source baseline
 
 ## Known Gaps and Accepted Risks
 
 - Remaining non-blocking gaps:
-  - Maintainer identity in `DESCRIPTION` still uses a handle-style display
-    name and would need explicit confirmation before serious CRAN submission
-    work.
-  - No broader multi-environment `0.4.x` submission-oriented preflight is
-    recorded in this evidence file beyond the local Windows `--as-cran` path.
-  - Workstream B intentional-divergence cases are classified and documented,
-    but not all have deeper empirical follow-up beyond classification-level
-    closure.
+  - maintainer identity in `DESCRIPTION` still needs explicit confirmation
+    before any serious CRAN-submission push
+  - broader multi-environment release or CRAN-oriented preflight is not
+    recorded here beyond the validated local path
+  - long-term wrapper / compatibility strategy is still a future-phase topic,
+    not part of this closure record
 - Any explicitly accepted risk for this cut:
-  - The line is treated as operationally reviewable and phase-closeable
-    without claiming CRAN submission readiness.
-- Any blocker that should stop the cut:
-  - None for a `0.4.x` line evidence baseline or milestone-maintenance cut.
-  - Maintainer identity remains a blocker only for a serious CRAN submission
-    attempt, not for this evidence record.
+  - the current line is treated as baseline-closed and release-positioned
+    without claiming CRAN submission readiness
+- Any blocker that should stop this baseline closure:
+  - none for the current stabilization-closure and release-positioning purpose
 
 ## Final Recommendation
 
 - Recommendation:
-  - proceed with caveats
+  - proceed with baseline closure / release positioning
 - Rationale:
-  - The current `0.4.x` branch state is strong enough to support a committed
-    release-evidence baseline and Phase 4 closure review.
-  - The remaining gaps are submission-oriented or optional follow-up items
-    rather than blockers to the current phase-close baseline.
+  - Batch 5, Batch 6, and Batch 7 closed the meaningful low-risk stabilization
+    lane
+  - the live post-Batch-7 backlog triage found no actionable immediate cleanup
+    batch remaining
+  - remaining items are explicitly defer-only rather than blockers
 
 ## Minimal Sign-Off Record
 
 - Reviewer sign-off:
-  - `0.4.x` release evidence baseline recorded from current validated `dev`
-    branch state.
+  - post-Batch-7 stabilization baseline closed from the current validated `dev`
+    branch state
 - Follow-up task(s), if any:
-  - If CRAN submission work is opened later, replace or supplement this record
-    with a submission-oriented preflight record that includes confirmed
-    maintainer identity metadata and broader environment evidence.
+  - if release packaging is opened next, use this record as the stabilized
+    baseline reference
+  - if CRAN submission work is opened later, supplement this record with a
+    submission-oriented preflight that includes confirmed maintainer identity
+    metadata and broader environment evidence

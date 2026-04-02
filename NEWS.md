@@ -2,8 +2,8 @@
 
 ## 0.4.0
 
-- Frame the current `dev` branch state as a Phase 4 baseline-establishment
-  milestone rather than as Phase 4 completion.
+- Record the current `dev` branch state as the stabilized post-Batch-7
+  baseline-closure / release-positioning milestone for the `0.4.x` line.
 - Carry forward the closed Workstream A API-governance state, including the
   stabilized public API boundary, return-object contract, lifecycle policy,
   alias policy, and documented stable warning/error behavior.

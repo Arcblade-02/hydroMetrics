@@ -1,8 +1,9 @@
 # Contributing to hydroMetrics
 
-`hydroMetrics` has completed its intended Phase 4 baseline-establishment work.
-Contributions should preserve package-boundary discipline, scientific
-traceability, and small-scope reviewability.
+`hydroMetrics` has completed its intended `0.4.x` stabilization and
+post-Batch-7 baseline-closure work. Contributions should preserve
+package-boundary discipline, scientific traceability, and small-scope
+reviewability.
 
 ## Working Branch and Change Scope
 

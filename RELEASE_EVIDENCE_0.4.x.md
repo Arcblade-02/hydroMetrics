@@ -16,12 +16,15 @@ itself, a CRAN submission approval.
 - Release type:
   - post-stabilization baseline closure / release-positioning record
 - Branch: `dev`
+- Branch position at review time:
+  - `dev`, `origin/dev`, and `origin/main` all point to commit
+    `440359b1104617a73f2b453164edc55a254ae899`
 - Commit SHA:
-  - update at commit time
+  - current reviewed `HEAD`: `440359b1104617a73f2b453164edc55a254ae899`
 - Review date:
-  - update at commit time
+  - `2026-04-02`
 - Reviewer:
-  - maintainer closure record
+  - maintainer final-mile completion pass
 
 ## Release Framing
 
@@ -318,6 +321,8 @@ result.
     lane
   - the live post-Batch-7 backlog triage found no actionable immediate cleanup
     batch remaining
+  - `dev`, `origin/dev`, and `origin/main` are aligned at the reviewed commit,
+    so no additional branch-sync work remains for promotion readiness
   - remaining items are explicitly defer-only rather than blockers
 
 ## Minimal Sign-Off Record

@@ -2,8 +2,8 @@ Package: hydroMetrics
 Title: Hydrological Model Evaluation Metrics
 Version: 0.4.0
 Authors@R:
-    person("Arcblade-02", email = "pritamparida432@gmail.com", role = c("aut", "cre"))
-Maintainer: Arcblade-02 <pritamparida432@gmail.com>
+    person(given = "Pritam", family = "", email = "pritamparida432@gmail.com", role = c("aut", "cre"))
+Maintainer: Pritam <pritamparida432@gmail.com>
 Description: Hydrological model evaluation metrics for
     compatibility-oriented default workflows, extended deterministic
     diagnostics, and regime-sensitive analysis. The package also provides

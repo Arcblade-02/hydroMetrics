@@ -18,9 +18,9 @@ itself, a CRAN submission approval.
 - Branch: `dev`
 - Branch position at review time:
   - `dev`, `origin/dev`, and `origin/main` all point to commit
-    `440359b1104617a73f2b453164edc55a254ae899`
+    `e9d0b9369c13fd8fa6fa04a4a34c56c8fff2deb7`
 - Commit SHA:
-  - current reviewed `HEAD`: `440359b1104617a73f2b453164edc55a254ae899`
+  - current reviewed `HEAD`: `e9d0b9369c13fd8fa6fa04a4a34c56c8fff2deb7`
 - Review date:
   - `2026-04-02`
 - Reviewer:
@@ -325,6 +325,42 @@ result.
     so no additional branch-sync work remains for promotion readiness
   - remaining items are explicitly defer-only rather than blockers
 
+## Phase-Boundary Decision and Next-Phase Definition
+
+- Finished phase:
+  - the `0.4.x` stabilization / post-Batch-7 baseline-closure phase has ended
+- What is finished:
+  - Batch 5, Batch 6, and Batch 7
+  - post-Batch-7 live backlog triage
+  - formal baseline closure / release-positioning
+  - final-mile release-readiness documentation pass
+  - branch synchronization of `dev` and `main`
+- What was intentionally not part of the finished phase:
+  - formula redesign
+  - runtime redesign
+  - wrapper removal or lifecycle escalation
+  - broad CRAN submission work
+  - long-term wrapper / compatibility strategy decisions beyond the current
+    `0.4.x` line
+- Next phase:
+  - `0.4.x` CRAN-Oriented Preparation Phase
+- What the next phase must not reopen:
+  - Batch 5, Batch 6, or Batch 7
+  - backlog triage or baseline closure work
+  - wrapper / compatibility redesign for `0.4.x`
+  - formula or export changes unless a new live contradiction is proven
+- Wrapper / compatibility policy status:
+  - current `0.4.x` wrapper / compatibility policy remains no-change
+- Wrapper / compatibility rationale:
+  - `README.md`, `GOVERNANCE.md`, `COMPATIBILITY_TRACKER.md`, and
+    `DECISIONS.md` continue to describe the same stable / compatibility /
+    deprecated split
+  - `NAMESPACE` continues to export the retained compatibility and deprecated
+    wrappers exactly as documented
+  - tests continue to cover retained compatibility aliases and deprecated
+    resolution behavior
+  - no new duplicate canonical ids or undocumented wrapper drift were found
+
 ## Minimal Sign-Off Record
 
 - Reviewer sign-off:
@@ -336,3 +372,33 @@ result.
   - if CRAN submission work is opened later, supplement this record with a
     submission-oriented preflight that includes confirmed maintainer identity
     metadata and broader environment evidence
+
+## Submission-Campaign Gate Update
+
+This update records the final bounded blocker-resolution pass performed after
+the `0.4.x` CRAN-oriented preparation phase was opened.
+
+- Working-candidate basis:
+  - current synced baseline derived from reviewed `dev` / `main` commit
+    `e9d0b9369c13fd8fa6fa04a4a34c56c8fff2deb7`
+- Confirmed maintainer metadata applied:
+  - `Maintainer: Pritam <pritamparida432@gmail.com>`
+  - `Authors@R: person(given = "Pritam", family = "", email = "pritamparida432@gmail.com", role = c("aut", "cre"))`
+- Submission-facing optics cleanup applied:
+  - `vignettes/calibration-guide.Rmd` now demonstrates the public helper path
+    `metric_search(preset = "recommended")` instead of internal
+    `hydroMetrics:::` access
+- Rerun preflight on the metadata-updated frozen baseline:
+  - `devtools::build_vignettes()`: passed
+  - `devtools::test()`: passed with `1290` passes, `1` expected skip,
+    `0` failures, `0` warnings
+  - `devtools::check(document = FALSE, error_on = "warning")`: passed with
+    `0 errors`, `0 warnings`, `0 notes`
+  - `devtools::check()` executed local `R CMD check` with `--as-cran`
+- Environment note:
+  - the in-sandbox `build_vignettes()` attempt again hit the known Windows
+    `processx` pipe-permission restriction and was rerun successfully outside
+    the sandbox; this was treated as an environment limitation rather than a
+    package defect
+- Submission-campaign gate decision:
+  - ready to open a true submission campaign

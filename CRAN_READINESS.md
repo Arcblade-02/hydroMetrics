@@ -1,9 +1,45 @@
-# 0.4.x CRAN / Readiness Baseline
+# 0.4.x CRAN / Readiness Baseline and Transition Plan
 
 This document defines the current narrow readiness baseline for the `0.4.x`
 line. It is not a submission claim. It records what is already in good shape,
 what remains non-blocking, and what still needs deliberate review before any
 serious CRAN submission push.
+
+## Current Readiness Level
+
+- The current `0.4.x` line is a stabilized, release-positioned, locally
+  validated baseline.
+- The confirmed CRAN-facing maintainer record has now been applied in
+  `DESCRIPTION`.
+- On the current local evidence, the repo is ready to open a true submission
+  campaign.
+
+## Recommended Next Milestone
+
+- The next milestone should be the `0.4.x` CRAN-oriented preparation phase.
+- This is not a new stabilization batch.
+- It is not a wrapper / compatibility strategy phase.
+- It is not blind CRAN submission work.
+- Within this phase, the next realistic operational milestone is a
+  `0.4.x`-specific CRAN preflight campaign rather than an immediate submission
+  attempt.
+
+## Evidence Already Available
+
+- `dev` and `main` are synchronized at the promoted finished baseline.
+- The current `0.4.x` release evidence record already captures the stabilized
+  baseline closure and release positioning.
+- Green validated baseline evidence is already recorded for vignettes, tests,
+  and package checks on the maintained local path.
+- Governance, lifecycle, compatibility, and return-contract policy documents
+  are already published and aligned.
+- A lightweight `0.4.x` release review checklist already exists.
+- Validation and benchmark artifacts for the current public package surface are
+  already shipped.
+- A current local `0.4.x` CRAN-style preflight has now been executed against
+  the frozen baseline and completed cleanly.
+- The maintainer metadata gate has now been resolved with the confirmed
+  CRAN-facing maintainer record `Pritam <pritamparida432@gmail.com>`.
 
 ## Current Strengths
 
@@ -40,6 +76,52 @@ serious CRAN submission push.
   submission-oriented operationalization remains outside the current baseline.
 - The package has lightweight plotting helpers, but plotting scope remains
   deliberately narrow and does not yet attempt a broader visualization layer.
+
+## Current Preparation-Phase Findings
+
+The current `0.4.x` line remains frozen for CRAN-oriented preparation.
+
+- No formula, runtime, export, or compatibility-policy blocker was identified
+  on the current baseline.
+- A current local CRAN-style preflight has now been completed cleanly after the
+  confirmed maintainer-metadata update.
+- No blocker remains on the local submission-campaign gate.
+
+## Current 0.4.x CRAN-Style Preflight Result
+
+- `devtools::build_vignettes()`: passed after the `DESCRIPTION` maintainer
+  metadata update
+- `devtools::test()`: passed with `1290` passes, `0` failures, `0` warnings,
+  and `1` expected skip
+- `devtools::check(document = FALSE, error_on = "warning")`: passed with
+  `0 errors`, `0 warnings`, `0 notes`
+- `devtools::check()` executed `R CMD check` with `--as-cran` on the current
+  local Windows baseline
+- The in-sandbox `build_vignettes()` attempt hit the known Windows
+  `processx` pipe-permission limitation, so the preflight was rerun
+  successfully outside the sandbox; this is treated as an environment
+  restriction rather than a package defect
+
+## Gap Classification
+
+### Metadata / Prose Only
+
+- Submission-facing prose should still receive one deliberate CRAN-tone review
+  during the campaign, even though the current package-facing docs
+  are already materially aligned.
+
+### Evidence Generation Only
+
+- Installed/shipped-content review should be recorded explicitly for the
+  intended `0.4.x` cut rather than inferred only from prior stabilization
+  checks.
+- Broader multi-environment evidence should remain optional until a real
+  submission campaign is opened, but it is not yet recorded for the current
+  baseline.
+
+### Genuine Blockers Before A Real Submission Campaign
+
+- none on the current local baseline
 
 ## Likely Pre-Submission Review Areas
 
@@ -89,7 +171,8 @@ serious CRAN submission push.
 
 ## Not Yet Claimed
 
-- This document does not claim current CRAN submission readiness.
+- This document now supports opening a true submission campaign from the
+  current local baseline.
 - It does not claim that the current `0.4.x` line has completed a broader
   submission-oriented multi-environment CRAN campaign beyond the recorded local
   preflight evidence.
@@ -98,10 +181,31 @@ serious CRAN submission push.
 - It does not itself constitute publication approval or CRAN submission
   readiness for the `0.4.x` line.
 
-## Next Logical Readiness Step
+## Remaining Next-Phase Work
 
-The next narrow readiness step should be a `0.4.x`-specific CRAN preflight
-pass: rerun a deliberate CRAN-style check workflow against the current branch,
-review submission-facing metadata and prose, use
-[RELEASE_REVIEW.md](RELEASE_REVIEW.md) as the maintainer checklist, and record
-any remaining submission blockers explicitly.
+- review `DESCRIPTION`, maintainer metadata, and package-facing prose for
+  submission-facing tone and completeness
+- review examples, vignettes, and optional-dependency behavior with CRAN
+  runtime constraints in mind
+- reconfirm shipped package contents and installed-file footprint for the
+  intended `0.4.x` cut
+- capture broader multi-environment evidence only if real submission work is
+  actually opened
+
+## Go / No-Go Conditions For The Next Phase
+
+- `GO`: open the `0.4.x` CRAN-oriented preparation phase only if the current
+  baseline remains frozen apart from submission-facing metadata, prose, and
+  source-package/readiness hygiene work.
+- `NO-GO`: do not treat this phase as the place to reopen stabilization,
+  wrapper / compatibility redesign, formula changes, export changes, or broad
+  feature development.
+
+## Go / No-Go Conditions For A Real Submission Campaign
+
+- `GO`: the current local baseline is ready to open a real submission campaign,
+  with the branch kept otherwise frozen apart from submission-facing
+  metadata/prose and packaging-hygiene adjustments.
+- `NO-GO`: do not use the submission campaign to reopen finished stabilization
+  work, wrapper-policy work, formula changes, export changes, or broad feature
+  development.

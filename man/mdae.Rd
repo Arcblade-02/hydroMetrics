@@ -23,6 +23,8 @@ multi-series inputs.
 }
 \description{
 Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric \code{"mdae"}.
+It returns \code{median(abs(sim - obs))}, a robust absolute-error summary on
+aligned pairs.
 }
 \examples{
 mdae(c(1, 2, 4), c(1, 3, 2))

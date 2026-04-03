@@ -41,3 +41,21 @@ test_that("targeted provenance-sensitive metrics carry explicit qualification te
   expect_match(refs$references[refs$id == "mutual_information_score"], "should not be treated as an independent canonical id")
   expect_match(refs$references[refs$id == "mnse"], "Legates & McCabe")
 })
+
+test_that("eight non-runtime provenance targets use strengthened definition framing", {
+  refs <- hydroMetrics:::list_metrics()
+  refs <- refs[match(
+    c("cdf_rmse", "evs", "maxae", "mdae", "rae", "rmsle", "rrse", "sae"),
+    refs$id
+  ), c("id", "references")]
+
+  expect_false(any(grepl("scikit-learn|github.com/Arcblade-02/hydroMetrics/blob/dev/inst/REFERENCES.md|software convention", refs$references, ignore.case = TRUE)))
+  expect_match(refs$references[refs$id == "cdf_rmse"], "pooled support grid")
+  expect_match(refs$references[refs$id == "evs"], "sample-variance")
+  expect_match(refs$references[refs$id == "maxae"], "worst-case absolute-error")
+  expect_match(refs$references[refs$id == "mdae"], "robust absolute-error")
+  expect_match(refs$references[refs$id == "rae"], "mean\\(obs\\)")
+  expect_match(refs$references[refs$id == "rmsle"], "square-root companion")
+  expect_match(refs$references[refs$id == "rrse"], "mean\\(obs\\)")
+  expect_match(refs$references[refs$id == "sae"], "sum\\(abs\\(sim - obs\\)\\)")
+})

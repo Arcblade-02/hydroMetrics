@@ -23,6 +23,8 @@ multi-series inputs.
 }
 \description{
 Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric \code{"rmsle"}.
+It returns the square root of the package's retained \code{msle} convention on
+non-negative inputs.
 }
 \examples{
 rmsle(c(1.2, 1.8, 3.4), c(1, 2, 3))

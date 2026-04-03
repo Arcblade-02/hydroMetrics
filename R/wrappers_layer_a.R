@@ -1,6 +1,8 @@
 #' Evaluate the median absolute error wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric `"mdae"`.
+#' It returns `median(abs(sim - obs))`, a robust absolute-error summary on
+#' aligned pairs.
 #'
 #' @inheritParams gof
 #'
@@ -17,6 +19,8 @@ mdae <- function(sim, obs, na.rm = NULL, ...) {
 #' Evaluate the maximum absolute error wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric `"maxae"`.
+#' It returns `max(abs(sim - obs))`, a worst-case absolute-error summary on
+#' aligned pairs.
 #'
 #' @inheritParams gof
 #'
@@ -161,6 +165,8 @@ msle <- function(sim, obs, na.rm = NULL, ...) {
 #' Evaluate the root mean squared logarithmic error wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric `"rmsle"`.
+#' It returns the square root of the package's retained `msle` convention on
+#' non-negative inputs.
 #'
 #' @inheritParams gof
 #'

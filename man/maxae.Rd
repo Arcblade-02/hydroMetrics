@@ -23,6 +23,8 @@ multi-series inputs.
 }
 \description{
 Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric \code{"maxae"}.
+It returns \code{max(abs(sim - obs))}, a worst-case absolute-error summary on
+aligned pairs.
 }
 \examples{
 maxae(c(1, 2, 4), c(1, 3, 2))

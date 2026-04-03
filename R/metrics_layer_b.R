@@ -94,7 +94,7 @@ core_metric_spec_cdf_rmse <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Empirical-distribution comparison grounded in Smirnov-type EDF distances; package metric uses RMSE over the pooled support grid.",
+    references = "Two-sample empirical-distribution comparison context from Nikiforov (1994) and related EDF distance literature; package metric reports the RMSE of empirical CDF gaps over the ascending pooled support grid.",
     version_added = "0.2.2",
     tags = c("phase-3", "layer-b", "batch-b1")
   )

@@ -51,7 +51,8 @@ serious CRAN submission push.
 - Public API documentation, lifecycle policy, alias policy, and return-object
   contract are aligned to the shipped `0.4.0` package surface.
 - Scientific reference metadata has been cleaned, placeholder citation text
-  has been removed, and targeted reference checks are in place.
+  has been removed, and targeted reference checks plus explicit
+  project-defined/deferred labeling are in place.
 - Workstream B validation artifacts are materially stronger than the earlier
   baseline: hydroGOF-overlap classification is closed at the classification
   level, and the remaining validation/reference narrative is exercised and
@@ -109,6 +110,9 @@ The current `0.4.x` line remains frozen for CRAN-oriented preparation.
 - Submission-facing prose should still receive one deliberate CRAN-tone review
   during the campaign, even though the current package-facing docs
   are already materially aligned.
+- CRAN-facing scientific claims should stay limited to the remediated
+  literature-backed set; explicitly package-defined or deferred metrics should
+  remain labeled that way in package-facing prose.
 
 ### Evidence Generation Only
 

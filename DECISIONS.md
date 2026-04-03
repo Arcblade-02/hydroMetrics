@@ -54,7 +54,7 @@ two duplicated historical `D-030` headings.
 #### D-009: NRMSE Normalization
 - Decision: `NRMSE` is defined as `sqrt(mean((sim - obs)^2)) / mean(obs)`.
 - Status: Accepted
-- Notes: When `mean(obs) == 0`, evaluation fails with an explicit divide-by-zero style error.
+- Notes: When `mean(obs) == 0`, evaluation fails with an explicit divide-by-zero style error. Package-facing documentation must describe this as the retained mean-normalized NRMSE variant because published NRMSE normalizations are not universal.
 
 #### D-010: R2 Definition Confirmation
 - Decision: `R2` is defined as `cor(sim, obs)^2` using Pearson correlation.
@@ -69,7 +69,7 @@ two duplicated historical `D-030` headings.
 #### D-012: NRMSE Variants
 - Decision: Keep two NRMSE variants: `nrmse = RMSE/mean(obs)` and `nrmse_sd = RMSE/sd(obs)`.
 - Status: Accepted
-- Notes: `nrmse` and `nrmse_sd` are distinct metrics and both are retained for compatibility.
+- Notes: `nrmse` and `nrmse_sd` are distinct metrics and both are retained for compatibility. CRAN-facing prose must name the exact normalization rather than implying a single universal NRMSE definition.
 
 #### D-013: Zero-Observation Percentage Metrics Policy
 - Decision: `mape` and `mpe` fail when observed values contain zero.
@@ -106,12 +106,12 @@ two duplicated historical `D-030` headings.
 #### D-023: Batch 8B pfactor/rfactor Definitions
 - Decision: `rfactor` is defined as `mean(abs(sim - obs)) / mean(abs(obs))` and `pfactor` is defined as the proportion where `abs(sim - obs) <= tol * abs(obs)`, with `obs == 0` handled by absolute threshold `tol`.
 - Status: Accepted
-- Notes: `rfactor` requires at least one non-missing paired value and errors when `mean(abs(obs)) == 0`. `pfactor` requires `tol >= 0` and at least one non-missing paired value; default `tol` is `0.10`.
+- Notes: `rfactor` requires at least one non-missing paired value and errors when `mean(abs(obs)) == 0`. `pfactor` requires `tol >= 0` and at least one non-missing paired value; default `tol` is `0.10`. These are package-defined deterministic compatibility metrics and must not be presented as the SWAT/95PPU uncertainty-band `p-factor` / `r-factor`.
 
 #### D-024: Phase 2B Batch 1 Parity Policies (rsr/pbias/mae)
 - Decision: `rsr`, `pbias`, and `mae` use explicit clean-room formulas with deterministic edge policies and wrappers routed through the Phase 2A preprocessing pipeline.
 - Status: Accepted
-- Notes: `rsr = RMSE/sd(obs)` requires at least two paired values and `sd(obs) > 0` (`"sd(obs) is zero; RSR undefined"`). `pbias = 100 * sum(sim - obs)/sum(obs)` requires `sum(obs) != 0` (`"sum(obs) is zero; PBIAS undefined"`). `mae = mean(abs(sim - obs))` requires at least one paired value. Metrics remain NA-free/transform-free and rely on preprocessing for alignment, NA strategy, and transformations.
+- Notes: `rsr = RMSE/sd(obs)` requires at least two paired values and `sd(obs) > 0` (`"sd(obs) is zero; RSR undefined"`). `pbias = 100 * sum(sim - obs)/sum(obs)` requires `sum(obs) != 0` (`"sum(obs) is zero; PBIAS undefined"`), and package-facing prose must state that positive values indicate overestimation under this retained sign convention rather than assuming the opposite-sign Moriasi presentation. `mae = mean(abs(sim - obs))` requires at least one paired value. Metrics remain NA-free/transform-free and rely on preprocessing for alignment, NA strategy, and transformations.
 
 #### D-032: Phase 2 Output Contract Downgrade
 - Decision: Phase 2 exits with the shipped S3/data.frame output model rather than a tibble-first output contract, and no `output = "matrix"` switch is introduced.
@@ -138,7 +138,7 @@ be extended.
 #### D-026: Canonical Metric ID and Alias Policy
 - Decision: Phase 3 metric IDs are unique canonical registry identifiers. Compatibility aliases or deprecated names may remain only as wrappers or resolution aliases and must not persist as duplicate canonical registry entries.
 - Status: Accepted
-- Notes: Canonical Pearson correlation id is `r`. Deprecated `rpearson` metric-id requests resolve to `r` and no longer persist as an independent registry entry. Engine-level metric-id evaluation currently warns on that deprecated alias, while orchestration-level method selection preserves the requested label and does not currently emit a warning.
+- Notes: Canonical Pearson correlation id is `r`. Deprecated `rpearson` metric-id requests resolve to `r` and no longer persist as an independent registry entry. Discovery-facing helpers must prefer canonical ids even when retained compatibility duplicates remain callable; in particular, `mutual_information` is the canonical discovery id while `mutual_information_score` remains a retained compatibility surface and is not promoted as an independent discovery-canonical metric. Engine-level metric-id evaluation currently warns on the deprecated aliases covered by policy, while orchestration-level method selection preserves the requested label and does not currently emit a warning.
 
 #### D-027: gof() Default and Extended Metric-Set Contract
 - Decision: `gof()` and `gof(extended = FALSE)` default to the compat-10 baseline set (`nse`, `kge`, `rmse`, `pbias`, `mae`, `mse`, `r2`, `ve`, `rsr`, `nrmse`), while `gof(extended = TRUE)` expands omitted or `NULL` selection to the full registered metric set supported by the current input context.
@@ -153,7 +153,7 @@ be extended.
 #### D-029: br2 Literature Correction Policy
 - Decision: `br2` must follow the Krause et al. (2005) `bR2` interpretation selected by project policy, and this canonical decision supersedes the earlier project-specific formula recorded in `D-015`.
 - Status: Accepted
-- Notes: This is a release-governance correction, not a new metric. `dev` now implements `bR2 = abs(slope(sim ~ obs)) * cor(sim, obs)^2`, with the older `D-015` formula retained only as historical record.
+- Notes: This is a release-governance correction, not a new metric. `dev` now implements `bR2 = abs(slope(sim ~ obs)) * cor(sim, obs)^2`, with the older `D-015` formula retained only as historical record. Until broader formula re-verification is completed, package-facing prose must describe this as the project-selected `bR2` interpretation rather than as a fully reverified literature-exact formula.
 
 #### D-030: Information-Theoretic Metric Disclosure Rule
 - Decision: Information-theoretic metrics may not be added or released without explicit bandwidth-sensitivity disclosure, estimator assumptions, and literature citations sufficient for reproducible interpretation.
@@ -178,7 +178,7 @@ be extended.
 #### D-036: HFB Compatibility Wrapper Contract
 - Decision: `HFB()` remains a compatibility-stable exported wrapper over internal registry metric id `"hfb"` and is not treated as a routine deprecated alias or canonicalization candidate.
 - Status: Accepted
-- Notes: `HFB()` preserves wrapper-specific public contract behavior that extends beyond numeric equivalence, including scalar return class `c("hydro_metric_scalar", "numeric")`, metric label `"HFB"`, documented `threshold_prob` handling, metadata fields (`threshold_prob`, `n_high`, `aligned`, `na_method`), denominator-zero warning-plus-`NA` behavior, and sparse high-flow support errors. No tracked `high_flow_percent_bias` source, documentation, or test surface exists in the current repository state, so no parallel descriptive wrapper is treated as canonical or slated for restoration in this phase. Any future descriptive alias or wrapper expansion must preserve the current `HFB()` compatibility contract unless an explicit deprecation and migration decision is recorded.
+- Notes: `HFB()` preserves wrapper-specific public contract behavior that extends beyond numeric equivalence, including scalar return class `c("hydro_metric_scalar", "numeric")`, metric label `"HFB"`, documented `threshold_prob` handling, metadata fields (`threshold_prob`, `n_high`, `aligned`, `na_method`), denominator-zero warning-plus-`NA` behavior, and sparse high-flow support errors. The underlying `hfb` formula is a retained package-defined high-flow subset percent-bias metric, not a literature-exact high-flow diagnostic claim. No tracked `high_flow_percent_bias` source, documentation, or test surface exists in the current repository state, so no parallel descriptive wrapper is treated as canonical or slated for restoration in this phase. Any future descriptive alias or wrapper expansion must preserve the current `HFB()` compatibility contract unless an explicit deprecation and migration decision is recorded.
 
 ### Stage 6 Pareto Disposition
 - Decision: Phase 3 is complete, `pareto_skill` remains deferred, and any future Pareto-based calibration support should be implemented as a helper/evaluation utility rather than as a registry metric.

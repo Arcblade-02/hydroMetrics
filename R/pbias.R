@@ -1,6 +1,8 @@
 #' Evaluate the percent bias wrapper
 #'
 #' Thin exported wrapper over [gof()] for the registry metric `"pbias"`.
+#' The implemented sign convention is `100 * sum(sim - obs) / sum(obs)`, so
+#' positive values indicate overestimation relative to `obs`.
 #'
 #' @inheritParams gof
 #'

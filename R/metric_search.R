@@ -87,6 +87,10 @@
   map[order(map$id, map$wrapper), , drop = FALSE]
 }
 
+.hm_metric_search_hidden_ids <- function() {
+  c("mutual_information_score")
+}
+
 .hm_metric_search_presets <- function(metric_ids, metrics) {
   ids <- metric_ids
   tags_lower <- tolower(metrics$tags)
@@ -153,6 +157,7 @@
 
 .hm_metric_search_table <- function() {
   metrics <- .get_registry()$list()
+  metrics <- metrics[!metrics$id %in% .hm_metric_search_hidden_ids(), , drop = FALSE]
   export_map <- .hm_metric_search_export_map(metrics$id)
   compatibility_wrappers <- c(
     "HFB",

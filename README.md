@@ -131,7 +131,9 @@ registry metadata. The first baseline can filter by:
 Discovery results use lowercase registry-backed canonical metric ids. Exported
 compatibility wrappers and deprecated forwarding wrappers may appear in the
 `exported_wrappers` annotation for a canonical metric, but they are not
-returned as independent canonical ids.
+returned as independent canonical ids. For example,
+`mutual_information_score()` is surfaced under canonical
+`mutual_information` rather than as a second discovery-canonical metric.
 
 Current preset groups are:
 

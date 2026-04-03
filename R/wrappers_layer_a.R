@@ -192,7 +192,10 @@ nrmse_range <- function(sim, obs, na.rm = NULL, ...) {
 
 #' Evaluate the low-flow bias wrapper
 #'
-#' Thin exported wrapper over [gof()] for the registry metric `"low_flow_bias"`.
+#' Thin exported wrapper over [gof()] for the registry metric
+#' `"low_flow_bias"`. The current implementation is a package-defined
+#' observed-subset percent-bias metric over the lower-30% flow subset from
+#' `obs`, not a claim of literature-exact low-flow bias equivalence.
 #'
 #' @inheritParams gof
 #'

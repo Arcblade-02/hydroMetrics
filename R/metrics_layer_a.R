@@ -463,11 +463,11 @@ core_metric_spec_low_flow_bias <- function() {
     id = "low_flow_bias",
     fun = metric_low_flow_bias,
     name = "Low-Flow Bias",
-    description = "Percent bias over the observed lower-30% flow subset defined from paired observations.",
+    description = "Package-defined percent bias over the observed lower-30% flow subset defined from paired observations.",
     category = "bias",
     perfect = 0,
     range = c(-Inf, Inf),
-    references = "Yilmaz et al. (2008) low-flow diagnostic context, applied here to the paired observed lower-30% subset.",
+    references = "Yilmaz et al. (2008) low-flow diagnostic context; hydroMetrics applies a package-defined observed lower-30% subset percent-bias rule rather than claiming a literature-exact low-flow bias formula.",
     version_added = "0.2.2",
     tags = c("phase-3", "layer-a", "batch-a3")
   )

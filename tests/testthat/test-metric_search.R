@@ -26,6 +26,7 @@ test_that("metric_search returns annotated metric metadata", {
     "upper_tail_conditional_exceedance",
     "composite_performance_index"
   ) %in% out$id))
+  expect_false("mutual_information_score" %in% out$id)
 
   nse_row <- out[out$id == "nse", , drop = FALSE]
   mae_row <- out[out$id == "mae", , drop = FALSE]
@@ -121,6 +122,7 @@ test_that("metric_search keeps canonical ids distinct from deprecated and orches
 
   expect_false(any(c(
     "rpearson",
+    "mutual_information_score",
     "tail_dependence_score",
     "extended_valindex"
   ) %in% out$id))

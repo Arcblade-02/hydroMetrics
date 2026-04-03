@@ -3,6 +3,10 @@
 #' `HFB()` is a compatibility export over [gof()] for the registry metric
 #' `"hfb"`. The exact failure mode for sparse high-flow support is preserved
 #' as part of the public compatibility contract.
+#' The underlying metric is a package-defined high-flow subset percent-bias
+#' calculation based on an observed quantile threshold; it is retained for
+#' compatibility and is not documented as a literature-exact high-flow
+#' diagnostic.
 #' Stable compatibility condition contract: it errors on invalid
 #' `threshold_prob`, on downstream preprocessing failures, and when fewer than
 #' three high-flow points remain; it warns and returns `NA` when the high-flow

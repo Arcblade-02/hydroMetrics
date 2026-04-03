@@ -22,7 +22,10 @@ A numeric scalar for single-series inputs or a numeric vector for
 multi-series inputs.
 }
 \description{
-Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric \code{"low_flow_bias"}.
+Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric
+\code{"low_flow_bias"}. The current implementation is a package-defined
+observed-subset percent-bias metric over the lower-30\% flow subset from
+\code{obs}, not a claim of literature-exact low-flow bias equivalence.
 }
 \examples{
 low_flow_bias(c(1.2, 1.8, 3.4), c(1, 2, 3))

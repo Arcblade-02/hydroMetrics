@@ -80,6 +80,14 @@ These metrics emphasize different calibration properties:
 - `ve`: volumetric agreement
 - `rsr`: error relative to observed variability
 
+Two package-specific wording details matter here:
+
+- `pbias` uses `100 * sum(sim - obs) / sum(obs)`, so positive values indicate
+  overestimation.
+- `nrmse` is the package's mean(obs)-normalized variant; published NRMSE
+  definitions vary, so the exact normalization should be named explicitly in
+  downstream reporting.
+
 When you want a single metric directly, the exported wrappers are often more
 convenient than a multi-metric `gof()` call. For core metrics that are not
 exposed as direct wrappers in the current public namespace, use
@@ -157,7 +165,9 @@ reflect that.
 ### Low-Flow Diagnostics
 
 Metrics such as `low_flow_bias` are useful when calibration is aimed at low-flow
-behavior instead of only pointwise error.
+behavior instead of only pointwise error. In `hydroMetrics`, `low_flow_bias` is
+the package's observed lower-30% subset percent-bias diagnostic rather than a
+claim of literature-exact low-flow bias equivalence.
 
 These can be requested directly when that is the modeling objective:
 

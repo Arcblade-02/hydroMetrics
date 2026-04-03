@@ -107,7 +107,7 @@ route to canonical ids rather than creating additional canonical entries.
 | --- | --- | --- | --- | --- |
 | alpha | Variability Ratio | scale | 0.1.0 | KGE component definition in hydrology literature using variability ratio sd(sim)/sd(obs). |
 | beta | Bias Ratio | bias | 0.1.0 | KGE component definition in hydrology literature using bias ratio mean(sim)/mean(obs). |
-| br2 | Bias-Corrected R-squared | correlation | 0.1.0 | Krause et al. (2005) `bR2` terminology/evaluation context; hydroMetrics retains the package-selected `abs(slope(sim ~ obs)) * cor(sim, obs)^2` interpretation recorded in `D-029` and does not claim a fully reverified literature-exact formula match. |
+| br2 | Bias-Corrected R-squared | correlation | 0.1.0 | Krause et al. (2005) `bR2` / weighted-`r^2` terminology context; hydroMetrics currently retains `abs(slope(sim ~ obs)) * cor(sim, obs)^2` under `D-029`, while the paper's published piecewise weighting remains deferred to any future formula-change lane. The current metric does not claim a fully reverified literature-exact formula match. |
 | cp | Coefficient of Persistence | efficiency | 0.1.0 | Persistence skill-score definition from hydrology model-evaluation literature. |
 | d | Willmott Index of Agreement | agreement | 0.1.0 | Willmott, C.J. (1981). On the validation of models. |
 | hfb | High Flow Bias | bias | 0.1.0 | Package-defined compatibility high-flow subset bias using deterministic quantile thresholding; not claimed as a direct implementation of broader literature high-flow diagnostics. |

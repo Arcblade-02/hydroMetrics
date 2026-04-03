@@ -608,11 +608,11 @@ core_metric_spec_br2 <- function() {
     id = "br2",
     fun = metric_br2,
     name = "Bias-Corrected R-squared",
-    description = "Project-selected bR2-style statistic computed as abs(slope(sim ~ obs)) * cor(sim, obs)^2.",
+    description = "Retained package br2 statistic computed as abs(slope(sim ~ obs)) * cor(sim, obs)^2.",
     category = "correlation",
     perfect = 1,
     range = c(0, Inf),
-    references = "Krause et al. (2005) bR2 terminology/evaluation context; hydroMetrics currently retains the package-selected abs(slope(sim ~ obs)) * cor(sim, obs)^2 interpretation recorded in Decision D-029 and does not claim a fully reverified literature-exact formula match.",
+    references = "Krause et al. (2005) bR2 / weighted-r^2 terminology context; hydroMetrics currently retains abs(slope(sim ~ obs)) * cor(sim, obs)^2 as a package decision recorded in Decision D-029, while the paper's published piecewise weighting is deferred to any future formula-change lane. The current implementation does not claim a fully reverified literature-exact formula match.",
     version_added = "0.1.0",
     tags = character()
   )

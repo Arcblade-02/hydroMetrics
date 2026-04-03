@@ -150,10 +150,10 @@ be extended.
 - Status: Accepted
 - Notes: The current `dev` implementation matches this scope and fallback rule.
 
-#### D-029: br2 Literature Correction Policy
-- Decision: `br2` must follow the Krause et al. (2005) `bR2` interpretation selected by project policy, and this canonical decision supersedes the earlier project-specific formula recorded in `D-015`.
+#### D-029: br2 Retained-Formula Boundary
+- Decision: `br2` currently retains the package runtime `abs(slope(sim ~ obs)) * cor(sim, obs)^2`. Krause et al. (2005) provides the `bR2` / weighted-`r^2` terminology context, but the published piecewise weighting has not been adopted on the current baseline. Any move to the literature-weighted formula is deferred to a separate future formula-change lane.
 - Status: Accepted
-- Notes: This is a release-governance correction, not a new metric. `dev` now implements `bR2 = abs(slope(sim ~ obs)) * cor(sim, obs)^2`, with the older `D-015` formula retained only as historical record. Until broader formula re-verification is completed, package-facing prose must describe this as the project-selected `bR2` interpretation rather than as a fully reverified literature-exact formula.
+- Notes: This batch confirms a direct contradiction between the current runtime and the piecewise weighted formula shown in Krause et al. (2005): the paper presents `|b| * r^2` for `b <= 1` and `r^2 / |b|` for `b > 1`, whereas `dev` computes `abs(slope(sim ~ obs)) * cor(sim, obs)^2` without the reciprocal branch. Because runtime redesign is out of scope here, the metric remains unchanged and package-facing prose must describe it as a retained package `br2` statistic rather than as a fully reverified literature-exact `bR2` implementation. The older `D-015` formula remains historical record only and is not restored by this decision.
 
 #### D-030: Information-Theoretic Metric Disclosure Rule
 - Decision: Information-theoretic metrics may not be added or released without explicit bandwidth-sensitivity disclosure, estimator assumptions, and literature citations sufficient for reproducible interpretation.

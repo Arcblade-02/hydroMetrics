@@ -4,8 +4,9 @@
 #' `"hfb"`. The exact failure mode for sparse high-flow support is preserved
 #' as part of the public compatibility contract.
 #' The underlying metric is a package-defined high-flow subset percent-bias
-#' calculation based on an observed quantile threshold; it is retained for
-#' compatibility and is not documented as a literature-exact high-flow
+#' calculation based on an observed quantile threshold; it is retained as a
+#' compatibility-stable, non-promoted subset-bias surface and is not
+#' documented as a literature-exact or hydroGOF-equivalent high-flow
 #' diagnostic.
 #' Stable compatibility condition contract: it errors on invalid
 #' `threshold_prob`, on downstream preprocessing failures, and when fewer than

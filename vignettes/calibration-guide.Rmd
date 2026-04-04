@@ -83,7 +83,9 @@ These metrics emphasize different calibration properties:
 Two package-specific wording details matter here:
 
 - `pbias` uses `100 * sum(sim - obs) / sum(obs)`, so positive values indicate
-  overestimation.
+  overestimation. Moriasi et al. (2007) uses the opposite-sign interpretation,
+  so its qualitative PBIAS thresholds should not be transferred verbatim without
+  sign-aware translation.
 - `nrmse` is the package's mean(obs)-normalized variant; published NRMSE
   definitions vary, so the exact normalization should be named explicitly in
   downstream reporting.

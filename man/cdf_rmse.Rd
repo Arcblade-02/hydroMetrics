@@ -23,6 +23,8 @@ multi-series inputs.
 }
 \description{
 Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric \code{"cdf_rmse"}.
+It returns the RMSE of empirical CDF gaps evaluated on the ascending pooled
+support grid shared by \code{sim} and \code{obs}.
 }
 \examples{
 cdf_rmse(c(1, 2, 4), c(1, 3, 2))

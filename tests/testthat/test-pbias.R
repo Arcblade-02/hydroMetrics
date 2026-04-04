@@ -22,6 +22,12 @@ test_that("pbias returns negative values for underestimation", {
   expect_equal(pbias(sim, obs), -50)
 })
 
+test_that("pbias returns positive values for overestimation under the retained sign convention", {
+  obs <- c(2, 2, 2)
+  sim <- c(3, 3, 3)
+  expect_equal(pbias(sim, obs), 50)
+})
+
 test_that("pbias wrapper uses preprocessing pipeline NA removal", {
   sim <- c(1, NA, 4)
   obs <- c(1, 2, 3)

@@ -23,6 +23,10 @@ multi-series inputs.
 }
 \description{
 Thin exported wrapper over \code{\link[=gof]{gof()}} for the registry metric \code{"pbias"}.
+The implemented sign convention is \code{100 * sum(sim - obs) / sum(obs)}, so
+positive values indicate overestimation relative to \code{obs}. Moriasi et al.
+(2007) is retained as evaluation-context literature, but its opposite-sign
+presentation is not adopted verbatim by this wrapper.
 }
 \examples{
 pbias(c(1, 2, 3), c(1, 2, 4))

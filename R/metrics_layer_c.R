@@ -106,8 +106,8 @@ core_metric_spec_kurtosis_error <- function() {
 # - entropy_diff bins sim and obs on the same pooled shared-support grid
 # - mutual_information_score uses the same pooled support grid on both axes for
 #   the paired (sim, obs) joint histogram
-# - mutual_information is the canonical alias of mutual_information_score under
-#   the same pooled-grid raw-MI convention
+# - mutual_information is the canonical discovery name for the same
+#   pooled-grid raw-MI convention retained by mutual_information_score
 # - normalised_mi reports MI / sqrt(H_sim * H_obs) and is undefined when either
 #   marginal entropy is zero
 # - Shannon quantities use the natural logarithm
@@ -229,11 +229,11 @@ core_metric_spec_mutual_information_score <- function() {
     id = "mutual_information_score",
     fun = metric_mutual_information_score,
     name = "Mutual Information Score",
-    description = "Raw mutual information on the paired Sturges-binned joint empirical distribution using the pooled support grid and natural logs.",
+    description = "Retained callable compatibility duplicate of the package's canonical raw pooled-grid mutual information in nats.",
     category = "agreement",
     perfect = Inf,
     range = c(0, Inf),
-    references = "Shannon (1948) mutual-information foundation with Sturges (1926) histogram binning; package metric reports raw pooled-grid mutual information in nats.",
+    references = "Shannon (1948) mutual-information foundation with Sturges (1926) histogram binning; this retained callable compatibility duplicate is numerically identical to canonical mutual_information under the current deterministic policy, remains hidden from canonical discovery, and should not be treated as an independent canonical id or separate lifecycle lane.",
     version_added = "0.2.2",
     tags = c("phase-3", "layer-c", "batch-c2")
   )

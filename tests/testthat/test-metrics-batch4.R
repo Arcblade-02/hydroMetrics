@@ -35,7 +35,8 @@ test_that("batch4 deterministic numeric formulas match inline computations", {
   rd_denom <- sum((abs((sim - obs_mean) / obs) + abs((obs - obs_mean) / obs))^2)
   rd_rel_err <- (sim - obs) / obs
 
-  br2_expected <- unname(abs(stats::coef(stats::lm(sim ~ obs))[2]) * stats::cor(sim, obs)^2)
+  br2_slope <- unname(stats::coef(stats::lm(sim ~ obs))[2])
+  br2_expected <- unname(if (br2_slope <= 1) abs(br2_slope) * stats::cor(sim, obs)^2 else stats::cor(sim, obs)^2 / abs(br2_slope))
 
   out <- evaluate_metrics(sim, obs, c("me", "d", "md", "rd", "br2"))
   values <- setNames(out$value, out$metric)

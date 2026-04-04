@@ -26,6 +26,7 @@ test_that("metric_search returns annotated metric metadata", {
     "upper_tail_conditional_exceedance",
     "composite_performance_index"
   ) %in% out$id))
+  expect_false("mutual_information_score" %in% out$id)
 
   nse_row <- out[out$id == "nse", , drop = FALSE]
   mae_row <- out[out$id == "mae", , drop = FALSE]
@@ -121,6 +122,7 @@ test_that("metric_search keeps canonical ids distinct from deprecated and orches
 
   expect_false(any(c(
     "rpearson",
+    "mutual_information_score",
     "tail_dependence_score",
     "extended_valindex"
   ) %in% out$id))
@@ -130,6 +132,17 @@ test_that("metric_search keeps canonical ids distinct from deprecated and orches
 
   expect_match(tail_row$exported_wrappers[[1]], "tail_dependence_score")
   expect_match(composite_row$exported_wrappers[[1]], "extended_valindex")
+})
+
+test_that("metric_search routes retained mutual_information_score discovery to canonical mutual_information", {
+  out <- hydroMetrics::metric_search(text = "mutual_information_score")
+
+  expect_true("mutual_information" %in% out$id)
+  expect_false("mutual_information_score" %in% out$id)
+
+  mi_row <- out[out$id == "mutual_information", , drop = FALSE]
+  expect_match(mi_row$exported_wrappers[[1]], "mutual_information_score")
+  expect_true(mi_row$compatibility_export[[1]])
 })
 
 test_that("metric_search validates discovery filters conservatively", {

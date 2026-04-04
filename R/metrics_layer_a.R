@@ -15,7 +15,7 @@ core_metric_spec_mdae <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "NIST/SEMATECH e-Handbook of Statistical Methods; robust absolute-error summary.",
+    references = "Hyndman & Koehler (2006) forecast-accuracy context plus standard robust absolute-error summaries; package metric reports median(abs(sim - obs)) on aligned pairs.",
     version_added = "0.2.0",
     tags = c("phase-3", "layer-a", "batch-a1")
   )
@@ -38,7 +38,7 @@ core_metric_spec_maxae <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "NIST/SEMATECH e-Handbook of Statistical Methods; absolute-error summary statistics.",
+    references = "Hyndman & Koehler (2006) forecast-accuracy context plus standard worst-case absolute-error summaries; package metric reports max(abs(sim - obs)) on aligned pairs.",
     version_added = "0.2.0",
     tags = c("phase-3", "layer-a", "batch-a1")
   )
@@ -61,7 +61,7 @@ core_metric_spec_sae <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Standard absolute-error aggregate convention summarized in the NIST/SEMATECH e-Handbook of Statistical Methods.",
+    references = "Classical cumulative absolute-error summary used in statistical and forecast-accuracy reporting; package metric reports sum(abs(sim - obs)) on aligned pairs.",
     version_added = "0.4.0",
     tags = c("phase-4", "layer-a", "add-back-batch-1")
   )
@@ -172,7 +172,7 @@ core_metric_spec_rae <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Standard regression/error-measure convention using the total absolute error normalized by the total absolute deviation from mean(obs).",
+    references = "Classical relative absolute-error score normalized by total absolute deviation from mean(obs); package metric uses sum(abs(sim - obs)) / sum(abs(obs - mean(obs))).",
     version_added = "0.4.0",
     tags = c("phase-4", "layer-a", "add-back-batch-2")
   )
@@ -223,7 +223,7 @@ core_metric_spec_rrse <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Standard regression/error-measure convention using the total squared error normalized by the total squared deviation from mean(obs).",
+    references = "Classical root relative squared-error score normalized by total squared deviation from mean(obs); package metric uses sqrt(sum((sim - obs)^2) / sum((obs - mean(obs))^2)).",
     version_added = "0.4.0",
     tags = c("phase-4", "layer-a", "add-back-batch-2")
   )
@@ -348,7 +348,7 @@ core_metric_spec_rmsle <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Standard RMSLE software convention defined as the square root of MSLE; see scikit-learn regression metric documentation and the package's existing MSLE references.",
+    references = "Hodson (2021) and Hodson et al. (2021) give the logarithmic squared-error context; hydroMetrics defines RMSLE explicitly as the square-root companion of its retained MSLE convention on non-negative inputs.",
     version_added = "0.4.0",
     tags = c("phase-4", "layer-a", "add-back-batch-1")
   )
@@ -376,7 +376,7 @@ core_metric_spec_evs <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "Standard explained-variance regression-score convention defined in scikit-learn documentation as 1 - Var(y - yhat) / Var(y).",
+    references = "Classical explained-variance ratio 1 - Var(obs - sim) / Var(obs); hydroMetrics fixes the exact sample-variance implementation through stats::var().",
     version_added = "0.4.0",
     tags = c("phase-4", "layer-a", "add-back-batch-1")
   )
@@ -463,11 +463,11 @@ core_metric_spec_low_flow_bias <- function() {
     id = "low_flow_bias",
     fun = metric_low_flow_bias,
     name = "Low-Flow Bias",
-    description = "Percent bias over the observed lower-30% flow subset defined from paired observations.",
+    description = "Package-defined observed lower-30% subset percent-bias diagnostic defined from paired observations.",
     category = "bias",
     perfect = 0,
     range = c(-Inf, Inf),
-    references = "Yilmaz et al. (2008) low-flow diagnostic context, applied here to the paired observed lower-30% subset.",
+    references = "Yilmaz et al. (2008) provides low-flow diagnostic context through flow-duration-curve low-flow evaluation, while hydroMetrics retains a package-defined observed lower-30% subset percent-bias rule and does not claim the literature low-flow FDC/log formulation.",
     version_added = "0.2.2",
     tags = c("phase-3", "layer-a", "batch-a3")
   )

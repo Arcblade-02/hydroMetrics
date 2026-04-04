@@ -88,6 +88,11 @@ The current exported wrapper surface contains three distinct kinds of names:
   `extended_valindex()`, which remain callable temporarily but are no longer
   canonical current metric names
 
+For retained compatibility duplicates, discovery helpers surface the canonical
+metric id rather than a second parallel entry. For example,
+`mutual_information_score()` remains callable, but `metric_search()` reports
+the canonical discovery id `mutual_information`.
+
 Uppercase hydroGOF names such as `NSE`, `KGE`, `RMSE`, `R2`, `NRMSE`, and
 `PBIAS` remain available as `gof()` / `ggof()` method labels, not as exported
 standalone functions.

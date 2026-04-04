@@ -23,10 +23,11 @@ multi-series inputs.
 }
 \description{
 Compatibility export retained alongside canonical \code{\link[=mutual_information]{mutual_information()}}.
-This thin wrapper delegates to \code{\link[=gof]{gof()}} for the registry metric
-\code{"mutual_information_score"}. The metric computes raw mutual information in
-natural-log units from the paired Sturges-binned joint empirical
-distribution on the pooled support grid.
+This wrapper remains callable for continuity, but it is not a separate
+discovery-canonical metric name. Under the current deterministic policy it
+reports the same raw pooled-grid mutual information in natural-log units as
+\code{\link[=mutual_information]{mutual_information()}}. It is retained as a compatibility surface on the
+current \verb{0.4.x} line rather than as an independent lifecycle lane.
 }
 \examples{
 mutual_information_score(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))

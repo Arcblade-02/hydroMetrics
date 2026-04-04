@@ -31,8 +31,9 @@ test_that("targeted provenance-sensitive metrics carry explicit qualification te
     refs$id
   ), c("id", "references")]
 
-  expect_match(refs$references[refs$id == "br2"], "future formula-change lane")
-  expect_match(refs$references[refs$id == "br2"], "does not claim a fully reverified literature-exact formula match")
+  expect_match(refs$references[refs$id == "br2"], "Krause")
+  expect_match(refs$references[refs$id == "br2"], "piecewise weighting")
+  expect_match(refs$references[refs$id == "br2"], "r\\^2 / \\|b\\|")
   expect_match(refs$references[refs$id == "pbias"], "Abdelkader")
   expect_match(refs$references[refs$id == "pbias"], "treats positive values as overestimation")
   expect_match(refs$references[refs$id == "pbias"], "opposite-sign Moriasi thresholds")

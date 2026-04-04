@@ -600,7 +600,11 @@ metric_br2 <- function(sim, obs) {
     stop("br2 undefined because lm(sim ~ obs) slope is NA.", call. = FALSE)
   }
 
-  abs(slope) * (r^2)
+  if (slope <= 1) {
+    abs(slope) * (r^2)
+  } else {
+    (r^2) / abs(slope)
+  }
 }
 
 core_metric_spec_br2 <- function() {
@@ -608,11 +612,11 @@ core_metric_spec_br2 <- function() {
     id = "br2",
     fun = metric_br2,
     name = "Bias-Corrected R-squared",
-    description = "Retained project-selected package br2 statistic computed as abs(slope(sim ~ obs)) * cor(sim, obs)^2.",
+    description = "Krause-style weighted bR2 computed from the lm(sim ~ obs) slope b as |b| * r^2 for b <= 1 and r^2 / |b| for b > 1.",
     category = "correlation",
     perfect = 1,
     range = c(0, Inf),
-    references = "Krause et al. (2005) bR2 / weighted-r^2 terminology context; hydroMetrics currently retains abs(slope(sim ~ obs)) * cor(sim, obs)^2 as a project-selected package decision recorded in Decision D-029, while the paper's published piecewise weighting remains deferred to any future formula-change lane. The current implementation does not claim a fully reverified literature-exact formula match.",
+    references = "Krause et al. (2005) weighted-r^2 / bR2 context; hydroMetrics now aligns br2 to the paper's piecewise weighting using the lm(sim ~ obs) slope b, with |b| * r^2 for b <= 1 and r^2 / |b| for b > 1, as recorded in Decision D-029.",
     version_added = "0.1.0",
     tags = character()
   )

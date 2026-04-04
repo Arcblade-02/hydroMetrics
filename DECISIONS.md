@@ -150,10 +150,10 @@ be extended.
 - Status: Accepted
 - Notes: The current `dev` implementation matches this scope and fallback rule.
 
-#### D-029: br2 Retained-Formula Boundary
-- Decision: `br2` currently retains the package runtime `abs(slope(sim ~ obs)) * cor(sim, obs)^2`. Krause et al. (2005) provides the `bR2` / weighted-`r^2` terminology context, but the published piecewise weighting has not been adopted on the current baseline. Any move to the literature-weighted formula is deferred to a separate future formula-change lane.
+#### D-029: br2 Literature-Alignment Formula
+- Decision: `br2` is aligned to the Krause et al. (2005) weighted-`r^2` / `bR2` formulation using the fitted slope `b` from `lm(sim ~ obs)`: `|b| * r^2` for `b <= 1` and `r^2 / |b|` for `b > 1`.
 - Status: Accepted
-- Notes: This batch confirms a direct contradiction between the current runtime and the piecewise weighted formula shown in Krause et al. (2005): the paper presents `|b| * r^2` for `b <= 1` and `r^2 / |b|` for `b > 1`, whereas `dev` computes `abs(slope(sim ~ obs)) * cor(sim, obs)^2` without the reciprocal branch. Because runtime redesign is out of scope here, the metric remains unchanged and package-facing prose must describe it as a retained project-selected package `br2` statistic rather than as a fully reverified literature-exact `bR2` implementation. The older `D-015` formula remains historical record only and is not restored by this decision.
+- Notes: This decision closes the prior contradiction on the `0.4.x` line by adopting the paper's published piecewise weighting rather than retaining the earlier single-branch project-selected statistic. The aligned implementation changes runtime when the fitted slope exceeds 1 because those cases now use the reciprocal branch `r^2 / |b|` instead of `|b| * r^2`. The older `D-015` penalty-style formula remains historical record only and is not restored by this decision.
 
 #### D-030: Information-Theoretic Metric Disclosure Rule
 - Decision: Information-theoretic metrics may not be added or released without explicit bandwidth-sensitivity disclosure, estimator assumptions, and literature citations sufficient for reproducible interpretation.

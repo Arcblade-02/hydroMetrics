@@ -49,11 +49,16 @@ test_that("pairwise gof remains deterministic on valid paired values", {
   expect_identical(attr(out_pair, "meta")$n_removed_na, 2L)
 })
 
-test_that("br2 matches abs(slope) * r^2 and differs from the old penalty formula", {
+test_that("br2 uses the aligned Krause piecewise weighting and differs from the old penalty formula", {
   sim <- c(1.2, 1.8, 3.4, 3.9, 5.1)
   obs <- c(1.0, 2.0, 3.0, 4.0, 5.0)
+  slope <- unname(stats::coef(stats::lm(sim ~ obs))[2])
 
-  manual <- abs(stats::coef(stats::lm(sim ~ obs))[2]) * stats::cor(sim, obs)^2
+  manual <- if (slope <= 1) {
+    abs(slope) * stats::cor(sim, obs)^2
+  } else {
+    stats::cor(sim, obs)^2 / abs(slope)
+  }
   old_formula <- {
     r <- stats::cor(sim, obs)
     sd_penalty <- min(stats::sd(sim), stats::sd(obs)) / max(stats::sd(sim), stats::sd(obs))
@@ -65,6 +70,20 @@ test_that("br2 matches abs(slope) * r^2 and differs from the old penalty formula
 
   expect_equal(out$value[[1]], unname(manual), tolerance = 1e-12)
   expect_false(isTRUE(all.equal(unname(manual), unname(old_formula), tolerance = 1e-12)))
+})
+
+test_that("br2 uses the reciprocal branch when the fitted slope exceeds 1", {
+  sim <- c(1.5, 2.2, 4.7, 5.8, 8.9)
+  obs <- c(1, 2, 3, 4, 5)
+  slope <- unname(stats::coef(stats::lm(sim ~ obs))[2])
+  r2 <- stats::cor(sim, obs)^2
+
+  expect_gt(slope, 1)
+
+  out <- .hm_get("evaluate_metrics")(sim, obs, "br2")
+
+  expect_equal(out$value[[1]], unname(r2 / abs(slope)), tolerance = 1e-12)
+  expect_false(isTRUE(all.equal(out$value[[1]], unname(abs(slope) * r2), tolerance = 1e-12)))
 })
 
 test_that("rpearson is deprecated and no longer a canonical registry id", {

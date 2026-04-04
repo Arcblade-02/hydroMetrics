@@ -123,7 +123,7 @@ write_final_reports <- function(results, stopped_stage = NULL) {
     "## Key observations",
     "",
     sprintf("- Required exported API surface available: `%s/%s`.", exported_required, required_total),
-    sprintf("- Package source version on this branch is `%s`, which should be compared against the requested `0.2.x` target.", context$description[["Version"]]),
+    sprintf("- Package source version on this branch is `%s` on the current `0.4.x` line.", context$description[["Version"]]),
     sprintf("- Fatal stop occurred: `%s`.", rr_bool(!is.null(stopped_stage)))
   )
   rr_write_lines(preflight_path, preflight_lines)
@@ -137,12 +137,12 @@ write_final_reports <- function(results, stopped_stage = NULL) {
       "",
       "## Source snapshot deviations",
       "",
-      sprintf("- Current branch source version is `%s`, not the requested `0.2.x` target.", context$description[["Version"]]),
+      sprintf("- Current branch source version is `%s` on the current `0.4.x` line.", context$description[["Version"]]),
       sprintf("- Required public wrappers missing from exports: %s.", if (length(missing_required) == 0L) "none" else paste(missing_required, collapse = ", ")),
       sprintf("- README present: `%s`; NEWS present: `%s`; vignettes present: `%s`.", rr_bool(file.exists(file.path(context$root, "README.md"))), rr_bool(file.exists(file.path(context$root, "NEWS.md"))), rr_bool(dir.exists(file.path(context$root, "vignettes")))),
       "- `R2` behaves as squared Pearson correlation and is not interchangeable with `NSE` on biased predictions.",
       "- `br2`, `pfactor`, and `rfactor` are project-defined compatibility metrics/variants rather than verified hydroGOF-equivalent exports on this branch.",
-      "- The package currently exports `gof`, `ggof`, and `hm_result`; wrapper compatibility is therefore incomplete from a clean session.",
+      "- The package exports the current documented `0.4.x` orchestration/helpers surface rather than the older uppercase hydroGOF-style wrapper set.",
       "- CI does not currently prove vignette coverage and may not cover macOS or a dedicated coverage workflow on this branch."
     )
   )
@@ -159,7 +159,7 @@ write_final_reports <- function(results, stopped_stage = NULL) {
       "## Executive assessment",
       "",
       if (identical(recommendation, "GO")) {
-        "hydroMetrics 0.2.x is Phase-2-stable and CRAN-ready in practice; Phase 3 will extend functionality without reopening unresolved stability or compatibility debt."
+        "hydroMetrics 0.4.x is a validated submission candidate on the current documented package surface; follow-on work should not reopen resolved contract or compatibility debt."
       } else if (identical(recommendation, "CONDITIONAL GO")) {
         "A full GO statement is not yet supported without qualification; the current evidence supports only a CONDITIONAL GO and Phase 3 should not proceed until listed deviations are accepted explicitly."
       } else {

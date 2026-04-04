@@ -94,6 +94,17 @@
 .hm_metric_search_presets <- function(metric_ids, metrics) {
   ids <- metric_ids
   tags_lower <- tolower(metrics$tags)
+  recommended_ids <- .hm_recommended_metric_ids()
+  compatibility_core_ids <- c(
+    .hm_recommended_metric_ids(),
+    "alpha",
+    "beta",
+    "r",
+    "mnse",
+    "rnse",
+    "wsnse",
+    "hfb"
+  )
 
   distribution_ids <- ids[
     grepl(
@@ -133,20 +144,8 @@
   ]
 
   list(
-    recommended = intersect(ids, .hm_recommended_metric_ids()),
-    compatibility_core = intersect(
-      ids,
-      c(
-        .hm_recommended_metric_ids(),
-        "alpha",
-        "beta",
-        "r",
-        "mnse",
-        "rnse",
-        "wsnse",
-        "hfb"
-      )
-    ),
+    recommended = recommended_ids[recommended_ids %in% ids],
+    compatibility_core = compatibility_core_ids[compatibility_core_ids %in% ids],
     deterministic_error = ids[metrics$category == "error" & !grepl("probabilistic", tags_lower, fixed = TRUE)],
     correlation_agreement = ids[metrics$category %in% c("correlation", "agreement")],
     flow_duration_distribution = distribution_ids,

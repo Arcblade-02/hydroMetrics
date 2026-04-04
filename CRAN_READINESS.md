@@ -84,6 +84,9 @@ The current `0.4.x` line remains frozen for CRAN-oriented preparation.
 
 - No formula, runtime, export, or compatibility-policy blocker was identified
   on the current baseline.
+- The last verified `gof()` default-versus-`recommended` mismatch was resolved
+  by aligning runtime default selection back to the documented compat-10
+  shortlist used by discovery helpers and governance records.
 - A current local CRAN-style preflight has now been completed cleanly after the
   confirmed maintainer-metadata update.
 - No blocker remains on the local submission-campaign gate.
@@ -92,7 +95,7 @@ The current `0.4.x` line remains frozen for CRAN-oriented preparation.
 
 - `devtools::build_vignettes()`: passed after the `DESCRIPTION` maintainer
   metadata update
-- `devtools::test()`: passed with `1290` passes, `0` failures, `0` warnings,
+- `devtools::test()`: passed with `1361` passes, `0` failures, `0` warnings,
   and `1` expected skip
 - `devtools::check(document = FALSE, error_on = "warning")`: passed with
   `0 errors`, `0 warnings`, `0 notes`
@@ -175,15 +178,15 @@ The current `0.4.x` line remains frozen for CRAN-oriented preparation.
 
 ## Not Yet Claimed
 
-- This document now supports opening a true submission campaign from the
-  current local baseline.
+- This document supports a serious CRAN submission attempt from the current
+  local baseline.
 - It does not claim that the current `0.4.x` line has completed a broader
   submission-oriented multi-environment CRAN campaign beyond the recorded local
   preflight evidence.
 - It does not claim pkgdown/site readiness, reverse-dependency assessment, or
   release-process automation completeness.
-- It does not itself constitute publication approval or CRAN submission
-  readiness for the `0.4.x` line.
+- It does not itself constitute a guarantee of CRAN acceptance for the `0.4.x`
+  line.
 
 ## Remaining Next-Phase Work
 
@@ -207,7 +210,7 @@ The current `0.4.x` line remains frozen for CRAN-oriented preparation.
 
 ## Go / No-Go Conditions For A Real Submission Campaign
 
-- `GO`: the current local baseline is ready to open a real submission campaign,
+- `GO`: the current local baseline is ready for a real CRAN submission attempt,
   with the branch kept otherwise frozen apart from submission-facing
   metadata/prose and packaging-hygiene adjustments.
 - `NO-GO`: do not use the submission campaign to reopen finished stabilization

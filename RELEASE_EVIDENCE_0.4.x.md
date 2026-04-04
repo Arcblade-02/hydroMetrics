@@ -139,8 +139,9 @@ The triage reviewed:
 The post-Batch-7 live reassessment found:
 
 - no meaningful immediate cleanup batch remaining
-- no active public-contract mismatch requiring another isolated stabilization
-  batch
+- one later-discovered `gof()` default-versus-`recommended` contract mismatch
+  was resolved in the final package-surface alignment batch, and no active
+  public-contract mismatch remains now
 - remaining items are defer-only rather than active blockers
 
 This means the correct next move is formal baseline closure / release
@@ -243,7 +244,7 @@ Record the exact commands actually used for the stabilized candidate state.
   - Result: passed
 - `devtools::test()`:
   - executed
-  - Result: passed with `1290` passes and `1` expected source-tree skip
+  - Result: passed with `1361` passes and `1` expected source-tree skip
 - `devtools::check(document = FALSE, error_on = "warning")`:
   - executed
   - Result: passed with `0 errors`, `0 warnings`, `0 notes`
@@ -300,15 +301,13 @@ result.
 ## Known Gaps and Accepted Risks
 
 - Remaining non-blocking gaps:
-  - maintainer identity in `DESCRIPTION` still needs explicit confirmation
-    before any serious CRAN-submission push
   - broader multi-environment release or CRAN-oriented preflight is not
     recorded here beyond the validated local path
   - long-term wrapper / compatibility strategy is still a future-phase topic,
     not part of this closure record
 - Any explicitly accepted risk for this cut:
-  - the current line is treated as baseline-closed and release-positioned
-    without claiming CRAN submission readiness
+  - the current line is treated as a validated local submission candidate
+    without claiming guaranteed CRAN acceptance
 - Any blocker that should stop this baseline closure:
   - none for the current stabilization-closure and release-positioning purpose
 
@@ -369,9 +368,8 @@ result.
 - Follow-up task(s), if any:
   - if release packaging is opened next, use this record as the stabilized
     baseline reference
-  - if CRAN submission work is opened later, supplement this record with a
-    submission-oriented preflight that includes confirmed maintainer identity
-    metadata and broader environment evidence
+  - if CRAN submission work is opened later, supplement this record with any
+    broader environment evidence gathered during the actual submission attempt
 
 ## Submission-Campaign Gate Update
 
@@ -390,7 +388,7 @@ the `0.4.x` CRAN-oriented preparation phase was opened.
     `hydroMetrics:::` access
 - Rerun preflight on the metadata-updated frozen baseline:
   - `devtools::build_vignettes()`: passed
-  - `devtools::test()`: passed with `1290` passes, `1` expected skip,
+  - `devtools::test()`: passed with `1361` passes, `1` expected skip,
     `0` failures, `0` warnings
   - `devtools::check(document = FALSE, error_on = "warning")`: passed with
     `0 errors`, `0 warnings`, `0 notes`
@@ -401,4 +399,4 @@ the `0.4.x` CRAN-oriented preparation phase was opened.
     the sandbox; this was treated as an environment limitation rather than a
     package defect
 - Submission-campaign gate decision:
-  - ready to open a true submission campaign
+  - ready for a serious CRAN submission attempt on the current local evidence

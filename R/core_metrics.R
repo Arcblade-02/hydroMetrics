@@ -30,7 +30,7 @@ core_metric_spec_rmse <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Standard RMSE definition in statistical error analysis texts.",
+    references = "Hyndman & Koehler (2006) forecast-accuracy definitions with NIST/SEMATECH handbook support for squared-error summaries; hydroMetrics uses the standard sqrt(mean((sim - obs)^2)) form.",
     version_added = "0.1.0",
     tags = c("core", "phase-2")
   )
@@ -88,7 +88,7 @@ core_metric_spec_cp <- function() {
     category = "efficiency",
     perfect = 1,
     range = c(-Inf, 1),
-    references = "Persistence skill-score definition from hydrology model-evaluation literature.",
+    references = "Kitanidis, P.K. & Bras, R.L. (1980). Real-time forecasting with a conceptual hydrologic model. Part II: Applications and results; hydroMetrics uses the standard hydrologic coefficient-of-persistence skill-score form.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -176,7 +176,7 @@ core_metric_spec_mae <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Standard MAE definition in statistical error analysis literature.",
+    references = "Hyndman & Koehler (2006) forecast-accuracy definitions; hydroMetrics uses the standard mean(abs(sim - obs)) form.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -195,7 +195,7 @@ core_metric_spec_mse <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Standard MSE definition in statistical error analysis literature.",
+    references = "NIST/SEMATECH e-Handbook and Hyndman & Koehler (2006) standard squared-error summaries; hydroMetrics uses the standard mean((sim - obs)^2) form.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -310,7 +310,7 @@ core_metric_spec_r <- function() {
     category = "correlation",
     perfect = 1,
     range = c(-1, 1),
-    references = "Gupta, H. V., Kling, H., Yilmaz, K. K., & Martinez, G. F. (2009). KGE-family component definition using the Pearson correlation term.",
+    references = "Pearson, K. (1896). Mathematical contributions to the theory of evolution. III. Regression, heredity, and panmixia; hydroMetrics uses the standard Pearson product-moment correlation coefficient, which also serves as the KGE correlation component.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -330,7 +330,7 @@ core_metric_spec_r2 <- function() {
     category = "correlation",
     perfect = 1,
     range = c(0, 1),
-    references = "R-squared defined as squared Pearson correlation.",
+    references = "Squared Pearson correlation using the standard cor(sim, obs)^2 convention; Pearson (1896) provides the underlying correlation definition.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -416,7 +416,7 @@ core_metric_spec_mape <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Standard mean absolute percentage error definition in forecasting and error-analysis literature.",
+    references = "Hyndman & Koehler (2006) forecast-accuracy definitions; hydroMetrics uses the standard mean absolute percentage-error form 100 * mean(abs((sim - obs) / obs)).",
     version_added = "0.1.0",
     tags = character()
   )
@@ -438,7 +438,7 @@ core_metric_spec_mpe <- function() {
     category = "bias",
     perfect = 0,
     range = NULL,
-    references = "Standard mean percentage error definition in forecasting and error-analysis literature.",
+    references = "Hyndman & Koehler (2006) forecast-accuracy definitions; hydroMetrics uses the standard mean percentage-error form 100 * mean((sim - obs) / obs).",
     version_added = "0.1.0",
     tags = character()
   )
@@ -503,7 +503,7 @@ core_metric_spec_me <- function() {
     category = "bias",
     perfect = 0,
     range = NULL,
-    references = "Standard mean error definition in forecast error analysis.",
+    references = "Hyndman & Koehler (2006) forecast-accuracy definitions; hydroMetrics uses the standard mean(sim - obs) form.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -579,7 +579,7 @@ core_metric_spec_rd <- function() {
     category = "agreement",
     perfect = 1,
     range = NULL,
-    references = "Willmott agreement-index family with relative normalization by observations.",
+    references = "Accepted retained package-defined relative Willmott-family agreement variant using observation-normalized terms, with the exact formulation fixed by hydroMetrics Decision D-014 rather than claimed as a literature-exact index.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -635,7 +635,7 @@ core_metric_spec_ssq <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Standard least-squares objective definition.",
+    references = "NIST/SEMATECH e-Handbook least-squares summary; hydroMetrics uses the standard sum((sim - obs)^2) objective.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -654,7 +654,7 @@ core_metric_spec_ubrmse <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Standard unbiased RMSE definition in model-evaluation literature.",
+    references = "Entekhabi et al. (2010) unbiased-RMSE context; hydroMetrics uses the standard anomaly-series form sqrt(mean(((sim - mean(sim)) - (obs - mean(obs)))^2)).",
     version_added = "0.1.0",
     tags = character()
   )
@@ -1047,7 +1047,7 @@ core_metric_spec_rspearman <- function() {
     category = "correlation",
     perfect = 1,
     range = c(-1, 1),
-    references = "Spearman rank correlation (standard statistical definition).",
+    references = "Spearman, C. (1904). The proof and measurement of association between two things; hydroMetrics uses the standard Spearman rank correlation.",
     version_added = "0.1.0",
     tags = character()
   )

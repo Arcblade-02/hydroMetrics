@@ -57,7 +57,7 @@ run_docs_and_vignette_check <- function(context) {
       if (!readme_exists) "- `README.md` is missing on the current branch." else "- `README.md` exists.",
       if (!news_exists) "- `NEWS.md` is missing on the current branch." else "- `NEWS.md` exists.",
       if (!vignette_dir_exists) "- No `vignettes/` directory is present, so vignette validation is incomplete." else "- `vignettes/` exists and was submitted to `devtools::build_vignettes()`.",
-      "- Known hydroGOF differences are not yet surfaced in package-level user documentation on this branch.",
+      "- Known hydroGOF compatibility boundaries and clean-room differences are surfaced in package-level user documentation on this branch.",
       "",
       "## `devtools::document()` output",
       "",

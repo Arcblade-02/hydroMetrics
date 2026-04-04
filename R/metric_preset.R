@@ -37,14 +37,13 @@ metric_preset <- function(preset, exported_only = FALSE) {
   exported_only <- .hm_metric_search_validate_flag(exported_only, "exported_only")
 
   metrics <- .hm_metric_search_table()
-  keep <- vapply(metrics$presets, function(group_text) {
-    .hm_metric_search_match_preset(group_text, preset)
-  }, logical(1))
+  preset_groups <- .hm_metric_search_presets(metrics$id, metrics)
+  out_ids <- unique(unlist(preset_groups[preset], use.names = FALSE))
+  out_ids <- out_ids[out_ids %in% metrics$id]
 
-  out <- metrics[keep, , drop = FALSE]
   if (isTRUE(exported_only)) {
-    out <- out[nzchar(out$exported_wrappers), , drop = FALSE]
+    out_ids <- out_ids[out_ids %in% metrics$id[nzchar(metrics$exported_wrappers)]]
   }
 
-  unname(out$id)
+  unname(out_ids)
 }

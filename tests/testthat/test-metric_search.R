@@ -20,6 +20,7 @@ test_that("metric_search returns annotated metric metadata", {
   expect_true(all(c(
     "mae",
     "nse",
+    "dr",
     "hfb",
     "mutual_information",
     "r",

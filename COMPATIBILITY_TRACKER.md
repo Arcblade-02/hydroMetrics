@@ -67,6 +67,7 @@ handling; they are not exported standalone functions.
 - [x] br2
 - [x] cp
 - [x] d
+- [x] dr
 - [x] KGE
 - [x] KGEkm
 - [x] KGElf
@@ -114,6 +115,7 @@ route to canonical ids rather than creating additional canonical entries.
 | br2 | Bias-Corrected R-squared | correlation | 0.1.0 | Krause et al. (2005) literature-aligned weighted-`r^2` / `bR2`: hydroMetrics now uses the fitted slope `b` with `|b| * r^2` for `b <= 1` and `r^2 / |b|` for `b > 1` under `D-029`. |
 | cp | Coefficient of Persistence | efficiency | 0.1.0 | Kitanidis & Bras (1980) hydrologic persistence skill score; hydroMetrics uses the standard coefficient-of-persistence formulation against the one-step observed persistence baseline. |
 | d | Willmott Index of Agreement | agreement | 0.1.0 | Willmott, C.J. (1981). On the validation of models. |
+| dr | Refined Index of Agreement | agreement | 0.4.0 | Willmott, C.J., Robeson, S.M., & Matsuura, K. (2012). A refined index of model performance; hydroMetrics implements the paper's piecewise refined index of agreement `dr` using `c = 2` and absolute-error totals. |
 | hfb | High Flow Bias | bias | 0.1.0 | Compatibility-stable retained high-flow subset bias using observed values at or above a deterministic quantile threshold; not promoted as a literature-exact or hydroGOF-equivalent high-flow diagnostic. |
 | kge | Kling-Gupta Efficiency | efficiency | 0.1.0 | Kling, H., Fuchs, M., & Paulin, M. (2009). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. |
 | kgekm | KGE Modified Variability | efficiency | 0.1.0 | Kling, H., Fuchs, M., & Paulin, M. (2012). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. |

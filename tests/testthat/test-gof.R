@@ -131,13 +131,31 @@ test_that("gof exposes rae and rrse through explicit method selection", {
   expect_equal(as.numeric(out[["rrse"]])^2, 1 - .hm_gof_get("metric_nse")(sim, obs), tolerance = 1e-12)
 })
 
+test_that("gof exposes dr through explicit method selection with the literature-exact piecewise formula", {
+  sim <- c(1, 2, 4, 8)
+  obs <- c(1, 2, 3, 4)
+
+  out <- .hm_gof_get("gof")(sim, obs, methods = "dr")
+  scale <- 2 * sum(abs(obs - mean(obs)))
+  abs_err <- sum(abs(sim - obs))
+  expected <- if (abs_err <= scale) {
+    1 - (abs_err / scale)
+  } else {
+    (scale / abs_err) - 1
+  }
+
+  expect_s3_class(out, "hydro_metrics")
+  expect_identical(names(out), "dr")
+  expect_equal(as.numeric(out[["dr"]]), expected, tolerance = 1e-12)
+})
+
 test_that("gof compat-10 defaults remain unchanged after adding broader registry metrics", {
   sim <- c(1, 2, 3, 4, 5)
   obs <- c(1.1, 1.9, 3.2, 3.8, 5.1)
 
   out <- .hm_gof_get("gof")(sim, obs)
 
-  expect_false(any(c("sae", "rmsle", "evs", "rae", "rrse") %in% names(out)))
+  expect_false(any(c("sae", "rmsle", "evs", "rae", "rrse", "dr") %in% names(out)))
   expect_identical(names(out), .hm_gof_default_ids)
 })
 

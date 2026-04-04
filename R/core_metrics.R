@@ -50,11 +50,11 @@ core_metric_spec_pbias <- function() {
     id = "pbias",
     fun = metric_pbias,
     name = "Percent Bias",
-    description = "PBIAS computed as 100 * sum(sim - obs) / sum(obs); positive values indicate simulated totals above observed totals.",
+    description = "PBIAS computed as 100 * sum(sim - obs) / sum(obs); under the retained package sign convention, positive values indicate simulated totals above observed totals.",
     category = "bias",
     perfect = 0,
     range = c(-Inf, Inf),
-    references = "Moriasi et al. (2007) percent-bias evaluation context; hydroMetrics explicitly retains the sim-minus-obs sign convention used here and in Abdelkader et al. (2023), so positive values indicate overestimation and opposite-sign Moriasi thresholds are not claimed verbatim.",
+    references = "Moriasi et al. (2007) provides percent-bias evaluation and threshold context with the opposite-sign presentation, while Abdelkader et al. (2023) uses the same sim-minus-obs form retained here; hydroMetrics therefore treats positive values as overestimation and does not claim verbatim transfer of opposite-sign Moriasi thresholds.",
     version_added = "0.1.0",
     tags = c("core", "phase-2")
   )
@@ -116,11 +116,11 @@ core_metric_spec_rfactor <- function() {
     id = "rfactor",
     fun = metric_rfactor,
     name = "R-factor",
-    description = "Deterministic normalized absolute-error ratio computed as mean(abs(sim - obs)) / mean(abs(obs)).",
+    description = "Package-defined deterministic compatibility metric computed as mean(abs(sim - obs)) / mean(abs(obs)).",
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Project-defined deterministic compatibility rfactor: mean(abs(sim - obs)) / mean(abs(obs)); this is not the SWAT/95PPU uncertainty-band R-factor.",
+    references = "Abbaspour et al. (2018) provides SWAT/95PPU R-factor terminology context only; hydroMetrics retains the deterministic paired-series compatibility metric mean(abs(sim - obs)) / mean(abs(obs)), which is not the SWAT/95PPU uncertainty-band R-factor.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -149,11 +149,11 @@ core_metric_spec_pfactor <- function() {
     id = "pfactor",
     fun = metric_pfactor,
     name = "P-factor",
-    description = "Deterministic paired-value hit proportion within a package-defined tolerance band.",
+    description = "Package-defined deterministic compatibility metric giving the paired-value hit proportion within a tolerance band.",
     category = "efficiency",
     perfect = 1,
     range = c(0, 1),
-    references = "Project-defined deterministic compatibility pfactor using paired-value tolerance-band hit proportion; this is not the SWAT/95PPU uncertainty-band P-factor.",
+    references = "Abbaspour et al. (2018) provides SWAT/95PPU P-factor terminology context only; hydroMetrics retains the deterministic paired-series compatibility hit proportion abs(sim - obs) <= tol * abs(obs) with obs == 0 handled by absolute tol, which is not the SWAT/95PPU uncertainty-band P-factor.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -608,11 +608,11 @@ core_metric_spec_br2 <- function() {
     id = "br2",
     fun = metric_br2,
     name = "Bias-Corrected R-squared",
-    description = "Retained package br2 statistic computed as abs(slope(sim ~ obs)) * cor(sim, obs)^2.",
+    description = "Retained project-selected package br2 statistic computed as abs(slope(sim ~ obs)) * cor(sim, obs)^2.",
     category = "correlation",
     perfect = 1,
     range = c(0, Inf),
-    references = "Krause et al. (2005) bR2 / weighted-r^2 terminology context; hydroMetrics currently retains abs(slope(sim ~ obs)) * cor(sim, obs)^2 as a package decision recorded in Decision D-029, while the paper's published piecewise weighting is deferred to any future formula-change lane. The current implementation does not claim a fully reverified literature-exact formula match.",
+    references = "Krause et al. (2005) bR2 / weighted-r^2 terminology context; hydroMetrics currently retains abs(slope(sim ~ obs)) * cor(sim, obs)^2 as a project-selected package decision recorded in Decision D-029, while the paper's published piecewise weighting remains deferred to any future formula-change lane. The current implementation does not claim a fully reverified literature-exact formula match.",
     version_added = "0.1.0",
     tags = character()
   )
@@ -1015,11 +1015,11 @@ core_metric_spec_hfb <- function() {
     id = "hfb",
     fun = metric_hfb,
     name = "High Flow Bias",
-    description = "Package-defined high-flow subset percent bias over observations at or above a deterministic high-flow quantile threshold.",
+    description = "Compatibility-stable package-defined high-flow subset percent-bias metric over observations at or above a deterministic high-flow quantile threshold.",
     category = "bias",
     perfect = 0,
     range = NULL,
-    references = "Package-defined compatibility high-flow subset bias using deterministic quantile thresholding; not claimed as a direct implementation of broader literature high-flow diagnostics.",
+    references = "Compatibility-stable retained high-flow subset bias using deterministic observed-quantile thresholding; not promoted as a literature-exact or hydroGOF-equivalent high-flow diagnostic on the current 0.4.x line.",
     version_added = "0.1.0",
     tags = character()
   )

@@ -229,11 +229,11 @@ core_metric_spec_mutual_information_score <- function() {
     id = "mutual_information_score",
     fun = metric_mutual_information_score,
     name = "Mutual Information Score",
-    description = "Retained compatibility duplicate of the package's raw pooled-grid mutual information in nats.",
+    description = "Retained callable compatibility duplicate of the package's canonical raw pooled-grid mutual information in nats.",
     category = "agreement",
     perfect = Inf,
     range = c(0, Inf),
-    references = "Shannon (1948) mutual-information foundation with Sturges (1926) histogram binning; this retained compatibility metric is numerically identical to canonical mutual_information under the current deterministic policy and should not be treated as an independent canonical id.",
+    references = "Shannon (1948) mutual-information foundation with Sturges (1926) histogram binning; this retained callable compatibility duplicate is numerically identical to canonical mutual_information under the current deterministic policy, remains hidden from canonical discovery, and should not be treated as an independent canonical id or separate lifecycle lane.",
     version_added = "0.2.2",
     tags = c("phase-3", "layer-c", "batch-c2")
   )

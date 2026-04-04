@@ -134,6 +134,17 @@ test_that("metric_search keeps canonical ids distinct from deprecated and orches
   expect_match(composite_row$exported_wrappers[[1]], "extended_valindex")
 })
 
+test_that("metric_search routes retained mutual_information_score discovery to canonical mutual_information", {
+  out <- hydroMetrics::metric_search(text = "mutual_information_score")
+
+  expect_true("mutual_information" %in% out$id)
+  expect_false("mutual_information_score" %in% out$id)
+
+  mi_row <- out[out$id == "mutual_information", , drop = FALSE]
+  expect_match(mi_row$exported_wrappers[[1]], "mutual_information_score")
+  expect_true(mi_row$compatibility_export[[1]])
+})
+
 test_that("metric_search validates discovery filters conservatively", {
   expect_error(hydroMetrics::metric_search(text = NA_character_), "`text` must be NULL or a character vector")
   expect_error(hydroMetrics::metric_search(exported = NA), "`exported` must be TRUE, FALSE, or NULL")

@@ -61,7 +61,8 @@ entropy_diff <- function(sim, obs, na.rm = NULL, ...) {
 #' This wrapper remains callable for continuity, but it is not a separate
 #' discovery-canonical metric name. Under the current deterministic policy it
 #' reports the same raw pooled-grid mutual information in natural-log units as
-#' [mutual_information()].
+#' [mutual_information()]. It is retained as a compatibility surface on the
+#' current `0.4.x` line rather than as an independent lifecycle lane.
 #'
 #' @inheritParams gof
 #'
@@ -86,7 +87,8 @@ mutual_information_score <- function(sim, obs, na.rm = NULL, ...) {
 #' Thin exported wrapper over [gof()] for the canonical registry metric
 #' `"mutual_information"`. Under the current deterministic policy this is the
 #' canonical discovery name for the same pooled-grid raw mutual information
-#' reported by retained compatibility wrapper `"mutual_information_score"`.
+#' reported by retained compatibility wrapper `"mutual_information_score"`,
+#' which remains callable but noncanonical.
 #'
 #' @inheritParams gof
 #'

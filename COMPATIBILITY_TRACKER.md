@@ -31,6 +31,10 @@ equivalence unless the row says so explicitly.
 - exported compatibility wrappers retained at the current baseline:
   `HFB()`, `NSeff()`, `mNSeff()`, `rNSeff()`, `wsNSeff()`, and
   `mutual_information_score()`
+- `mutual_information_score()` remains callable for continuity but is
+  intentionally omitted from the canonical implemented-metrics table because
+  canonical discovery and canonical metric identity belong to
+  `mutual_information`
 - exported deprecated forwarding wrappers retained temporarily:
   `tail_dependence_score()` and `extended_valindex()`
 - uppercase hydroGOF-style names such as `NSE`, `KGE`, `RMSE`, `R2`,
@@ -107,14 +111,15 @@ route to canonical ids rather than creating additional canonical entries.
 | --- | --- | --- | --- | --- |
 | alpha | Variability Ratio | scale | 0.1.0 | KGE component definition in hydrology literature using variability ratio sd(sim)/sd(obs). |
 | beta | Bias Ratio | bias | 0.1.0 | KGE component definition in hydrology literature using bias ratio mean(sim)/mean(obs). |
-| br2 | Bias-Corrected R-squared | correlation | 0.1.0 | Krause et al. (2005) `bR2` / weighted-`r^2` terminology context; hydroMetrics currently retains `abs(slope(sim ~ obs)) * cor(sim, obs)^2` under `D-029`, while the paper's published piecewise weighting remains deferred to any future formula-change lane. The current metric does not claim a fully reverified literature-exact formula match. |
+| br2 | Bias-Corrected R-squared | correlation | 0.1.0 | Krause et al. (2005) `bR2` / weighted-`r^2` terminology context; hydroMetrics currently retains the project-selected package statistic `abs(slope(sim ~ obs)) * cor(sim, obs)^2` under `D-029`, while the paper's published piecewise weighting remains deferred to any future formula-change lane. The current metric does not claim a fully reverified literature-exact formula match. |
 | cp | Coefficient of Persistence | efficiency | 0.1.0 | Persistence skill-score definition from hydrology model-evaluation literature. |
 | d | Willmott Index of Agreement | agreement | 0.1.0 | Willmott, C.J. (1981). On the validation of models. |
-| hfb | High Flow Bias | bias | 0.1.0 | Package-defined compatibility high-flow subset bias using deterministic quantile thresholding; not claimed as a direct implementation of broader literature high-flow diagnostics. |
+| hfb | High Flow Bias | bias | 0.1.0 | Compatibility-stable retained high-flow subset bias using observed values at or above a deterministic quantile threshold; not promoted as a literature-exact or hydroGOF-equivalent high-flow diagnostic. |
 | kge | Kling-Gupta Efficiency | efficiency | 0.1.0 | Kling, H., Fuchs, M., & Paulin, M. (2009). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. |
 | kgekm | KGE Modified Variability | efficiency | 0.1.0 | Kling, H., Fuchs, M., & Paulin, M. (2012). Runoff conditions in the upper Danube basin under an ensemble of climate change scenarios. |
 | kgelf | KGE Low-Flow | efficiency | 0.1.0 | Based on Gupta et al. (2009) KGE, with low-flow log-transformed objective-function context from Krause et al. (2005). |
 | kgenp | KGE Nonparametric | efficiency | 0.1.0 | Pool, S., Vis, M., & Seibert, J. (2018). Evaluating model performance: towards a non-parametric variant of the Kling-Gupta efficiency. |
+| low_flow_bias | Low-Flow Bias | bias | 0.2.2 | Accepted retained package-defined observed lower-30% subset percent-bias diagnostic; Yilmaz et al. (2008) provides low-flow/FDC context, but hydroMetrics does not claim the literature low-flow FDC/log formulation. |
 | mae | Mean Absolute Error | error | 0.1.0 | Standard MAE definition in statistical error analysis literature. |
 | mape | Mean Absolute Percentage Error | error | 0.1.0 | Standard mean absolute percentage error definition in forecasting and error-analysis literature. |
 | md | Modified Index of Agreement | agreement | 0.1.0 | Willmott, C.J., Robeson, S.M., & Matsuura, K. (2012). A refined index of model performance. |
@@ -125,12 +130,12 @@ route to canonical ids rather than creating additional canonical entries.
 | nrmse | Normalized Root Mean Squared Error | error | 0.1.0 | Abdelkader et al. (2023) hydrologic example using `NRMSE = RMSE / mean(obs)`; hydroMetrics retains that exact mean-normalized variant and does not imply a universal NRMSE definition. |
 | nrmse_sd | NRMSE by SD | error | 0.1.0 | Project-defined NRMSE variant normalized by sd(obs). |
 | nse | Nash-Sutcliffe Efficiency | efficiency | 0.1.0 | Nash, J.E. & Sutcliffe, J.V. (1970). River flow forecasting through conceptual models part I - A discussion of principles. |
-| pbias | Percent Bias | bias | 0.1.0 | Moriasi et al. (2007) percent-bias evaluation context; hydroMetrics explicitly retains `100 * sum(sim - obs) / sum(obs)`, so positive values indicate overestimation and opposite-sign threshold claims are not assumed silently. |
-| pfactor | P-factor | efficiency | 0.1.0 | Project-defined deterministic compatibility pfactor using paired-value tolerance-band hit proportion; not the SWAT/95PPU uncertainty-band P-factor. |
+| pbias | Percent Bias | bias | 0.1.0 | Moriasi et al. (2007) provides opposite-sign percent-bias threshold context, while Abdelkader et al. (2023) uses the same `100 * sum(sim - obs) / sum(obs)` form retained by hydroMetrics; positive values therefore indicate overestimation and Moriasi thresholds are not transferred verbatim. |
+| pfactor | P-factor | efficiency | 0.1.0 | Accepted retained package-defined deterministic compatibility metric using the paired-value hit rule `abs(sim - obs) <= tol * abs(obs)` with absolute `tol` fallback at `obs == 0`; not the SWAT/95PPU uncertainty-band P-factor. |
 | r | Pearson Correlation | correlation | 0.1.0 | Canonical Pearson correlation metric id; deprecated `rPearson` / `rpearson` requests resolve here through compatibility alias handling. |
 | r2 | Squared Pearson Correlation | correlation | 0.1.0 | R-squared defined as squared Pearson correlation. |
 | rd | Relative Index of Agreement | agreement | 0.1.0 | Willmott agreement-index family with relative normalization by observations. |
-| rfactor | R-factor | error | 0.1.0 | Project-defined deterministic compatibility rfactor: mean(abs(sim - obs)) / mean(abs(obs)); not the SWAT/95PPU uncertainty-band R-factor. |
+| rfactor | R-factor | error | 0.1.0 | Accepted retained package-defined deterministic compatibility metric `mean(abs(sim - obs)) / mean(abs(obs))`; not the SWAT/95PPU uncertainty-band R-factor. |
 | rmse | Root Mean Squared Error | error | 0.1.0 | Standard RMSE definition in statistical error analysis texts. |
 | rnse | Relative NSE | efficiency | 0.1.0 | Based on Nash & Sutcliffe (1970) NSE, using observation-scaled relative errors. |
 | rsd | Standard Deviation Ratio | scale | 0.1.0 | Project definition for hydrology compatibility: ratio of simulated to observed standard deviation. |

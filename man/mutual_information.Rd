@@ -25,7 +25,8 @@ multi-series inputs.
 Thin exported wrapper over \code{\link[=gof]{gof()}} for the canonical registry metric
 \code{"mutual_information"}. Under the current deterministic policy this is the
 canonical discovery name for the same pooled-grid raw mutual information
-reported by retained compatibility wrapper \code{"mutual_information_score"}.
+reported by retained compatibility wrapper \code{"mutual_information_score"},
+which remains callable but noncanonical.
 }
 \examples{
 mutual_information(c(1, 2, 2, 3, 4, 5), c(1, 1, 2, 3, 3, 4))

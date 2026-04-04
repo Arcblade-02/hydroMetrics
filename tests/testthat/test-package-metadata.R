@@ -13,9 +13,11 @@ test_that("package metadata and core exports are present at runtime", {
   expect_false(any(c("sae", "evs", "rae", "rrse") %in% getNamespaceExports("hydroMetrics")))
 })
 
-test_that("KGE component reference metadata remains literature-backed", {
+test_that("KGE component metadata separates KGE-specific and standard-correlation provenance honestly", {
   refs <- hydroMetrics:::list_metrics()
-  refs <- refs[refs$id %in% c("alpha", "beta", "r"), "references", drop = TRUE]
+  refs <- refs[match(c("alpha", "beta", "r"), refs$id), c("id", "references")]
 
-  expect_true(all(grepl("\\(2009\\)", refs)))
+  expect_true(all(grepl("\\(2009\\)", refs$references[refs$id %in% c("alpha", "beta")])))
+  expect_match(refs$references[refs$id == "r"], "Pearson")
+  expect_match(refs$references[refs$id == "r"], "KGE correlation component")
 })

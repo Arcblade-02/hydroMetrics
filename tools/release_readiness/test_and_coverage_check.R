@@ -75,7 +75,7 @@ run_test_and_coverage_check <- function(context) {
       } else {
         "- One or both test commands failed; see the raw log for exact output."
       },
-      "- Wrapper-specific coverage is constrained by the current exported surface. On this snapshot only `gof`, `ggof`, and `hm_result` are exported.",
+      "- Wrapper-specific coverage is constrained by the current exported surface and should be interpreted against the documented stable helper/compatibility mix on this snapshot.",
       "- Preprocessing coverage is reviewed through any `R/preproc.R` entries emitted by `covr`; absence of a file-level line item is recorded rather than inferred.",
       "- Edge-case branch coverage requires manual follow-up where `covr` does not expose branch-level detail in the current environment.",
       "",

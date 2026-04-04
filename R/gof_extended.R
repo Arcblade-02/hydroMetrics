@@ -1,13 +1,7 @@
 .gof_default_ids <- function() {
-  c(
-    "me", "mae", "rmse", "ubrmse", "pbias", "rsr", "rsd", "nse", "r", "r2", "ve", "kge", "mnse", "cp",
-    "alpha", "beta", "ccc",
-    "mdae", "maxae", "smape",
-    "low_flow_bias",
-    "peak_timing_error", "extreme_event_ratio", "rising_limb_error",
-    "baseflow_index_error",
-    "rspearman", "wasserstein_distance", "distribution_overlap"
-  )
+  # Keep gof() default selection tied to the same compat-10 shortlist used by
+  # discovery-facing "recommended" helpers.
+  .hm_recommended_metric_ids()
 }
 
 .gof_hydrogof_ids <- function() {

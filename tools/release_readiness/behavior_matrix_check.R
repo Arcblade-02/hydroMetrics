@@ -3,7 +3,7 @@ run_behavior_matrix_check <- function(context) {
 
   code <- paste(
     "library(hydroMetrics)",
-    "targets <- c('NSE', 'KGE', 'RMSE', 'PBIAS', 'R2', 'NRMSE', 'gof', 'preproc')",
+    "targets <- c('gof', 'ggof', 'preproc', 'valindex')",
     "exports <- getNamespaceExports('hydroMetrics')",
     "ns <- asNamespace('hydroMetrics')",
     "run_case <- function(fun_name, edge_case, sim, obs, input_class, notes = '') {",
@@ -21,7 +21,7 @@ run_behavior_matrix_check <- function(context) {
     "    ))",
     "  }",
     "  fn <- get(fun_name, envir = ns, inherits = FALSE)",
-    "  invoke <- function() fn(sim = sim, obs = obs)",
+    "  invoke <- function() switch(fun_name, gof = fn(sim = sim, obs = obs), ggof = fn(sim = sim, obs = obs), preproc = fn(sim = sim, obs = obs), valindex = fn(sim = sim, obs = obs, fun = c('nse', 'rmse')))",
     "  call_once <- function() {",
     "    warnings <- character()",
     "    result <- withCallingHandlers(",
@@ -106,7 +106,7 @@ run_behavior_matrix_check <- function(context) {
 
   run <- rr_run_r_code(code, wd = context$root)
   behavior_df <- rr_load_csv_if_exists(matrix_path)
-  missing_exports <- if (nrow(behavior_df) > 0L) unique(behavior_df$function_name[behavior_df$behavior == "not_exported"]) else c("NSE", "KGE", "RMSE", "PBIAS", "R2", "NRMSE", "preproc")
+  missing_exports <- if (nrow(behavior_df) > 0L) unique(behavior_df$function_name[behavior_df$behavior == "not_exported"]) else c("gof", "ggof", "preproc", "valindex")
 
   rr_result(
     stage = "behavioral correctness matrix",

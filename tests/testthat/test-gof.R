@@ -21,16 +21,10 @@
 }
 
 .hm_gof_default_ids <- c(
-  "me", "mae", "rmse", "ubrmse", "pbias", "rsr", "rsd", "nse", "r", "r2", "ve", "kge", "mnse", "cp",
-  "alpha", "beta", "ccc",
-  "mdae", "maxae", "smape",
-  "low_flow_bias",
-  "peak_timing_error", "extreme_event_ratio", "rising_limb_error",
-  "baseflow_index_error",
-  "rspearman", "wasserstein_distance", "distribution_overlap"
+  "nse", "kge", "rmse", "pbias", "mae", "mse", "r2", "ve", "rsr", "nrmse"
 )
 
-test_that("gof defaults to the curated modern summary set", {
+test_that("gof defaults to the compat-10 recommended summary set", {
   sim <- c(1, 2, 3, 4, 5)
   obs <- c(1.1, 1.9, 3.2, 3.8, 5.1)
 
@@ -47,6 +41,20 @@ test_that("gof defaults to the curated modern summary set", {
   expect_true(is.call(attr(out, "call")))
 })
 
+test_that("gof default selection matches preset = recommended and metric_preset(recommended)", {
+  sim <- c(1, 2, 3, 4, 5)
+  obs <- c(1.1, 1.9, 3.2, 3.8, 5.1)
+
+  out_default <- .hm_gof_get("gof")(sim, obs)
+  out_preset <- .hm_gof_get("gof")(sim, obs, preset = "recommended")
+  out_methods <- .hm_gof_get("gof")(sim, obs, methods = hydroMetrics::metric_preset("recommended"))
+
+  expect_identical(names(out_preset), names(out_default))
+  expect_identical(names(out_methods), names(out_default))
+  expect_equal(as.numeric(out_preset), as.numeric(out_default))
+  expect_equal(as.numeric(out_methods), as.numeric(out_default))
+})
+
 test_that("gof extended = FALSE matches plain default behavior", {
   sim <- c(1, 2, 3, 4, 5)
   obs <- c(1.1, 1.9, 3.2, 3.8, 5.1)
@@ -60,7 +68,7 @@ test_that("gof extended = FALSE matches plain default behavior", {
   expect_equal(attr(out_explicit, "meta"), attr(out_default, "meta"))
 })
 
-test_that("gof extended = TRUE returns all auto-applicable registered metrics", {
+test_that("gof extended = TRUE expands beyond the compat-10 default to all auto-applicable registered metrics", {
   sim <- c(1, 2, 3, 4, 5)
   obs <- c(1.1, 1.9, 3.2, 3.8, 5.1)
 
@@ -123,7 +131,7 @@ test_that("gof exposes rae and rrse through explicit method selection", {
   expect_equal(as.numeric(out[["rrse"]])^2, 1 - .hm_gof_get("metric_nse")(sim, obs), tolerance = 1e-12)
 })
 
-test_that("gof defaults remain unchanged after adding sae, rmsle, and evs", {
+test_that("gof compat-10 defaults remain unchanged after adding broader registry metrics", {
   sim <- c(1, 2, 3, 4, 5)
   obs <- c(1.1, 1.9, 3.2, 3.8, 5.1)
 

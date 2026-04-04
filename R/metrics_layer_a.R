@@ -15,7 +15,7 @@ core_metric_spec_mdae <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Hyndman & Koehler (2006) forecast-accuracy context plus standard robust absolute-error summaries; package metric reports median(abs(sim - obs)) on aligned pairs.",
+    references = "Hyndman & Koehler (2006) forecast-accuracy definitions; hydroMetrics uses the standard median absolute-error summary median(abs(sim - obs)).",
     version_added = "0.2.0",
     tags = c("phase-3", "layer-a", "batch-a1")
   )
@@ -38,7 +38,7 @@ core_metric_spec_maxae <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Hyndman & Koehler (2006) forecast-accuracy context plus standard worst-case absolute-error summaries; package metric reports max(abs(sim - obs)) on aligned pairs.",
+    references = "Hyndman & Koehler (2006) forecast-accuracy definitions; hydroMetrics uses the standard maximum absolute-error summary max(abs(sim - obs)).",
     version_added = "0.2.0",
     tags = c("phase-3", "layer-a", "batch-a1")
   )
@@ -273,7 +273,7 @@ core_metric_spec_mare <- function() {
     category = "error",
     perfect = 0,
     range = c(0, Inf),
-    references = "Relative-error criteria as used in regional hydrological hazard evaluation literature.",
+    references = "Delaigue et al. (2024) hydrologic relative-error reporting context; hydroMetrics uses the paired mean absolute relative-error form mean(abs((sim - obs) / obs)).",
     version_added = "0.2.0",
     tags = c("phase-3", "layer-a", "batch-a2")
   )
@@ -296,7 +296,7 @@ core_metric_spec_mrb <- function() {
     category = "bias",
     perfect = 0,
     range = c(-Inf, Inf),
-    references = "Relative-bias criteria as used in regional hydrological hazard evaluation literature.",
+    references = "Delaigue et al. (2024) hydrologic relative-bias reporting context; hydroMetrics uses the paired mean relative-bias form 100 * mean((sim - obs) / obs).",
     version_added = "0.2.0",
     tags = c("phase-3", "layer-a", "batch-a2")
   )

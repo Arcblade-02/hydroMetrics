@@ -178,7 +178,7 @@ rr_load_csv_if_exists <- function(path) {
 }
 
 rr_required_api <- function() {
-  c("NSE", "KGE", "RMSE", "MAE", "PBIAS", "R2", "NRMSE", "gof", "ggof", "preproc", "valindex")
+  c("gof", "ggof", "preproc", "valindex", "metric_search", "metric_preset", "hm_result")
 }
 
 rr_default_stage_rows <- function(results) {

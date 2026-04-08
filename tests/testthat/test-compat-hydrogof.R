@@ -127,10 +127,11 @@ test_that("moderate hydroGOF-overlap tranche matches on intended comparable case
   )
 
   for (case in cases) {
-    out <- gof(case$sim, case$obs, methods = c("me", "d", "md", "ubrmse", "rspearman", "cp"))
+    out <- gof(case$sim, case$obs, methods = c("me", "d", "dr", "md", "ubrmse", "rspearman", "cp"))
 
     expect_equal(out[["me"]], hydroGOF::me(case$sim, case$obs), tolerance = tol)
     expect_equal(out[["d"]], hydroGOF::d(case$sim, case$obs), tolerance = tol)
+    expect_equal(out[["dr"]], hydroGOF::dr(case$sim, case$obs), tolerance = tol)
     expect_equal(out[["md"]], hydroGOF::md(case$sim, case$obs), tolerance = tol)
     expect_equal(out[["ubrmse"]], hydroGOF::ubRMSE(case$sim, case$obs), tolerance = tol)
     expect_equal(out[["rspearman"]], hydroGOF::rSpearman(case$sim, case$obs), tolerance = tol)

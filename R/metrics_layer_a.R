@@ -122,6 +122,37 @@ core_metric_spec_ccc <- function() {
   )
 }
 
+metric_dr <- function(sim, obs) {
+  obs_dev <- sum(abs(obs - mean(obs)))
+  if (obs_dev == 0) {
+    stop("dr is undefined because sum(abs(obs - mean(obs))) == 0.", call. = FALSE)
+  }
+
+  abs_err <- sum(abs(sim - obs))
+  scale <- 2 * obs_dev
+
+  if (abs_err <= scale) {
+    return(1 - (abs_err / scale))
+  }
+
+  (scale / abs_err) - 1
+}
+
+core_metric_spec_dr <- function() {
+  list(
+    id = "dr",
+    fun = metric_dr,
+    name = "Refined Index of Agreement",
+    description = "Willmott refined agreement index using the 2012 piecewise absolute-error formulation.",
+    category = "agreement",
+    perfect = 1,
+    range = c(-1, 1),
+    references = "Willmott, C.J., Robeson, S.M., & Matsuura, K. (2012). A refined index of model performance; hydroMetrics implements the paper's piecewise refined index of agreement dr using c = 2 and absolute-error totals.",
+    version_added = "0.4.0",
+    tags = c("phase-4", "layer-a", "metric-expansion-dr")
+  )
+}
+
 metric_e1 <- function(sim, obs) {
   if (length(obs) < 1L) {
     stop("e1 requires at least 1 value.", call. = FALSE)

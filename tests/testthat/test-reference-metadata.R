@@ -27,13 +27,16 @@ test_that("seven target metrics no longer use package-defined reference wording"
 test_that("targeted provenance-sensitive metrics carry explicit qualification text", {
   refs <- hydroMetrics:::list_metrics()
   refs <- refs[match(
-    c("br2", "pbias", "nrmse", "pfactor", "rfactor", "hfb", "low_flow_bias", "mutual_information_score", "mnse"),
+    c("br2", "dr", "pbias", "nrmse", "pfactor", "rfactor", "hfb", "low_flow_bias", "mutual_information_score", "mnse"),
     refs$id
   ), c("id", "references")]
 
   expect_match(refs$references[refs$id == "br2"], "Krause")
   expect_match(refs$references[refs$id == "br2"], "piecewise weighting")
   expect_match(refs$references[refs$id == "br2"], "r\\^2 / \\|b\\|")
+  expect_match(refs$references[refs$id == "dr"], "Willmott")
+  expect_match(refs$references[refs$id == "dr"], "piecewise refined index of agreement")
+  expect_false(grepl("package-defined|project-defined", refs$references[refs$id == "dr"], ignore.case = TRUE))
   expect_match(refs$references[refs$id == "pbias"], "Abdelkader")
   expect_match(refs$references[refs$id == "pbias"], "treats positive values as overestimation")
   expect_match(refs$references[refs$id == "pbias"], "opposite-sign Moriasi thresholds")

@@ -187,7 +187,7 @@ write_csv_deterministic(
   order_cols = c("Path")
 )
 
-summary_path <- file.path(project_root, "docs", "phase2_validation_summary.md")
+summary_path <- file.path(project_root, "notes", "PHASE2_HISTORY.md")
 summary_exists <- file.exists(summary_path)
 
 retained_assets <- c(
@@ -198,7 +198,7 @@ retained_assets <- c(
   "NEWS.md",
   "README.md",
   "R",
-  "docs/phase2_validation_summary.md",
+  "notes/PHASE2_HISTORY.md",
   "inst",
   "man",
   "tests",
@@ -223,7 +223,7 @@ layout_lines <- c(
   "- vignettes/",
   "- inst/",
   "- tools/",
-  "- docs/phase2_validation_summary.md",
+  "- notes/PHASE2_HISTORY.md",
   "- DESCRIPTION",
   "- NAMESPACE",
   "- README.md",

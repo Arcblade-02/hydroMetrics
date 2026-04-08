@@ -164,7 +164,7 @@ branch_rows <- lapply(seq_len(nrow(branches)), function(i) {
   exists <- branch_exists(branch)
   head_commit <- branch_head(branch)
   summary_present <- if (branch %in% c("dev", "feature/archive-phase2-artifacts")) {
-    branch_has_path(branch, "docs/phase2_validation_summary.md")
+    branch_has_path(branch, "notes/PHASE2_HISTORY.md")
   } else {
     FALSE
   }
@@ -209,7 +209,7 @@ archive_verified <- length(archive_missing) == 0L
 dev_matches_feature <- nzchar(dev_head) && identical(dev_head, feature_head)
 dev_has_required_assets <- all(vapply(
   c(
-    "docs/phase2_validation_summary.md",
+    "notes/PHASE2_HISTORY.md",
     "README.md",
     "NEWS.md",
     "vignettes/getting-started.Rmd",
@@ -231,7 +231,7 @@ writeLines(
     sprintf("dev head: %s", dev_head),
     sprintf("feature/archive-phase2-artifacts head: %s", feature_head),
     sprintf("archive/phase2-validation-artifacts head: %s", archive_head),
-    sprintf("dev summary file present: %s", branch_has_path("dev", "docs/phase2_validation_summary.md")),
+  sprintf("dev summary file present: %s", branch_has_path("dev", "notes/PHASE2_HISTORY.md")),
     sprintf("archive contents present: %s", archive_verified),
     if (length(archive_missing) > 0L) paste0("archive missing: ", paste(archive_missing, collapse = ", ")) else "archive missing: <none>"
   ),
@@ -378,7 +378,7 @@ branch_validation_lines <- c(
   sprintf("devtools::check evidence: %s", if (!devtools_check_clean) extract_check_issue(devtools_check$output) else "<none>"),
   sprintf("R CMD build status: %s", if (build_ok) "pass" else "fail"),
   sprintf("R CMD check --no-manual status: %s", if (rcmd_check_clean) "pass" else "fail"),
-  sprintf("docs/phase2_validation_summary.md exists on dev: %s", branch_has_path("dev", "docs/phase2_validation_summary.md")),
+  sprintf("notes/PHASE2_HISTORY.md exists on dev: %s", branch_has_path("dev", "notes/PHASE2_HISTORY.md")),
   sprintf("README.md exists on dev: %s", branch_has_path("dev", "README.md")),
   sprintf("NEWS.md exists on dev: %s", branch_has_path("dev", "NEWS.md")),
   sprintf("vignettes/getting-started.Rmd exists on dev: %s", branch_has_path("dev", "vignettes/getting-started.Rmd")),

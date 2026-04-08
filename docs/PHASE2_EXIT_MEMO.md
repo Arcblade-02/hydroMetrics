@@ -40,9 +40,6 @@ tag is in place. Phase 3 should branch from `v0.2.1`, not from the superseded
 
 ## Evidence references
 
+- `notes/COMPATIBILITY_AND_WRAPPER_HISTORY.md`
 - `notes/wrapper-export-closure/wrapper_gap_inventory.csv`
-- `notes/wrapper-export-closure/wrapper_export_decisions.md`
-- `notes/wrapper-export-closure/naming_policy_verification.md`
-- `notes/wrapper-export-closure/wrapper_runtime_verification.md`
 - `notes/wrapper-export-closure/validation_results.txt`
-- `notes/wrapper-export-closure/release_patch_recommendation.md`

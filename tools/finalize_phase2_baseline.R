@@ -27,17 +27,11 @@ extract_backtick <- function(lines, field) {
   sub(pattern, "\\1", hit[[1]])
 }
 
-notes_dir <- repo_path("notes", "finalize-phase2-baseline")
+notes_dir <- repo_path("notes")
 required <- c(
-  "cleanup_report.md",
-  "merge_and_validation_report.md",
-  "tag_release_report.md",
-  "final_baseline_summary.md"
+  "PHASE2_HISTORY.md",
+  file.path("finalize-phase2-baseline", "merge_and_validation_report.md")
 )
-
-if (!dir.exists(notes_dir)) {
-  stop(sprintf("Missing required directory: %s", notes_dir), call. = FALSE)
-}
 
 invisible(lapply(file.path(notes_dir, required), require_file))
 
@@ -47,27 +41,16 @@ if (!identical(version, "0.2.0")) {
   stop(sprintf("Expected Version 0.2.0, found %s.", version), call. = FALSE)
 }
 
-memo_path <- repo_path("docs", "PHASE2_EXIT_MEMO.md")
-if (!file.exists(memo_path)) {
-  stop("Missing docs/PHASE2_EXIT_MEMO.md.", call. = FALSE)
-}
+history_path <- file.path(notes_dir, "PHASE2_HISTORY.md")
+merge_report_path <- file.path(notes_dir, "finalize-phase2-baseline", "merge_and_validation_report.md")
+history_lines <- read_lines(history_path)
+merge_lines <- read_lines(merge_report_path)
 
-cleanup_lines <- read_lines(file.path(notes_dir, "cleanup_report.md"))
-merge_lines <- read_lines(file.path(notes_dir, "merge_and_validation_report.md"))
-tag_lines <- read_lines(file.path(notes_dir, "tag_release_report.md"))
-summary_lines <- read_lines(file.path(notes_dir, "final_baseline_summary.md"))
-
-cleanup_status <- extract_backtick(cleanup_lines, "Cleanup status")
-test_status <- extract_backtick(merge_lines, "devtools::test status")
-build_status <- extract_backtick(merge_lines, "R CMD build status")
-check_status <- extract_backtick(merge_lines, "R CMD check --no-manual status")
-tag_status <- extract_backtick(summary_lines, "Tag status")
-final_status <- extract_backtick(summary_lines, "Final Phase 2 baseline status")
+history_present <- any(grepl("^# Phase 2 History$", history_lines))
+merge_report_present <- any(grepl("^# Merge And Validation Report$", merge_lines))
 
 cat("Phase 2 baseline finalization summary\n")
-cat(sprintf("- cleanup status: %s\n", cleanup_status))
 cat(sprintf("- final version: %s\n", version))
-cat(sprintf("- test status: %s\n", test_status))
-cat(sprintf("- build/check status: %s/%s\n", build_status, check_status))
-cat(sprintf("- tag status: %s\n", tag_status))
-cat(sprintf("- final readiness for Phase 3: %s\n", final_status))
+cat(sprintf("- consolidated phase 2 history present: %s\n", history_present))
+cat(sprintf("- detailed merge/validation report present: %s\n", merge_report_present))
+cat(sprintf("- retained exit memo present: %s\n", file.exists(repo_path("docs", "PHASE2_EXIT_MEMO.md"))))
